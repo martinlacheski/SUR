@@ -1,4 +1,5 @@
-# s.u.r.
+# Sistema Unificado para Rectificadoras (S.U.R.)
+
 Trabajo Final Analista en Sistemas de Computación
 Universidad Nacional de Misiones - Argentina
 
