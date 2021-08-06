@@ -1,7 +1,7 @@
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from app.apps.login.views import LoginFormView
+from apps.login.views import *
 
 urlpatterns = [
     path('', LoginFormView.as_view(), name='login'),
