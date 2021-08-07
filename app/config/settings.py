@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     #Apps
     'apps.login',
     'apps.home',
+    'apps.geografico',
 ]
 
 MIDDLEWARE = [
