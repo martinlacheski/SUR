@@ -10,6 +10,8 @@ urlpatterns = [
     path('paises/update/<int:pk>/', PaisesUpdateView.as_view(), name='paises_update'),
     path('paises/delete/<int:pk>/', PaisesDeleteView.as_view(), name='paises_delete'),
     #Provincias
+
+
     # path('provincias/list/', ProvinciasListView.as_view(), name='provincias_list'),
     # path('provincias/add/', ProvinciasCreateView.as_view(), name='provincias_create'),
     # path('provincias/update/<int:pk>/', ProvinciasUpdateView.as_view(), name='provincias_update'),

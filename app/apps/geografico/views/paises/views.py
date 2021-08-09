@@ -1,6 +1,9 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
@@ -25,7 +28,7 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Paises.objects.all():
+                for i in Paises.objects.filter(estado=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -111,7 +114,7 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         return context
 
 
-class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
+class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
     model = Paises
     template_name = 'paises/delete.html'
     success_url = reverse_lazy('geografico:paises_list')
@@ -123,16 +126,17 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Dele
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
+        # assert False, ("NO SE PUDO CREAR LA REUNION")
+        id = request.POST['pk']
+        action = request.POST['action']
+        if action == 'delete':
+            Paises.objects.filter(pk=id).update(estado=False)
+        return HttpResponseRedirect(self.success_url)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar País'
-        context['entity'] = 'Países'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
-        return context
+
+def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['title'] = 'Eliminar País'
+    context['entity'] = 'Países'
+    context['list_url'] = reverse_lazy('geografico:paises_list')
+    return context

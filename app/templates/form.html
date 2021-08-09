@@ -43,15 +43,21 @@
             {% endfor %}
         </div>
         <div class="card-footer">
-            <button type="button" id="guardar" class="btn btn-primary btn-flat btnGuardar">
+            {% if action == 'add' %}
+            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
+            {% else %}
+            <button type="button" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
+            {% endif %}
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>
     </div>
-    <!-- Modal -->
+   <!-- Modal -->
     <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -73,9 +79,12 @@
         </div>
     </div>
 </form>
+
 <script>
-    $('.btnGuardar').on('click', function () {
+    $('.btnEdit').on('click', function () {
         $('#submitModal').modal('show');
     });
 </script>
 {% endblock %}
+
+
