@@ -25,7 +25,7 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Paises.objects.all():
+                for i in Paises.objects.filter(estado=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -125,10 +125,7 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Dele
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            # self.object.delete()
-            form = self.get_form()
-
-            data = form.save()
+            Paises.objects.filter(pk=self.object.pk).update(estado=False)
             return HttpResponseRedirect(self.success_url)
         except Exception as e:
             data['error'] = str(e)
