@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
@@ -111,7 +112,7 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         return context
 
 
-class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
+class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
     model = Paises
     template_name = 'paises/delete.html'
     success_url = reverse_lazy('geografico:paises_list')
@@ -124,12 +125,12 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Dele
 
     def post(self, request, *args, **kwargs):
         data = {}
-        try:
-            Paises.objects.filter(pk=self.object.pk).update(estado=False)
+        print(request.POST['id'])
+        assert False, ("NO SE PUDO CREAR LA REUNION")
+        action = request.POST['action']
+        if action == 'delete':
+            Paises.objects.filter(pk=request.POST['id']).update(estado=False)
             return HttpResponseRedirect(self.success_url)
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
