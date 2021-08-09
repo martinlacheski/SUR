@@ -125,7 +125,11 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Dele
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            self.object.delete()
+            # self.object.delete()
+            form = self.get_form()
+
+            data = form.save()
+            return HttpResponseRedirect(self.success_url)
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
