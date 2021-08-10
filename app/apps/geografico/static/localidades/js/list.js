@@ -15,10 +15,11 @@ $(function () {
         },
         columns: [
             //{"data": "id"},
-            {"data": "nombre"},
-            {"data": "provincia.nombre"},
             {"data": "pais.nombre"},
+            {"data": "provincia.nombre"},
             {"data": "nombre"},
+            {"data": "codigo_postal"},
+            {"data": "nombre"}, //va duplicado algun campo por la botonera
         ],
         columnDefs: [
             {

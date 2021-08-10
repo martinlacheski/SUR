@@ -2,6 +2,9 @@ from apps.geografico.views.paises.views import PaisesListView, PaisesCreateView,
 from apps.geografico.views.provincias.views import ProvinciasListView, ProvinciasCreateView, ProvinciasUpdateView, ProvinciasDeleteView
 from django.urls import path
 
+from apps.geografico.views.localidades.views import LocalidadesListView, LocalidadesCreateView, \
+    LocalidadesUpdateView, LocalidadesDeleteView
+
 app_name = 'geografico'
 
 urlpatterns = [
@@ -16,8 +19,8 @@ urlpatterns = [
     path('provincias/update/<int:pk>/', ProvinciasUpdateView.as_view(), name='provincias_update'),
     path('provincias/delete/<int:pk>/', ProvinciasDeleteView.as_view(), name='provincias_delete'),
     #Localidades
-    # path('localidades/list/', LocalidadesListView.as_view(), name='localidades_list'),
-    # path('localidades/add/', LocalidadesCreateView.as_view(), name='localidades_create'),
-    # path('localidades/update/<int:pk>/', LocalidadesUpdateView.as_view(), name='localidades_update'),
-    # path('localidades/delete/<int:pk>/', LocalidadesDeleteView.as_view(), name='localidades_delete'),
+    path('localidades/list/', LocalidadesListView.as_view(), name='localidades_list'),
+    path('localidades/add/', LocalidadesCreateView.as_view(), name='localidades_create'),
+    path('localidades/update/<int:pk>/', LocalidadesUpdateView.as_view(), name='localidades_update'),
+    path('localidades/delete/<int:pk>/', LocalidadesDeleteView.as_view(), name='localidades_delete'),
 ]
