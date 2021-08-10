@@ -1,5 +1,6 @@
 {% extends 'body.html' %}
 {% load widget_tweaks %}
+{% load static %}
 {% block head %}
 {% block head_form %}
 
@@ -57,7 +58,7 @@
             </a>
         </div>
     </div>
-   <!-- Modal -->
+    <!-- Modal -->
     <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -79,7 +80,6 @@
         </div>
     </div>
 </form>
-
 <script>
     $('.btnEdit').on('click', function () {
         $('#submitModal').modal('show');

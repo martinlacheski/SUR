@@ -36,12 +36,18 @@ class PaisesForm(ModelForm):
 class ProvinciasForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['pais'].widget.attrs['autofocus'] = True
+        self.fields['nombre'].widget.attrs['autofocus'] = True
+        # Seteamos para que el Select contenga unicamente los registros activos
+        self.fields['pais'].queryset = Paises.objects.filter(estado=True)
 
     class Meta:
         model = Provincias
-        fields = '__all__'
+        fields = ['pais', 'nombre']
         widgets = {
+            'pais': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
             'nombre': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un nombre',
@@ -67,6 +73,7 @@ class LocalidadesForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['pais'].widget.attrs['autofocus'] = True
+
 
 
     class Meta:

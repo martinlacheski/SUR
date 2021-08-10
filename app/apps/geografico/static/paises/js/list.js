@@ -8,6 +8,7 @@ $(function () {
             url: window.location.pathname,
             type: 'POST',
             data: {
+                'csrfmiddlewaretoken': csrftoken,
                 'action': 'searchdata'
             },
             dataSrc: ""
@@ -34,9 +35,4 @@ $(function () {
 
         }
     });
-    function btnEliminar() {
-        console.log("entra al clic");
-        // $('#deleteModal').modal('show');
-        // console.log(row.id);
-    }
 });
