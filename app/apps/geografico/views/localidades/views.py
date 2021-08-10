@@ -61,7 +61,15 @@ class LocalidadesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                     data.append({'id': i.id, 'text': i.nombre})
             if action == 'add':
                 form = self.get_form()
-                data = form.save()
+                if(form.is_valid()):
+                    try:
+                        localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                            pais=form.cleaned_data['pais'],
+                                                            provincia = form.cleaned_data['provincia'])
+                        Localidades.objects.filter(pk=localidad.id).update(estado=True)
+                    except Exception as e:
+                        print(str(e))
+                        data = form.save()
                 return HttpResponseRedirect(self.success_url)
         except Exception as e:
             data['error'] = str(e)

@@ -8,6 +8,8 @@ from apps.geografico.forms import ProvinciasForm
 from apps.geografico.models import Provincias
 from apps.mixins import ValidatePermissionRequiredMixin
 
+from apps.geografico.models import Paises
+
 
 class ProvinciasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
     model = Provincias
@@ -57,7 +59,14 @@ class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             action = request.POST['action']
             if action == 'add':
                 form = self.get_form()
-                data = form.save()
+                if (form.is_valid()):
+                    # Si existe, alteramos su estado. Si no existe, guardamos
+                    try:
+                        provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(), pais=form.cleaned_data['pais'])
+                        Provincias.objects.filter(pk=provincia.id).update(estado=True)
+                    except Exception as e:
+                        print(str(e))
+                        data = form.save()
                 return HttpResponseRedirect(self.success_url)
             else:
                 data['error'] = 'No ha ingresado ninguna opción'

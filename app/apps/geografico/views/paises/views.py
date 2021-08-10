@@ -57,7 +57,16 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
             action = request.POST['action']
             if action == 'add':
                 form = self.get_form()
-                data = form.save()
+
+                # Buscamos pais
+                if(form.is_valid()):
+                    # Si existe, alteramos su estado. Si no existe, guardamos
+                    try:
+                        pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
+                        Paises.objects.filter(pk=pais.id).update(estado=True)
+                    except Exception as e:
+                        print(str(e))
+                        data = form.save()
                 return HttpResponseRedirect(self.success_url)
             else:
                 data['error'] = 'No ha ingresado ninguna opción'
