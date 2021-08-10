@@ -4,15 +4,15 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 
 
-from apps.geografico.forms import PaisesForm
-from apps.geografico.models import Paises
+from apps.geografico.forms import ProvinciasForm
+from apps.geografico.models import Provincias
 from apps.mixins import ValidatePermissionRequiredMixin
 
 
-class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = Paises
-    template_name = 'paises/list.html'
-    permission_required = 'geografico.view_paises'
+class ProvinciasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = Provincias
+    template_name = 'provincias/list.html'
+    permission_required = 'geografico.view_provincias'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -23,7 +23,7 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Paises.objects.filter(estado=True):
+                for i in Provincias.objects.filter(estado=True):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -33,19 +33,19 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Países'
-        context['create_url'] = reverse_lazy('geografico:paises_create')
-        context['list_url'] = reverse_lazy('geografico:paises_list')
-        context['entity'] = 'Paises'
+        context['title'] = 'Listado de Provincias'
+        context['create_url'] = reverse_lazy('geografico:provincias_create')
+        context['list_url'] = reverse_lazy('geografico:provincias_list')
+        context['entity'] = 'Provincias'
         return context
 
 
-class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = Paises
-    form_class = PaisesForm
-    template_name = 'paises/create.html'
-    success_url = reverse_lazy('geografico:paises_list')
-    permission_required = 'geografico.add_paises'
+class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+    model = Provincias
+    form_class = ProvinciasForm
+    template_name = 'provincias/create.html'
+    success_url = reverse_lazy('geografico:provincias_list')
+    permission_required = 'geografico.add_provincias'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -67,19 +67,19 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear un País'
-        context['entity'] = 'Paises'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
+        context['title'] = 'Crear una Provincia'
+        context['entity'] = 'Provincias'
+        context['list_url'] = reverse_lazy('geografico:provincias_list')
         context['action'] = 'add'
         return context
 
 
-class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = Paises
-    form_class = PaisesForm
-    template_name = 'paises/create.html'
-    success_url = reverse_lazy('geografico:paises_list')
-    permission_required = 'geografico.change_paises'
+class ProvinciasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = Provincias
+    form_class = ProvinciasForm
+    template_name = 'provincias/create.html'
+    success_url = reverse_lazy('geografico:provincias_list')
+    permission_required = 'geografico.change_provincias'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -102,17 +102,17 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar País'
-        context['entity'] = 'Países'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
+        context['title'] = 'Editar Provincia'
+        context['entity'] = 'Provincias'
+        context['list_url'] = reverse_lazy('geografico:provincias_list')
         context['action'] = 'edit'
         return context
 
 
-class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = Paises
-    success_url = reverse_lazy('geografico:paises_list')
-    permission_required = 'geografico.delete_paises'
+class ProvinciasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = Provincias
+    success_url = reverse_lazy('geografico:provincias_list')
+    permission_required = 'geografico.delete_provincias'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -124,13 +124,13 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            Paises.objects.filter(pk=id).update(estado=False)
+            Provincias.objects.filter(pk=id).update(estado=False)
         return HttpResponseRedirect(self.success_url)
 
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar País'
-        context['entity'] = 'Países'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
+        context['title'] = 'Eliminar Provincia'
+        context['entity'] = 'Provincias'
+        context['list_url'] = reverse_lazy('geografico:provincias_list')
         return context

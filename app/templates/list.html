@@ -61,7 +61,7 @@
                 <p>¿Estás seguro de eliminar el registro?</p>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Si</button>
+                <button type="submit" class="btn btn-primary btnDelete">Si</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
             </div>
         </div>
@@ -70,43 +70,30 @@
 
 
 <script type="application/javascript">
-    function getToken(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    //Constante TOKEN
-    const csrftoken = getToken('csrftoken');
-
+    //Llamamos a la funcion de Token
+    getToken(name);
+    //Funcion para Eliminar mediante AJAX
     function btnEliminar(id, href) {
-        console.log(href);
-        const csrftoken = getToken('csrftoken')
-        $.ajax({
-            url: href,
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            type: 'POST',
-            data: {
-                'action': 'delete',
-                'id': id,
-            },
-            dataType: 'json'
+        $('.btnDelete').on('click', function () {
+            $.ajax({
+                url: href,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'delete',
+                    'pk': id,
+                },
+                dataType: 'json',
+            }).done(function (data) {
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+
+            }).always(function (data) {
+                location.reload();
+            });
         });
     }
 </script>
-
 {% endblock %}
 
 {% block javascript %}
