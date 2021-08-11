@@ -57,4 +57,4 @@ http://127.0.0.1:8000
 
 El proyecto fue realizado con las siguiente tecnologías:
 
-Python 3.8.10 -- Django 3.2.6 -- Bootstrap 5.1.0 -- Template AdminLTE 3.1.0
+Python 3.8.10 -- Django 3.2.6 -- Bootstrap 4.6.0 -- Template AdminLTE 3.1.0
