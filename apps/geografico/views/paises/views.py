@@ -3,7 +3,6 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 
-
 from apps.geografico.forms import PaisesForm
 from apps.geografico.models import Paises
 from apps.mixins import ValidatePermissionRequiredMixin
@@ -55,11 +54,16 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
         data = {}
         try:
             action = request.POST['action']
-            if action == 'add':
+            print(action)
+            # agregar action check
+            if action == 'check':
+                value = request.POST['value']
+                print(value)
+                data['check'] = True
+            elif action == 'add':
                 form = self.get_form()
-
                 # Buscamos pais
-                if(form.is_valid()):
+                if (form.is_valid()):
                     # Si existe, alteramos su estado. Si no existe, guardamos
                     try:
                         pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
@@ -129,13 +133,12 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        #Captamos el ID y la Accion que viene del Template y realizamos la eliminacion logica
+        # Captamos el ID y la Accion que viene del Template y realizamos la eliminacion logica
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
             Paises.objects.filter(pk=id).update(estado=False)
         return HttpResponseRedirect(self.success_url)
-
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)

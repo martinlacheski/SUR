@@ -56,7 +56,11 @@
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
             </a>
+
         </div>
+        <button type="button" id="check" class="btn btn-primary check btn-flat check">
+            <i class="fas fa-save"></i> Check registro
+        </button>
     </div>
     <!-- Modal -->
     <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
@@ -83,6 +87,41 @@
 <script>
     $('.btnEdit').on('click', function () {
         $('#submitModal').modal('show');
+    });
+    //Llamamos a la funcion de Token
+    getToken(name);
+    $('#check').on('click', function () {
+
+        // var value = $('input[id="btnAdd"]').val();
+        var value = $('input[id="id_nombre"]').val();
+        console.log(value);
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'check',
+                'value': value,
+            },
+            dataType: 'json',
+        }).done(function (data) {
+            console.log(data);
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (data) {
+
+        });
+
+
+        //Funcion para Eliminar mediante AJAX
+        // $('form').on('submit', function (e) {
+        //     e.preventDefault();
+        //     var parameters = new FormData(this);
+        //     submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
+        //         location.href = '{{ list_url }}';
+        //     });
+        // });
+
     });
 </script>
 {% endblock %}
