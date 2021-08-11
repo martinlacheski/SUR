@@ -2,128 +2,127 @@
 {% load widget_tweaks %}
 {% load static %}
 {% block head %}
-{% block head_form %}
+    {% block head_form %}
 
-{% endblock %}
+    {% endblock %}
 {% endblock %}
 {% block content %}
-<form method="post" action=".">
-    <div class="card card-default">
-        <div class="card-header">
-            <h3 class="card-title">
+    <form method="post" action=".">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                {#Mensaje de error#}
+                <div class="errorMensaje alert alert-danger alert-dismissible">
+                    <p><i class="icon fas fa-ban"></i>Error! ya existe un registro con ese nombre</p>
+                </div>
+                {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        <label for="email">{{ field.label }}:</label>
+                        {{ field| add_class:'form-control'|attr:'autocomplete:off' }}
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="card-footer">
                 {% if action == 'add' %}
-                <i class="fas fa-plus"></i>
-                {% else %}
-                <i class="fas fa-edit"></i>
-                {% endif %}
-                {{ title }}
-            </h3>
-        </div>
-        <div class="card-body">
-            {% csrf_token %}
-            <input type="hidden" name="action" value="{{ action }}">
-            {% if form.errors %}
-            <div class="alert alert-danger alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al intentar guardar el registro</h5>
-                <ul>
-                    {% for field in form %}
-                    {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                    {% endfor %}
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endif %}
-
-            {% for field in form.visible_fields %}
-            <div class="form-group">
-                <label for="email">{{ field.label }}:</label>
-                {{ field| add_class:'form-control'|attr:'autocomplete:off' }}
-            </div>
-            {% endfor %}
-        </div>
-        <div class="card-footer">
-            {% if action == 'add' %}
-            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                <i class="fas fa-save"></i> Guardar registro
-            </button>
-            {% else %}
-            <button type="button" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                <i class="fas fa-save"></i> Guardar registro
-            </button>
-            {% endif %}
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
-
-        </div>
-        <button type="button" id="check" class="btn btn-primary check btn-flat check">
-            <i class="fas fa-save"></i> Check registro
-        </button>
-    </div>
-    <!-- Modal -->
-    <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
-         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                        <i class="fas fa-save"></i> Guardar registro
                     </button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de realizar la siguiente acción?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Si</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                {% else %}
+                    <button type="button" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                        <i class="fas fa-save"></i> Guardar registro
+                    </button>
+                {% endif %}
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+
+            </div>
+            <button type="button" id="check" class="btn btn-primary check btn-flat check">
+                <i class="fas fa-save"></i> Check registro
+            </button>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de realizar la siguiente acción?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Si</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
-<script>
-    $('.btnEdit').on('click', function () {
-        $('#submitModal').modal('show');
-    });
-    //Llamamos a la funcion de Token
-    getToken(name);
-    $('#check').on('click', function () {
+    </form>
+    <script>
+        $(document).ready(function () {
+            $(".errorMensaje").css("display", "none");
+        });
+        $('.btnEdit').on('click', function () {
+            $('#submitModal').modal('show');
+        });
+        document.getElementById("id_nombre").addEventListener("keypress", function () {
+            $(".errorMensaje").css("display", "none");
+        });
+        //Llamamos a la funcion de Token
+        getToken(name);
+        $('#check').on('click', function () {
+            //$('form').on('submit', function (e) {
+            var value = $('input[id="id_nombre"]').val();
+            console.log(value)
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'check',
+                    'value': value,
+                },
+                dataType: 'json',
+            }).done(function (data) {
+                console.log(data);
+                if (data.check == true) {
+                    console.log("País ya cargado");
+                    $(".errorMensaje").css("display", "");
+                    document.getElementById("id_nombre").focus();
+                }
+                if (data.check == false) {
+                    console.log("País no cargado");
 
-        // var value = $('input[id="btnAdd"]').val();
-        var value = $('input[id="id_nombre"]').val();
-        console.log(value);
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'action': 'check',
-                'value': value,
-            },
-            dataType: 'json',
-        }).done(function (data) {
-            console.log(data);
-        }).fail(function (jqXHR, textStatus, errorThrown) {
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.log("no pasa");
+            }).always(function (data) {
 
-        }).always(function (data) {
+            });
+
+
+            //Funcion para Eliminar mediante AJAX
+            // $('form').on('submit', function (e) {
+            //     e.preventDefault();
 
         });
-
-
-        //Funcion para Eliminar mediante AJAX
-        // $('form').on('submit', function (e) {
-        //     e.preventDefault();
-        //     var parameters = new FormData(this);
-        //     submit_with_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-        //         location.href = '{{ list_url }}';
-        //     });
-        // });
-
-    });
-</script>
+    </script>
 {% endblock %}
 
 

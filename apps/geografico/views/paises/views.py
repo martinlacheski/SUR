@@ -54,24 +54,40 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
         data = {}
         try:
             action = request.POST['action']
-            print(action)
-            # agregar action check
+            # action check si existe pais
             if action == 'check':
                 value = request.POST['value']
-                print(value)
-                data['check'] = True
+                value = value.upper()
+
+                try:
+                    pais = Paises.objects.get(nombre=value)
+
+                    # Si el estado es False devolver CHECK False
+
+                    Paises.objects.filter(pk=pais.id).update(estado=True)
+
+                    data['check'] = True
+                except Exception as e:
+                    # print(str(e))
+                    data['check'] = False
+
+
             elif action == 'add':
                 form = self.get_form()
                 # Buscamos pais
                 if (form.is_valid()):
                     # Si existe, alteramos su estado. Si no existe, guardamos
                     try:
+                        pais = "vacio"
                         pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
                         Paises.objects.filter(pk=pais.id).update(estado=True)
                     except Exception as e:
                         # print(str(e))
-                        data = form.save()
-                return HttpResponseRedirect(self.success_url)
+                        if pais == "vacio":
+                            data = form.save()
+                            return HttpResponseRedirect(self.success_url)
+                        else:
+                            data['check'] = True
             else:
                 data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
