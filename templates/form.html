@@ -7,7 +7,7 @@
     {% endblock %}
 {% endblock %}
 {% block content %}
-    <form method="post" action=".">
+    <form id="#form" method="post" action=".">
         <div class="card card-default">
             <div class="card-header">
                 <h3 class="card-title">
@@ -23,8 +23,8 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 {#Mensaje de error#}
-                <div class="errorMensaje alert alert-danger alert-dismissible">
-                    <p><i class="icon fas fa-ban"></i>Error! ya existe un registro con ese nombre</p>
+                <div hidden class="errorMensaje alert alert-danger alert-dismissible">
+                    <p  ><i class="icon fas fa-ban"></i>Error! ya existe un registro con ese nombre</p>
                 </div>
                 {% for field in form.visible_fields %}
                     <div class="form-group">
@@ -76,52 +76,9 @@
     </form>
     <script>
         $(document).ready(function () {
-            $(".errorMensaje").css("display", "none");
+            console.log("hola");
         });
-        $('.btnEdit').on('click', function () {
-            $('#submitModal').modal('show');
-        });
-        document.getElementById("id_nombre").addEventListener("keypress", function () {
-            $(".errorMensaje").css("display", "none");
-        });
-        //Llamamos a la funcion de Token
-        getToken(name);
-        $('#check').on('click', function () {
-            //$('form').on('submit', function (e) {
-            var value = $('input[id="id_nombre"]').val();
-            console.log(value)
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: {
-                    'csrfmiddlewaretoken': csrftoken,
-                    'action': 'check',
-                    'value': value,
-                },
-                dataType: 'json',
-            }).done(function (data) {
-                console.log(data);
-                if (data.check == true) {
-                    console.log("País ya cargado");
-                    $(".errorMensaje").css("display", "");
-                    document.getElementById("id_nombre").focus();
-                }
-                if (data.check == false) {
-                    console.log("País no cargado");
 
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-                console.log("no pasa");
-            }).always(function (data) {
-
-            });
-
-
-            //Funcion para Eliminar mediante AJAX
-            // $('form').on('submit', function (e) {
-            //     e.preventDefault();
-
-        });
     </script>
 {% endblock %}
 
