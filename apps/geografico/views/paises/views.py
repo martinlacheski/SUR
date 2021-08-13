@@ -66,9 +66,11 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                         pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
                         Paises.objects.filter(pk=pais.id).update(estado=True)
                         data['check'] = False
+                        data['redirect'] = self.url_redirect
                     # Si no existe pais en lo absoluto, registrar
                     except Exception as e:
                         data['check'] = 'Registrar'
+                        data['redirect'] = self.url_redirect
                         print(form)
                         form.save()
             else:

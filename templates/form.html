@@ -81,7 +81,7 @@
 
             e.preventDefault();
             $.ajax({
-                url: "{% url 'geografico:paises_create' %}",
+                url: window.location.href,
                 type: 'POST',
                 data: $(this).serialize(),
                 success : function (data){
@@ -89,14 +89,14 @@
 
                     if(data.check === 'Registrar'){
                         //Lo registramos. Nos vamos a otro lado
-                        location.replace("{% url 'geografico:paises_list' %}");
+                        location.replace(data.redirect);
                     }else if (data.check === true){
                         // Mostramos el error
                         $("#ErrorDuplicado").removeAttr("hidden");
                         console.log('Pais ya existe');
                     }else{
                         // no hacemos nada. Pero nos vamos a otro lado tmb
-                        location.replace("{% url 'geografico:paises_list' %}");
+                        location.replace(data.redirect);
                         console.log('pais existia pero estaba dado de baja');
                     }
 

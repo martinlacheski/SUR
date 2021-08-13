@@ -56,10 +56,8 @@ class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         try:
             action = request.POST['action']
             if action == 'add':
-                form = self.get_form()
+                form = ProvinciasForm(request.POST)
                 if (form.is_valid()):
-                    print('form valido')
-                    print(form)
                     # Si existe, alteramos su estado. Si no existe, guardamos
                     try:
                         provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(), pais=form.cleaned_data['pais'])
