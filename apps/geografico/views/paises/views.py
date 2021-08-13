@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from apps.geografico.forms import PaisesForm
 from apps.geografico.models import Paises
 from apps.mixins import ValidatePermissionRequiredMixin
+from django.shortcuts import render, redirect
 
 
 class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -53,43 +54,29 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']
-            # action check si existe pais
-            if action == 'check':
-                value = request.POST['value']
-                value = value.upper()
-
+            # Si existe el pais que se quiere guardar y está activo, error.
+            form = PaisesForm(request.POST)
+            if form.is_valid():
                 try:
-                    pais = Paises.objects.get(nombre=value)
-
-                    # Si el estado es False devolver CHECK False
-
-                    Paises.objects.filter(pk=pais.id).update(estado=True)
-
+                    pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
                     data['check'] = True
+                    print("Pais ya existe e está activo")
+
                 except Exception as e:
-                    # print(str(e))
-                    data['check'] = False
-
-
-            elif action == 'add':
-                form = self.get_form()
-                # Buscamos pais
-                if (form.is_valid()):
-                    # Si existe, alteramos su estado. Si no existe, guardamos
+                    # Si existe pais pero está inactivo, dar de alta.
                     try:
-                        pais = "vacio"
                         pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
                         Paises.objects.filter(pk=pais.id).update(estado=True)
+                        data['check'] = False
+                        print("Pais ya existe y estaba inactivo")
+
+                    # Si no existe pais en lo absoluto, registrar
                     except Exception as e:
-                        # print(str(e))
-                        if pais == "vacio":
-                            data = form.save()
-                            return HttpResponseRedirect(self.success_url)
-                        else:
-                            data['check'] = True
+                        data['check'] = 'Registrar'
+                        print(form)
+                        form.save()
             else:
-                data['error'] = 'No ha ingresado ninguna opción'
+                data['error'] = "Formulario no válido"
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
