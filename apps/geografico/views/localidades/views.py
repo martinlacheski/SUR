@@ -54,27 +54,41 @@ class LocalidadesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
         data = {}
         try:
             action = request.POST['action']
+
             # Realizamos la busqueda de Provincias de un X pais y cargamos el Select de provincias
             if action == 'search_provincias':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Provincias.objects.filter(pais_id=request.POST['pk'], estado='True'):
                     data.append({'id': i.id, 'text': i.nombre})
+
             if action == 'add':
                 form = self.get_form()
                 if(form.is_valid()):
+                    # Si existe loc que se quiere guardar y la misma está activa, error.
                     try:
                         localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                                             pais=form.cleaned_data['pais'],
-                                                            provincia = form.cleaned_data['provincia'])
-                        Localidades.objects.filter(pk=localidad.id).update(estado=True)
+                                                            provincia = form.cleaned_data['provincia'],
+                                                            estado=True)
+                        data['check'] = True
                     except Exception as e:
-                        # print(str(e))
-                        data = form.save()
-                return HttpResponseRedirect(self.success_url)
+                        # Si existe loc pero está inactiva, dar de alta.
+                        try:
+                            localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                                pais=form.cleaned_data['pais'],
+                                                                provincia=form.cleaned_data['provincia'])
+                            Localidades.objects.filter(pk=localidad.id).update(estado=True)
+                            data['check'] = False
+                            data['redirect'] = self.url_redirect
+                        # Si la loc no existe en lo absoluto, registrar
+                        except Exception as e:
+                            data['check'] = 'Registrar'
+                            data['redirect'] = self.url_redirect
+                            form.save()
         except Exception as e:
             data['error'] = str(e)
         # Se debe especificar en el return por la devolucion de datos Serializados
-        return JsonResponse(data, safe=False)
+        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
