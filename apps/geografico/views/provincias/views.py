@@ -56,16 +56,25 @@ class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         try:
             action = request.POST['action']
             if action == 'add':
-                form = ProvinciasForm(request.POST)
+                form = self.get_form()
                 if (form.is_valid()):
-                    # Si existe, alteramos su estado. Si no existe, guardamos
+                    # Si existe provincia que se quiere guardar y la misma está activa, error.
                     try:
-                        provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(), pais=form.cleaned_data['pais'])
-                        Provincias.objects.filter(pk=provincia.id).update(estado=True)
+                        provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                           pais=form.cleaned_data['pais'], estado=True)
+                        data['check'] = True
+                    # Si existe provincia pero está inactiva, dar de alta.
                     except Exception as e:
-                        # print(str(e))
-                        data = form.save()
-                return HttpResponseRedirect(self.success_url)
+                        try:
+                            provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                               pais=form.cleaned_data['pais'])
+                            Provincias.objects.filter(pk=provincia.id).update(estado=True)
+                            data['check'] = False
+                            data['redirect'] = self.url_redirect
+                        except Exception as e:
+                            data['check'] = 'Registrar'
+                            data['redirect'] = self.url_redirect
+                            form.save()
             else:
                 data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
