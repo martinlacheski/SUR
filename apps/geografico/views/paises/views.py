@@ -60,16 +60,12 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 try:
                     pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
                     data['check'] = True
-                    print("Pais ya existe e está activo")
-
                 except Exception as e:
                     # Si existe pais pero está inactivo, dar de alta.
                     try:
                         pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
                         Paises.objects.filter(pk=pais.id).update(estado=True)
                         data['check'] = False
-                        print("Pais ya existe y estaba inactivo")
-
                     # Si no existe pais en lo absoluto, registrar
                     except Exception as e:
                         data['check'] = 'Registrar'
