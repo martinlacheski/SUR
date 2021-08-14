@@ -54,8 +54,8 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = PaisesForm()
-            data = form.checkAndSave(request.POST, self.url_redirect)
+            form = PaisesForm(request.POST)
+            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -84,8 +84,8 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = PaisesForm()
-            data = form.checkAndSave(request.POST, self.url_redirect)
+            form = self.get_form()
+            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
