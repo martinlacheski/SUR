@@ -105,11 +105,26 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         try:
             action = request.POST['action']
             if action == 'edit':
-                form = self.get_form()
-                data = form.save()
-                return HttpResponseRedirect(self.success_url)
-            else:
-                data['error'] = 'No ha ingresado ninguna opción'
+                form = PaisesForm(request.POST)
+                if form.is_valid():
+                    try:
+                        pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
+                        data['check'] = True
+                    except Exception as e:
+                        # Si existe pais pero está inactivo, dar de alta.
+                        try:
+                            pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
+                            Paises.objects.filter(pk=pais.id).update(estado=True)
+                            data['check'] = False
+                            data['redirect'] = self.url_redirect
+                        # Si no existe pais en lo absoluto, registrar
+                        except Exception as e:
+                            data['check'] = 'Registrar'
+                            data['redirect'] = self.url_redirect
+                            print(form)
+                            form.save()
+                else:
+                    data['error'] = "Formulario no válido"
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
