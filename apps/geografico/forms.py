@@ -94,6 +94,31 @@ class ProvinciasForm(ModelForm):
             data['error'] = str(e)
         return data
 
+    def checkAndSave (self, post, url_redirect):
+        data = {}
+        form = ProvinciasForm(post)
+        if (form.is_valid()):
+            # Si existe provincia que se quiere guardar y la misma está activa, error.
+            try:
+                provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                   pais=form.cleaned_data['pais'], estado=True)
+                data['check'] = True
+            # Si existe provincia pero está inactiva, dar de alta.
+            except Exception as e:
+                try:
+                    provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                       pais=form.cleaned_data['pais'])
+                    Provincias.objects.filter(pk=provincia.id).update(estado=True)
+                    data['check'] = False
+                    data['redirect'] = url_redirect
+                except Exception as e:
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
+        else:
+            data['error'] = "Formulario no válido"
+        return data
+
 
 class LocalidadesForm(ModelForm):
     def __init__(self, *args, **kwargs):
