@@ -21,17 +21,41 @@ class PaisesForm(ModelForm):
             ),
         }
 
-    def save(self, commit=True):
+    def save(self):
         data = {}
         form = super()
         try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
+            form.save()
         except Exception as e:
             data['error'] = str(e)
         return data
+
+    """ Chequea si el pais ya existe y avisa al front-end.
+        Si el pais que se ingresa estaba de baja, lo da de alta """
+    def checkAndSave (self, post, url_redirect):
+        data = {}
+        form = PaisesForm(post)
+        if form.is_valid():
+            # Si existe el pais que se quiere guardar y está activo, error.
+            try:
+                pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
+                data['check'] = True
+            except Exception as e:
+                # Si existe pais pero está inactivo, dar de alta.
+                try:
+                    pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
+                    Paises.objects.filter(pk=pais.id).update(estado=True)
+                    data['check'] = False
+                    data['redirect'] = url_redirect
+                # Si no existe pais en lo absoluto, registrar
+                except Exception as e:
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
+        else:
+            data['error'] = "Formulario no válido"
+        return data
+
 
 
 class ProvinciasForm(ModelForm):
