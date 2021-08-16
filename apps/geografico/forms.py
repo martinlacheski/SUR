@@ -113,13 +113,16 @@ class ProvinciasForm(ModelForm):
     # de momento no está funcionando
     def checkAndSave (self, form, url_redirect, action):
         data = {}
+        print(action)
         if form.is_valid():
+            print('PROV QUE SE QUIERE EDITAR: ', form.cleaned_data['pais'].pk)
             # Si existe la provincia que se quiere guardar/editar y está activo, error.
             try:
                 provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                             pais=form.cleaned_data['pais'], estado=True)
                 data['check'] = True
             except Exception as e:
+
                 if action == 'add':
                     # Si existe provincia pero está inactiva, dar de alta.
                     try:
@@ -134,21 +137,22 @@ class ProvinciasForm(ModelForm):
                         data['redirect'] = url_redirect
                         form.save()
 
+
                 # action 'edit'
                 else:
                     try:
-                        print()
+                        print("estamos en edit")
                         # Si la edición que se quiere registrar corresponde a un pais inactivo, borrar el inactivo y guardar edición
                         provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                                            pais=form.cleaned_data['pais'], estado=False)
+                        print("Provincia que encuentra: ", provincia)
                         Provincias.objects.filter(pk=provincia.id).delete()
-                        data['check'] = 'Registrar'
-                        data['redirect'] = url_redirect
-                        form.save()
                     except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = url_redirect
-                        form.save()
+                        print("Controlamos exception")
+
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
 
         else:
             data['error'] = "Formulario no válido"

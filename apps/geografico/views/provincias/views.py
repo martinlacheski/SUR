@@ -54,7 +54,7 @@ class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = ProvinciasForm(request.POST)
+            form = self.get_form()
             data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
@@ -84,8 +84,7 @@ class ProvinciasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            print(request.POST['action'])
-            form = ProvinciasForm(request.POST)
+            form = self.get_form()
             data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)

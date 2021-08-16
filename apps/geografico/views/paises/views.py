@@ -55,7 +55,7 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
         data = {}
         try:
 
-            form = PaisesForm(request.POST)
+            form = self.get_form()
             data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
