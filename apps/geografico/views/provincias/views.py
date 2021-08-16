@@ -54,29 +54,8 @@ class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']
-            if action == 'add':
-                form = self.get_form()
-                if (form.is_valid()):
-                    # Si existe provincia que se quiere guardar y la misma está activa, error.
-                    try:
-                        provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                                           pais=form.cleaned_data['pais'], estado=True)
-                        data['check'] = True
-                    # Si existe provincia pero está inactiva, dar de alta.
-                    except Exception as e:
-                        try:
-                            provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                                               pais=form.cleaned_data['pais'])
-                            Provincias.objects.filter(pk=provincia.id).update(estado=True)
-                            data['check'] = False
-                            data['redirect'] = self.url_redirect
-                        except Exception as e:
-                            data['check'] = 'Registrar'
-                            data['redirect'] = self.url_redirect
-                            form.save()
-            else:
-                data['error'] = 'No ha ingresado ninguna opción'
+            form = self.get_form()
+            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -105,13 +84,8 @@ class ProvinciasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']
-            if action == 'edit':
-                form = self.get_form()
-                data = form.save()
-                return HttpResponseRedirect(self.success_url)
-            else:
-                data['error'] = 'No ha ingresado ninguna opción'
+            form = self.get_form()
+            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

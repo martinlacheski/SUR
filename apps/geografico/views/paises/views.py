@@ -54,27 +54,9 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            # Si existe el pais que se quiere guardar y está activo, error.
-            form = PaisesForm(request.POST)
-            if form.is_valid():
-                try:
-                    pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
-                    data['check'] = True
-                except Exception as e:
-                    # Si existe pais pero está inactivo, dar de alta.
-                    try:
-                        pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
-                        Paises.objects.filter(pk=pais.id).update(estado=True)
-                        data['check'] = False
-                        data['redirect'] = self.url_redirect
-                    # Si no existe pais en lo absoluto, registrar
-                    except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = self.url_redirect
-                        print(form)
-                        form.save()
-            else:
-                data['error'] = "Formulario no válido"
+
+            form = self.get_form()
+            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -103,28 +85,8 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']
-            if action == 'edit':
-                form = PaisesForm(request.POST)
-                if form.is_valid():
-                    try:
-                        pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
-                        data['check'] = True
-                    except Exception as e:
-                        # Si existe pais pero está inactivo, dar de alta.
-                        try:
-                            pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
-                            Paises.objects.filter(pk=pais.id).update(estado=True)
-                            data['check'] = False
-                            data['redirect'] = self.url_redirect
-                        # Si no existe pais en lo absoluto, registrar
-                        except Exception as e:
-                            data['check'] = 'Registrar'
-                            data['redirect'] = self.url_redirect
-                            print(form)
-                            form.save()
-                else:
-                    data['error'] = "Formulario no válido"
+            form = self.get_form()
+            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
