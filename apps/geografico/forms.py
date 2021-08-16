@@ -110,12 +110,9 @@ class ProvinciasForm(ModelForm):
             data['error'] = str(e)
         return data
 
-    # de momento no está funcionando
     def checkAndSave (self, form, url_redirect, action):
         data = {}
-        print(action)
         if form.is_valid():
-            print('PROV QUE SE QUIERE EDITAR: ', form.cleaned_data['pais'].pk)
             # Si existe la provincia que se quiere guardar/editar y está activo, error.
             try:
                 provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
@@ -137,15 +134,12 @@ class ProvinciasForm(ModelForm):
                         data['redirect'] = url_redirect
                         form.save()
 
-
                 # action 'edit'
                 else:
                     try:
-                        print("estamos en edit")
                         # Si la edición que se quiere registrar corresponde a un pais inactivo, borrar el inactivo y guardar edición
                         provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                                            pais=form.cleaned_data['pais'], estado=False)
-                        print("Provincia que encuentra: ", provincia)
                         Provincias.objects.filter(pk=provincia.id).delete()
                     except Exception as e:
                         print("Controlamos exception")
@@ -201,4 +195,49 @@ class LocalidadesForm(ModelForm):
                 data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
+        return data
+
+    def checkAndSave (self, form, url_redirect, action):
+        data = {}
+        if form.is_valid():
+            # Si existe la localidad que se quiere guardar/editar y está activo, error.
+            try:
+                localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                    pais=form.cleaned_data['pais'],
+                                                    provincia=form.cleaned_data['provincia'],
+                                                    estado=True)
+                data['check'] = True
+            except Exception as e:
+                if action == 'add':
+                    # Si existe loc pero está inactiva, dar de alta.
+                    try:
+                        localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                            pais=form.cleaned_data['pais'],
+                                                            provincia=form.cleaned_data['provincia'])
+                        Localidades.objects.filter(pk=localidad.id).update(estado=True)
+                        data['check'] = False
+                        data['redirect'] = url_redirect
+                    # Si no existe loc en lo absoluto, registrar
+                    except Exception as e:
+                        data['check'] = 'Registrar'
+                        data['redirect'] = url_redirect
+                        form.save()
+
+                # action 'edit'
+                else:
+                    try:
+                        # Si la edición corresponde a un pais inactivo, borrar el inactivo y guardar edición
+                        localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
+                                                            pais=form.cleaned_data['pais'],
+                                                            provincia=form.cleaned_data['provincia'],
+                                                            estado=False)
+                        Localidades.objects.filter(pk=localidad.id).delete()
+                    except Exception as e:
+                        print("Controlamos exception")
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
+
+        else:
+            data['error'] = "Formulario no válido"
         return data
