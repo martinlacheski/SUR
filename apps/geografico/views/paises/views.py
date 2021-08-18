@@ -6,7 +6,6 @@ from django.views.generic import ListView, CreateView, UpdateView
 from apps.geografico.forms import PaisesForm
 from apps.geografico.models import Paises
 from apps.mixins import ValidatePermissionRequiredMixin
-from django.shortcuts import render, redirect
 
 
 class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -23,7 +22,6 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                #for i in Paises.objects.filter(estado=True):
                 for i in Paises.objects.all():
                     data.append(i.toJSON())
             else:
