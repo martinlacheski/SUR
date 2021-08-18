@@ -23,7 +23,7 @@ class ProvinciasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Li
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Provincias.objects.filter(estado=True):
+                for i in Provincias.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -114,7 +114,7 @@ class ProvinciasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            Provincias.objects.filter(pk=id).update(estado=False)
+            self.object.delete()
         return HttpResponseRedirect(self.success_url)
 
 

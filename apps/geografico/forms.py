@@ -33,52 +33,34 @@ class PaisesForm(ModelForm):
     """ Chequea si el pais ya existe y avisa al front-end.
         Si el pais que se ingresa estaba de baja, lo da de alta.
         También controla duplicados al momento de editar """
-    def checkAndSave (self, form, url_redirect, action):
+
+    def checkAndSave(self, form, url_redirect, action):
         data = {}
         if form.is_valid():
             # Si existe el pais que se quiere guardar/editar y está activo, error.
             try:
-                pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=True)
+                pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
                 data['check'] = True
             except Exception as e:
                 if action == 'add':
-                        # Si existe pais pero está inactivo, dar de alta.
-                        try:
-                            pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
-                            Paises.objects.filter(pk=pais.id).update(estado=True)
-                            data['check'] = False
-                            data['redirect'] = url_redirect
-                        # Si no existe pais en lo absoluto, registrar
-                        except Exception as e:
-                            data['check'] = 'Registrar'
-                            data['redirect'] = url_redirect
-                            form.save()
-
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
                 # action 'edit'
-                else:
-                    try:
-                        # Si la edición que se quiere registrar corresponde a un pais inactivo, borrar el inactivo y guardar edición
-                        pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper(), estado=False)
-                        Paises.objects.filter(pk=pais.id).delete()
-                        data['check'] = 'Registrar'
-                        data['redirect'] = url_redirect
-                        form.save()
-                    except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = url_redirect
-                        form.save()
+                elif action == 'edit':
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
 
         else:
             data['error'] = "Formulario no válido"
         return data
 
 
-
 class ProvinciasForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Seteamos para que el Select contenga unicamente los registros activos
-        self.fields['pais'].queryset = Paises.objects.filter(estado=True)
         self.fields['pais'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -110,44 +92,24 @@ class ProvinciasForm(ModelForm):
             data['error'] = str(e)
         return data
 
-    def checkAndSave (self, form, url_redirect, action):
+    def checkAndSave(self, form, url_redirect, action):
         data = {}
         if form.is_valid():
             # Si existe la provincia que se quiere guardar/editar y está activo, error.
             try:
                 provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                            pais=form.cleaned_data['pais'], estado=True)
+                                                   pais=form.cleaned_data['pais'])
                 data['check'] = True
             except Exception as e:
-
                 if action == 'add':
-                    # Si existe provincia pero está inactiva, dar de alta.
-                    try:
-                        provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                                           pais=form.cleaned_data['pais'])
-                        Provincias.objects.filter(pk=provincia.id).update(estado=True)
-                        data['check'] = False
-                        data['redirect'] = url_redirect
-                    # Si no existe pais en lo absoluto, registrar
-                    except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = url_redirect
-                        form.save()
-
-                # action 'edit'
-                else:
-                    try:
-                        # Si la edición que se quiere registrar corresponde a un pais inactivo, borrar el inactivo y guardar edición
-                        provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                                           pais=form.cleaned_data['pais'], estado=False)
-                        Provincias.objects.filter(pk=provincia.id).delete()
-                    except Exception as e:
-                        print("Controlamos exception")
-
                     data['check'] = 'Registrar'
                     data['redirect'] = url_redirect
                     form.save()
-
+                # action 'edit'
+                elif action == 'edit':
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
         else:
             data['error'] = "Formulario no válido"
         return data
@@ -157,8 +119,6 @@ class LocalidadesForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Seteamos para que el Select contenga unicamente los registros activos
-        self.fields['pais'].queryset = Paises.objects.filter(estado=True)
-        self.fields['provincia'].queryset = Provincias.objects.filter(estado=True)
         self.fields['pais'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -197,43 +157,23 @@ class LocalidadesForm(ModelForm):
             data['error'] = str(e)
         return data
 
-    def checkAndSave (self, form, url_redirect, action):
+    def checkAndSave(self, form, url_redirect, action):
         data = {}
         if form.is_valid():
             # Si existe la localidad que se quiere guardar/editar y está activo, error.
             try:
                 localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                                     pais=form.cleaned_data['pais'],
-                                                    provincia=form.cleaned_data['provincia'],
-                                                    estado=True)
+                                                    provincia=form.cleaned_data['provincia'])
                 data['check'] = True
             except Exception as e:
                 if action == 'add':
-                    # Si existe loc pero está inactiva, dar de alta.
-                    try:
-                        localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                                            pais=form.cleaned_data['pais'],
-                                                            provincia=form.cleaned_data['provincia'])
-                        Localidades.objects.filter(pk=localidad.id).update(estado=True)
-                        data['check'] = False
-                        data['redirect'] = url_redirect
-                    # Si no existe loc en lo absoluto, registrar
-                    except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = url_redirect
-                        form.save()
+                    data['check'] = 'Registrar'
+                    data['redirect'] = url_redirect
+                    form.save()
 
                 # action 'edit'
-                else:
-                    try:
-                        # Si la edición corresponde a un pais inactivo, borrar el inactivo y guardar edición
-                        localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
-                                                            pais=form.cleaned_data['pais'],
-                                                            provincia=form.cleaned_data['provincia'],
-                                                            estado=False)
-                        Localidades.objects.filter(pk=localidad.id).delete()
-                    except Exception as e:
-                        print("Controlamos exception")
+                elif action == 'edit':
                     data['check'] = 'Registrar'
                     data['redirect'] = url_redirect
                     form.save()
