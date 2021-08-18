@@ -22,7 +22,7 @@ class LocalidadesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Localidades.objects.filter(estado=True):
+                for i in Localidades.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -57,7 +57,7 @@ class LocalidadesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
             # Realizamos la busqueda de Provincias de un X pais y cargamos el Select de provincias
             if action == 'search_provincias':
                 data = [{'id': '', 'text': '---------'}]
-                for i in Provincias.objects.filter(pais_id=request.POST['pk'], estado='True'):
+                for i in Provincias.objects.filter(pais_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
 
             # Ya sea action 'edit' o action 'add'
@@ -97,7 +97,7 @@ class LocalidadesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
             # Realizamos la busqueda de Provincias de un X pais y cargamos el Select de provincias
             if action == 'search_provincias':
                 data = [{'id': '', 'text': '---------'}]
-                for i in Provincias.objects.filter(pais_id=request.POST['pk'], estado='True'):
+                for i in Provincias.objects.filter(pais_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
             else:
                 form = self.get_form()
@@ -131,7 +131,7 @@ class LocalidadesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            Localidades.objects.filter(pk=id).update(estado=False)
+            self.object.delete()
         return HttpResponseRedirect(self.success_url)
 
     def get_context_data(**kwargs):
