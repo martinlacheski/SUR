@@ -117,10 +117,9 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
             try:
                 self.object.delete()
                 data['redirect'] = self.url_redirect
+                data['check'] = 'ok'
             except Exception as e:
-                data['check'] = 'errorfk'
-                data['error'] = str(e)
-                #print (str(e))
+                data['check'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(**kwargs):
