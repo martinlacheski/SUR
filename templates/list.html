@@ -58,10 +58,10 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>¿Estás seguro de eliminar el registro?</p>
+                    <p id="msjErrorModal">¿Estás seguro de eliminar el registro?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btnDelete">Si</button>
+                    <button type="submit" class="btn btn-primary btnDelete">Ok</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -74,7 +74,16 @@
         getToken(name);
         //Funcion para Eliminar mediante AJAX
         function btnEliminar(id, href) {
-            $('.btnDelete').on('click', function () {
+
+
+            $('.btnDelete').on('click', function (e) {
+
+                e.preventDefault();
+
+                // Reactivación de botón y mensaje a default.
+                $('.btnDelete').removeAttr("disabled");
+                $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar el registro?';
+
                 $.ajax({
                     url: href,
                     type: 'POST',
@@ -83,13 +92,23 @@
                         'action': 'delete',
                         'pk': id,
                     },
-                    dataType: 'json',
-                }).done(function (data) {
+                    success : function (data){
+                        // Control de eliminación de un registro que es dependencia de otros.
+                        if (data.check === 'ok'){
+                            location.replace(data.redirect);
+                        }else if(data.check === 'FOREIGN KEY constraint failed'){
+                            $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros que dependen de él. <br><br>' +
+                                '<strong>No puede ser eliminado</strong>'
 
-                }).fail(function (jqXHR, textStatus, errorThrown) {
+                            $('.btnDelete').attr('disabled', '');
 
-                }).always(function (data) {
-                    location.reload();
+                            // En caso de que la Exception sea por otra cosa
+                        }else{
+                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador';
+
+                            $('.btnDelete').attr('disabled', '');
+                        }
+                    }
                 });
             });
         }

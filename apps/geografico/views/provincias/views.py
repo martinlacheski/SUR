@@ -58,7 +58,7 @@ class ProvinciasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -88,7 +88,7 @@ class ProvinciasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -114,8 +114,15 @@ class ProvinciasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            self.object.delete()
-        return HttpResponseRedirect(self.success_url)
+            data = {}
+            try:
+                self.object.delete()
+                data['redirect'] = self.url_redirect
+                data['check'] = 'ok'
+            except Exception as e:
+                print(str(e))
+                data['check'] = str(e)
+        return JsonResponse(data)
 
 
     def get_context_data(**kwargs):

@@ -69,6 +69,27 @@
                 </div>
             </div>
         </div>
+        <!-- Modal Error Eliminar Clave Foranea-->
+        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>No se puede eliminar</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Si</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
     <script>
         //Llamamos a la funcion de Token
@@ -93,11 +114,10 @@
                     }else if (data.check === true){
                         // Mostramos el error
                         $("#ErrorDuplicado").removeAttr("hidden");
-                        console.log('Pais ya existe');
                     }else{
                         // no hacemos nada. Pero nos vamos a otro lado tmb
                         location.replace(data.redirect);
-                        console.log('pais existia pero estaba dado de baja');
+
                     }
 
                 }

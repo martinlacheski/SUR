@@ -113,9 +113,14 @@ class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            self.object.delete()
-            #Paises.objects.filter(pk=id).update(estado=False)
-        return HttpResponseRedirect(self.success_url)
+            data = {}
+            try:
+                self.object.delete()
+                data['redirect'] = self.url_redirect
+                data['check'] = 'ok'
+            except Exception as e:
+                data['check'] = str(e)
+        return JsonResponse(data)
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
