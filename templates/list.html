@@ -61,7 +61,7 @@
                     <p id="msjErrorModal">¿Estás seguro de eliminar el registro?</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary btnDelete">Si</button>
+                    <button type="submit" class="btn btn-primary btnDelete">Ok</button>
                     <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
                 </div>
             </div>
@@ -93,10 +93,10 @@
                         'pk': id,
                     },
                     success : function (data){
+                        // Control de eliminación de un registro que es dependencia de otros.
                         if (data.check === 'ok'){
                             location.replace(data.redirect);
                         }else if(data.check === 'FOREIGN KEY constraint failed'){
-                            console.log($('#msjErrorModal'));
                             $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros que dependen de él. <br><br>' +
                                 '<strong>No puede ser eliminado</strong>'
 
