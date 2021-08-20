@@ -1,7 +1,6 @@
-from apps.agenda.views.gestionEventos.views import *
 from django.urls import path
-
-app_name = 'geografico'
+from apps.agenda.views.gestionEventos.views import *
+app_name = 'agenda'
 
 urlpatterns = [
     # PAISES
