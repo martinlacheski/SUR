@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.login',
     'apps.home',
     'apps.geografico',
+    'apps.agenda',
 ]
 
 MIDDLEWARE = [
