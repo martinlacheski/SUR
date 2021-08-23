@@ -33,19 +33,38 @@
                                     <option>option 5</option>
                                 </select>
                             </div>
-
                             <div class="col-12 mb-4">
                                 <label>Descripción</label>
                                 <textarea class="form-control" rows="3" placeholder="Describa el evento"></textarea>
                             </div>
-                            <div class="col-12">
-                                <label>Date:</label>
+                            <div class="col-12 mb-4">
+                                <label>Fecha de Notificación</label>
                                 <div class="input-group date" id="reservationdate" data-target-input="nearest">
                                     <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate">
                                     <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-12 mb-1">
+                                <div class="custom-control custom-checkbox">
+                                    <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
+                                    <label for="customCheckbox1" class="custom-control-label">Se repite</label>
+                                </div>
+                            </div>
+                            <div class="col-8 mb-4">
+                                <select class="form-control">
+                                    <option> --- </option>
+                                    <option>Diariamente</option>
+                                    <option>Semanalmente</option>
+                                    <option>Mensualmente</option>
+                                </select>
+                            </div>
+                            <hr size="8" width="90%" color="red">
+                            <div class="col-12">
+                                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                                    <i class="fas fa-save"></i> Registrar Evento
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -70,25 +89,28 @@
 {% endblock %}
 {% block javascript %}
     <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js'%}"></script>
+
+    <!-- IMPORTANTE. Para poner en español algunos complementos en AdminLTE3 se necesita de moment.js -->
     <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js'%}"></script>
+
     <script src="{% static 'lib/adminlte-3.1.0/plugins/inputmask/jquery.inputmask.min.js'%}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/fullcalendar/main.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/fullcalendar/locales-all.min.js' %}"></script>
 
-
+    <!-- Inicialización de datimepicker -->
     <script>
-
         //Date picker
         $('#reservationdate').datetimepicker({
             format: 'DD-MM-yyyy',
             locale: 'es'
         });
-
     </script>
 
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/fullcalendar/locales-all.min.js' %}"></script>
 
+
+    <!-- Inicialización de fullCalendar -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
