@@ -26,7 +26,7 @@
                             <div class="col-12 mb-4">
                                 <label>Tipo de evento</label>
                                 <select class="form-control">
-                                    <option>option 1</option>
+                                    <option> --- </option>
                                     <option>option 2</option>
                                     <option>option 3</option>
                                     <option>option 4</option>
@@ -48,12 +48,12 @@
                             </div>
                             <div class="col-12 mb-1">
                                 <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="option1">
+                                    <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">
                                     <label for="customCheckbox1" class="custom-control-label">Se repite</label>
                                 </div>
                             </div>
                             <div class="col-8 mb-4">
-                                <select class="form-control">
+                                <select id="selectRepeticion" disabled="" class="form-control">
                                     <option> --- </option>
                                     <option>Diariamente</option>
                                     <option>Semanalmente</option>
@@ -125,6 +125,17 @@
                 },
             });
             calendar.render();
+        });
+    </script>
+
+
+    <script>
+        $('#customCheckbox1').on('click', function (){
+            if (this.checked) {
+                 $('#selectRepeticion').prop('disabled', false); // If checked enable item
+            } else {
+                 $('#selectRepeticion').prop('disabled', true); // If checked disable item
+            }
         });
     </script>
 {% endblock %}
