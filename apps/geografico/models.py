@@ -19,7 +19,7 @@ class Paises(models.Model):
     class Meta:
         verbose_name = 'Pais'
         verbose_name_plural = 'Paises'
-        db_table = 'paises'
+        db_table = 'geografico_paises'
         ordering = ['nombre']
 
     # Para convertir a MAYUSCULA
@@ -44,7 +44,7 @@ class Provincias(models.Model):
     class Meta:
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
-        db_table = 'provincias'
+        db_table = 'geografico_provincias'
         ordering = ['nombre']
 
     # Para convertir a MAYUSCULA
@@ -72,7 +72,7 @@ class Localidades(models.Model):
     class Meta:
         verbose_name = 'Localidad'
         verbose_name_plural = 'Localidades'
-        db_table = 'localidades'
+        db_table = 'geografico_localidades'
         ordering = ['nombre']
 
     # Para convertir a MAYUSCULA

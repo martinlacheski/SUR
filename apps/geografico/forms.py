@@ -30,14 +30,13 @@ class PaisesForm(ModelForm):
             data['error'] = str(e)
         return data
 
-    """ Chequea si el pais ya existe y avisa al front-end.
-        Si el pais que se ingresa estaba de baja, lo da de alta.
+    """ Chequea si ya existe y avisa al front-end.
         También controla duplicados al momento de editar """
 
     def checkAndSave(self, form, url_redirect, action):
         data = {}
         if form.is_valid():
-            # Si existe el pais que se quiere guardar/editar y está activo, error.
+            # Si existe el objeto que se quiere guardar/editar y está activo, error.
             try:
                 pais = Paises.objects.get(nombre=form.cleaned_data['nombre'].upper())
                 data['check'] = True
@@ -60,7 +59,6 @@ class PaisesForm(ModelForm):
 class ProvinciasForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Seteamos para que el Select contenga unicamente los registros activos
         self.fields['pais'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -95,7 +93,7 @@ class ProvinciasForm(ModelForm):
     def checkAndSave(self, form, url_redirect, action):
         data = {}
         if form.is_valid():
-            # Si existe la provincia que se quiere guardar/editar y está activo, error.
+            # Si existe el objeto que se quiere guardar/editar y está activo, error.
             try:
                 provincia = Provincias.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                                    pais=form.cleaned_data['pais'])
@@ -118,7 +116,6 @@ class ProvinciasForm(ModelForm):
 class LocalidadesForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Seteamos para que el Select contenga unicamente los registros activos
         self.fields['pais'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -160,7 +157,7 @@ class LocalidadesForm(ModelForm):
     def checkAndSave(self, form, url_redirect, action):
         data = {}
         if form.is_valid():
-            # Si existe la localidad que se quiere guardar/editar y está activo, error.
+            # Si existe el objeto que se quiere guardar/editar y está activo, error.
             try:
                 localidad = Localidades.objects.get(nombre=form.cleaned_data['nombre'].upper(),
                                                     pais=form.cleaned_data['pais'],
