@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from apps.mixins import ValidatePermissionRequiredMixin
 
 
-class ExampleView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateView):
+class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateView):
     template_name = 'gestionEventos/list.html'
 
     def get(self, request, *args, **kwargs):

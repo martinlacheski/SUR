@@ -32,7 +32,16 @@ class eventosAgenda(models.Model):
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
     fechaNotificacion = models.DateTimeField()
     descripcion = models.TextField()
-    #estado = models.BooleanField(default=True)
+    REPETICION = (
+        ('DIA', 'Diariamente'),
+        ('SEN', 'Semanalmente'),
+        ('MEN', 'Mensualmente'),
+    )
+    repeticion = models.CharField(max_length=3, choices=REPETICION, default='NULL')
+    # estado = models.BooleanField(default=True)
+
+#Para save en campo repeticion, se guarda así (es solo un ejemplo):
+    # p = eventosAgenda(name="Fred Flintstone", repeticion="DIA")
 
     def __str__(self):
         return self.descripcion
