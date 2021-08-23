@@ -42,10 +42,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #Librerias
     'widget_tweaks',
-    #Apps
+    #Aplicaciones
     'apps.login',
     'apps.home',
     'apps.geografico',
+    'apps.usuarios',
 ]
 
 MIDDLEWARE = [
@@ -137,11 +138,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Base url de los archivos
-MEDIA_URL = '/media/'
-
 # Path donde los arhivos seran almacenados
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# Base url de los archivos
+MEDIA_URL = '/media/'
 
 #Redireccion al Login Correcto
 LOGIN_REDIRECT_URL = '/home/'
@@ -151,6 +152,9 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 #Direccion de Login
 LOGIN_URL = '/login/'
+
+#Extension Modelo Abstracto Usuarios
+AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

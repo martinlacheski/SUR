@@ -25,4 +25,5 @@ urlpatterns = [
     path('login/', include('apps.login.urls')),
     path('', include('apps.home.urls')),
     path('', include('apps.geografico.urls')),
+    path('', include('apps.usuarios.urls')),
 ]
