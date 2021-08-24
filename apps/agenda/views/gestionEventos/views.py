@@ -16,7 +16,11 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         data = {}
         try:
             form = self.get_form()
-            data = form.save()
+            if form.is_valid():
+                form.save()
+            else:
+                print(form.errors)
+            #data = form.save()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)

@@ -1,6 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
-import datetime
+from django.utils import timezone
 
 class tiposEvento(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
@@ -29,17 +29,16 @@ class tiposEvento(models.Model):
         super(tiposEvento, self).save(force_insert, force_update)
 
 class eventosAgenda(models.Model):
-    fechaCreacion = models.DateTimeField(default=datetime.date.today())
+    fechaCreacion = models.DateField(default=timezone.now())
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
     fechaNotificacion = models.DateTimeField()
     descripcion = models.TextField()
     REPETICION = (
-        (' ', ' '),
         ('DIA', 'Diariamente'),
         ('SEN', 'Semanalmente'),
         ('MEN', 'Mensualmente'),
     )
-    repeticion = models.CharField(max_length=3, choices=REPETICION, default='NULL')
+    repeticion = models.CharField(max_length=3, choices=REPETICION, blank=True)
     # estado = models.BooleanField(default=True)
 #Para save en campo repeticion, se guarda así (es solo un ejemplo):
     # p = eventosAgenda(name="Fred Flintstone", repeticion="DIA")

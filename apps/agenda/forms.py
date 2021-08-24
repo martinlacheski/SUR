@@ -9,10 +9,10 @@ class GestionEventosForm(ModelForm):
 
 
     fechaNotificacion = forms.DateTimeField(
-        input_formats=['%d/%m/%Y'],
+        input_formats=['%d/%m/%Y %H:%M'],
         widget=forms.DateTimeInput(attrs={
             'class': 'form-control datetimepicker-input',
-            'data-target': '#reservationdate'
+            'data-target': '#reservationdatetime'
         })
     )
 

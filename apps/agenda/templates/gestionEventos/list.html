@@ -36,9 +36,9 @@
                                 </div>
                                 <div class="col-12 mb-4">
                                     <label>Fecha de Notificación</label>
-                                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                    <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
                                         {{ form.fechaNotificacion }}
-                                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                        <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>
                                     </div>
@@ -52,7 +52,7 @@
                                 <div class="col-8 mb-4">
                                     {{ form.repeticion }}
                                 </div>
-                                <hr size="8" width="90%" color="red">
+                                <hr class="accent-blue">
                                 <div class="col-12">
                                     <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
                                         <i class="fas fa-save"></i> Registrar Evento
@@ -97,9 +97,11 @@
     <!-- Inicialización de datimepicker -->
     <script>
         //Date picker
-        $('#reservationdate').datetimepicker({
-            format: 'DD/MM/yyyy',
-            locale: 'es'
+        $('#reservationdatetime').datetimepicker({
+            minDate: new Date(),
+            format: 'DD/MM/yyyy HH:mm',
+            locale: 'es',
+            icons: {time: 'far fa-clock' },
         });
     </script>
 
