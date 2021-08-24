@@ -93,8 +93,8 @@ class TiposUsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Editar Tipo de Usuario'
-        context['entity'] = 'Tipos de Usuario'
-        context['list_url'] = reverse_lazy('usuario:tipos_usuarios_list')
+        context['entity'] = 'Tipos de Usuarios'
+        context['list_url'] = reverse_lazy('usuarios:tipos_usuarios_list')
         context['action'] = 'edit'
         return context
 

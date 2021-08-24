@@ -124,6 +124,6 @@ class UsuariosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, De
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Eliminar Usuario'
-        context['entity'] = 'Usuario'
+        context['entity'] = 'Usuarios'
         context['list_url'] = reverse_lazy('usuarios:usuarios_list')
         return context

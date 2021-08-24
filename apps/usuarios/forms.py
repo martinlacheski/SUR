@@ -1,5 +1,3 @@
-from fileinput import FileInput
-
 from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
@@ -67,18 +65,20 @@ class UsuariosForm(ModelForm):
         model = Usuarios
         # fields = '__all__'
         fields = 'first_name', 'last_name', 'username', 'password', 'email', 'legajo', 'fechaIngreso', 'cuil', \
-                 'localidad', 'direccion', 'telefono', 'groups', 'tipoUsuario', 'imagen'
+                 'localidad', 'direccion', 'telefono', 'groups', 'imagen'
         widgets = {
             'first_name': TextInput(
                 attrs={
                     'placeholder': 'Ingrese los nombres',
-                    'style': 'width: 100%'
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
                 }
             ),
             'last_name': TextInput(
                 attrs={
                     'placeholder': 'Ingrese el apellido',
-                    'style': 'width: 100%'
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
                 }
             ),
             'username': TextInput(
@@ -101,7 +101,8 @@ class UsuariosForm(ModelForm):
             'legajo': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un legajo',
-                    'style': 'width: 100%'
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
                 }
             ),
             'fechaIngreso': DateInput(
@@ -113,6 +114,8 @@ class UsuariosForm(ModelForm):
             'cuil': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un CUIL',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
                 }
             ),
             'localidad': Select(
@@ -124,13 +127,15 @@ class UsuariosForm(ModelForm):
             'direccion': TextInput(
                 attrs={
                     'placeholder': 'Ingrese una dirección',
-                    'style': 'width: 100%'
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
                 }
             ),
             'telefono': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un número de teléfono',
-                    'style': 'width: 100%'
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
                 }
             ),
             'groups': SelectMultiple(attrs={
@@ -138,13 +143,13 @@ class UsuariosForm(ModelForm):
                 'style': 'width: 100%',
                 'multiple': 'multiple'
             }
-            ),
-            'tipoUsuario': Select(
-                attrs={
-                    'class': 'form-control select2',
-                    'style': 'width: 100%'
-                }
-            ),
+            )
+            # 'tipoUsuario': Select(
+            #     attrs={
+            #         'class': 'form-control select2',
+            #         'style': 'width: 100%'
+            #     }
+            # ),
         }
         exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
 
