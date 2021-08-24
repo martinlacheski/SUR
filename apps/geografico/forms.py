@@ -25,6 +25,7 @@ class PaisesForm(ModelForm):
         data = {}
         form = super()
         try:
+
             form.save()
         except Exception as e:
             data['error'] = str(e)

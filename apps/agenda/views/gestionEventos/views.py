@@ -1,14 +1,25 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
-
+from django.views.generic import CreateView
+from apps.agenda.models import *
+from apps.agenda.forms import *
 from apps.mixins import ValidatePermissionRequiredMixin
+from django.http import JsonResponse
 
 
-class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateView):
+class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
     template_name = 'gestionEventos/list.html'
+    model = eventosAgenda
+    form_class = GestionEventosForm
+    permission_required = 'agenda.add_tiposEventos'
 
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            form = self.get_form()
+            data = form.save()
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

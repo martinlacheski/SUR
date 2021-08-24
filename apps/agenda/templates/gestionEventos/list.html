@@ -17,58 +17,51 @@
         <div class="col-md-3">
             <div class="sticky-top mb-3">
                 <!-- /.card -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Crear un evento</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-12 mb-4">
-                                <label>Tipo de evento</label>
-                                <select class="form-control">
-                                    <option> --- </option>
-                                    <option>option 2</option>
-                                    <option>option 3</option>
-                                    <option>option 4</option>
-                                    <option>option 5</option>
-                                </select>
-                            </div>
-                            <div class="col-12 mb-4">
-                                <label>Descripción</label>
-                                <textarea class="form-control" rows="3" placeholder="Describa el evento"></textarea>
-                            </div>
-                            <div class="col-12 mb-4">
-                                <label>Fecha de Notificación</label>
-                                <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" data-target="#reservationdate">
-                                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+
+                <form id="formAgenda" action="." method="post">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Crear un evento</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <label>Tipo de evento</label>
+                                    {{ form.tipoEvento }}
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <label>Descripción</label>
+                                    {{ form.descripcion }}
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <label>Fecha de Notificación</label>
+                                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                        {{ form.fechaNotificacion }}
+                                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-12 mb-1">
-                                <div class="custom-control custom-checkbox">
-                                    <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">
-                                    <label for="customCheckbox1" class="custom-control-label">Se repite</label>
+                                <div class="col-12 mb-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">
+                                        <label for="customCheckbox1" class="custom-control-label"> Se repite</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-8 mb-4">
-                                <select id="selectRepeticion" disabled="" class="form-control">
-                                    <option> --- </option>
-                                    <option>Diariamente</option>
-                                    <option>Semanalmente</option>
-                                    <option>Mensualmente</option>
-                                </select>
-                            </div>
-                            <hr size="8" width="90%" color="red">
-                            <div class="col-12">
-                                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                                    <i class="fas fa-save"></i> Registrar Evento
-                                </button>
+                                <div class="col-8 mb-4">
+                                    {{ form.repeticion }}
+                                </div>
+                                <hr size="8" width="90%" color="red">
+                                <div class="col-12">
+                                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                                        <i class="fas fa-save"></i> Registrar Evento
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <!-- /.col -->
@@ -85,6 +78,8 @@
         </div>
         <!-- /.col -->
     </div>
+
+
 
 {% endblock %}
 {% block javascript %}
@@ -103,7 +98,7 @@
     <script>
         //Date picker
         $('#reservationdate').datetimepicker({
-            format: 'DD-MM-yyyy',
+            format: 'DD/MM/yyyy',
             locale: 'es'
         });
     </script>
@@ -133,12 +128,49 @@
     <script>
         $('#customCheckbox1').on('click', function (){
             if (this.checked) {
-                 $('#selectRepeticion').prop('disabled', false); // If checked enable item
+                $('#selectRepeticion').prop('disabled', false); // If checked enable item
             } else {
-                 $('#selectRepeticion').prop('disabled', true); // If checked disable item
+                $('#selectRepeticion').prop('disabled', true); // If checked disable item
             }
         });
     </script>
+
+    <!--
+    <script>
+        $("#formAgenda").on('submit', function(e){
+            e.preventDefault();
+            {% if form.tipoEvento.errors %}
+                <ol>
+                    {% for error in form.tipoEvento.errors %}
+                        <li><strong>{{ error|escape }}</strong></li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+
+            {% if form.descripcion.errors %}
+                <ol>
+                    {% for error in form.descripcion.errors %}
+                        <li><strong>{{ error|escape }}</strong></li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+            {% if form.fechaNotificacion.errors %}
+                <ol>
+                    {% for error in form.fechaNotificacion.errors %}
+                        <li><strong>{{ error|escape }}</strong></li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+            {% if form.repeticion.errors %}
+                <ol>
+                    {% for error in form.repeticion.errors %}
+                        <li><strong>{{ error|escape }}</strong></li>
+                    {% endfor %}
+                </ol>
+            {% endif %}
+        });
+    </script>
+    -->
 {% endblock %}
 
 
