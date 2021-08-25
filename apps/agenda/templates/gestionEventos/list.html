@@ -113,9 +113,10 @@
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 events: [
-                   {% for evento in eventos %}
+                    {% for evento in eventos %}
                         {
-                            title: "{{ evento.tipoEvento}}",
+                            id: "{{ evento.id }}",
+                            title: "{{ evento.tipoEvento }}" ,
                             start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
                         },
                     {% endfor %}
@@ -129,6 +130,32 @@
                     center: 'title',
                     right: 'prevYear,prev,next,nextYear'
                 },
+                eventClick: function(info) {
+                // Al hacer click en cualquier evento, se desencadena una llamada ajax.
+
+                    // La llamada ajax lleva la id al server y trae los datos que necesitamos de ese registro en particular.
+                    $.ajax({
+                        url: href,
+                        type: 'POST',
+                        data: {
+                            'csrfmiddlewaretoken': csrftoken,
+                            'action': 'delete',
+                            'pk': id,
+                        },
+                        success : function (data){
+                            // Control de eliminación de un registro que es dependencia de otros.
+
+                        }
+                    });
+
+
+                    alert('Event: ' + info.event.id);
+                    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+                    // alert('View: ' + info.view.type);
+
+                    // change the border color just for fun
+                    info.el.style.borderColor = 'red';
+                }
 
                 // Adquisición de eventos ya almacenados
 

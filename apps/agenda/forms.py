@@ -1,6 +1,7 @@
 from django.forms import ModelForm, Textarea, Select, DateTimeField, CheckboxInput
 from apps.agenda.models import *
 from django import forms
+
 class GestionEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,7 +26,7 @@ class GestionEventosForm(ModelForm):
             }),
             'descripcion': Textarea(
                 attrs={
-                    'placeholder': 'Ingrese un nombre',
+                    'placeholder': 'Describa su evento',
                     'rows' : '3',
                     'class' : 'form-control',
 
