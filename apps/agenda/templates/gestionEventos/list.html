@@ -112,6 +112,15 @@
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
+                events: [
+                   {% for evento in eventos %}
+                        {
+                            title: "{{ evento.tipoEvento}}",
+                            start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                        },
+                    {% endfor %}
+                ],
+                // Opciones  básicas
                 initialView: 'dayGridMonth',
                 locale: 'es',
                 height: 650,
@@ -120,6 +129,10 @@
                     center: 'title',
                     right: 'prevYear,prev,next,nextYear'
                 },
+
+                // Adquisición de eventos ya almacenados
+
+
             });
             calendar.render();
         });
@@ -141,38 +154,23 @@
     <script>
         $("#formAgenda").on('submit', function(e){
             e.preventDefault();
-            {% if form.tipoEvento.errors %}
-                <ol>
-                    {% for error in form.tipoEvento.errors %}
-                        <li><strong>{{ error|escape }}</strong></li>
-                    {% endfor %}
-                </ol>
-            {% endif %}
 
-            {% if form.descripcion.errors %}
-                <ol>
-                    {% for error in form.descripcion.errors %}
-                        <li><strong>{{ error|escape }}</strong></li>
-                    {% endfor %}
-                </ol>
-            {% endif %}
-            {% if form.fechaNotificacion.errors %}
-                <ol>
-                    {% for error in form.fechaNotificacion.errors %}
-                        <li><strong>{{ error|escape }}</strong></li>
-                    {% endfor %}
-                </ol>
-            {% endif %}
-            {% if form.repeticion.errors %}
-                <ol>
-                    {% for error in form.repeticion.errors %}
-                        <li><strong>{{ error|escape }}</strong></li>
-                    {% endfor %}
-                </ol>
-            {% endif %}
         });
     </script>
     -->
+
+    <script>
+        $(document).ready(function(){
+
+            {% for evento in eventos %}
+                console.log("default");
+                console.log("{{ evento.tipoEvento}}");
+                console.log("{{ evento.fechaNotificacion|date:"Y-m-d" }}");
+            {% endfor %}
+        });
+    </script>
+
+
 {% endblock %}
 
 
