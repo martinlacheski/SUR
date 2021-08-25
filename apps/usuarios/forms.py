@@ -179,28 +179,3 @@ class UsuariosForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
-
-    """ Chequea si ya existe y avisa al front-end.
-            También controla duplicados al momento de editar """
-
-    def checkAndSave(self, form, url_redirect, action):
-        data = {}
-        if form.is_valid():
-            # Si existe el objeto que se quiere guardar/editar y está activo, error.
-            try:
-                usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
-                data['check'] = True
-            except Exception as e:
-                if action == 'add':
-                    data['check'] = 'Registrar'
-                    data['redirect'] = url_redirect
-                    form.save()
-                # action 'edit'
-                elif action == 'edit':
-                    data['check'] = 'Registrar'
-                    data['redirect'] = url_redirect
-                    form.save()
-
-        else:
-            data['error'] = "Formulario no válido"
-        return data

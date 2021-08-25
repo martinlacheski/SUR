@@ -1,8 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
-
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.usuarios.forms import TiposUsuariosForm
@@ -99,7 +98,7 @@ class TiposUsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixi
         return context
 
 
-class TiposUsuariosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+class TiposUsuariosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
     model = TiposUsuarios
     success_url = reverse_lazy('usuarios:tipos_usuarios_list')
     permission_required = 'usuarios.delete_tiposusuarios'

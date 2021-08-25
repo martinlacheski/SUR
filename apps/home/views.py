@@ -4,7 +4,8 @@ from django.views.generic import TemplateView
 from apps.mixins import ValidatePermissionRequiredMixin
 
 
-class HomeView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateView):
+# class HomeView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
 
     def get(self, request, *args, **kwargs):
