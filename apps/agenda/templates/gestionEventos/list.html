@@ -131,27 +131,27 @@
                     right: 'prevYear,prev,next,nextYear'
                 },
                 eventClick: function(info) {
-                // Al hacer click en cualquier evento, se desencadena una llamada ajax.
 
-                    // La llamada ajax lleva la id al server y trae los datos que necesitamos de ese registro en particular.
+
+                    // Al hacer click en cualquier evento, nos vamos para otro lado.
+                    location.replace('/' + '{{ update_url }}' + info.event.id);
+
+                    // Obtenemos token de autentificaci{on
+                    {% comment %}getToken(name);
                     $.ajax({
-                        url: href,
+                        url: '{{ update_url }}' + info.event.id,
                         type: 'POST',
                         data: {
                             'csrfmiddlewaretoken': csrftoken,
-                            'action': 'delete',
-                            'pk': id,
+                            'action': 'edit',
+                            'pk': info.event.id,
                         },
                         success : function (data){
+                            console.log("volvimos del server");
                             // Control de eliminación de un registro que es dependencia de otros.
 
                         }
-                    });
-
-
-                    alert('Event: ' + info.event.id);
-                    // alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
-                    // alert('View: ' + info.view.type);
+                    });{% endcomment %}
 
                     // change the border color just for fun
                     info.el.style.borderColor = 'red';
@@ -185,17 +185,6 @@
         });
     </script>
     -->
-
-    <script>
-        $(document).ready(function(){
-
-            {% for evento in eventos %}
-                console.log("default");
-                console.log("{{ evento.tipoEvento}}");
-                console.log("{{ evento.fechaNotificacion|date:"Y-m-d" }}");
-            {% endfor %}
-        });
-    </script>
 
 
 {% endblock %}

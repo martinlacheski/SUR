@@ -11,57 +11,57 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
     template_name = 'gestionEventos/list.html'
     model = eventosAgenda
     form_class = GestionEventosForm
-    permission_required = 'agenda.add_tiposevento'
+    permission_required = 'agenda.add_eventosagenda'
     success_url = reverse_lazy('agenda:dashboard')
 
     def post(self, request, *args, **kwargs):
-        data = {}
         try:
             form = self.get_form()
             if form.is_valid():
                 form.save()
             else:
                 print(form.errors)
-            #data = form.save()
         except Exception as e:
-            data['error'] = str(e)
-        #return JsonResponse(data, safe=False)
+            print(str(e))
         return HttpResponseRedirect(self.success_url)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eventos'] = eventosAgenda.objects.all()
+        context['update_url'] = 'agenda/updateEvento/'
         return context
 
 
-# La idea es que se trae desde eñ ajax el href + id de elemento a editar. Eso se enlaza con la vista de update que
-# precisamente requiere de un pk. De ahí se accede al formulario cargado (actualizando la página).
 
-# class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-#     model = eventosAgenda
-#     form_class = GestionEventosForm
-#     success_url = reverse_lazy('agenda:dashboard')
-#     permission_required = 'agenda.change_tiposevento'
-#     template_name = 'gestionEventos/list.html'
-#
-#     def post(self, request, *args, **kwargs):
-#         data = {}
-#         try:
-#             form = self.get_form()
-#             data = form.save()
-#         except Exception as e:
-#             data['error'] = str(e)
-#         # No puede devolver un jsonresponse porque los eventos en el calendario no son botones tipo submit.
-#         return JsonResponse(data)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         # context['entity'] = 'Países'
-#         context['update_url'] = self.success_url
-#         context['action'] = 'edit'
-#         return context
-#
+class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = eventosAgenda
+    form_class = GestionEventosForm
+    success_url = reverse_lazy('agenda:dashboard')
+    permission_required = 'agenda.change_eventosagenda'
+    template_name = 'gestionEventos/list.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            form = self.get_form()
+            if form.is_valid():
+                form.save()
+            else:
+                print(form.errors)
+        except Exception as e:
+            print(str(e))
+        return HttpResponseRedirect(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['eventos'] = eventosAgenda.objects.all()
+        context['update_url'] = 'agenda/updateEvento/'
+        context['action'] = 'edit'
+        return context
+# #
 #
 # class DeleteEventoAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
 #     model = eventosAgenda

@@ -5,6 +5,7 @@ app_name = 'agenda'
 urlpatterns = [
     # PAISES
     path('agenda/list/', DashboardAgenda.as_view(), name='dashboard'),
+    path('agenda/updateEvento/<int:pk>/', UpdateEventosAgenda.as_view(), name='eventosUpdate'),
    # path('paises/add/', PaisesCreateView.as_view(), name='paises_create'),
    # path('paises/update/<int:pk>/', PaisesUpdateView.as_view(), name='paises_update'),
    # path('paises/delete/<int:pk>/', PaisesDeleteView.as_view(), name='paises_delete'),
