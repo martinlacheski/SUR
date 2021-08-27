@@ -49,19 +49,60 @@
                                         <label for="customCheckbox1" class="custom-control-label"> Se repite</label>
                                     </div>
                                 </div>
-                                <div class="col-8 mb-4">
+                                <div class="col-12 mb-4">
                                     {{ form.repeticion }}
                                 </div>
-                                <hr class="accent-blue">
-                                <div class="col-12">
-                                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                                        <i class="fas fa-save"></i> Registrar Evento
-                                    </button>
-                                </div>
+                                {% if action == 'add' %}
+                                    <div class="col-12">
+                                        <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btn-sm btnAdd">
+                                            <i class="fas fa-save"></i> Registrar
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <div class="col-4">
+                                        <button type="submit" id="btnAdd" class="btn btn-warning btn-flat btn-block btn-sm">
+                                            <i class="fas fa-save"></i> Modif.
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="button" id="btnEliminarEvento" class="btn btn-danger btn-flat btn-block btn-sm">
+                                            <i class="fas fa-trash-alt"></i> Elim.
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="button" id="btnVolverEvento" class="btn btn-primary btn-flat btn-block btn-sm">
+                                            <i class="fas fa-undo"></i> Volver
+                                        </button>
+                                    </div>
+                                {% endif %}
+
                             </div>
                         </div>
                     </div>
                 </form>
+
+
+                <!-- Modal -->
+                <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Estás seguro de realizar la siguiente acción?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Si</button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- /.col -->
@@ -130,38 +171,28 @@
                     center: 'title',
                     right: 'prevYear,prev,next,nextYear'
                 },
+                // Ubicar contenido de un evento en formulario para su posterior mod o eliminacion.
                 eventClick: function(info) {
-
-
                     // Al hacer click en cualquier evento, nos vamos para otro lado.
                     location.replace('/' + '{{ update_url }}' + info.event.id);
-
-                    // Obtenemos token de autentificaci{on
-                    {% comment %}getToken(name);
-                    $.ajax({
-                        url: '{{ update_url }}' + info.event.id,
-                        type: 'POST',
-                        data: {
-                            'csrfmiddlewaretoken': csrftoken,
-                            'action': 'edit',
-                            'pk': info.event.id,
-                        },
-                        success : function (data){
-                            console.log("volvimos del server");
-                            // Control de eliminación de un registro que es dependencia de otros.
-
-                        }
-                    });{% endcomment %}
-
-                    // change the border color just for fun
                     info.el.style.borderColor = 'red';
                 }
-
-                // Adquisición de eventos ya almacenados
-
-
             });
             calendar.render();
+        });
+    </script>
+
+    <script>
+        // eliminación de un evento.
+        $('#btnEliminarEvento').on('click', function(){
+
+            // Obtenemos id del evendo para borrarlo.
+            id_evento = "{{ request.get_full_path }}";
+            id_evento = id_evento.replace(/[^0-9]/g,'')
+
+        // Faltaría configurar el modal que aparezca y assí eliminar el evento.
+
+
         });
     </script>
 

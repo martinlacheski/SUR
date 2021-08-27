@@ -29,6 +29,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         context = super().get_context_data(**kwargs)
         context['eventos'] = eventosAgenda.objects.all()
         context['update_url'] = 'agenda/updateEvento/'
+        context['action'] = 'add'
         return context
 
 
