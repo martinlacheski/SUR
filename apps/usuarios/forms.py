@@ -59,7 +59,7 @@ class TiposUsuariosForm(ModelForm):
 class UsuariosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['first_name'].widget.attrs['autofocus'] = True
+        self.fields['username'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Usuarios

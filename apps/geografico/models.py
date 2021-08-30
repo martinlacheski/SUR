@@ -61,7 +61,10 @@ class Localidades(models.Model):
     #estado = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nombre
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return '{}/{}/{}'.format(self.nombre, self.provincia.nombre, self.pais.nombre)
 
     def toJSON(self):
         item = model_to_dict(self)

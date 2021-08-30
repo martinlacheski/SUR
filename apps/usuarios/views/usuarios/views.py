@@ -65,7 +65,14 @@ class UsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     except Exception as e:
                         data['check'] = 'Registrar'
                         data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-                        form.save()
+                        usuario = UsuariosForm(request.POST)
+                        usuario.first_name = form.cleaned_data['first_name'].upper()
+                        usuario.last_name = form.cleaned_data['last_name'].upper()
+                        usuario.legajo = form.cleaned_data['legajo'].upper()
+                        usuario.direccion = form.cleaned_data['direccion'].upper()
+                        usuario.telefono = form.cleaned_data['telefono'].upper()
+                        usuario.save()
+
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -104,7 +111,11 @@ class UsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     except Exception as e:
                         data['check'] = 'Registrar'
                         data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-
+                        self.object.first_name = form.cleaned_data['first_name'].upper()
+                        self.object.last_name = form.cleaned_data['last_name'].upper()
+                        self.object.legajo = form.cleaned_data['legajo'].upper()
+                        self.object.direccion = form.cleaned_data['direccion'].upper()
+                        self.object.telefono = form.cleaned_data['telefono'].upper()
                         form.save()
         except Exception as e:
             data['error'] = str(e)

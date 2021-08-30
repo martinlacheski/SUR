@@ -62,19 +62,12 @@ class Usuarios(AbstractUser):
         db_table = 'usuarios'
         ordering = ['last_name', 'first_name']
 
-    # Para convertir a MAYUSCULA
-    def pre_save(self, force_insert=False, force_update=False):
-    #def save(self, force_insert=False, force_update=False):
-    #def save(self, *args, **kwargs):
-        if self.first_name != "":
-            self.first_name = self.first_name.upper()
-        if self.last_name != "":
-            self.last_name = self.last_name.upper()
-        if self.legajo != "":
-            self.legajo = self.legajo.upper()
-        if self.direccion != "":
-            self.direccion = self.direccion.upper()
-        if self.telefono != "":
-            self.telefono = self.direccion.upper()
-        super(Usuarios, self).save(force_insert, force_update)
-        #super(Usuarios, self).save(*args, **kwargs)
+        # Para convertir a MAYUSCULA
+    # def pre_save(self, force_insert=False, force_update=False):
+    #     # def save(self, *args, **kwargs):
+    #     self.first_name = self.first_name.upper()
+    #     self.last_name = self.last_name.upper()
+    #     self.legajo = self.legajo.upper()
+    #     self.direccion = self.direccion.upper()
+    #     self.telefono = self.direccion.upper()
+    #     super(Usuarios, self).save(force_insert, force_update)
