@@ -61,45 +61,29 @@ class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
         context['eventos'] = eventosAgenda.objects.all()
         context['update_url'] = 'agenda/updateEvento/'
         context['action'] = 'edit'
+        context['delete_url'] = '/agenda/deleteEvento/'
         return context
-# #
-#
-# class DeleteEventoAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
-#     model = eventosAgenda
-#     form_class = GestionEventosForm
-#     succes_url = reverse_lazy('agenda:dashboard')
-#
-#     def post(self, request, *args, **kwargs):
-#         id = request.POST['pk']
-#         action = request.POST['action']
-#
-#
-# class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-#     model = Paises
-#     form_class = PaisesForm
-#     template_name = 'paises/create.html'
-#     success_url = reverse_lazy('geografico:paises_list')
-#     permission_required = 'geografico.change_paises'
-#     url_redirect = success_url
-#
-#     def dispatch(self, request, *args, **kwargs):
-#         self.object = self.get_object()
-#         return super().dispatch(request, *args, **kwargs)
-#
-#     def post(self, request, *args, **kwargs):
-#         data = {}
-#         try:
-#             form = self.get_form()
-#             data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
-#         except Exception as e:
-#             data['error'] = str(e)
-#         return JsonResponse(data)
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Editar País'
-#         context['entity'] = 'Países'
-#         context['list_url'] = reverse_lazy('geografico:paises_list')
-#         context['action'] = 'edit'
-#         return context
 
+class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = eventosAgenda
+    success_url = reverse_lazy('agenda:dashboard')
+    permission_required = 'agenda.delete_eventosagenda'
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+
+        id = request.POST['pk']
+        action = request.POST['action']
+        if action == 'delete':
+            data = {}
+            try:
+                self.object.delete()
+                data['redirect'] = self.url_redirect
+                data['check'] = 'ok'
+            except Exception as e:
+                data['check'] = str(e)
+        return JsonResponse(data)
