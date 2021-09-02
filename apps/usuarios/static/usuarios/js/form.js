@@ -20,7 +20,13 @@ $(function () {
         $.ajax({
             url: window.location.href,
             type: 'POST',
-            data: $(this).serialize(),
+            // data: $(this).serialize(),
+            // Reemplazamos DATA por lo siguiente para que se pueda enviar los datos de tipo FILES
+            data: new FormData(this),
+            // Agregamos los siguientes valores para poder enviar por AJAX datos de tipo FILES
+            dataType: 'json',
+            processData: false,
+            contentType: false,
             success: function (data) {
                 if (data.check === 'Registrar') {
                     //Lo registramos. Nos vamos a otro lado
@@ -49,11 +55,18 @@ $(function () {
     $("#direccion").validate();
 
     //Validamos EMAIL CORRECTO
-    //Chequeamos que la fecha de checkOUT sea mayor que checkIN
-    $("#email").on('change', function (e) {
-        $("#email").validate();
-        console.log("email invalido");
-        $("#ErrorEmail").removeAttr("hidden");
+    $("#email").on('focusout', function (e) {
+        var btn = document.getElementById('btnAdd');
+        var check = isValidEmail($('input[name="email"]').val());
+        if (check == false) {
+            //alert('Dirección de correo electrónico no válido');
+            $("#errorEmail").removeAttr("hidden");
+            btn.disabled = true;
+            $("#email").focus();
+        } else {
+            $('#errorEmail').attr("hidden", "");
+            btn.disabled = false;
+        }
     });
 });
 //agregar al campo numerico lo siguiente
@@ -64,3 +77,8 @@ function isNumberKey(evt) {
         return false;
     return true;
 }
+//Funcion para validar que el email tenga el formato correcto
+function isValidEmail(mail) {
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
+}
+

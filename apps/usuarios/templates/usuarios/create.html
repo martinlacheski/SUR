@@ -85,8 +85,9 @@
                     <div class="col-4 mb-4">
                         <label>Dirección de email:</label>
                         <br>
-                        <div class="input-group" type="email" class="form-control" id="cuil">
+                        <div class="input-group" type="email" class="form-control" id="email" name="email">
                             {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            <span hidden id="errorEmail" style="color: red;">Dirección de correo electrónico no válido </span>
                         </div>
                     </div>
                     <div class="col-4 mb-4">
@@ -133,7 +134,10 @@
                     <div class="col-4 mb-4">
                         <label>Imagen:</label>
                         <br>
-                        {{ form.imagen|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <div class="input-group" type="file" class="form-control" id="imagen" name="imagen">
+                            {{ form.imagen|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+
                     </div>
                 </div>
 

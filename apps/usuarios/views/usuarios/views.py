@@ -63,7 +63,6 @@ class UsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     except Exception as e:
                         data['check'] = 'Registrar'
                         data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-                        print(form.cleaned_data['imagen'])
                         form.save()
         except Exception as e:
             data['error'] = str(e)

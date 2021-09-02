@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput
+from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput
 from django.urls import reverse_lazy
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
@@ -147,13 +147,18 @@ class UsuariosForm(ModelForm):
                 'style': 'width: 100%',
                 'multiple': 'multiple'
             }
-            )
+            ),
             # 'tipoUsuario': Select(
             #     attrs={
             #         'class': 'form-control select2',
             #         'style': 'width: 100%'
             #     }
             # ),
+            'imagen': FileInput(
+                attrs={
+                    'placeholder': 'Seleccione una imagen',
+                }
+            ),
         }
         exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
 
@@ -175,6 +180,7 @@ class UsuariosForm(ModelForm):
 
                     #llamamos al metodo en models para pasar a mayusculas antes de guardar
                     u.saveCreate()
+                    #u.save()
                 else:
                     user = Usuarios.objects.get(pk=u.pk)
                     if user.password != pwd:
