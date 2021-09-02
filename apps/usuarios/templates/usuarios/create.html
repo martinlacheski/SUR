@@ -3,15 +3,35 @@
 {% load static %}
 {% block head %}
     {% block head_form %}
+        <!-- Select2 -->
         <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
-        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}" rel="stylesheet"/>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+              rel="stylesheet"/>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+
+        <!-- daterange picker -->
+        <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
+
+        <!-- moment -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js' %}"></script>
+
+        <!-- Tempus Dominus -->
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+
+        <!-- JQuery-Validation -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
+
+        <!-- archivo JS -->
         <script src="{% static 'usuarios/js/form.js' %}"></script>
     {% endblock %}
 {% endblock %}
 {% block content %}
-    <form id="ajaxForm" method="post" action=".">
+    <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
         <div class="card card-default">
             <div class="card-header">
                 <h3 class="card-title">
@@ -26,34 +46,38 @@
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
-
                 <div class="row">
                     <div class="col-4 mb-4">
                         <label>Nombre de usuario:</label>
                         <br>
-                        {{ form.username|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="col-4 mb-4">
                         <label>Contraseña:</label>
                         <br>
-                        {{ form.password|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                 </div>
+
+
                 <div class="row">
                     <div class="col-4 mb-4">
                         <label>Nombre:</label>
                         <br>
-                        {{ form.first_name|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.first_name|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="col-4 mb-4">
                         <label>Apellido:</label>
                         <br>
-                        {{ form.last_name|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.last_name|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="col-4 mb-4">
                         <label>Cuil:</label>
                         <br>
-                        {{ form.cuil|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <div class="col-12" class="form-control" id="cuil"
+                             onkeypress="return isNumberKey(event)">
+                            {{ form.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
                     </div>
                 </div>
 
@@ -61,7 +85,9 @@
                     <div class="col-4 mb-4">
                         <label>Dirección de email:</label>
                         <br>
-                        {{ form.email|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <div class="input-group" type="email" class="form-control" id="cuil">
+                            {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
                     </div>
                     <div class="col-4 mb-4">
                         <label>Legajo:</label>
@@ -71,7 +97,9 @@
                     <div class="col-4 mb-4">
                         <label>Fecha de Ingreso:</label>
                         <br>
-                        {{ form.fechaIngreso|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <div class="col-12 date" id="fechaIngreso" data-target-input="nearest">
+                            {{ form.fechaIngreso|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
                     </div>
                 </div>
 
@@ -79,17 +107,20 @@
                     <div class="col-4 mb-4">
                         <label>Localidad:</label>
                         <br>
-                        {{ form.localidad|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.localidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="col-4 mb-4">
                         <label>Dirección:</label>
                         <br>
-                        {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="col-4 mb-4">
                         <label>Teléfono:</label>
-                        <br>
-                        {{ form.telefono|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <div class="col-12" class="form-control" id="telefono" name="telefono"
+                             onkeypress="return isNumberKey(event)"
+                             autocomplete="off" required>
+                            {{ form.telefono|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
                     </div>
                 </div>
 
@@ -170,37 +201,5 @@
             </div>
         </div>
     </form>
-    <script>
-        //Llamamos a la funcion de Token
-        $('#id_nombre').on('focus', function () {
-            $('#ErrorDuplicado').attr("hidden", "");
-        });
 
-        getToken(name);
-        $("#ajaxForm").submit(function (e) {
-
-            e.preventDefault();
-            $.ajax({
-                url: window.location.href,
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function (data) {
-
-
-                    if (data.check === 'Registrar') {
-                        //Lo registramos. Nos vamos a otro lado
-                        location.replace(data.redirect);
-                    } else if (data.check === true) {
-                        // Mostramos el error
-                        $("#ErrorDuplicado").removeAttr("hidden");
-                    } else {
-                        // no hacemos nada. Pero nos vamos a otro lado tmb
-                        location.replace(data.redirect);
-
-                    }
-
-                }
-            });
-        });
-    </script>
 {% endblock %}

@@ -1,4 +1,5 @@
-from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput
+from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput
+from django.urls import reverse_lazy
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
 
@@ -92,7 +93,7 @@ class UsuariosForm(ModelForm):
                                           'style': 'width: 100%'
                                       }
                                       ),
-            'email': TextInput(
+            'email': EmailInput(
                 attrs={
                     'placeholder': 'Ingrese un correo electrónico válido',
                     'style': 'width: 100%'
@@ -108,7 +109,10 @@ class UsuariosForm(ModelForm):
             'fechaIngreso': DateInput(
                 attrs={
                     'placeholder': 'Seleccione la fecha de ingreso',
-                    'class': 'form-control',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha_reserva',
+                    'data-target': '#fechaIngreso',
+                    'data-toggle': 'datetimepicker'
                 }
             ),
             'cuil': TextInput(
@@ -159,14 +163,25 @@ class UsuariosForm(ModelForm):
         try:
             if form.is_valid():
                 pwd = self.cleaned_data['password']
+
+                # PASAMOS A MAYUSCULAS LOS CAMPOS PARA GUARDAR EN LA BD
+                self.cleaned_data['first_name'] = self.cleaned_data['first_name'].upper()
+                self.cleaned_data['last_name'] = self.cleaned_data['last_name'].upper()
+                self.cleaned_data['direccion'] = self.cleaned_data['direccion'].upper()
+
                 u = form.save(commit=False)
                 if u.pk is None:
                     u.set_password(pwd)
+
+                    #llamamos al metodo en models para pasar a mayusculas antes de guardar
+                    u.saveCreate()
                 else:
                     user = Usuarios.objects.get(pk=u.pk)
                     if user.password != pwd:
                         u.set_password(pwd)
-                u.save()
+
+                    #Utilizamos el SAVE convencional, porque el paso a mayuscula viene de la VIEW
+                    u.save()
 
                 # limpiar los grupos que tiene el usuario
                 u.groups.clear()

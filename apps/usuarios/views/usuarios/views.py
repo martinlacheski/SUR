@@ -1,9 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.utils.decorators import method_decorator
 
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.usuarios.forms import UsuariosForm
@@ -65,14 +63,8 @@ class UsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     except Exception as e:
                         data['check'] = 'Registrar'
                         data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-                        usuario = UsuariosForm(request.POST)
-                        usuario.first_name = form.cleaned_data['first_name'].upper()
-                        usuario.last_name = form.cleaned_data['last_name'].upper()
-                        usuario.legajo = form.cleaned_data['legajo'].upper()
-                        usuario.direccion = form.cleaned_data['direccion'].upper()
-                        usuario.telefono = form.cleaned_data['telefono'].upper()
-                        usuario.save()
-
+                        print(form.cleaned_data['imagen'])
+                        form.save()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -100,6 +92,7 @@ class UsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
     def post(self, request, *args, **kwargs):
         data = {}
         try:
+            print(request.FILES)
             action = request.POST['action']
             if action == 'edit':
                 form = self.get_form()
@@ -113,9 +106,8 @@ class UsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         data['redirect'] = reverse_lazy('usuarios:usuarios_list')
                         self.object.first_name = form.cleaned_data['first_name'].upper()
                         self.object.last_name = form.cleaned_data['last_name'].upper()
-                        self.object.legajo = form.cleaned_data['legajo'].upper()
                         self.object.direccion = form.cleaned_data['direccion'].upper()
-                        self.object.telefono = form.cleaned_data['telefono'].upper()
+                        print(form.cleaned_data['imagen'])
                         form.save()
         except Exception as e:
             data['error'] = str(e)

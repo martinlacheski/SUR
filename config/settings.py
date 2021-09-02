@@ -138,11 +138,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Path donde los arhivos seran almacenados
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
 # Base url de los archivos
 MEDIA_URL = '/media/'
+
+# Path donde los arhivos seran almacenados
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 #Redireccion al Login Correcto
 LOGIN_REDIRECT_URL = '/home/'
