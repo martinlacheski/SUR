@@ -1,9 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.utils.decorators import method_decorator
 
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.usuarios.forms import UsuariosForm
@@ -54,8 +52,19 @@ class UsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                if form.is_valid():
+                    try:
+                        # Si existe el objeto que se quiere guardar/editar y está activo, error.
+                        usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
+                        data['check'] = True
+                    except Exception as e:
+                        data['check'] = 'Registrar'
+                        data['redirect'] = reverse_lazy('usuarios:usuarios_list')
+                        print(form.cleaned_data['imagen'])
+                        form.save()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -83,8 +92,23 @@ class UsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+            print(request.FILES)
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                if form.is_valid():
+                    try:
+                        # Si existe el objeto que se quiere guardar/editar y está activo, error.
+                        usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
+                        data['check'] = True
+                    except Exception as e:
+                        data['check'] = 'Registrar'
+                        data['redirect'] = reverse_lazy('usuarios:usuarios_list')
+                        self.object.first_name = form.cleaned_data['first_name'].upper()
+                        self.object.last_name = form.cleaned_data['last_name'].upper()
+                        self.object.direccion = form.cleaned_data['direccion'].upper()
+                        print(form.cleaned_data['imagen'])
+                        form.save()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -108,22 +132,18 @@ class UsuariosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, De
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        # Captamos el ID y la Accion que viene del Template
-        id = request.POST['pk']
-        action = request.POST['action']
-        if action == 'delete':
-            data = {}
-            try:
-                self.object.delete()
-                data['redirect'] = self.url_redirect
-                data['check'] = 'ok'
-            except Exception as e:
-                data['check'] = str(e)
+        data = {}
+        try:
+            self.object.delete()
+            data['redirect'] = self.url_redirect
+            data['check'] = 'ok'
+        except Exception as e:
+            data['check'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Eliminar Usuario'
-        context['entity'] = 'Usuario'
+        context['entity'] = 'Usuarios'
         context['list_url'] = reverse_lazy('usuarios:usuarios_list')
         return context

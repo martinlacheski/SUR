@@ -80,11 +80,7 @@
                 $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar el registro?';
 
             $('.btnDelete').on('click', function (e) {
-
                 e.preventDefault();
-
-
-
                 $.ajax({
                     url: href,
                     type: 'POST',
@@ -100,10 +96,8 @@
                         }else if(data.check === 'FOREIGN KEY constraint failed'){
                             $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros que dependen de él. <br><br>' +
                                 '<strong>No puede ser eliminado</strong>'
-
                             $('.btnDelete').attr('style', 'visibility: hidden');
                             $('.btnNo').text("Volver");
-
                             // En caso de que la Exception sea por otra cosa
                         }else{
                             $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador';

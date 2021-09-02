@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.geografico.forms import LocalidadesForm
 from apps.geografico.models import Localidades, Provincias
@@ -116,7 +116,7 @@ class LocalidadesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
         return context
 
 
-class LocalidadesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+class LocalidadesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
     model = Localidades
     success_url = reverse_lazy('geografico:localidades_list')
     permission_required = 'geografico.delete_localidades'
