@@ -20,7 +20,7 @@ class tiposEvento(models.Model):
     class Meta:
         verbose_name = 'Tipo de Evento'
         verbose_name_plural = 'Tipos de Eventos'
-        db_table = 'tiposEventos'
+        db_table = 'agenda_tiposEventos'
         ordering = ['nombre']
 
     # Para convertir a MAYUSCULA
@@ -53,7 +53,7 @@ class eventosAgenda(models.Model):
     class Meta:
         verbose_name = 'Evento Agenda'
         verbose_name_plural = 'Eventos Agenda'
-        db_table = 'eventosAgenda'
+        db_table = 'agenda_eventosAgenda'
         ordering = ['fechaCreacion']
 
     # Para convertir a MAYUSCULA
