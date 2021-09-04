@@ -59,11 +59,12 @@ class LocalidadesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                 data = [{'id': '', 'text': '---------'}]
                 for i in Provincias.objects.filter(pais_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-
-            # Ya sea action 'edit' o action 'add'
-            else:
+            elif action == 'add':
                 form = self.get_form()
-                data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         # Se debe especificar en el return por la devolucion de datos Serializados
@@ -99,9 +100,12 @@ class LocalidadesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                 data = [{'id': '', 'text': '---------'}]
                 for i in Provincias.objects.filter(pais_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            else:
+            elif action == 'edit':
                 form = self.get_form()
-                data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         # Se debe especificar en el return por la devolucion de datos Serializados

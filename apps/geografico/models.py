@@ -1,5 +1,3 @@
-from builtins import chr
-
 from django.db import models
 
 from django.forms import model_to_dict
@@ -7,7 +5,6 @@ from django.forms import model_to_dict
 
 class Paises(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
-    #estado = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nombre
@@ -42,6 +39,7 @@ class Provincias(models.Model):
         return item
 
     class Meta:
+        unique_together = [['pais', 'nombre']]
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
         db_table = 'geografico_provincias'
@@ -73,6 +71,7 @@ class Localidades(models.Model):
         return item
 
     class Meta:
+        unique_together = [['pais', 'provincia', 'nombre']]
         verbose_name = 'Localidad'
         verbose_name_plural = 'Localidades'
         db_table = 'geografico_localidades'

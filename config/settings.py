@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.geografico',
     'apps.usuarios',
+    'apps.erp',
 ]
 
 MIDDLEWARE = [
