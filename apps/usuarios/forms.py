@@ -154,11 +154,6 @@ class UsuariosForm(ModelForm):
             #         'style': 'width: 100%'
             #     }
             # ),
-            'imagen': FileInput(
-                attrs={
-                    'placeholder': 'Seleccione una imagen',
-                }
-            ),
         }
         exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
 

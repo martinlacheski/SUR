@@ -41,7 +41,7 @@ class Usuarios(AbstractUser):
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad', null=True, blank=True)
     direccion = models.CharField(max_length=100, verbose_name='Dirección', null=True, blank=True)
     telefono = models.CharField(max_length=100, verbose_name='Teléfono', null=True, blank=True)
-    imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
+    imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, default='empty.png', verbose_name='Imagen')
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups'])

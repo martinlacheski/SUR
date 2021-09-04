@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.usuarios.forms import UsuariosForm
 from apps.usuarios.models import Usuarios
+from config.settings import STATIC_URL
 
 
 class UsuariosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
