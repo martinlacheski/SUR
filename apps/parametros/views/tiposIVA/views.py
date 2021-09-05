@@ -3,15 +3,15 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from apps.erp.forms import CategoriasForm
-from apps.erp.models import Categorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.parametros.forms import TiposIVAForm
+from apps.parametros.models import TiposIVA
 
 
-class CategoriasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = Categorias
-    template_name = 'categorias/list.html'
-    permission_required = 'erp.view_categorias'
+class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = TiposIVA
+    template_name = 'tiposIVA/list.html'
+    permission_required = 'parametros.view_tiposiva'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -22,7 +22,7 @@ class CategoriasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Li
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Categorias.objects.all():
+                for i in TiposIVA.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -32,19 +32,19 @@ class CategoriasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Li
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Categorías'
-        context['create_url'] = reverse_lazy('erp:categorias_create')
-        context['list_url'] = reverse_lazy('erp:categorias_list')
-        context['entity'] = 'Categorías'
+        context['title'] = 'Listado de Tipos de IVA'
+        context['create_url'] = reverse_lazy('parametros:tiposIVA_create')
+        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['entity'] = 'Tipos de IVA'
         return context
 
 
-class CategoriasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = Categorias
-    form_class = CategoriasForm
-    template_name = 'categorias/create.html'
-    success_url = reverse_lazy('erp:categorias_list')
-    permission_required = 'erp.add_categorias'
+class TiposIVACreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+    model = TiposIVA
+    form_class = TiposIVAForm
+    template_name = 'tiposIVA/create.html'
+    success_url = reverse_lazy('parametros:tiposIVA_list')
+    permission_required = 'parametros.add_tiposIVA'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -59,26 +59,26 @@ class CategoriasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 data = form.save()
                 data['redirect'] = self.url_redirect
             else:
-                data['error'] = 'No ha ingresado ninguna opción'
+                data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear una Categoría'
-        context['entity'] = 'Categorias'
-        context['list_url'] = reverse_lazy('erp:categorias_list')
+        context['title'] = 'Crear un Tipo de IVA'
+        context['entity'] = 'Tipos de IVA'
+        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
         context['action'] = 'add'
         return context
 
 
-class CategoriasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = Categorias
-    form_class = CategoriasForm
-    template_name = 'categorias/create.html'
-    success_url = reverse_lazy('erp:categorias_list')
-    permission_required = 'erp.change_categorias'
+class TiposIVAUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = TiposIVA
+    form_class = TiposIVAForm
+    template_name = 'tiposIVA/create.html'
+    success_url = reverse_lazy('parametros:tiposIVA_list')
+    permission_required = 'parametros.change_tiposiva'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -101,17 +101,17 @@ class CategoriasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar Categoría'
-        context['entity'] = 'Categorías'
-        context['list_url'] = reverse_lazy('erp:categorias_list')
+        context['title'] = 'Editar Tipo de IVA'
+        context['entity'] = 'Tipos de IVA'
+        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
         context['action'] = 'edit'
         return context
 
 
-class CategoriasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
-    model = Categorias
-    success_url = reverse_lazy('erp:categorias_list')
-    permission_required = 'erp.delete_categorias'
+class TiposIVADeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
+    model = TiposIVA
+    success_url = reverse_lazy('parametros:tiposIVA_list')
+    permission_required = 'parametros.delete_tiposiva'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -134,7 +134,7 @@ class CategoriasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar Categoría'
-        context['entity'] = 'Categorías'
-        context['list_url'] = reverse_lazy('erp:categorias_list')
+        context['title'] = 'Eliminar Tipo de IVA'
+        context['entity'] = 'Tipos de IVA'
+        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
         return context

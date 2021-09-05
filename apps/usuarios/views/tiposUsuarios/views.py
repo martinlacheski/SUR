@@ -53,8 +53,13 @@ class TiposUsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixi
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -83,8 +88,13 @@ class TiposUsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixi
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

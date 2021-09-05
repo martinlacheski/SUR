@@ -28,7 +28,6 @@ class Paises(models.Model):
 class Provincias(models.Model):
     pais = models.ForeignKey(Paises, models.DO_NOTHING, verbose_name='Pais')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
-    #estado = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nombre
@@ -56,7 +55,6 @@ class Localidades(models.Model):
     provincia = models.ForeignKey(Provincias, models.DO_NOTHING, verbose_name='Provincia')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
     codigo_postal = models.CharField(max_length=10, verbose_name='Código Postal')
-    #estado = models.BooleanField(default=True)
 
     def __str__(self):
         return self.get_full_name()

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     #Librerias
     'widget_tweaks',
     #Aplicaciones
+    'apps.parametros',
     'apps.login',
     'apps.home',
     'apps.geografico',

@@ -6,7 +6,6 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.usuarios.forms import UsuariosForm
 from apps.usuarios.models import Usuarios
-from config.settings import STATIC_URL
 
 
 class UsuariosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -56,15 +55,10 @@ class UsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
             action = request.POST['action']
             if action == 'add':
                 form = self.get_form()
-                if form.is_valid():
-                    try:
-                        # Si existe el objeto que se quiere guardar/editar y está activo, error.
-                        usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
-                        data['check'] = True
-                    except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-                        form.save()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -92,23 +86,28 @@ class UsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            print(request.FILES)
             action = request.POST['action']
             if action == 'edit':
                 form = self.get_form()
-                if form.is_valid():
-                    try:
-                        # Si existe el objeto que se quiere guardar/editar y está activo, error.
-                        usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
-                        data['check'] = True
-                    except Exception as e:
-                        data['check'] = 'Registrar'
-                        data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-                        self.object.first_name = form.cleaned_data['first_name'].upper()
-                        self.object.last_name = form.cleaned_data['last_name'].upper()
-                        self.object.direccion = form.cleaned_data['direccion'].upper()
-                        print(form.cleaned_data['imagen'])
-                        form.save()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado ninguna opción'
+            # if action == 'edit':
+            #     form = self.get_form()
+            #     if form.is_valid():
+            #         try:
+            #             # Si existe el objeto que se quiere guardar/editar y está activo, error.
+            #             usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
+            #             data['check'] = True
+            #         except Exception as e:
+            #             data['check'] = 'Registrar'
+            #             data['redirect'] = reverse_lazy('usuarios:usuarios_list')
+            #             self.object.first_name = form.cleaned_data['first_name'].upper()
+            #             self.object.last_name = form.cleaned_data['last_name'].upper()
+            #             self.object.direccion = form.cleaned_data['direccion'].upper()
+            #             print(form.cleaned_data['imagen'])
+            #             form.save()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

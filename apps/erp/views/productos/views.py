@@ -3,15 +3,15 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from apps.erp.forms import CategoriasForm
-from apps.erp.models import Categorias
+from apps.erp.forms import ProductosForm
+from apps.erp.models import Productos
 from apps.mixins import ValidatePermissionRequiredMixin
 
 
-class CategoriasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = Categorias
-    template_name = 'categorias/list.html'
-    permission_required = 'erp.view_categorias'
+class ProductosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = Productos
+    template_name = 'productos/list.html'
+    permission_required = 'erp.view_productos'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -22,7 +22,7 @@ class CategoriasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Li
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Categorias.objects.all():
+                for i in Productos.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -32,19 +32,19 @@ class CategoriasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Li
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Categorías'
-        context['create_url'] = reverse_lazy('erp:categorias_create')
-        context['list_url'] = reverse_lazy('erp:categorias_list')
-        context['entity'] = 'Categorías'
+        context['title'] = 'Listado de Productos'
+        context['create_url'] = reverse_lazy('erp:productos_create')
+        context['list_url'] = reverse_lazy('erp:productos_list')
+        context['entity'] = 'Productos'
         return context
 
 
-class CategoriasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = Categorias
-    form_class = CategoriasForm
-    template_name = 'categorias/create.html'
-    success_url = reverse_lazy('erp:categorias_list')
-    permission_required = 'erp.add_categorias'
+class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+    model = Productos
+    form_class = ProductosForm
+    template_name = 'productos/create.html'
+    success_url = reverse_lazy('erp:productos_list')
+    permission_required = 'erp.add_productos'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -66,19 +66,19 @@ class CategoriasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear una Categoría'
-        context['entity'] = 'Categorias'
-        context['list_url'] = reverse_lazy('erp:categorias_list')
+        context['title'] = 'Crear un Productos'
+        context['entity'] = 'Productos'
+        context['list_url'] = reverse_lazy('erp:productos_list')
         context['action'] = 'add'
         return context
 
 
-class CategoriasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = Categorias
-    form_class = CategoriasForm
-    template_name = 'categorias/create.html'
-    success_url = reverse_lazy('erp:categorias_list')
-    permission_required = 'erp.change_categorias'
+class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = Productos
+    form_class = ProductosForm
+    template_name = 'productos/create.html'
+    success_url = reverse_lazy('erp:productos_list')
+    permission_required = 'erp.change_productos'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -101,17 +101,17 @@ class CategoriasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar Categoría'
-        context['entity'] = 'Categorías'
-        context['list_url'] = reverse_lazy('erp:categorias_list')
+        context['title'] = 'Editar Producto'
+        context['entity'] = 'Productos'
+        context['list_url'] = reverse_lazy('erp:productos_list')
         context['action'] = 'edit'
         return context
 
 
-class CategoriasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
-    model = Categorias
-    success_url = reverse_lazy('erp:categorias_list')
-    permission_required = 'erp.delete_categorias'
+class ProductosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
+    model = Productos
+    success_url = reverse_lazy('erp:productos_list')
+    permission_required = 'erp.delete_productos'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -134,7 +134,7 @@ class CategoriasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar Categoría'
-        context['entity'] = 'Categorías'
-        context['list_url'] = reverse_lazy('erp:categorias_list')
+        context['title'] = 'Eliminar Producto'
+        context['entity'] = 'Productos'
+        context['list_url'] = reverse_lazy('erp:productos_list')
         return context

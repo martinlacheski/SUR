@@ -1,5 +1,4 @@
 from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput
-from django.urls import reverse_lazy
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
 
@@ -22,38 +21,16 @@ class TiposUsuariosForm(ModelForm):
             ),
         }
 
-    def save(self):
+    def save(self, commit=True):
         data = {}
         form = super()
         try:
-            form.save()
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
-        return data
-
-    """ Chequea si ya existe y avisa al front-end.
-        También controla duplicados al momento de editar """
-
-    def checkAndSave(self, form, url_redirect, action):
-        data = {}
-        if form.is_valid():
-            # Si existe el objeto que se quiere guardar/editar y está activo, error.
-            try:
-                tipoUsuario = TiposUsuarios.objects.get(nombre=form.cleaned_data['nombre'].upper())
-                data['check'] = True
-            except Exception as e:
-                if action == 'add':
-                    data['check'] = 'Registrar'
-                    data['redirect'] = url_redirect
-                    form.save()
-                # action 'edit'
-                elif action == 'edit':
-                    data['check'] = 'Registrar'
-                    data['redirect'] = url_redirect
-                    form.save()
-
-        else:
-            data['error'] = "Formulario no válido"
         return data
 
 
