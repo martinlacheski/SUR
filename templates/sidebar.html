@@ -28,48 +28,81 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <!-- ERP -->
+                <!-- Ventas -->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-cogs"></i>
+                        <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>
-                            ERP
+                            Ventas
+                        </p>
+                    </a>
+                </li>
+                <!-- Compras -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-pallet"></i>
+                        <p>
+                            Compras
+                        </p>
+                    </a>
+                </li>
+                <!-- Clientes -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Clientes
+                        </p>
+                    </a>
+                </li>
+                <!-- Proveedores -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-people-carry"></i>
+                        <p>
+                            Proveedores
+                        </p>
+                    </a>
+                </li>
+
+                <!-- Stock -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-dolly"></i>
+                        <p>
+                            Productos y Servicios
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-boxes nav-icon"></i>
-                                <p>
-                                    Productos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                         <a href="{% url 'erp:categorias_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <i class="fas fa-boxes nav-icon"></i>
                                         <p>Categorías</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                         <a href="{% url 'erp:subcategorias_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <i class="fas fa-box nav-icon"></i>
                                         <p>Subcategorías</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{% url 'erp:productos_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <i class="fas fa-box-open nav-icon"></i>
                                         <p>Productos</p>
                                     </a>
                                 </li>
-                            </ul>
+                                <li class="nav-item">
+                                    <a href="{% url 'erp:servicios_list' %}" class="nav-link">
+                                        <i class="fas fa-tasks nav-icon"></i>
+                                        <p>Servicios</p>
+                                    </a>
+                                </li>
                         </li>
                     </ul>
                 </li>
-
                 <!-- Sistema -->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">

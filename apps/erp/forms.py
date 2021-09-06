@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Select, BooleanField
 
-from apps.erp.models import Categorias, Subcategorias, Productos
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios
 
 
 class CategoriasForm(ModelForm):
@@ -169,6 +169,54 @@ class ProductosForm(ModelForm):
                 'class': 'form-control',
             }),
             'utilidad': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'precioVenta': TextInput(attrs={
+                'class': 'form-control',
+            }),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class ServiciosForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['descripcion'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Servicios
+        fields = '__all__'
+        widgets = {
+            'descripcion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase',
+                }
+            ),
+            'codigo': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un código de producto',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase',
+                }
+            ),
+            'iva': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+            'costo': TextInput(attrs={
                 'class': 'form-control',
             }),
             'precioVenta': TextInput(attrs={

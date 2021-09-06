@@ -62,7 +62,7 @@ class Subcategorias(models.Model):
 class Productos(models.Model):
     subcategoria = models.ForeignKey(Subcategorias, models.DO_NOTHING, verbose_name='Subcategoría')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
-    abreviatura = models.CharField(max_length=25, null=True, blank=True,  verbose_name='Abreviatura')
+    abreviatura = models.CharField(max_length=25, null=True, blank=True, verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo')
     codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor')
     codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1')
@@ -78,6 +78,7 @@ class Productos(models.Model):
     ubicacion = models.CharField(max_length=100, null=True, blank=True, verbose_name='Ubicacion Física')
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
+
     # proveedorPrincipal = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor Principal', null=True, blank=True)
     # proveedorSecundario = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor Secundario', null=True, blank=True)
 
@@ -103,14 +104,12 @@ class Productos(models.Model):
             return '{}{}'.format(MEDIA_URL, self.imagen)
         return '{}{}'.format(STATIC_URL, 'img/empty.png')
 
-
     class Meta:
         unique_together = [['subcategoria', 'descripcion']]
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
         db_table = 'erp_productos'
         ordering = ['subcategoria', 'descripcion']
-
 
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):
@@ -144,3 +143,40 @@ class Productos(models.Model):
         except:
             pass
         super(Productos, self).save(force_insert, force_update)
+
+
+class Servicios(models.Model):
+    descripcion = models.CharField(max_length=100, verbose_name='Descripción', unique=True)
+    codigo = models.CharField(max_length=20, verbose_name='Codigo', unique=True)
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Costo')
+    iva = models.ForeignKey(TiposIVA, models.DO_NOTHING, verbose_name='Tipo de IVA')
+    precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
+    imagen = models.ImageField(upload_to='servicios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
+
+    def __str__(self):
+        return self.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['iva'] = self.iva.toJSON()
+        item['imagen'] = self.get_image()
+        item['costo'] = format(self.costo, '.2f')
+        item['precioVenta'] = format(self.precioVenta, '.2f')
+        return item
+
+    def get_image(self):
+        if self.imagen:
+            return '{}{}'.format(MEDIA_URL, self.imagen)
+        return '{}{}'.format(STATIC_URL, 'img/empty.png')
+
+    class Meta:
+        verbose_name = 'Servicio'
+        verbose_name_plural = 'Servicios'
+        db_table = 'erp_servicios'
+        ordering = ['descripcion']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.descripcion = self.descripcion.upper()
+        self.codigo = self.codigo.upper()
+        super(Servicios, self).save(force_insert, force_update)
