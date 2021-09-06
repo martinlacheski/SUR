@@ -4,7 +4,7 @@ from django.forms import model_to_dict
 
 class TiposIVA(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Tipo de IVA', unique=True)
-    iva = models.DecimalField(default=0.21, max_digits=9, decimal_places=3, verbose_name='Porcentaje')
+    iva = models.DecimalField(default=21, max_digits=9, decimal_places=2, verbose_name='Porcentaje')
 
     def __str__(self):
         return self.nombre
@@ -17,7 +17,7 @@ class TiposIVA(models.Model):
         verbose_name = 'Tipo de IVA'
         verbose_name_plural = 'Tipos de IVA'
         db_table = 'parametros_iva'
-        ordering = ['nombre']
+        ordering = ['id']
 
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):

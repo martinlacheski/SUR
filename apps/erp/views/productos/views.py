@@ -6,6 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from apps.erp.forms import ProductosForm
 from apps.erp.models import Productos
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.parametros.models import TiposIVA
 
 
 class ProductosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -54,7 +55,10 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
         data = {}
         try:
             action = request.POST['action']
-            if action == 'add':
+            if action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
+            elif action == 'add':
                 form = self.get_form()
                 data = form.save()
                 data['redirect'] = self.url_redirect
@@ -66,7 +70,7 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear un Productos'
+        context['title'] = 'Crear un Producto'
         context['entity'] = 'Productos'
         context['list_url'] = reverse_lazy('erp:productos_list')
         context['action'] = 'add'
@@ -89,7 +93,10 @@ class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
         data = {}
         try:
             action = request.POST['action']
-            if action == 'edit':
+            if action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
+            elif action == 'edit':
                 form = self.get_form()
                 data = form.save()
                 data['redirect'] = self.url_redirect
@@ -97,6 +104,7 @@ class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                 data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):

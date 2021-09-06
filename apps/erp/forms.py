@@ -156,6 +156,24 @@ class ProductosForm(ModelForm):
                     'style': 'text-transform: uppercase',
                 }
             ),
+            'stockReal': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'stockMinimo': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'reposicion': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'costo': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'utilidad': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'precioVenta': TextInput(attrs={
+                'class': 'form-control',
+            }),
         }
 
     def save(self, commit=True):

@@ -10,33 +10,26 @@ $(function () {
         locale: 'es',
         icons: {date: 'far fa-calendar-alt'},
     });
-    //Llamamos a la funcion de Token
     $('#id_nombre').on('focus', function () {
         $('#ErrorDuplicado').attr("hidden", "");
     });
+    //Llamamos a la funcion de Token
     getToken(name);
+    //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
         e.preventDefault();
         $.ajax({
             url: window.location.href,
             type: 'POST',
-            // data: $(this).serialize(),
-            // Reemplazamos DATA por lo siguiente para que se pueda enviar los datos de tipo FILES
             data: new FormData(this),
-            // Agregamos los siguientes valores para poder enviar por AJAX datos de tipo FILES
             dataType: 'json',
             processData: false,
             contentType: false,
             success: function (data) {
-                if (data.check === 'Registrar') {
-                    //Lo registramos. Nos vamos a otro lado
+                if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
-                } else if (data.check === true) {
-                    // Mostramos el error
-                    $("#ErrorDuplicado").removeAttr("hidden");
                 } else {
-                    // no hacemos nada. Pero nos vamos a otro lado tmb
-                    location.replace(data.redirect);
+                    $("#ErrorDuplicado").removeAttr("hidden");
                 }
             }
         });
@@ -77,6 +70,7 @@ function isNumberKey(evt) {
         return false;
     return true;
 }
+
 //Funcion para validar que el email tenga el formato correcto
 function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);

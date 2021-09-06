@@ -38,7 +38,7 @@ class Subcategorias(models.Model):
         return self.get_full_name()
 
     def get_full_name(self):
-        return '{}/{}'.format(self.categoria.nombre, self.nombre)
+        return '{} - {}'.format(self.categoria.nombre, self.nombre)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -62,16 +62,16 @@ class Subcategorias(models.Model):
 class Productos(models.Model):
     subcategoria = models.ForeignKey(Subcategorias, models.DO_NOTHING, verbose_name='Subcategoría')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
-    abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
+    abreviatura = models.CharField(max_length=25, null=True, blank=True,  verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo')
+    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor')
     codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1')
     codigoBarras2 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 2')
-    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor')
     stockReal = models.IntegerField(default=0, verbose_name='Stock Real')
     stockMinimo = models.PositiveIntegerField(default=0, verbose_name='Stock Mínimo')
     reposicion = models.PositiveIntegerField(default=0, verbose_name='Pedido Reposición')
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Costo')
-    utilidad = models.DecimalField(default=0.30, max_digits=9, decimal_places=2, verbose_name='Margen de Utilidad')
+    utilidad = models.DecimalField(default=30, max_digits=9, decimal_places=2, verbose_name='Margen de Utilidad')
     iva = models.ForeignKey(TiposIVA, models.DO_NOTHING, verbose_name='Tipo de IVA')
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
     imagen = models.ImageField(upload_to='productos/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
@@ -85,7 +85,7 @@ class Productos(models.Model):
         return self.get_full_name()
 
     def get_full_name(self):
-        return '{}/{}'.format(self.subcategoria.nombre, self.descripcion)
+        return '{} - {}'.format(self.subcategoria.nombre, self.descripcion)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -95,7 +95,6 @@ class Productos(models.Model):
         item['imagen'] = self.get_image()
         item['costo'] = format(self.costo, '.2f')
         item['utilidad'] = format(self.utilidad, '.2f')
-        # item['iva'] = format(self.iva, '.2f')
         item['precioVenta'] = format(self.precioVenta, '.2f')
         return item
 
@@ -105,22 +104,43 @@ class Productos(models.Model):
         return '{}{}'.format(STATIC_URL, 'img/empty.png')
 
 
-        class Meta:
-            unique_together = [['subcategoria', 'descripcion']]
-            verbose_name = 'Producto'
-            verbose_name_plural = 'Productos'
-            db_table = 'erp_productos'
-            ordering = ['subcategoria', 'descripcion']
+    class Meta:
+        unique_together = [['subcategoria', 'descripcion']]
+        verbose_name = 'Producto'
+        verbose_name_plural = 'Productos'
+        db_table = 'erp_productos'
+        ordering = ['subcategoria', 'descripcion']
 
 
-        # Para convertir a MAYUSCULA
-        def save(self, force_insert=False, force_update=False):
-            self.descripcion = self.descripcion.upper()
-            self.abreviatura = self.abreviatura.upper()
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.descripcion = self.descripcion.upper()
+        try:
             self.codigo = self.codigo.upper()
+        except:
+            pass
+        try:
             self.codigoBarras1 = self.codigoBarras1.upper()
+        except:
+            pass
+        try:
             self.codigoBarras2 = self.codigoBarras2.upper()
+        except:
+            pass
+        try:
             self.codigoProveedor = self.codigoProveedor.upper()
-            self.ubicacion = self.abreviatura.upper()
-            self.observaciones = self.abreviatura.upper()
-            super(Productos, self).save(force_insert, force_update)
+        except:
+            pass
+        try:
+            self.abreviatura = self.abreviatura.upper()
+        except:
+            pass
+        try:
+            self.ubicacion = self.ubicacion.upper()
+        except:
+            pass
+        try:
+            self.observaciones = self.observaciones.upper()
+        except:
+            pass
+        super(Productos, self).save(force_insert, force_update)
