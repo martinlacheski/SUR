@@ -57,6 +57,16 @@ $(function () {
     getToken(name);
     //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
+        // VALIDACION DE LOS CAMPOS
+        $("#subcategoria").validate();
+        $("#descripcion").validate();
+        $("#stockReal").validate();
+        $("#stockMinimo").validate();
+        $("#reposicion").validate();
+        $("#costo").validate();
+        $("#utilidad").validate();
+        $("#iva").validate();
+        $("#precioVenta").validate();
         e.preventDefault();
         $.ajax({
             url: window.location.href,
@@ -69,7 +79,7 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
-                    console.log(data.error)
+                    //console.log(data.error)
                     $("#ErrorDuplicado").removeAttr("hidden");
                 }
             }
@@ -87,16 +97,87 @@ $(function () {
         calcularPrecio();
     });
 
-    // VALIDACION DE LOS CAMPOS
-    $("#subcategoria").validate();
-    $("#descripcion").validate();
-    $("#stockReal").validate();
-    $("#stockMinimo").validate();
-    $("#reposicion").validate();
-    $("#costo").validate();
-    $("#utilidad").validate();
-    $("#iva").validate();
-    $("#precioVenta").validate();
+    //Boton Subcategoria Modal Mostrar
+    $('.btnAddSubcategoria').on('click', function () {
+        $('#modalSubcategoria').modal('show');
+    });
+
+    //Boton Subcategoria Modal Ocultar y Resetear
+    $('#modalSubcategoria').on('hidden.bs.modal', function (e) {
+        $('#formSubcategoria').trigger('reset');
+    })
+
+    //Boton Categoria Modal Mostrar
+    $('.btnAddCategoria').on('click', function () {
+        $('#modalSubcategoria').modal('hide');
+        $('#modalCategoria').modal('show');
+    });
+
+    //Boton Subcategoria Modal Ocultar y Resetear
+    $('#modalCategoria').on('hidden.bs.modal', function (e) {
+        $('#formCategoria').trigger('reset');
+    })
+
+    //Submit Modal Subcategoría
+    $('#formSubcategoria').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_subcategoria');
+        parameters.append('csrfmiddlewaretoken', csrftoken);
+        $.ajax({
+            url: window.location.href,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    console.log(data);
+                    var newOption = new Option(data.nombre, data.id, false, true);
+                    $('select[name="categoria"]').append(newOption).trigger('change');
+                    $('#modalSubcategoria').modal('hide');
+                }
+            }
+        });
+    });
+
+    //Submit Modal Categoría
+    $('#formCategoria').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_categoria');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            response(data);
+            console.log(data);
+            if (!data.hasOwnProperty('error')) {
+                //callback(data);
+                console.log(data.nombre);
+                console.log(data.id);
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('select[name="categoria"]').append(newOption).trigger('change');
+                $('#modalCategoria').modal('hide');
+                $('#formSubcategoria').trigger('reset');
+                $('#modalSubcategoria').modal('show');
+                return false;
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+
+        }).always(function (data) {
+
+        });
+
+    });
 });
 
 //agregar al campo numerico lo siguiente

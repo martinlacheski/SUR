@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from apps.erp.forms import ProductosForm
+from apps.erp.forms import ProductosForm, SubcategoriasForm, CategoriasForm
 from apps.erp.models import Productos
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import TiposIVA
@@ -58,6 +59,14 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            elif action == 'create_subcategoria':
+                with transaction.atomic():
+                    frmSubcategoria = SubcategoriasForm(request.POST)
+                    data = frmSubcategoria.save()
+            elif action == 'create_categoria':
+                with transaction.atomic():
+                    frmCategoria = CategoriasForm(request.POST)
+                    data = frmCategoria.save()
             elif action == 'add':
                 form = self.get_form()
                 data = form.save()
@@ -66,7 +75,7 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
                 data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -74,6 +83,8 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
         context['entity'] = 'Productos'
         context['list_url'] = reverse_lazy('erp:productos_list')
         context['action'] = 'add'
+        context['formSubcategoria'] = SubcategoriasForm()
+        context['formCategoria'] = CategoriasForm()
         return context
 
 

@@ -35,6 +35,7 @@ class Subcategorias(models.Model):
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
 
     def __str__(self):
+        # return self.nombre
         return self.get_full_name()
 
     def get_full_name(self):
