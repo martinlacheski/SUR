@@ -168,10 +168,17 @@
                         <br>
                         {{ form.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-3 mb-3">
-                        <label>¿Es Insumo?:</label>
+                    <div class="col-1 mb-1">
+                        <label> </label>
                         <br>
-                        {{ form.esInsumo|add_class:'form-control' }}
+
+                    </div>
+                    <div class="col-3 mb-3">
+                        <label>¿Es Insumo?: </label>
+                        <br>
+                        <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
+                            {{ form.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
                     </div>
                 </div>
 

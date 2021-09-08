@@ -24,8 +24,25 @@ $(function () {
     });
 
     //Inicializamos error Duplicado en oculto
-    $('#id_nombre').on('focus', function () {
+    $('#cuil').on('focus', function () {
+            $('#ErrorDuplicado').attr("hidden", "");
+        });
+
+    $('#cuil').on('change', function () {
         $('#ErrorDuplicado').attr("hidden", "");
+    });
+
+    //CHECKBOX Cta Cte
+    $('#ctaCte').on('click', function () {
+        if (this.checked) {
+            $('input[name="limiteCtaCte"]').attr('disabled', false);
+            $('input[name="plazoCtaCte"]').attr('disabled', false);
+        } else {
+            $('input[name="limiteCtaCte"]').val("");
+            $('input[name="plazoCtaCte"]').val("");
+            $('input[name="limiteCtaCte"]').attr('disabled', true);
+            $('input[name="plazoCtaCte"]').attr('disabled', true);
+        }
     });
 
 

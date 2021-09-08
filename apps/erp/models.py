@@ -188,12 +188,13 @@ class Servicios(models.Model):
 class Clientes(models.Model):
     razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
     condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
-    cuil = models.CharField(max_length=11, verbose_name='Cuil')
+    cuil = models.CharField(max_length=11, verbose_name='Cuil', unique=True)
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
     direccion = models.CharField(max_length=100, verbose_name='Dirección')
     telefono = models.CharField(max_length=100, verbose_name='Teléfono')
     email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
-    ctaCte = models.BooleanField(default=False, verbose_name='¿Permitir Cuenta Corriente?')
+    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
+    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.TimeField(verbose_name='Plazo de Vencimiento Cuenta Corriente', null=True, blank=True)
 
@@ -215,4 +216,8 @@ class Clientes(models.Model):
     def save(self, force_insert=False, force_update=False):
         self.razonSocial = self.razonSocial.upper()
         self.direccion = self.direccion.upper()
+        try:
+            self.alias = self.alias.upper()
+        except:
+            pass
         super(Clientes, self).save(force_insert, force_update)

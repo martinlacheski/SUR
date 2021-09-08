@@ -247,6 +247,10 @@ class ClientesForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['razonSocial'].widget.attrs['autofocus'] = True
+        # Desactivamos los campos al inicializar el formulario
+        self.fields['limiteCtaCte'].widget.attrs['disabled'] = True
+        self.fields['plazoCtaCte'].widget.attrs['disabled'] = True
+
 
     class Meta:
         model = Clientes
@@ -254,7 +258,7 @@ class ClientesForm(ModelForm):
         widgets = {
             'razonSocial': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una descripción',
+                    'placeholder': 'INGRESE UNA DESCRIPCIÓN',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -265,7 +269,7 @@ class ClientesForm(ModelForm):
             }),
             'cuil': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un CUIL',
+                    'placeholder': 'INGRESE UN CUIL-CUIT',
                 }
             ),
             'localidad': Select(
@@ -276,20 +280,30 @@ class ClientesForm(ModelForm):
             ),
             'direccion': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una dirección',
+                    'placeholder': 'INGRESE UNA DIRECCIÓN',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase'
                 }
             ),
             'telefono': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un número de teléfono',
+                    'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
                 }
             ),
             'email': EmailInput(
                 attrs={
-                    'placeholder': 'Ingrese un correo electrónico válido',
+                    'placeholder': 'INGRESE UN CORREO ELECTRÓNICO VÁLIDO',
                     'style': 'width: 100%'
+                }
+            ),
+            'cbu': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UN CBU/CVU',
+                }
+            ),
+            'alias': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UN ALIAS',
                 }
             ),
             'limiteCtaCte': TextInput(attrs={
@@ -297,7 +311,7 @@ class ClientesForm(ModelForm):
             }),
             'plazoCtaCte': DateInput(
                 attrs={
-                    'placeholder': 'Seleccione el plazo de vencimiento Cuenta Corriente',
+                    'placeholder': 'SELECCIONE EL PLAZO',
                     'class': 'form-control datetimepicker-input',
                     'id': 'fecha_ctacte',
                     'data-target': '#fecha_ctacte',
