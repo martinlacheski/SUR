@@ -4,15 +4,31 @@ $(function () {
         language: 'es',
         placeholder: 'Seleccionar'
     });
-    //Inicialización de datetimepicker
-    $('#fechaIngreso').datetimepicker({
+
+    //Inicializamos los campos de tipo TOUCHSPIN
+    $("input[name='limiteCtaCte']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
+
+    // Inicialización de datetimepicker
+    $('#fecha_ctacte').datetimepicker({
         format: 'DD/MM/yyyy',
         locale: 'es',
         icons: {date: 'far fa-calendar-alt'},
     });
+
+    //Inicializamos error Duplicado en oculto
     $('#id_nombre').on('focus', function () {
         $('#ErrorDuplicado').attr("hidden", "");
     });
+
+
     //Llamamos a la funcion de Token
     getToken(name);
     //Hacemos el envio del Formulario mediante AJAX
@@ -36,16 +52,13 @@ $(function () {
     });
 
     // VALIDAMOS LOS CAMPOS
-    $("#username").validate();
-    $("#password").validate();
-    $("#first_name").validate();
-    $("#last_name").validate();
+    $("#razonSocial").validate();
+    $("#condicionIVA").validate();
     $("#cuil").validate();
-    $("#email").validate();
-    $("#legajo").validate();
-    $("#fechaIngreso").validate();
     $("#localidad").validate();
     $("#direccion").validate();
+    $("#telefono").validate();
+    $("#email").validate();
 
     //Validamos EMAIL CORRECTO
     $("#email").on('focusout', function (e) {

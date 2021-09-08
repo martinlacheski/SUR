@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -46,6 +44,7 @@ class Usuarios(AbstractUser):
     def toJSON(self):
         item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups'])
         item['fechaingreso'] = self.fechaIngreso.strftime('%dd/%MM/%yyyy')
+        item['localidad'] = self.localidad.toJSON()
         item['full_name'] = self.get_full_name()
         item['imagen'] = self.get_imagen()
         item['groups'] = [{'id': g.id, 'name': g.name} for g in self.groups.all()]

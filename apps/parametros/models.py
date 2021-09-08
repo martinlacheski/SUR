@@ -16,10 +16,32 @@ class TiposIVA(models.Model):
     class Meta:
         verbose_name = 'Tipo de IVA'
         verbose_name_plural = 'Tipos de IVA'
-        db_table = 'parametros_iva'
+        db_table = 'parametros_tipos_iva'
         ordering = ['id']
 
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):
        self.nombre = self.nombre.upper()
        super(TiposIVA, self).save(force_insert, force_update)
+
+
+class CondicionesIVA(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Condición frente al IVA', unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Condición frente al IVA'
+        verbose_name_plural = 'Condiciones frente al IVA'
+        db_table = 'parametros_condiciones_iva'
+        ordering = ['id']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+       self.nombre = self.nombre.upper()
+       super(CondicionesIVA, self).save(force_insert, force_update)

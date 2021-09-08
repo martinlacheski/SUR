@@ -3,7 +3,7 @@ $(function () {
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'
-    })
+    });
     $("input[name='iva']").select2({
         postfix: '%'
     });
@@ -53,10 +53,98 @@ $(function () {
     $('#subcategoria').on('focus', function () {
         $('#ErrorDuplicado').attr("hidden", "");
     });
+
     //Llamamos a la funcion de Token
     getToken(name);
-    //Hacemos el envio del Formulario mediante AJAX
-    $("#ajaxForm").submit(function (e) {
+
+    //Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD e IVA)
+    $('input[name="costo"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('input[name="utilidad"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('select[name="iva"]').on('change', function () {
+        calcularPrecio();
+    });
+
+    //Boton Categoria Modal Mostrar
+    $('.btnAddCategoria').on('click', function () {
+        $('#modalCategoria').modal('show');
+    });
+
+    //Boton Categoria Modal Ocultar y Resetear
+    $('#modalCategoria').on('hidden.bs.modal', function (e) {
+        $('#formCategoria').trigger('reset');
+    });
+
+    //Boton Subcategoria Modal Mostrar
+    $('.btnAddSubcategoria').on('click', function () {
+        $('#modalSubcategoria').modal('show');
+    });
+
+    //Boton Subcategoria Modal Ocultar y Resetear
+    $('#modalSubcategoria').on('hidden.bs.modal', function (e) {
+        $('#formSubcategoria').trigger('reset');
+    });
+
+    //Submit Modal Categoría
+    $('#formCategoria').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_categoria');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('#selectCategoria').append(newOption).trigger('change');
+                $('#modalCategoria').modal('hide');
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
+    //Submit Modal Subcategoría
+    $('#formSubcategoria').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_subcategoria');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                console.log(data);
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('select[name="subcategoria"]').append(newOption).trigger('change');
+                $('#modalSubcategoria').modal('hide');
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
+    //Submit Formulario Producto
+    $('#ajaxForm').on('submit', function (e) {
+        console.log('x');
+        // $("#ajaxForm").submit(function (e) {
         // VALIDACION DE LOS CAMPOS
         $("#subcategoria").validate();
         $("#descripcion").validate();
@@ -86,98 +174,37 @@ $(function () {
         });
     });
 
-    //Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD e IVA)
-    $('input[name="costo"]').on('change', function () {
-        calcularPrecio();
-    });
-    $('input[name="utilidad"]').on('change', function () {
-        calcularPrecio();
-    });
-    $('select[name="iva"]').on('change', function () {
-        calcularPrecio();
-    });
-
-    //Boton Subcategoria Modal Mostrar
-    $('.btnAddSubcategoria').on('click', function () {
-        $('#modalSubcategoria').modal('show');
-    });
-
-    //Boton Subcategoria Modal Ocultar y Resetear
-    $('#modalSubcategoria').on('hidden.bs.modal', function (e) {
-        $('#formSubcategoria').trigger('reset');
-    })
-
-    //Boton Categoria Modal Mostrar
-    $('.btnAddCategoria').on('click', function () {
-        $('#modalSubcategoria').modal('hide');
-        $('#modalCategoria').modal('show');
-    });
-
-    //Boton Subcategoria Modal Ocultar y Resetear
-    $('#modalCategoria').on('hidden.bs.modal', function (e) {
-        $('#formCategoria').trigger('reset');
-    })
-
-    //Submit Modal Subcategoría
-    $('#formSubcategoria').on('submit', function (e) {
-        e.preventDefault();
-        var parameters = new FormData(this);
-        parameters.append('action', 'create_subcategoria');
-        parameters.append('csrfmiddlewaretoken', csrftoken);
+    //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS de dicha CATEGORIA
+    var select_subcategorias = $('select[name="subcategoria"]');
+    $('.selectCategoria').on('change', function () {
+        var id = $(this).val();
+        var options = '<option value="">---------</option>';
+        if (id === '') {
+            select_subcategorias.html(options);
+            return false;
+        }
         $.ajax({
-            url: window.location.href,
+            url: window.location.pathname,
             type: 'POST',
-            data: parameters,
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_subcategorias',
+                'pk': id
+            },
             dataType: 'json',
-            processData: false,
-            contentType: false,
             success: function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    console.log(data);
-                    var newOption = new Option(data.nombre, data.id, false, true);
-                    $('select[name="categoria"]').append(newOption).trigger('change');
-                    $('#modalSubcategoria').modal('hide');
+                    //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                    select_subcategorias.html('').select2({
+                        theme: "bootstrap4",
+                        language: 'es',
+                        data: data
+                    });
                 }
             }
         });
     });
 
-    //Submit Modal Categoría
-    $('#formCategoria').on('submit', function (e) {
-        e.preventDefault();
-        var parameters = new FormData(this);
-        parameters.append('action', 'create_categoria');
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: parameters,
-            dataType: 'json',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-            processData: false,
-            contentType: false,
-        }).done(function (data) {
-            response(data);
-            console.log(data);
-            if (!data.hasOwnProperty('error')) {
-                //callback(data);
-                console.log(data.nombre);
-                console.log(data.id);
-                var newOption = new Option(data.nombre, data.id, false, true);
-                $('select[name="categoria"]').append(newOption).trigger('change');
-                $('#modalCategoria').modal('hide');
-                $('#formSubcategoria').trigger('reset');
-                $('#modalSubcategoria').modal('show');
-                return false;
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-
-        }).always(function (data) {
-
-        });
-
-    });
 });
 
 //agregar al campo numerico lo siguiente

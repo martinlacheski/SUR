@@ -1,6 +1,6 @@
-from django.forms import ModelForm, TextInput, Select, BooleanField
+from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
 
-from apps.erp.models import Categorias, Subcategorias, Productos, Servicios
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes
 
 
 class CategoriasForm(ModelForm):
@@ -33,7 +33,9 @@ class CategoriasForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                # Obtenemos la INSTANCIA AL GUARDAR PARA OBTENER EL OBJETO Y PASAR AL SELECT2
+                instance = form.save()
+                data = instance.toJSON()
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -75,7 +77,9 @@ class SubcategoriasForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                # Obtenemos la INSTANCIA AL GUARDAR PARA OBTENER EL OBJETO Y PASAR AL SELECT2
+                instance = form.save()
+                data = instance.toJSON()
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -86,7 +90,9 @@ class SubcategoriasForm(ModelForm):
 class ProductosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['subcategoria'].widget.attrs['autofocus'] = True
+        # self.fields['subcategoria'].widget.attrs['autofocus'] = True
+        # Inicializamos el Select2 vacio
+        # self.fields['subcategoria'].queryset = Subcategorias.objects.none()
 
     class Meta:
         model = Productos
@@ -230,6 +236,84 @@ class ServiciosForm(ModelForm):
         try:
             if form.is_valid():
                 form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class ClientesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['razonSocial'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Clientes
+        fields = '__all__'
+        widgets = {
+            'razonSocial': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una descripción',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase',
+                }
+            ),
+            'condicionIVA': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+            'cuil': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un CUIL',
+                }
+            ),
+            'localidad': Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%'
+                }
+            ),
+            'direccion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una dirección',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+            'telefono': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un número de teléfono',
+                }
+            ),
+            'email': EmailInput(
+                attrs={
+                    'placeholder': 'Ingrese un correo electrónico válido',
+                    'style': 'width: 100%'
+                }
+            ),
+            'limiteCtaCte': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'plazoCtaCte': DateInput(
+                attrs={
+                    'placeholder': 'Seleccione el plazo de vencimiento Cuenta Corriente',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha_ctacte',
+                    'data-target': '#fecha_ctacte',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                # Obtenemos la INSTANCIA AL GUARDAR PARA OBTENER EL OBJETO Y PASAR AL SELECT2
+                instance = form.save()
+                data = instance.toJSON()
             else:
                 data['error'] = form.errors
         except Exception as e:

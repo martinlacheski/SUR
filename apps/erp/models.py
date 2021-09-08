@@ -1,7 +1,8 @@
 from django.db import models
 from django.forms import model_to_dict
 
-from apps.parametros.models import TiposIVA
+from apps.geografico.models import Localidades
+from apps.parametros.models import TiposIVA, CondicionesIVA
 from config.settings import MEDIA_URL, STATIC_URL
 
 
@@ -35,8 +36,8 @@ class Subcategorias(models.Model):
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
 
     def __str__(self):
-        # return self.nombre
-        return self.get_full_name()
+        return self.nombre
+        # return self.get_full_name()
 
     def get_full_name(self):
         return '{} - {}'.format(self.categoria.nombre, self.nombre)
@@ -181,3 +182,37 @@ class Servicios(models.Model):
         self.descripcion = self.descripcion.upper()
         self.codigo = self.codigo.upper()
         super(Servicios, self).save(force_insert, force_update)
+
+
+#   Clase Clientes
+class Clientes(models.Model):
+    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
+    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
+    cuil = models.CharField(max_length=11, verbose_name='Cuil')
+    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
+    direccion = models.CharField(max_length=100, verbose_name='Dirección')
+    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
+    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
+    ctaCte = models.BooleanField(default=False, verbose_name='¿Permitir Cuenta Corriente?')
+    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
+    plazoCtaCte = models.TimeField(verbose_name='Plazo de Vencimiento Cuenta Corriente', null=True, blank=True)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['condicionIVA'] = self.condicionIVA.toJSON()
+        item['localidad'] = self.localidad.toJSON()
+        item['limiteCtaCte'] = format(self.limiteCtaCte, '.2f')
+        # item['plazoCtaCte'] = self.plazoCtaCte.strftime('%dd/%MM/%yyyy')
+        return item
+
+    class Meta:
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
+        db_table = 'erp_clientes'
+        ordering = ['razonSocial']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.razonSocial = self.razonSocial.upper()
+        self.direccion = self.direccion.upper()
+        super(Clientes, self).save(force_insert, force_update)

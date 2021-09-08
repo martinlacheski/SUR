@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.erp.forms import ProductosForm, SubcategoriasForm, CategoriasForm
-from apps.erp.models import Productos
+from apps.erp.models import Productos, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import TiposIVA
 
@@ -59,15 +59,20 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            if action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             elif action == 'create_subcategoria':
                 with transaction.atomic():
-                    frmSubcategoria = SubcategoriasForm(request.POST)
-                    data = frmSubcategoria.save()
+                    formSubcategoria = SubcategoriasForm(request.POST)
+                    data = formSubcategoria.save()
             elif action == 'create_categoria':
                 with transaction.atomic():
-                    frmCategoria = CategoriasForm(request.POST)
-                    data = frmCategoria.save()
+                    formCategoria = CategoriasForm(request.POST)
+                    data = formCategoria.save()
             elif action == 'add':
+                print("llega al action")
                 form = self.get_form()
                 data = form.save()
                 data['redirect'] = self.url_redirect
@@ -83,6 +88,7 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
         context['entity'] = 'Productos'
         context['list_url'] = reverse_lazy('erp:productos_list')
         context['action'] = 'add'
+        context['categorias'] = Categorias.objects.all()
         context['formSubcategoria'] = SubcategoriasForm()
         context['formCategoria'] = CategoriasForm()
         return context
@@ -107,6 +113,18 @@ class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            if action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
+            elif action == 'create_subcategoria':
+                with transaction.atomic():
+                    formSubcategoria = SubcategoriasForm(request.POST)
+                    data = formSubcategoria.save()
+            elif action == 'create_categoria':
+                with transaction.atomic():
+                    formCategoria = CategoriasForm(request.POST)
+                    data = formCategoria.save()
             elif action == 'edit':
                 form = self.get_form()
                 data = form.save()

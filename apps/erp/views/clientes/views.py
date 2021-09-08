@@ -3,15 +3,15 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
+from apps.erp.forms import ClientesForm
+from apps.erp.models import Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.forms import TiposIVAForm
-from apps.parametros.models import TiposIVA
 
 
-class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = TiposIVA
-    template_name = 'tiposIVA/list.html'
-    permission_required = 'parametros.view_tiposiva'
+class ClientesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = Clientes
+    template_name = 'clientes/list.html'
+    permission_required = 'erp.view_clientes'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -22,7 +22,7 @@ class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in TiposIVA.objects.all():
+                for i in Clientes.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -32,19 +32,19 @@ class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Tipos de IVA'
-        context['create_url'] = reverse_lazy('parametros:tiposIVA_create')
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
-        context['entity'] = 'Tipos de IVA'
+        context['title'] = 'Listado de Clientes'
+        context['create_url'] = reverse_lazy('erp:clientes_create')
+        context['list_url'] = reverse_lazy('erp:clientes_list')
+        context['entity'] = 'Clientes'
         return context
 
 
-class TiposIVACreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = TiposIVA
-    form_class = TiposIVAForm
-    template_name = 'tiposIVA/create.html'
-    success_url = reverse_lazy('parametros:tiposIVA_list')
-    permission_required = 'parametros.add_tiposiva'
+class ClientesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+    model = Clientes
+    form_class = ClientesForm
+    template_name = 'clientes/create.html'
+    success_url = reverse_lazy('erp:clientes_list')
+    permission_required = 'erp.add_clientes'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -59,26 +59,26 @@ class TiposIVACreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 data = form.save()
                 data['redirect'] = self.url_redirect
             else:
-                data['error'] = 'No ha ingresado a ninguna opción'
+                data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear un Tipo de IVA'
-        context['entity'] = 'Tipos de IVA'
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['title'] = 'Crear un Cliente'
+        context['entity'] = 'Clientes'
+        context['list_url'] = reverse_lazy('erp:clientes_list')
         context['action'] = 'add'
         return context
 
 
-class TiposIVAUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = TiposIVA
-    form_class = TiposIVAForm
-    template_name = 'tiposIVA/create.html'
-    success_url = reverse_lazy('parametros:tiposIVA_list')
-    permission_required = 'parametros.change_tiposiva'
+class ClientesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = Clientes
+    form_class = ClientesForm
+    template_name = 'clientes/create.html'
+    success_url = reverse_lazy('erp:clientes_list')
+    permission_required = 'erp.change_clientes'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -97,21 +97,22 @@ class TiposIVAUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar Tipo de IVA'
-        context['entity'] = 'Tipos de IVA'
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['title'] = 'Editar Cliente'
+        context['entity'] = 'Clientes'
+        context['list_url'] = reverse_lazy('erp:clientes_list')
         context['action'] = 'edit'
         return context
 
 
-class TiposIVADeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
-    model = TiposIVA
-    success_url = reverse_lazy('parametros:tiposIVA_list')
-    permission_required = 'parametros.delete_tiposiva'
+class ClientesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
+    model = Clientes
+    success_url = reverse_lazy('erp:clientes_list')
+    permission_required = 'erp.delete_clientes'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -134,7 +135,7 @@ class TiposIVADeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, De
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar Tipo de IVA'
-        context['entity'] = 'Tipos de IVA'
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['title'] = 'Eliminar Cliente'
+        context['entity'] = 'Clientes'
+        context['list_url'] = reverse_lazy('erp:clientes_list')
         return context

@@ -4,14 +4,14 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.forms import TiposIVAForm
-from apps.parametros.models import TiposIVA
+from apps.parametros.forms import CondicionesIVAForm
+from apps.parametros.models import CondicionesIVA
 
 
-class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = TiposIVA
-    template_name = 'tiposIVA/list.html'
-    permission_required = 'parametros.view_tiposiva'
+class CondicionesIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = CondicionesIVA
+    template_name = 'condicionesIVA/list.html'
+    permission_required = 'parametros.view_condicionesiva'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -22,7 +22,7 @@ class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in TiposIVA.objects.all():
+                for i in CondicionesIVA.objects.all():
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -32,19 +32,19 @@ class TiposIVAListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Tipos de IVA'
-        context['create_url'] = reverse_lazy('parametros:tiposIVA_create')
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
-        context['entity'] = 'Tipos de IVA'
+        context['title'] = 'Listado de condiciones frente al IVA'
+        context['create_url'] = reverse_lazy('parametros:condicionesIVA_create')
+        context['list_url'] = reverse_lazy('parametros:condicionesIVA_list')
+        context['entity'] = 'Condiciones frente al IVA'
         return context
 
 
-class TiposIVACreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = TiposIVA
-    form_class = TiposIVAForm
-    template_name = 'tiposIVA/create.html'
-    success_url = reverse_lazy('parametros:tiposIVA_list')
-    permission_required = 'parametros.add_tiposiva'
+class CondicionesIVACreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+    model = CondicionesIVA
+    form_class = CondicionesIVAForm
+    template_name = 'condicionesIVA/create.html'
+    success_url = reverse_lazy('parametros:condicionesIVA_list')
+    permission_required = 'parametros.add_condicionesiva'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -62,23 +62,24 @@ class TiposIVACreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear un Tipo de IVA'
-        context['entity'] = 'Tipos de IVA'
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['title'] = 'Crear una Condición frente al IVA'
+        context['entity'] = 'Condiciones frente al IVA'
+        context['list_url'] = reverse_lazy('parametros:condicionesIVA_list')
         context['action'] = 'add'
         return context
 
 
-class TiposIVAUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = TiposIVA
-    form_class = TiposIVAForm
-    template_name = 'tiposIVA/create.html'
-    success_url = reverse_lazy('parametros:tiposIVA_list')
-    permission_required = 'parametros.change_tiposiva'
+class CondicionesIVAUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = CondicionesIVA
+    form_class = CondicionesIVAForm
+    template_name = 'condicionesIVA/create.html'
+    success_url = reverse_lazy('parametros:condicionesIVA_list')
+    permission_required = 'parametros.change_condicionesiva'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -101,17 +102,17 @@ class TiposIVAUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar Tipo de IVA'
-        context['entity'] = 'Tipos de IVA'
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['title'] = 'Editar condición frente al IVA'
+        context['entity'] = 'Condición frente al IVA'
+        context['list_url'] = reverse_lazy('parametros:condicionesIVA_list')
         context['action'] = 'edit'
         return context
 
 
-class TiposIVADeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
-    model = TiposIVA
-    success_url = reverse_lazy('parametros:tiposIVA_list')
-    permission_required = 'parametros.delete_tiposiva'
+class CondicionesIVADeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
+    model = CondicionesIVA
+    success_url = reverse_lazy('parametros:condicionesIVA_list')
+    permission_required = 'parametros.delete_condicionesiva'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -134,7 +135,7 @@ class TiposIVADeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, De
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Eliminar Tipo de IVA'
-        context['entity'] = 'Tipos de IVA'
-        context['list_url'] = reverse_lazy('parametros:tiposIVA_list')
+        context['title'] = 'Eliminar Condición frente al IVA'
+        context['entity'] = 'Condiciones frente al IVA'
+        context['list_url'] = reverse_lazy('parametros:condicionesIVA_list')
         return context

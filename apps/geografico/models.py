@@ -66,6 +66,7 @@ class Localidades(models.Model):
         item = model_to_dict(self)
         item['provincia'] = self.provincia.toJSON()
         item['pais'] = self.pais.toJSON()
+        item['full_name'] = self.get_full_name()
         return item
 
     class Meta:

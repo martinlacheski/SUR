@@ -1,4 +1,5 @@
 from apps.erp.views.categorias.views import *
+from apps.erp.views.clientes.views import *
 from apps.erp.views.subcategorias.views import *
 from apps.erp.views.productos.views import *
 from apps.erp.views.servicios.views import *
@@ -27,4 +28,9 @@ urlpatterns = [
     path('servicios/add/', ServiciosCreateView.as_view(), name='servicios_create'),
     path('servicios/update/<int:pk>/', ServiciosUpdateView.as_view(), name='servicios_update'),
     path('servicios/delete/<int:pk>/', ServiciosDeleteView.as_view(), name='servicios_delete'),
+    # Clientes
+    path('clientes/list/', ClientesListView.as_view(), name='clientes_list'),
+    path('clientes/add/', ClientesCreateView.as_view(), name='clientes_create'),
+    path('clientes/update/<int:pk>/', ClientesUpdateView.as_view(), name='clientes_update'),
+    path('clientes/delete/<int:pk>/', ClientesDeleteView.as_view(), name='clientes_delete'),
 ]
