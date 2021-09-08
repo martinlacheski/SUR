@@ -6,7 +6,7 @@ class tiposEvento(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     tiempoRecordatorio = models.TimeField()
     recordarSistema = models.BooleanField(default=True)
-    recordarWpp = models.BooleanField()
+    recordarTelegram = models.BooleanField()
     recordarEmail = models.BooleanField()
     #estado = models.BooleanField(default=True)
 

@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 
 
+
 class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
     template_name = 'gestionEventos/list.html'
     model = eventosAgenda
@@ -31,6 +32,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         context['update_url'] = 'agenda/updateEvento/'
         context['action'] = 'add'
         return context
+
 
 
 
