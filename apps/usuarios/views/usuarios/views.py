@@ -89,25 +89,14 @@ class UsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
             action = request.POST['action']
             if action == 'edit':
                 form = self.get_form()
+                if form.is_valid():
+                    self.object.first_name = form.cleaned_data['first_name'].upper()
+                    self.object.last_name = form.cleaned_data['last_name'].upper()
+                    self.object.direccion = form.cleaned_data['direccion'].upper()
                 data = form.save()
                 data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado ninguna opción'
-            # if action == 'edit':
-            #     form = self.get_form()
-            #     if form.is_valid():
-            #         try:
-            #             # Si existe el objeto que se quiere guardar/editar y está activo, error.
-            #             usuario = Usuarios.objects.get(username=form.cleaned_data['username'].upper())
-            #             data['check'] = True
-            #         except Exception as e:
-            #             data['check'] = 'Registrar'
-            #             data['redirect'] = reverse_lazy('usuarios:usuarios_list')
-            #             self.object.first_name = form.cleaned_data['first_name'].upper()
-            #             self.object.last_name = form.cleaned_data['last_name'].upper()
-            #             self.object.direccion = form.cleaned_data['direccion'].upper()
-            #             print(form.cleaned_data['imagen'])
-            #             form.save()
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

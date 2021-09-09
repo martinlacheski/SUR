@@ -141,12 +141,14 @@ class UsuariosForm(ModelForm):
             if form.is_valid():
                 pwd = self.cleaned_data['password']
 
+                u = form.save(commit=False)
+
                 # PASAMOS A MAYUSCULAS LOS CAMPOS PARA GUARDAR EN LA BD
                 self.cleaned_data['first_name'] = self.cleaned_data['first_name'].upper()
                 self.cleaned_data['last_name'] = self.cleaned_data['last_name'].upper()
                 self.cleaned_data['direccion'] = self.cleaned_data['direccion'].upper()
 
-                u = form.save(commit=False)
+
                 if u.pk is None:
                     u.set_password(pwd)
 
