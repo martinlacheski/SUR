@@ -1,3 +1,11 @@
+$(document).ready(function() {
+    var plazo = $("input[name='plazoCtaCte']").val();
+    if (plazo > 0){
+        document.getElementById("ctaCte").checked = true;
+        $('input[name="plazoCtaCte"]').attr('disabled', false);
+    }
+});
+
 $(function () {
     $('.select2').select2({
         theme: "bootstrap4",
@@ -9,18 +17,20 @@ $(function () {
     $("input[name='limiteCtaCte']").TouchSpin({
         min: 0,
         max: 1000000,
-        step: 0.1,
+        step: 100,
         decimals: 2,
         boostat: 5,
         maxboostedstep: 10,
         postfix: '$'
     });
 
-    // Inicialización de datetimepicker
-    $('#fecha_ctacte').datetimepicker({
-        format: 'DD/MM/yyyy',
-        locale: 'es',
-        icons: {date: 'far fa-calendar-alt'},
+    $("input[name='plazoCtaCte']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: 'Días'
     });
 
     //Inicializamos error Duplicado en oculto
@@ -35,13 +45,15 @@ $(function () {
     //CHECKBOX Cta Cte
     $('#ctaCte').on('click', function () {
         if (this.checked) {
-            $('input[name="limiteCtaCte"]').attr('disabled', false);
             $('input[name="plazoCtaCte"]').attr('disabled', false);
+            $('input[name="plazoCtaCte"]').attr('readonly', false);
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 1000000});
         } else {
-            $('input[name="limiteCtaCte"]').val("");
-            $('input[name="plazoCtaCte"]').val("");
-            $('input[name="limiteCtaCte"]').attr('disabled', true);
-            $('input[name="plazoCtaCte"]').attr('disabled', true);
+            $('input[name="plazoCtaCte"]').val(0);
+            $('input[name="plazoCtaCte"]').attr('readonly', true);
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 0});
         }
     });
 

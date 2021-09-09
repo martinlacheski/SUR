@@ -10,19 +10,6 @@
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
 
-        <!-- daterange picker -->
-        <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
-        <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
-
-        <!-- moment -->
-        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
-        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js' %}"></script>
-
-        <!-- Tempus Dominus -->
-        <link rel="stylesheet"
-              href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
-        <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-
         <!-- JQuery-Validation -->
         <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
 
@@ -129,11 +116,16 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-3 mb-3">
-                        <input type="checkbox" id="ctaCte" name="ctaCte" value=""> ¿Permitir Cuenta Corriente?:
+                    <div class="form-group col-4 mb-4">
+                            <label>Condición de Pago:</label>
+                            <br>
+                            {{ form.condicionPago|add_class:'form-control'|attr:'required:true' }}
+                        </div>
+
+                    <div class="form-group col-2 mb-2">
+                        <label>¿Cuenta Corriente?:</label>
+                        <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
                     </div>
-                </div>
-                <div class="row">
                     <div class="form-group col-2 mb-2">
                         <label>Límite:</label>
                         <br>
@@ -145,7 +137,7 @@
                     <div class="form-group col-2 mb-2">
                         <label>Plazo:</label>
                         <br>
-                        <div class="col-12 date" class="form-control" id="fecha_ctacte" data-target-input="nearest">
+                        <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
                             {{ form.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>

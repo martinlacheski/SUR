@@ -39,12 +39,23 @@ class Usuarios(AbstractUser):
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad', null=True, blank=True)
     direccion = models.CharField(max_length=100, verbose_name='Dirección', null=True, blank=True)
     telefono = models.CharField(max_length=100, verbose_name='Teléfono', null=True, blank=True)
-    imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, default='empty.png', verbose_name='Imagen')
+    tipoUsuario = models.ForeignKey(TiposUsuarios, models.DO_NOTHING, verbose_name='Tipo de Usuario', null=True, blank=True)
+    imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups'])
-        item['fechaingreso'] = self.fechaIngreso.strftime('%dd/%MM/%yyyy')
-        item['localidad'] = self.localidad.toJSON()
+        try:
+            item['fechaIngreso'] = self.fechaIngreso.strftime('%dd/%MM/%yyyy')
+        except:
+            pass
+        try:
+            item['localidad'] = self.localidad.toJSON()
+        except:
+            pass
+        try:
+            item['tipoUsuario'] = self.tipoUsuario.toJSON()
+        except:
+            pass
         item['full_name'] = self.get_full_name()
         item['imagen'] = self.get_imagen()
         item['groups'] = [{'id': g.id, 'name': g.name} for g in self.groups.all()]

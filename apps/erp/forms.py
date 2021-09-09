@@ -1,6 +1,6 @@
 from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
 
-from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores
 
 
 class CategoriasForm(ModelForm):
@@ -265,7 +265,6 @@ class ClientesForm(ModelForm):
             ),
             'condicionIVA': Select(attrs={
                 'class': 'form-control select2',
-                'style': 'width: 100%'
             }),
             'cuil': TextInput(
                 attrs={
@@ -275,7 +274,6 @@ class ClientesForm(ModelForm):
             'localidad': Select(
                 attrs={
                     'class': 'form-control select2',
-                    'style': 'width: 100%'
                 }
             ),
             'direccion': TextInput(
@@ -306,18 +304,98 @@ class ClientesForm(ModelForm):
                     'placeholder': 'INGRESE UN ALIAS',
                 }
             ),
+            'condicionPago': Select(attrs={
+                'class': 'form-control select2',
+            }),
             'limiteCtaCte': TextInput(attrs={
                 'class': 'form-control',
             }),
-            'plazoCtaCte': DateInput(
+            'plazoCtaCte': TextInput(attrs={
+                'class': 'form-control',
+            }),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                # Obtenemos la INSTANCIA AL GUARDAR PARA OBTENER EL OBJETO Y PASAR AL SELECT2
+                instance = form.save()
+                data = instance.toJSON()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class ProveedoresForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['razonSocial'].widget.attrs['autofocus'] = True
+        # Desactivamos los campos al inicializar el formulario
+        self.fields['plazoCtaCte'].widget.attrs['disabled'] = True
+
+
+    class Meta:
+        model = Proveedores
+        fields = '__all__'
+        widgets = {
+            'razonSocial': TextInput(
                 attrs={
-                    'placeholder': 'SELECCIONE EL PLAZO',
-                    'class': 'form-control datetimepicker-input',
-                    'id': 'fecha_ctacte',
-                    'data-target': '#fecha_ctacte',
-                    'data-toggle': 'datetimepicker'
+                    'placeholder': 'INGRESE UNA DESCRIPCIÓN',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase',
                 }
             ),
+            'condicionIVA': Select(attrs={
+                'class': 'form-control select2',
+            }),
+            'cuit': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UN CUIT',
+                }
+            ),
+            'localidad': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'direccion': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UNA DIRECCIÓN',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+            'telefono': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
+                }
+            ),
+            'email': EmailInput(
+                attrs={
+                    'placeholder': 'INGRESE UN CORREO ELECTRÓNICO VÁLIDO',
+                    'style': 'width: 100%'
+                }
+            ),
+            'cbu': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UN CBU/CVU',
+                }
+            ),
+            'alias': TextInput(
+                attrs={
+                    'placeholder': 'INGRESE UN ALIAS',
+                }
+            ),
+            'condicionPago': Select(attrs={
+                'class': 'form-control select2',
+            }),
+            'plazoCtaCte': TextInput(attrs={
+                'class': 'form-control',
+            }),
         }
 
     def save(self, commit=True):

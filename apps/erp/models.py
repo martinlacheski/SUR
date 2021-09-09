@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import model_to_dict
 
 from apps.geografico.models import Localidades
-from apps.parametros.models import TiposIVA, CondicionesIVA
+from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago
 from config.settings import MEDIA_URL, STATIC_URL
 
 
@@ -195,15 +195,16 @@ class Clientes(models.Model):
     email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
     cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
-    plazoCtaCte = models.TimeField(verbose_name='Plazo de Vencimiento Cuenta Corriente', null=True, blank=True)
+    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
     def toJSON(self):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
         item['localidad'] = self.localidad.toJSON()
+        item['condicionPago'] = self.condicionPago.toJSON()
         item['limiteCtaCte'] = format(self.limiteCtaCte, '.2f')
-        # item['plazoCtaCte'] = self.plazoCtaCte.strftime('%dd/%MM/%yyyy')
         return item
 
     class Meta:
@@ -221,3 +222,41 @@ class Clientes(models.Model):
         except:
             pass
         super(Clientes, self).save(force_insert, force_update)
+
+
+#   Clase Proveedores
+class Proveedores(models.Model):
+    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
+    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
+    cuit = models.CharField(max_length=11, verbose_name='Cuit', unique=True)
+    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
+    direccion = models.CharField(max_length=100, verbose_name='Dirección')
+    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
+    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
+    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
+    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
+    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['condicionIVA'] = self.condicionIVA.toJSON()
+        item['localidad'] = self.localidad.toJSON()
+        item['condicionPago'] = self.condicionPago.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Proveedor'
+        verbose_name_plural = 'Proveedores'
+        db_table = 'erp_proveedores'
+        ordering = ['razonSocial']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.razonSocial = self.razonSocial.upper()
+        self.direccion = self.direccion.upper()
+        try:
+            self.alias = self.alias.upper()
+        except:
+            pass
+        super(Proveedores, self).save(force_insert, force_update)

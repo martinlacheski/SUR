@@ -43,7 +43,7 @@ class UsuariosForm(ModelForm):
         model = Usuarios
         # fields = '__all__'
         fields = 'first_name', 'last_name', 'username', 'password', 'email', 'legajo', 'fechaIngreso', 'cuil', \
-                 'localidad', 'direccion', 'telefono', 'groups', 'imagen'
+                 'localidad', 'direccion', 'telefono', 'tipoUsuario', 'groups', 'imagen'
         widgets = {
             'first_name': TextInput(
                 attrs={
@@ -125,12 +125,12 @@ class UsuariosForm(ModelForm):
                 'multiple': 'multiple'
             }
             ),
-            # 'tipoUsuario': Select(
-            #     attrs={
-            #         'class': 'form-control select2',
-            #         'style': 'width: 100%'
-            #     }
-            # ),
+            'tipoUsuario': Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%'
+                }
+            ),
         }
         exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
 

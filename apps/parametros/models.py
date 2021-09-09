@@ -45,3 +45,25 @@ class CondicionesIVA(models.Model):
     def save(self, force_insert=False, force_update=False):
        self.nombre = self.nombre.upper()
        super(CondicionesIVA, self).save(force_insert, force_update)
+
+
+class CondicionesPago(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Condición de Pago', unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Condición de Pago'
+        verbose_name_plural = 'Condiciones de Pagos'
+        db_table = 'parametros_condiciones_pagos'
+        ordering = ['id']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+       self.nombre = self.nombre.upper()
+       super(CondicionesPago, self).save(force_insert, force_update)

@@ -1,18 +1,53 @@
+$(document).ready(function() {
+    var plazo = $("input[name='plazoCtaCte']").val();
+    if (plazo > 0){
+        document.getElementById("ctaCte").checked = true;
+        $('input[name="plazoCtaCte"]').attr('disabled', false);
+    }
+});
+
 $(function () {
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es',
         placeholder: 'Seleccionar'
     });
-    //Inicialización de datetimepicker
-    $('#fechaIngreso').datetimepicker({
-        format: 'DD/MM/yyyy',
-        locale: 'es',
-        icons: {date: 'far fa-calendar-alt'},
+
+    //Inicializamos los campos de tipo TOUCHSPIN
+    $("input[name='plazoCtaCte']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: 'Días'
     });
-    $('#id_nombre').on('focus', function () {
+
+    //Inicializamos error Duplicado en oculto
+    $('#cuit').on('focus', function () {
+            $('#ErrorDuplicado').attr("hidden", "");
+        });
+
+    $('#cuit').on('change', function () {
         $('#ErrorDuplicado').attr("hidden", "");
     });
+
+    //CHECKBOX Cta Cte
+    $('#ctaCte').on('click', function () {
+        if (this.checked) {
+            $('input[name="plazoCtaCte"]').attr('disabled', false);
+            $('input[name="plazoCtaCte"]').attr('readonly', false);
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 1000000});
+        } else {
+            $('input[name="plazoCtaCte"]').val(0);
+            $('input[name="plazoCtaCte"]').attr('readonly', true);
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 0});
+        }
+    });
+
+
     //Llamamos a la funcion de Token
     getToken(name);
     //Hacemos el envio del Formulario mediante AJAX
@@ -36,16 +71,13 @@ $(function () {
     });
 
     // VALIDAMOS LOS CAMPOS
-    $("#username").validate();
-    $("#password").validate();
-    $("#first_name").validate();
-    $("#last_name").validate();
-    $("#cuil").validate();
-    $("#tipoUsuario").validate();
-    $("#legajo").validate();
-    $("#fechaIngreso").validate();
+    $("#razonSocial").validate();
+    $("#condicionIVA").validate();
+    $("#cuit").validate();
     $("#localidad").validate();
     $("#direccion").validate();
+    $("#telefono").validate();
+    $("#email").validate();
 
     //Validamos EMAIL CORRECTO
     $("#email").on('focusout', function (e) {
