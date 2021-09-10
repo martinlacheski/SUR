@@ -45,12 +45,16 @@ $(function () {
     //CHECKBOX Cta Cte
     $('#ctaCte').on('click', function () {
         if (this.checked) {
+            $('input[name="limiteCtaCte"]').attr('disabled', false);
             $('input[name="plazoCtaCte"]').attr('disabled', false);
+            $('input[name="limiteCtaCte"]').attr('readonly', false);
             $('input[name="plazoCtaCte"]').attr('readonly', false);
             $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
             $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 1000000});
         } else {
+            $('input[name="limiteCtaCte"]').val('0.00');
             $('input[name="plazoCtaCte"]').val(0);
+            $('input[name="limiteCtaCte"]').attr('readonly', true);
             $('input[name="plazoCtaCte"]').attr('readonly', true);
             $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
             $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 0});

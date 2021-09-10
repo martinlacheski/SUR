@@ -174,3 +174,95 @@ class UsuariosForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+class UsuariosProfileForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Usuarios
+        fields = 'first_name', 'last_name', 'username', 'password', 'email', 'cuil', \
+                 'localidad', 'direccion', 'telefono', 'imagen'
+        widgets = {
+            'first_name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese los nombres',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+            'last_name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese el apellido',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+            'username': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre de Usuario',
+                }
+            ),
+            'password': PasswordInput(render_value=True,
+                                      attrs={
+                                          'placeholder': 'Ingrese una contraseña',
+                                          'style': 'width: 100%'
+                                      }
+                                      ),
+            'email': EmailInput(
+                attrs={
+                    'placeholder': 'Ingrese un correo electrónico válido',
+                    'style': 'width: 100%'
+                }
+            ),
+            'cuil': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un CUIL',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+            'localidad': Select(
+                attrs={
+                    'class': 'form-control select2',
+                    'style': 'width: 100%'
+                }
+            ),
+            'direccion': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese una dirección',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+            'telefono': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un número de teléfono',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase'
+                }
+            ),
+        }
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff', 'groups']
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                pwd = self.cleaned_data['password']
+                u = form.save(commit=False)
+                if u.pk is None:
+                    u.set_password(pwd)
+                else:
+                    user = Usuarios.objects.get(pk=u.pk)
+                    if user.password != pwd:
+                        u.set_password(pwd)
+                u.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
