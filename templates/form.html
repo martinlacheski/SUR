@@ -7,15 +7,40 @@
     {% endblock %}
 {% endblock %}
 {% block content %}
-    <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">
+    {% block form_esp %}
+        <form id="ajaxForm" method="post" action=".">
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        {% if action == 'add' %}
+                            <i class="fas fa-plus"></i>
+                        {% else %}
+                            <i class="fas fa-edit"></i>
+                        {% endif %}
+                        {{ title }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="{{ action }}">
+                    {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <label for="email">{{ field.label }}:</label>
+                            {{ field| add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="card-footer">
                     {% if action == 'add' %}
-                        <i class="fas fa-plus"></i>
+                        <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                            <i class="fas fa-save"></i> Guardar registro
+                        </button>
                     {% else %}
-                        <i class="fas fa-edit"></i>
+                        <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                            <i class="fas fa-save"></i> Guardar registro
+                        </button>
                     {% endif %}
+
                     {{ title }}
                 </h3>
             </div>
@@ -63,50 +88,50 @@
                 </a>
 
             </div>
-        </div>
-        <!-- Modal -->
-        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>¿Estás seguro de realizar la siguiente acción?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Si</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal Error Eliminar Clave Foranea-->
-        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>No se puede eliminar</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Si</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            <!-- Modal -->
+            <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>¿Estás seguro de realizar la siguiente acción?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Si</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
+            <!-- Modal Error Eliminar Clave Foranea-->
+            <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>No se puede eliminar</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Si</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    {% endblock %}
     <script>
         //Ocultamos el campo de ERROR Duplicado
         $('#id_nombre').on('focus', function () {
