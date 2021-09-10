@@ -3,6 +3,8 @@ $(function () {
         theme: "bootstrap4",
         language: 'es'
     })
+
+    //Select Anidado (Seleccionamos PAIS y cargamos las PROVINCIAS de dicho PAIS
     var select_provincias = $('select[name="provincia"]');
     $('select[name="pais"]').on('change', function () {
         var id = $(this).val();
@@ -20,7 +22,6 @@ $(function () {
                 'pk': id
             },
             dataType: 'json',
-
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
                 //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
@@ -31,9 +32,7 @@ $(function () {
                 });
                 return false;
             }
-            message_error(data.error);
         }).fail(function (jqXHR, textStatus, errorThrown) {
-
         }).always(function (data) {
         });
     });

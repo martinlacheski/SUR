@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.geografico.forms import PaisesForm
 from apps.geografico.models import Paises
@@ -53,8 +53,13 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+            action = request.POST['action']
+            if action == 'add':
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -83,8 +88,13 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+            action = request.POST['action']
+            if action == 'edit':
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -98,7 +108,7 @@ class PaisesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         return context
 
 
-class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+class PaisesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
     model = Paises
     success_url = reverse_lazy('geografico:paises_list')
     permission_required = 'geografico.delete_paises'

@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.geografico.forms import LocalidadesForm
 from apps.geografico.models import Localidades, Provincias
@@ -59,11 +59,12 @@ class LocalidadesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                 data = [{'id': '', 'text': '---------'}]
                 for i in Provincias.objects.filter(pais_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-
-            # Ya sea action 'edit' o action 'add'
-            else:
+            elif action == 'add':
                 form = self.get_form()
-                data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         # Se debe especificar en el return por la devolucion de datos Serializados
@@ -99,9 +100,12 @@ class LocalidadesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                 data = [{'id': '', 'text': '---------'}]
                 for i in Provincias.objects.filter(pais_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            else:
+            elif action == 'edit':
                 form = self.get_form()
-                data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
         # Se debe especificar en el return por la devolucion de datos Serializados
@@ -116,7 +120,7 @@ class LocalidadesUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
         return context
 
 
-class LocalidadesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+class LocalidadesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, DeleteView):
     model = Localidades
     success_url = reverse_lazy('geografico:localidades_list')
     permission_required = 'geografico.delete_localidades'

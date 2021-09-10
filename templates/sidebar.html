@@ -12,7 +12,7 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-       <!-- SidebarSearch Form -->
+        <!-- SidebarSearch Form -->
         <div class="form-inline">
             <div class="input-group" data-widget="sidebar-search">
                 <input class="form-control form-control-sidebar" type="search" placeholder="Buscar"
@@ -28,7 +28,83 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Ventas -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-shopping-cart"></i>
+                        <p>
+                            Ventas
+                        </p>
+                    </a>
+                </li>
+                <!-- Compras -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-pallet"></i>
+                        <p>
+                            Compras
+                        </p>
+                    </a>
+                </li>
+                <!-- Clientes -->
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'erp:clientes_list' %}" class="nav-link">
+                        <i class="nav-icon fas fa-users"></i>
+                        <p>
+                            Clientes
+                        </p>
+                    </a>
+                </li>
 
+                <!-- Proveedores -->
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'erp:proveedores_list' %}" class="nav-link">
+                        <i class="nav-icon fas fa-people-carry"></i>
+                        <p>
+                            Proveedores
+                        </p>
+                    </a>
+                </li>
+
+                <!-- Stock -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-dolly"></i>
+                        <p>
+                            Productos y Servicios
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item has-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'erp:categorias_list' %}" class="nav-link">
+                                <i class="fas fa-boxes nav-icon"></i>
+                                <p>Categorías</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'erp:subcategorias_list' %}" class="nav-link">
+                                <i class="fas fa-box nav-icon"></i>
+                                <p>Subcategorías</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'erp:productos_list' %}" class="nav-link">
+                                <i class="fas fa-box-open nav-icon"></i>
+                                <p>Productos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'erp:servicios_list' %}" class="nav-link">
+                                <i class="fas fa-tasks nav-icon"></i>
+                                <p>Servicios</p>
+                            </a>
+                        </li>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Sistema -->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-cogs"></i>
@@ -48,27 +124,33 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Datos Empresa</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                        <a href="#" class="nav-link">
+                                    <a href="#" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Tipos de Comprobantes</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{% url 'parametros:condicionesPago_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Medios de Pago</p>
+                                        <p>Condiciones de Pago</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{% url 'parametros:tiposIVA_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Impuestos</p>
+                                        <p>Tipos de IVA</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'parametros:condicionesIVA_list' %}" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Condición frente al IVA</p>
                                     </a>
                                 </li>
                             </ul>
@@ -117,15 +199,15 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{% url 'usuarios:usuarios_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Usuarios</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{% url 'usuarios:tipos_usuarios_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Roles</p>
+                                        <p>Tipos</p>
                                     </a>
                                 </li>
                             </ul>
