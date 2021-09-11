@@ -63,7 +63,7 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear un Tipo de Evento'
         context['entity'] = 'Tipos de evento'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
+        context['list_url'] = reverse_lazy('agenda:tiposEventoList')
         context['action'] = 'add'
         return context
 
@@ -95,7 +95,7 @@ class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear un Tipo de Evento'
         context['entity'] = 'Tipos de evento'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
+        context['list_url'] = reverse_lazy('agenda:tiposEventoList')
         context['action'] = 'edit'
         return context
 
@@ -119,12 +119,12 @@ class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
             except Exception as e:
-                data['check'] = str(e)
+                data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear un Tipo de Evento'
         context['entity'] = 'Tipos de evento'
-        context['list_url'] = reverse_lazy('geografico:paises_list')
+        context['list_url'] = reverse_lazy('agenda:tiposEventoList')
         return context

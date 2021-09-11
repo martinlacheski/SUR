@@ -28,6 +28,30 @@
         <!-- Sidebar Menu -->
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- Agenda -->
+                <li class="nav-item has-treeview">
+                    <a href="" class="nav-link">
+                        <i class="far fa-calendar nav-icon"></i>
+                        <p>
+                            Agenda
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'agenda:dashboard' %}" class="nav-link">
+                                <i class="far fa-calendar-check nav-icon"></i>
+                                <p>Eventos</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'agenda:tiposEventoList' %}"" class="nav-link">
+                            <i class="far fa-calendar-alt nav-icon"></i>
+                            <p>Tipos de Eventos</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <!-- Ventas -->
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
@@ -208,31 +232,6 @@
                                     <a href="{% url 'usuarios:tipos_usuarios_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Tipos</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
-                                <i class="far fa-calendar nav-icon"></i>
-                                <p>
-                                    Agenda
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'agenda:dashboard' %}" class="nav-link">
-                                        <i class="far fa-calendar-check nav-icon"></i>
-                                        <p>Adm. de Eventos</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'agenda:tiposEventoList' %}"" class="nav-link">
-                                        <i class="far fa-calendar-alt nav-icon"></i>
-                                        <p>Adm. de Tipos de Eventos</p>
                                     </a>
                                 </li>
                             </ul>
