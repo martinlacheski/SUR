@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,8 +48,10 @@ INSTALLED_APPS = [
     'apps.login',
     'apps.home',
     'apps.geografico',
+
     'apps.usuarios',
     'apps.erp',
+    'apps.agenda'
 ]
 
 MIDDLEWARE = [
@@ -86,6 +89,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+CRONJOBS = [('* * * * *', 'apps.agenda.cron.cron_prueba')]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -116,8 +121,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-#LANGUAGE_CODE = 'en-us'
-LANGUAGE_CODE = 'es-ar'
+LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'es-ar'
 
 #TIME_ZONE = 'UTC'
 TIME_ZONE = 'America/Buenos_Aires'
@@ -162,3 +167,5 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

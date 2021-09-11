@@ -28,4 +28,6 @@ urlpatterns = [
     path('', include('apps.geografico.urls')),
     path('', include('apps.usuarios.urls')),
     path('', include('apps.erp.urls')),
+    path('', include('apps.agenda.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
