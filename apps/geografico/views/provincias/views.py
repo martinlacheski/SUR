@@ -130,7 +130,7 @@ class ProvinciasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 data['check'] = 'ok'
             except Exception as e:
                 print(str(e))
-                data['check'] = str(e)
+                data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(**kwargs):

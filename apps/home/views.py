@@ -1,8 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
-from apps.mixins import ValidatePermissionRequiredMixin
-
 
 # class HomeView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateView):
 class HomeView(LoginRequiredMixin, TemplateView):

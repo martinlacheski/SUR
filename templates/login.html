@@ -26,7 +26,14 @@
             <form action="." method="post">
                 <input type="hidden" name="next" value="{{ next }}">
                 {% csrf_token %}
-                <div class="input-group mb-3">
+                {#Error en el Formulario#}
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5>Nombre de usuario o contraseña incorrecto</h5>
+                    </div>
+                {% endif %}
+                <div class="input-group mb-4">
                     {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'placeholder:Usuario' }}
                     <div class="input-group-append">
                         <div class="input-group-text">

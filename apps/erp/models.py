@@ -107,7 +107,7 @@ class Productos(models.Model):
         return '{}{}'.format(STATIC_URL, 'img/empty.png')
 
     class Meta:
-        unique_together = [['subcategoria', 'descripcion']]
+        unique_together = ['subcategoria', 'descripcion']
         verbose_name = 'Producto'
         verbose_name_plural = 'Productos'
         db_table = 'erp_productos'

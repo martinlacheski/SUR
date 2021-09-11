@@ -10,11 +10,26 @@ $(function () {
         locale: 'es',
         icons: {date: 'far fa-calendar-alt'},
     });
-    $('#id_nombre').on('focus', function () {
-        $('#ErrorDuplicado').attr("hidden", "");
-    });
+
+    //Funcion Mostrar Errores del Formulario
+    function message_error(obj) {
+        var errorList = document.getElementById("errorList");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = value;
+                errorList.appendChild(li);
+            });
+        }
+    }
+
     //Llamamos a la funcion de Token
     getToken(name);
+
     //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
         e.preventDefault();
@@ -29,7 +44,7 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
-                    $("#ErrorDuplicado").removeAttr("hidden");
+                    message_error(data.error);
                 }
             }
         });

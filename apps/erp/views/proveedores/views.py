@@ -130,7 +130,7 @@ class ProveedoresDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
             except Exception as e:
-                data['check'] = str(e)
+                data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(**kwargs):

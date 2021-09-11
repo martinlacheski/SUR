@@ -21,10 +21,9 @@
             </div>
             <div class="card-body">
                 {% csrf_token %}
-
                 {#Error en el Formulario#}
                 {% if form.errors %}
-                    <div class="alert alert-danger alert-dismissible">
+                    <div class="alert alert-danger alert-dismissible errorForm">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
                         <ul>
@@ -46,72 +45,34 @@
             </div>
             <div class="card-footer">
                 {#Mensaje de error#}
-                <div hidden id="ErrorDuplicado" class="mt-3 alert alert-danger alert-dismissible">
-                    <p><i class="icon fas fa-ban"></i>Error! ya existe un registro con ese nombre</p>
-                </div>
-                {% if action == 'add' %}
-                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                        <i class="fas fa-save"></i> Guardar registro
-                    </button>
-                {% else %}
-                    <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                        <i class="fas fa-save"></i> Guardar registro
-                    </button>
-                {% endif %}
+                <ul id="errorList"  class="alert-danger"></ul>
+                {#Botones#}
+                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                    <i class="fas fa-save"></i> Guardar registro
+                </button>
                 <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
 
             </div>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>¿Estás seguro de realizar la siguiente acción?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Si</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal Error Eliminar Clave Foranea-->
-        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
-             aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>No se puede eliminar</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Si</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </form>
     <script>
-        //Ocultamos el campo de ERROR Duplicado
-        $('#id_nombre').on('focus', function () {
-            $('#ErrorDuplicado').attr("hidden", "");
-        });
+        //Funcion Mostrar Errores del Formulario
+        function message_error(obj) {
+            var errorList = document.getElementById("errorList");
+            errorList.innerHTML = '';
+            if (typeof (obj) === 'object') {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                $.each(obj, function (key, value) {
+                    var li = document.createElement("li");
+                    li.innerText = value;
+                    errorList.appendChild(li);
+                });
+            }
+        }
         //Llamamos a la funcion de Token
         getToken(name);
         //Hacemos el envio del Formulario mediante AJAX
@@ -128,11 +89,10 @@
                     if (!data.hasOwnProperty('error')) {
                         location.replace(data.redirect);
                     } else {
-                        $("#ErrorDuplicado").removeAttr("hidden");
+                        message_error(data.error);
                     }
                 }
             });
         });
-
     </script>
 {% endblock %}
