@@ -1,6 +1,7 @@
 from django.db import models
 from django.forms import model_to_dict
 from django.utils import timezone
+from apps.usuarios.models import Usuarios
 
 class tiposEvento(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
@@ -8,7 +9,9 @@ class tiposEvento(models.Model):
     recordarSistema = models.BooleanField(default=True) # Si le va a aparecer alguna notificacion
     recordarTelegram = models.BooleanField() # Si se le va a enviar un msj al telegram
     recordarEmail = models.BooleanField() # Si se le va a enviar un correo
-    usuarioNotif = models.TextField(blank=True) #En este campo tienen que ir los usuarios. Se espera por integración de Martin
+    usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='UsuarioAsoc', null=False, blank=False) #En este campo tienen que ir los usuarios. Se espera por integración de Martin
+
+
     #estado = models.BooleanField(default=True)
 
     def __str__(self):

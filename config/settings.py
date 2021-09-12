@@ -51,7 +51,7 @@ INSTALLED_APPS = [
 
     'apps.usuarios',
     'apps.erp',
-    'apps.agenda'
+    'apps.agenda',
 ]
 
 MIDDLEWARE = [

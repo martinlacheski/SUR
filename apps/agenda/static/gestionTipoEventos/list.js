@@ -1,3 +1,15 @@
+/*  Traduce los valores por defecto. Utilizada debido a la implementación de BooleanFields
+    los cuales son más sencillos de implementar con elemento toggle */
+function simple_traduc(data){
+    var mod_data = '';
+    if(data === true){
+        mod_data = 'Sí';
+    }else{
+        mod_data = 'No';
+    }
+    return mod_data;
+}
+
 $(function () {
     $('#data').DataTable({
         responsive: true,
@@ -35,9 +47,28 @@ $(function () {
                     return buttons;
                 }
             },
+            {
+                targets: [2],
+                render: function (data, type, row){
+                    return simple_traduc(data);
+                }
+            },
+            {
+                targets: [3],
+                render: function (data, type, row){
+                    return simple_traduc(data);
+                }
+            },
+            {
+                targets: [4],
+                render: function (data, type, row){
+                    return simple_traduc(data);
+                }
+            }
         ],
         initComplete: function (settings, json) {
 
         }
     });
 });
+

@@ -79,22 +79,25 @@ class GestionTiposEventosForm(ModelForm):
             ),
             'recordarSistema': CheckboxInput(
                 attrs={
-
+                    'type':'checkbox',
+                    'class':'custom-control-input',
                 }
             ),
             'recordarTelegram': CheckboxInput(
                 attrs={
-
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
                 }
             ),
             'recordarEmail': CheckboxInput(
                 attrs={
-
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
                 }
             ),
             'usuarioNotif': Select(
                 attrs={
-                    'class' : 'form-control'
+                    'class' : 'form-select form-control select2'
                 }
             ),
         }
