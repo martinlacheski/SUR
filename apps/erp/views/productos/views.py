@@ -59,11 +59,16 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
-            if action == 'search_subcategorias':
+            elif action == 'search_categorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Categorias.objects.all():
+                    data.append({'id': i.id, 'text': i.nombre})
+            elif action == 'search_subcategorias':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
             elif action == 'create_subcategoria':
+                print(request.POST)
                 with transaction.atomic():
                     formSubcategoria = SubcategoriasForm(request.POST)
                     data = formSubcategoria.save()
@@ -112,6 +117,10 @@ class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            if action == 'search_categorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Categorias.objects.all():
+                    data.append({'id': i.id, 'text': i.nombre})
             if action == 'search_subcategorias':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):

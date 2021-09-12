@@ -2,7 +2,7 @@ $(function () {
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'
-    })
+    });
 
     //Select Anidado (Seleccionamos PAIS y cargamos las PROVINCIAS de dicho PAIS
     var select_provincias = $('select[name="provincia"]');

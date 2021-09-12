@@ -50,8 +50,7 @@ $(function () {
     });
 
     //Funcion Mostrar Errores del Formulario
-    function message_error(obj) {
-        var errorList = document.getElementById("errorList");
+    function message_error(obj, errorList) {
         errorList.innerHTML = '';
         if (typeof (obj) === 'object') {
             var li = document.createElement("h5");
@@ -63,6 +62,17 @@ $(function () {
                 errorList.appendChild(li);
             });
         }
+    }
+
+    //Funcion Mostrar Errores del Formulario
+    function message_error_categoria(errorList) {
+        errorList.innerHTML = '';
+        var h5 = document.createElement("h5");
+        h5.textContent = "Error:";
+        errorList.appendChild(h5);
+        var li = document.createElement("li");
+        li.innerText = "Ya existe un/a Categoría con este/a Nombre.";
+        errorList.appendChild(li);
     }
 
     //Llamamos a la funcion de Token
@@ -87,8 +97,13 @@ $(function () {
     //Boton Categoria Modal Ocultar y Resetear
     $('#modalCategoria').on('hidden.bs.modal', function (e) {
         $('#formCategoria').trigger('reset');
+        errorList = document.getElementById("errorListCategoria");
+        errorList.innerHTML = '';
+        location.reload();
     });
 
+
+    var select_categorias = $('#CategoriaFormSub');
     //Boton Subcategoria Modal Mostrar
     $('.btnAddSubcategoria').on('click', function () {
         $('#modalSubcategoria').modal('show');
@@ -97,6 +112,8 @@ $(function () {
     //Boton Subcategoria Modal Ocultar y Resetear
     $('#modalSubcategoria').on('hidden.bs.modal', function (e) {
         $('#formSubcategoria').trigger('reset');
+        var errorList = document.getElementById("errorListSubcategoria");
+        errorList.innerHTML = '';
     });
 
     //Submit Modal Categoría
@@ -119,6 +136,9 @@ $(function () {
                 var newOption = new Option(data.nombre, data.id, false, true);
                 $('#selectCategoria').append(newOption).trigger('change');
                 $('#modalCategoria').modal('hide');
+            } else {
+                var errorList = document.getElementById("errorListCategoria");
+                message_error_categoria(errorList);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
@@ -129,6 +149,7 @@ $(function () {
     $('#formSubcategoria').on('submit', function (e) {
         e.preventDefault();
         var parameters = new FormData(this);
+        console.log(parameters);
         parameters.append('action', 'create_subcategoria');
         $.ajax({
             url: window.location.pathname,
@@ -142,11 +163,15 @@ $(function () {
             contentType: false,
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
-                console.log(data);
                 var newOption = new Option(data.nombre, data.id, false, true);
                 $('select[name="subcategoria"]').append(newOption).trigger('change');
                 $('#modalSubcategoria').modal('hide');
+
+            } else {
+                var errorList = document.getElementById("errorListSubcategoria");
+                message_error(data.error, errorList);
             }
+            // console.log(data.error);
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
         });
@@ -178,7 +203,8 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
-                    message_error(data.error);
+                    var errorList = document.getElementById("errorList");
+                    message_error(data.error, errorList);
                 }
             }
         });

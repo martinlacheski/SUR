@@ -192,7 +192,7 @@
         </div>
         <div class="card-footer">
             {#Mensaje de error#}
-                <ul id="errorList"  class="alert-danger"></ul>
+            <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
             {% if action == 'add' %}
                 <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
@@ -276,6 +276,9 @@
                         {% endfor %}
                     </div>
                     <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListCategoria" class="alert-danger col-12"></ul>
+                        {#Boton SUBMIT#}
                         <button type="submit" class="btn btn-primary btn-block btn-flat">
                             <i class="fas fa-save"></i> Guardar Categoría
                         </button>
@@ -302,7 +305,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="Categoria">Categoría:</label>
-                            {{ formSubcategoria.categoria }}
+                            {{ formSubcategoria.categoria|add_class:'form-control CategoriaFormSub' }}
                         </div>
                         <div class="form-group">
                             <label for="Categoria">Nombre:</label>
@@ -312,9 +315,11 @@
                             <label for="Categoria">Abreviatura:</label>
                             {{ formSubcategoria.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
-
                     </div>
                     <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListSubcategoria" class="alert-danger col-12"></ul>
+                        {#Botones#}
                         <button type="submit" class="btn btn-primary btn-block btn-flat">
                             <i class="fas fa-save"></i> Guardar Subcategoría
                         </button>
