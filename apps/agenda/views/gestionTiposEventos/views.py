@@ -34,8 +34,6 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         context['title'] = 'Listado de Eventos'
         context['entity'] = 'Tipos de Eventos'
         context['create_url'] = reverse_lazy('agenda:tiposEventoCreate')
-       # context['list_url'] = reverse_lazy('geografico:paises_list')
-       # context['entity'] = 'Paises'
         return context
 
 class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
@@ -53,11 +51,14 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         data = {}
         try:
             form = self.get_form()
-            #data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
             form.save()
-            data['redirect'] = self.success_url
+            data['redirect'] = self.url_redirect
+            print("hola1")
+            print(data)
         except Exception as e:
             data['error'] = str(e)
+            print(data)
+            print("hola2")
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):

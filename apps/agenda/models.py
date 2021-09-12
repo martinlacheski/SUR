@@ -30,7 +30,7 @@ class tiposEvento(models.Model):
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):
         self.nombre = self.nombre.upper()
-        super(tiposEvento, self).save(force_insert, force_update)
+        super(tiposEvento, self).save()
 
 class eventosAgenda(models.Model):
     fechaCreacion = models.DateField(default=timezone.now)

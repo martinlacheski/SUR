@@ -12,7 +12,7 @@
           rel="stylesheet"/>
 {% endblock %}
 
-{%  block content %}
+{%  block form_content %}
     <form id="ajaxForm" method="post" action=".">
         <div class="card">
             <div class="card-header">
@@ -20,6 +20,20 @@
             </div>
             <div class="card-body">
                 {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible errorForm">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="col-4">
                         <label>Tipo de evento:</label>
@@ -149,9 +163,9 @@
     </script>
 
     <script>
-         $('.form-select').select2({
-        theme: "bootstrap4",
-        language: 'es'
+        $('.form-select').select2({
+            theme: "bootstrap4",
+            language: 'es'
         });
     </script>
 {% endblock %}
