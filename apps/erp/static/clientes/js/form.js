@@ -61,6 +61,21 @@ $(function () {
         }
     });
 
+    //Funcion Mostrar Errores del Formulario
+    function message_error(obj) {
+        var errorList = document.getElementById("errorList");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = value;
+                errorList.appendChild(li);
+            });
+        }
+    }
 
     //Llamamos a la funcion de Token
     getToken(name);
@@ -78,7 +93,7 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
-                    $("#ErrorDuplicado").removeAttr("hidden");
+                    message_error(data.error);
                 }
             }
         });
