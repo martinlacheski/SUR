@@ -1,4 +1,7 @@
-from django.forms import ModelForm, Textarea, Select, DateTimeField, CheckboxInput, TimeField, TextInput, TimeInput
+
+
+from django.forms import ModelForm, Textarea, Select, DateTimeField, CheckboxInput, TimeField, \
+    TextInput, TimeInput, DateField, DateInput
 from apps.agenda.models import *
 from django import forms
 
@@ -6,11 +9,11 @@ class GestionEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    fechaNotificacion = forms.DateTimeField(
-        input_formats=['%d/%m/%Y %H:%M'],
-        widget=forms.DateTimeInput(attrs={
+    fechaNotificacion = forms.DateField(
+        input_formats=['%Y-%m-%d'],
+        widget=forms.DateInput(attrs={
             'class': 'form-control datetimepicker-input',
-            'data-target': '#reservationdatetime'
+            'data-target': '#reservationdate'
         })
     )
 
@@ -19,7 +22,7 @@ class GestionEventosForm(ModelForm):
         fields = ['tipoEvento', 'descripcion', 'fechaNotificacion', 'repeticion']
         widgets = {
             'tipoEvento': Select(attrs={
-                'class': 'form-control',
+                'class': 'form-select form-control select2',
             }),
             'descripcion': Textarea(
                 attrs={
@@ -32,13 +35,19 @@ class GestionEventosForm(ModelForm):
                 }
 
             ),
+            # 'fechaNotificacion': DateInput(
+            #     attrs={
+            #         'class': 'form-control datetimepicker-input',
+            #         'data-target': '#reservationdate',
+            #     }
+            # ),
             'repeticion' : Select(
                 attrs={
-                    'class' : 'form-control',
+                    'class' : 'form-select form-control select2',
                     'id' : 'selectRepeticion',
                     'disabled' : '',
                 }
-            ),
+            )
         }
 
     def save(self):
@@ -49,6 +58,8 @@ class GestionEventosForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
 
 
 

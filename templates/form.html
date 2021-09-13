@@ -79,7 +79,6 @@
         getToken(name);
         //Hacemos el envio del Formulario mediante AJAX
         $("#ajaxForm").submit(function (e) {
-            console.log("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
             e.preventDefault();
             $.ajax({
                 url: window.location.href,
@@ -90,10 +89,8 @@
                 contentType: false,
                 success: function (data) {
                     if (!data.hasOwnProperty('error')) {
-                        console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
                         location.replace(data.redirect);
                     } else {
-                        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                         message_error(data.error);
                     }
                 }

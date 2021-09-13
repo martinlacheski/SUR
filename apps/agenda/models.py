@@ -30,12 +30,12 @@ class tiposEvento(models.Model):
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):
         self.nombre = self.nombre.upper()
-        super(tiposEvento, self).save()
+        super(tiposEvento, self).save(force_insert, force_update)
 
 class eventosAgenda(models.Model):
     fechaCreacion = models.DateField(default=timezone.now)
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
-    fechaNotificacion = models.DateTimeField()
+    fechaNotificacion = models.DateField()
     descripcion = models.TextField()
     REPETICION = (
         ('DIA', 'Diariamente'),
