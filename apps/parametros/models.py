@@ -141,3 +141,47 @@ class Modelos(models.Model):
         except:
             pass
         super(Modelos, self).save(force_insert, force_update)
+
+#Estados de TRABAJOS
+class Estados(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Estado Trabajo'
+        verbose_name_plural = 'Estados Trabajos'
+        db_table = 'parametros_estados_trabajos'
+        ordering = ['nombre']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.nombre = self.nombre.upper()
+        super(Estados, self).save(force_insert, force_update)
+
+#Prioridad de TRABAJOS
+class Prioridades(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Prioridad de Trabajo'
+        verbose_name_plural = 'Prioridades de Trabajos'
+        db_table = 'parametros_prioridades_trabajos'
+        ordering = ['nombre']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.nombre = self.nombre.upper()
+        super(Prioridades, self).save(force_insert, force_update)
