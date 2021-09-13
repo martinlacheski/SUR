@@ -4,7 +4,11 @@ from apps.erp.views.proveedores.views import *
 from apps.erp.views.subcategorias.views import *
 from apps.erp.views.productos.views import *
 from apps.erp.views.servicios.views import *
+from apps.erp.views.ventas.views import *
+
+
 from django.urls import path
+
 
 app_name = 'erp'
 
@@ -39,4 +43,9 @@ urlpatterns = [
     path('proveedores/add/', ProveedoresCreateView.as_view(), name='proveedores_create'),
     path('proveedores/update/<int:pk>/', ProveedoresUpdateView.as_view(), name='proveedores_update'),
     path('proveedores/delete/<int:pk>/', ProveedoresDeleteView.as_view(), name='proveedores_delete'),
+    # Ventas
+    path('ventas/list/', ProveedoresListView.as_view(), name='ventas_list'),
+    path('ventas/add/', VentasCreateView.as_view(), name='ventas_create'),
+    # path('ventas/update/<int:pk>/', VentasUpdateView.as_view(), name='ventas_update'),
+    # path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
 ]

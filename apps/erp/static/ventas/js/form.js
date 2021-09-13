@@ -1,16 +1,28 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var plazo = $("input[name='plazoCtaCte']").val();
-    if (plazo > 0){
+    if (plazo > 0) {
         document.getElementById("ctaCte").checked = true;
         $('input[name="plazoCtaCte"]').attr('disabled', false);
     }
 });
 
 $(function () {
+    //Llamamos a la funcion de Token
+    getToken(name);
+
+    //Inicializamos SELECT2
     $('.select2').select2({
         theme: "bootstrap4",
-        language: 'es',
-        placeholder: 'Seleccionar'
+        language: 'es'
+    });
+
+    //Inicializamos DateTimePicker
+    $('#fecha').datetimepicker({
+        format: 'DD-MM-YYYY',
+        date: moment(),
+        locale: 'es',
+        //Para que las fechas de Venta se realicen como maximo hasta el dia de la fecha
+        maxDate: moment(),
     });
 
     //Inicializamos los campos de tipo TOUCHSPIN
@@ -33,6 +45,15 @@ $(function () {
         postfix: 'Días'
     });
 
+    //Boton Categoria Modal Mostrar
+    $('.btnAddCliente').on('click', function () {
+        $('#modalCliente').modal('show');
+    });
+
+    $('#modalCliente').on('hidden.bs.modal', function (e) {
+        $('#formCliente').trigger('reset');
+    })
+
     //CHECKBOX Cta Cte
     $('#ctaCte').on('click', function () {
         if (this.checked) {
@@ -53,8 +74,8 @@ $(function () {
     });
 
     //Funcion Mostrar Errores del Formulario
-    function message_error(obj) {
-        var errorList = document.getElementById("errorList");
+    function message_error_cliente(obj) {
+        var errorList = document.getElementById("errorListFormCliente");
         errorList.innerHTML = '';
         if (typeof (obj) === 'object') {
             var li = document.createElement("h5");
@@ -68,25 +89,30 @@ $(function () {
         }
     }
 
-    //Llamamos a la funcion de Token
-    getToken(name);
-    //Hacemos el envio del Formulario mediante AJAX
-    $("#ajaxForm").submit(function (e) {
+    $('#formCliente').on('submit', function (e) {
         e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_cliente');
         $.ajax({
-            url: window.location.href,
+            url: window.location.pathname,
             type: 'POST',
-            data: new FormData(this),
+            data: parameters,
             dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
             processData: false,
             contentType: false,
-            success: function (data) {
-                if (!data.hasOwnProperty('error')) {
-                    location.replace(data.redirect);
-                } else {
-                    message_error(data.error);
-                }
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                var newOption = new Option(data.razonSocial, data.id, false, true);
+                $('select[name="cliente"]').append(newOption).trigger('change');
+                $('#modalCliente').modal('hide');
+            } else {
+                message_error_cliente(data.error);
             }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
         });
     });
 
@@ -101,7 +127,7 @@ $(function () {
 
     //Validamos EMAIL CORRECTO
     $("#email").on('focusout', function (e) {
-        var btn = document.getElementById('btnAdd');
+        var btn = document.getElementById('btnAddCliente');
         var check = isValidEmail($('input[name="email"]').val());
         if (check == false) {
             //alert('Dirección de correo electrónico no válido');
@@ -113,7 +139,9 @@ $(function () {
             btn.disabled = false;
         }
     });
+
 });
+
 //agregar al campo numerico lo siguiente
 //onkeypress="return isNumberKey(event)"
 function isNumberKey(evt) {
@@ -127,4 +155,3 @@ function isNumberKey(evt) {
 function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 }
-

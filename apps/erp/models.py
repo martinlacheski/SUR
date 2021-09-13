@@ -1,8 +1,11 @@
+from datetime import datetime
+
 from django.db import models
 from django.forms import model_to_dict
 
 from apps.geografico.models import Localidades
-from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago
+from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes
+from apps.usuarios.models import Usuarios
 from config.settings import MEDIA_URL, STATIC_URL
 
 
@@ -199,6 +202,9 @@ class Clientes(models.Model):
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
+    def __str__(self):
+        return self.razonSocial
+
     def toJSON(self):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
@@ -238,6 +244,9 @@ class Proveedores(models.Model):
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
+    def __str__(self):
+        return self.razonSocial
+
     def toJSON(self):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
@@ -260,3 +269,85 @@ class Proveedores(models.Model):
         except:
             pass
         super(Proveedores, self).save(force_insert, force_update)
+
+
+#   Clase Ventas
+class Ventas(models.Model):
+    tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante', null=True, blank=True)
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
+    fecha = models.DateField(default=datetime.now)
+    cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
+    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Medio de pago')
+    # trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo Asociado', null=True, blank=True)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        # return self.cliente.razonSocial
+        return self.get_full_sale()
+
+    def get_full_sale(self):
+        return '{} - {}'.format(self.fecha, self.cliente.razonSocial)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['tipoComprobante'] = self.tipoComprobante.toJSON()
+        item['usuario'] = self.usuario.toJSON()
+        item['cliente'] = self.cliente.toJSON()
+        item['condicionPago'] = self.condicionPago.toJSON()
+        #item['trabajo'] = self.trabajo.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Venta'
+        verbose_name_plural = 'Ventas'
+        db_table = 'erp_ventas'
+        ordering = ['id']
+
+
+class DetalleProductosVenta(models.Model):
+    venta = models.ForeignKey(Ventas, models.DO_NOTHING)
+    producto = models.ForeignKey(Productos, models.DO_NOTHING)
+    precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['venta'])
+        item['prod'] = self.producto.toJSON()
+        item['precio'] = format(self.precio, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Venta - Productos'
+        verbose_name_plural = 'Detalle de Ventas - Productos'
+        ordering = ['id']
+
+
+class DetalleServiciosVenta(models.Model):
+    venta = models.ForeignKey(Ventas, models.DO_NOTHING)
+    servicio = models.ForeignKey(Servicios, models.DO_NOTHING)
+    precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.servicio.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['venta'])
+        item['prod'] = self.servicio.toJSON()
+        item['precio'] = format(self.precio, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Venta - Productos'
+        verbose_name_plural = 'Detalle de Ventas - Productos'
+        ordering = ['id']

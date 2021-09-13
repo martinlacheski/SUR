@@ -68,7 +68,6 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
             elif action == 'create_subcategoria':
-                print(request.POST)
                 with transaction.atomic():
                     formSubcategoria = SubcategoriasForm(request.POST)
                     data = formSubcategoria.save()

@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
 
-from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas
 
 
 class CategoriasForm(ModelForm):
@@ -411,3 +413,49 @@ class ProveedoresForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+class VentasForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+    class Meta:
+        model = Ventas
+        fields = '__all__'
+        widgets = {
+            'tipoComprobante': Select(attrs={
+                'class': 'custom-select select2',
+            }),
+            'cliente': Select(attrs={
+                'class': 'custom-select select2',
+            }),
+            'fecha': DateInput(
+                format='%dd-%MM-%yyyy',
+                attrs={
+                    'value': datetime.now().strftime('%dd-%MM-%yyyy'),
+                    'autocomplete': 'off',
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'percepcion': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
+        exclude = ['usuario']
