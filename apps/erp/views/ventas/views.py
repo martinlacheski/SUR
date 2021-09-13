@@ -28,6 +28,18 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 with transaction.atomic():
                     formCliente = ClientesForm(request.POST)
                     data = formCliente.save()
+
+            elif action == 'search_productos':
+                data = []
+                term = request.POST['term'].strip()
+                data.append({'id': term, 'text': term})
+                productos = Productos.objects.filter(
+                    Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
+                    | Q(codigoBarras1__icontains=term)| Q(codigoBarras2__icontains=term))[0:10]
+                for i in productos[0:10]:
+                    item = i.toJSON()
+                    item['text'] = i.descripcion
+                    data.append(item)
             elif action == 'add':
                 with transaction.atomic():
                     ventas = json.loads(request.POST['ventas'])
@@ -74,4 +86,6 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
         context['action'] = 'add'
         context['det'] = []
         context['formCliente'] = ClientesForm()
+        context['productos'] = Productos.objects.all()
+        context['servicios'] = Servicios.objects.all()
         return context

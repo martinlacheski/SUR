@@ -9,6 +9,90 @@ from apps.usuarios.models import Usuarios
 from config.settings import MEDIA_URL, STATIC_URL
 
 
+#   Clase Clientes
+class Clientes(models.Model):
+    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
+    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
+    cuil = models.CharField(max_length=11, verbose_name='Cuil', unique=True)
+    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
+    direccion = models.CharField(max_length=100, verbose_name='Dirección')
+    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
+    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
+    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
+    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
+    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
+    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
+
+    def __str__(self):
+        return self.razonSocial
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['condicionIVA'] = self.condicionIVA.toJSON()
+        item['localidad'] = self.localidad.toJSON()
+        item['condicionPago'] = self.condicionPago.toJSON()
+        item['limiteCtaCte'] = format(self.limiteCtaCte, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
+        db_table = 'erp_clientes'
+        ordering = ['razonSocial']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.razonSocial = self.razonSocial.upper()
+        self.direccion = self.direccion.upper()
+        try:
+            self.alias = self.alias.upper()
+        except:
+            pass
+        super(Clientes, self).save(force_insert, force_update)
+
+
+#   Clase Proveedores
+class Proveedores(models.Model):
+    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
+    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
+    cuit = models.CharField(max_length=11, verbose_name='Cuit', unique=True)
+    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
+    direccion = models.CharField(max_length=100, verbose_name='Dirección')
+    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
+    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
+    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
+    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
+    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
+
+    def __str__(self):
+        return self.razonSocial
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['condicionIVA'] = self.condicionIVA.toJSON()
+        item['localidad'] = self.localidad.toJSON()
+        item['condicionPago'] = self.condicionPago.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Proveedor'
+        verbose_name_plural = 'Proveedores'
+        db_table = 'erp_proveedores'
+        ordering = ['razonSocial']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.razonSocial = self.razonSocial.upper()
+        self.direccion = self.direccion.upper()
+        try:
+            self.alias = self.alias.upper()
+        except:
+            pass
+        super(Proveedores, self).save(force_insert, force_update)
+
+
 class Categorias(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
@@ -83,7 +167,6 @@ class Productos(models.Model):
     ubicacion = models.CharField(max_length=100, null=True, blank=True, verbose_name='Ubicacion Física')
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
-
     # proveedorPrincipal = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor Principal', null=True, blank=True)
     # proveedorSecundario = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor Secundario', null=True, blank=True)
 
@@ -185,90 +268,6 @@ class Servicios(models.Model):
         self.descripcion = self.descripcion.upper()
         self.codigo = self.codigo.upper()
         super(Servicios, self).save(force_insert, force_update)
-
-
-#   Clase Clientes
-class Clientes(models.Model):
-    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
-    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
-    cuil = models.CharField(max_length=11, verbose_name='Cuil', unique=True)
-    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
-    direccion = models.CharField(max_length=100, verbose_name='Dirección')
-    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
-    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
-    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
-    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
-    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
-    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
-    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
-
-    def __str__(self):
-        return self.razonSocial
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['condicionIVA'] = self.condicionIVA.toJSON()
-        item['localidad'] = self.localidad.toJSON()
-        item['condicionPago'] = self.condicionPago.toJSON()
-        item['limiteCtaCte'] = format(self.limiteCtaCte, '.2f')
-        return item
-
-    class Meta:
-        verbose_name = 'Cliente'
-        verbose_name_plural = 'Clientes'
-        db_table = 'erp_clientes'
-        ordering = ['razonSocial']
-
-    # Para convertir a MAYUSCULA
-    def save(self, force_insert=False, force_update=False):
-        self.razonSocial = self.razonSocial.upper()
-        self.direccion = self.direccion.upper()
-        try:
-            self.alias = self.alias.upper()
-        except:
-            pass
-        super(Clientes, self).save(force_insert, force_update)
-
-
-#   Clase Proveedores
-class Proveedores(models.Model):
-    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
-    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
-    cuit = models.CharField(max_length=11, verbose_name='Cuit', unique=True)
-    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
-    direccion = models.CharField(max_length=100, verbose_name='Dirección')
-    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
-    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
-    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
-    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
-    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
-    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
-
-    def __str__(self):
-        return self.razonSocial
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['condicionIVA'] = self.condicionIVA.toJSON()
-        item['localidad'] = self.localidad.toJSON()
-        item['condicionPago'] = self.condicionPago.toJSON()
-        return item
-
-    class Meta:
-        verbose_name = 'Proveedor'
-        verbose_name_plural = 'Proveedores'
-        db_table = 'erp_proveedores'
-        ordering = ['razonSocial']
-
-    # Para convertir a MAYUSCULA
-    def save(self, force_insert=False, force_update=False):
-        self.razonSocial = self.razonSocial.upper()
-        self.direccion = self.direccion.upper()
-        try:
-            self.alias = self.alias.upper()
-        except:
-            pass
-        super(Proveedores, self).save(force_insert, force_update)
 
 
 #   Clase Ventas

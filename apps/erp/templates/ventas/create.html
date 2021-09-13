@@ -3,6 +3,15 @@
 {% load static %}
 {% block head %}
     {% block head_form %}
+        <!-- Datatables -->
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
         <!-- Jquery UI -->
         <link href="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet"/>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
@@ -76,7 +85,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-12">
                         <div class="card card-secondary">
                             <div class="card-header">
                                 <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
@@ -85,22 +94,9 @@
                                 <div class="form-group">
                                     <label>Buscador de productos:</label>
                                     <div class="input-group">
-                                        <select class="form-control select2" name="search"></select>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary dropdown-toggle" type="button"
-                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                Opciones
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item btnSearchProducts">
-                                                    <i class="fas fa-search"></i> Buscar productos
-                                                </a>
-                                                <a class="dropdown-item btnClearSearch">
-                                                    <i class="fas fa-times"></i> Limpiar búsqueda
-                                                </a>
-                                            </div>
-                                        </div>
+                                        <select class="form-control select2" name="searchProductos">
+                                        </select>
+
                                     </div>
                                 </div>
                                 <hr>
@@ -108,12 +104,12 @@
                                     <i class="fas fa-trash"></i> Eliminar todos mis items
                                 </button>
                                 <hr>
-                                <table class="table table-bordered" id="tblProducts">
+                                <table class="table table-bordered" id="tablaProductos">
                                     <thead>
                                     <tr>
                                         <th>Eliminar</th>
                                         <th>Producto</th>
-                                        <th>Precio Unitario</th>
+                                        <th>Importe</th>
                                         <th>Cantidad</th>
                                         <th>Subtotal</th>
                                     </tr>
@@ -124,7 +120,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                </div>
+                <div class="row">
+                    <div class="col-12">
                         <div class="card card-secondary">
                             <div class="card-header">
                                 <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de servicios</h3>
@@ -133,22 +131,10 @@
                                 <div class="form-group">
                                     <label>Buscador de servicios:</label>
                                     <div class="input-group">
-                                        <select class="form-control select2" name="search"></select>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary dropdown-toggle" type="button"
-                                                    data-toggle="dropdown" aria-haspopup="true"
-                                                    aria-expanded="false">
-                                                Opciones
-                                            </button>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item btnSearchProducts">
-                                                    <i class="fas fa-search"></i> Buscar Servicios
-                                                </a>
-                                                <a class="dropdown-item btnClearSearch">
-                                                    <i class="fas fa-times"></i> Limpiar búsqueda
-                                                </a>
-                                            </div>
-                                        </div>
+                                        <select class="form-control select2" name="searchServicio">
+
+                                        </select>
+
                                     </div>
                                 </div>
                                 <hr>
@@ -156,7 +142,7 @@
                                     <i class="fas fa-trash"></i> Eliminar todos mis items
                                 </button>
                                 <hr>
-                                <table class="table table-bordered" id="tblProducts">
+                                <table class="table table-bordered" id="tablaServicios">
                                     <thead>
                                     <tr>
                                         <th>Eliminar</th>
@@ -210,6 +196,7 @@
                     </a>
                 </div>
             </div>
+        </div>
     </form>
 
     <!-- Modal CLIENTE -->
@@ -241,7 +228,7 @@
                                 <div class="form-group col-6 mb-6">
                                     <label>Condición frente al IVA:</label>
                                     <br>
-                                    {{ formCliente.condicionIVA|add_class:'form-control'|attr:'required:true' }}
+                                    {{ formCliente.condicionIVA|add_class:'form-control condicionIvaFormCliente'|attr:'required:true' }}
                                 </div>
 
                                 <div class="form-group col-6 mb-6">
@@ -259,7 +246,7 @@
                             <div class="form-group col-6 mb-6">
                                 <label>Localidad:</label>
                                 <br>
-                                {{ formCliente.localidad|add_class:'form-control'|attr:'required:true' }}
+                                {{ formCliente.localidad|add_class:'form-control localidadFormCliente'|attr:'required:true' }}
                             </div>
                             <div class="form-group col-6 mb-6">
                                 <label>Dirección:</label>
@@ -309,7 +296,7 @@
                             <div class="form-group col-4 mb-4">
                                 <label>Condición de Pago:</label>
                                 <br>
-                                {{ formCliente.condicionPago|add_class:'form-control'|attr:'required:true' }}
+                                {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
                             </div>
 
                             <div class="form-group col-2 mb-2">
@@ -345,36 +332,5 @@
                 </div>
             </div>
         </form>
-    </div>
-
-    <div class="modal fade" id="myModalSearchProducts" tabindex="-1" role="dialog"
-         aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                        <b><i class="fas fa-search"></i> Búsqueda de Productos</b>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table table-bordered table-hover" id="tblSearchProducts">
-                        <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Imagen</th>
-                            <th>Stock</th>
-                            <th>Precio Unitario</th>
-                            <th>Opciones</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </div>
 {% endblock %}

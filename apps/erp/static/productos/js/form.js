@@ -97,6 +97,7 @@ $(function () {
     //Boton Categoria Modal Ocultar y Resetear
     $('#modalCategoria').on('hidden.bs.modal', function (e) {
         $('#formCategoria').trigger('reset');
+
         errorList = document.getElementById("errorListCategoria");
         errorList.innerHTML = '';
         location.reload();
@@ -111,7 +112,10 @@ $(function () {
 
     //Boton Subcategoria Modal Ocultar y Resetear
     $('#modalSubcategoria').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
         $('#formSubcategoria').trigger('reset');
+        //Reseteamos los Select2 del Modal
+        $(".CategoriaFormSub").val('').trigger('change.select2');
         var errorList = document.getElementById("errorListSubcategoria");
         errorList.innerHTML = '';
     });
