@@ -151,7 +151,7 @@ class Subcategorias(models.Model):
 class Productos(models.Model):
     subcategoria = models.ForeignKey(Subcategorias, models.DO_NOTHING, verbose_name='Subcategoría')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
-    abreviatura = models.CharField(max_length=25, null=True, blank=True, verbose_name='Abreviatura')
+    abreviatura = models.CharField(max_length=30, null=True, blank=True, verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo')
     codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor')
     codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1')
@@ -235,7 +235,7 @@ class Productos(models.Model):
 
 class Servicios(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción', unique=True)
-    codigo = models.CharField(max_length=20, verbose_name='Codigo', unique=True)
+    codigo = models.CharField(max_length=30, verbose_name='Codigo', unique=True)
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Costo')
     iva = models.ForeignKey(TiposIVA, models.DO_NOTHING, verbose_name='Tipo de IVA')
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')

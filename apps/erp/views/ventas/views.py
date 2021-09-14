@@ -35,10 +35,22 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term)| Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
-                    item['text'] = i.descripcion
+                    # Creamos un item VALUE para que reconozca el input de Busqueda
+                    item['value'] = i.descripcion
+                    data.append(item)
+            elif action == 'search_servicios':
+                data = []
+                term = request.POST['term'].strip()
+                data.append({'id': term, 'text': term})
+                servicios = Servicios.objects.filter(
+                    Q(descripcion__icontains=term) | Q(codigo__icontains=term))[0:10]
+                for i in servicios[0:10]:
+                    item = i.toJSON()
+                    # Creamos un item VALUE para que reconozca el input de Busqueda
+                    item['value'] = i.descripcion
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():

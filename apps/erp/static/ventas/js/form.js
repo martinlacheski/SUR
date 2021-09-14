@@ -12,18 +12,49 @@ var venta = {
         iva: 0.00,
         percepcion: 0.00,
         total: 0.00,
+        //detalle de productos
         productos: [],
+        //detalle de servicios
         servicios: []
     },
+    calcular_importes: function () {
+        //Inicializamos variables para calcular importes
+        var subtotal = 0.00;
+        var ivaCalculado = 0.00;
+        //Recorremos el Array de productos para ir actualizando los importes
+        $.each(this.items.productos, function (pos, dict) {
+            dict.pos = pos;
+            dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
+            ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
+            subtotal += dict.subtotal;
+        });
+        $.each(this.items.servicios, function (pos, dict) {
+            dict.pos = pos;
+            dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
+            ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
+            subtotal += dict.subtotal;
+        });
+        this.items.subtotal = subtotal - ivaCalculado;
+        this.items.iva = ivaCalculado;
+        this.items.total = this.items.subtotal + this.items.iva;
+        $('input[name="subtotal"]').val(this.items.subtotal.toFixed(2));
+        $('input[name="iva"]').val(this.items.iva.toFixed(2));
+        $('input[name="total"]').val(this.items.total.toFixed(2));
+    },
+    //Funcion Agregar Producto al Array
     addProducto: function (item) {
         this.items.productos.push(item);
         this.listProductos();
     },
+    //Funcion Agregar Servicio al Array
     addServicio: function (item) {
         this.items.servicios.push(item);
         this.listServicios();
     },
+    //----------------------------------------------------------------------------//
+    //Listar los productos en el Datatables
     listProductos: function () {
+        this.calcular_importes();
         //this.calculate_invoice();
         tablaProductos = $('#tablaProductos').DataTable({
             paging: false,
@@ -36,7 +67,7 @@ var venta = {
             destroy: true,
             data: this.items.productos,
             columns: [
-                {"data": "id"},
+                {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
                 {"data": "precioVenta"},
                 {"data": "cantidad"},
@@ -48,7 +79,7 @@ var venta = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;"><i class="fas fa-trash-alt"></i></a>';
+                        return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;" ><i class="fas fa-trash-alt"></i></a>';
                     }
                 },
                 {
@@ -64,7 +95,7 @@ var venta = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<input type="text" name="cant" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
+                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
                     }
                 },
                 {
@@ -76,15 +107,99 @@ var venta = {
                     }
                 },
             ],
+            //Este metodo permite personalizar datos de la fila y celda, tanto al agregar como al eliminar
+            rowCallback(row, data, displayNum, displayIndex, dataIndex) {
+                //a todos los componentes llamado Cantidad le agregamos la libreria Touchspin
+                $(row).find('input[name="cantidad"]').TouchSpin({
+                    min: 1,
+                    max: 1000000,
+                    step: 1,
+                    boostat: 5,
+                    maxboostedstep: 10,
+                });
+
+            },
             initComplete: function (settings, json) {
 
             }
         });
-        console.clear();
-        console.log(this.items);
-        console.log(this.get_ids());
+    },
+    //----------------------------------------------------------------------------//
+    //Listar los servicios en el Datatables
+    listServicios: function () {
+        this.calcular_importes();
+        //this.calculate_invoice();
+        tablaServicios = $('#tablaServicios').DataTable({
+            paging: false,
+            searching: false,
+            ordering: false,
+            //info: false,
+            responsive: true,
+            lengthMenu: [25, 50, 75, 100],
+            autoWidth: false,
+            destroy: true,
+            data: this.items.servicios,
+            columns: [
+                {"data": "id"}, //Para el boton eliminar
+                {"data": "descripcion"},
+                {"data": "precioVenta"},
+                {"data": "cantidad"},
+                {"data": "subtotal"},
+            ],
+            columnDefs: [
+                {
+                    targets: [0],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;" ><i class="fas fa-trash-alt"></i></a>';
+                    }
+                },
+                {
+                    targets: [-3],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '$' + parseFloat(data).toFixed(2);
+                    }
+                },
+                {
+                    targets: [-2],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '$' + parseFloat(data).toFixed(2);
+                    }
+                },
+            ],
+            //Este metodo permite personalizar datos de la fila y celda, tanto al agregar como al eliminar
+            rowCallback(row, data, displayNum, displayIndex, dataIndex) {
+                //a todos los componentes llamado Cantidad le agregamos la libreria Touchspin
+                $(row).find('input[name="cantidad"]').TouchSpin({
+                    min: 1,
+                    max: 1000000,
+                    step: 1,
+                    boostat: 5,
+                    maxboostedstep: 10,
+                });
+
+            },
+            initComplete: function (settings, json) {
+
+            }
+        });
     },
 };
+
+//------------------------------------Funciones e Inicializaciones----------------------------------------//
 
 //Permitir solo numeros
 // agregar al campo numerico lo siguiente
@@ -102,6 +217,14 @@ function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 };
 
+//Inicializamos a CERO los campos de importes
+$(document).ready(function() {
+    $('input[name="subtotal"]').val('0.00');
+    $('input[name="iva"]').val('0.00');
+    $('input[name="percepcion"]').val('0.00');
+    $('input[name="total"]').val('0.00');
+});
+
 $(function () {
     //Llamamos a la funcion de Token
     getToken(name);
@@ -112,7 +235,7 @@ $(function () {
         language: 'es'
     });
 
-    /*//Inicializamos el Datatable de Productos
+    //Inicializamos el Datatable de Productos
     $('#tablaProductos').DataTable({
         paging: false,
         searching: false,
@@ -121,7 +244,7 @@ $(function () {
         responsive: true,
         lengthMenu: [25, 50, 75, 100],
         autoWidth: false,
-    });*/
+    });
 
     //Inicializamos el Datatable de Servicios
     $('#tablaServicios').DataTable({
@@ -162,6 +285,10 @@ $(function () {
         maxboostedstep: 10,
         postfix: 'Días'
     });
+
+
+
+//------------------------------------MODAL CLIENTES----------------------------------------//
 
     //Boton Cliente Modal Mostrar
     $('.btnAddCliente').on('click', function () {
@@ -267,37 +394,168 @@ $(function () {
         });
     });
 
-    $('select[name="searchProducto"]').on('change', function () {
-        var id = $(this).val();
+//------------------------------------EVENTOS PRODUCTOS----------------------------------------//
+    //Buscar Productos
+    $('input[name="searchProductos"]').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'search_productos',
+                    'term': request.term
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                response(data);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+            });
+        },
+        delay: 500,
+        minLength: 1,
+        select: function (event, ui) {
+            event.preventDefault();
+            ui.item.cantidad = 1;
+            ui.item.subtotal = 0.00;
+            venta.addProducto(ui.item);
+            $(this).val('');
+        }
+    });
+
+
+    // eventos tabla Productos
+    $('#tablaProductos tbody')
+        //Evento eliminar renglon del detalle
+        .on('click', 'a[rel="remove"]', function () {
+            //obtenemos la posicion del datatables
+            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            //Mostramos el Modal de Eliminacion
+            $('#deleteModal').modal('show');
+            $('.btnDelete').on('click', function (e) {
+                $('#deleteModal').modal('hide');
+                //removemos la posicion del array con la cantidad de elementos a eliminar
+                venta.items.productos.splice(tr.row, 1);
+                //Actualizamos el Listado
+                venta.listProductos();
+            });
+        })
+        //evento cambiar renglon (cantidad) del detalle
+        .on('change', 'input[name="cantidad"]', function () {
+            //asignamos a una variable la cantidad, en la posicion actual
+            var cant = parseInt($(this).val());
+            //Obtenemos la posicion del elemento a modificar dentro del Datatables
+            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            venta.items.productos[tr.row].cantidad = cant;
+            //Actualizamos los importes
+            venta.calcular_importes();
+            //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
+            $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + venta.items.productos[tr.row].subtotal.toFixed(2));
+        });
+
+    //Borrar desde el boton de busqueda de productos
+    $('.btnClearSearchProductos').on('click', function () {
+        $('input[name="searchProductos"]').val('').focus();
+    });
+
+    //Borrar todos los productos
+    $('.btnRemoveAllProductos').on('click', function () {
+        if (venta.items.productos.length === 0) return false;
+        //Mostramos el Modal de Eliminacion
+        $('#deleteModal').modal('show');
+        $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar todos los registros?';
+        $('.btnDelete').on('click', function (e) {
+            $('#deleteModal').modal('hide');
+            //removemos el listado de productos
+            venta.items.productos = [];
+            //Actualizamos el Listado
+            venta.listProductos();
+        });
 
     });
 
-    //Buscar Productos
-    $('select[name="searchProductos"]').select2({
-        theme: "bootstrap4",
-        language: 'es',
-        allowClear: true,
-        ajax: {
-            delay: 250,
-            type: 'POST',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-            url: window.location.pathname,
-            data: function (params) {
-                var queryParameters = {
-                    term: params.term,
-                    action: 'search_productos'
-                }
-                return queryParameters;
-            },
-            processResults: function (data) {
-                return {
-                    results: data
-                };
-            },
+//------------------------------------EVENTOS SERVICIOS----------------------------------------//
+    //Buscar Servicios
+    $('input[name="searchServicios"]').autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'search_servicios',
+                    'term': request.term
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                response(data);
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+            });
         },
-        placeholder: 'Ingrese una descripción',
-        minimumInputLength: 1,
+        delay: 500,
+        minLength: 1,
+        select: function (event, ui) {
+            event.preventDefault();
+            ui.item.cantidad = 1;
+            ui.item.subtotal = 0.00;
+            venta.addServicio(ui.item);
+            $(this).val('');
+        }
+    });
+
+    // eventos tabla Servicios
+    $('#tablaServicios tbody')
+        //Evento eliminar renglon del detalle
+        .on('click', 'a[rel="remove"]', function () {
+            //obtenemos la posicion del datatables
+            var tr = tablaServicios.cell($(this).closest('td, li')).index();
+            //Mostramos el Modal de Eliminacion
+            $('#deleteModal').modal('show');
+            $('.btnDelete').on('click', function (e) {
+                $('#deleteModal').modal('hide');
+                //removemos la posicion del array con la cantidad de elementos a eliminar
+                venta.items.servicios.splice(tr.row, 1);
+                //Actualizamos el Listado
+                venta.listServicios();
+            });
+        })
+        //evento cambiar renglon (cantidad) del detalle
+        .on('change', 'input[name="cantidad"]', function () {
+            //asignamos a una variable la cantidad, en la posicion actual
+            var cant = parseInt($(this).val());
+            //Obtenemos la posicion del elemento a modificar dentro del Datatables
+            var tr = tablaServicios.cell($(this).closest('td, li')).index();
+            venta.items.servicios[tr.row].cantidad = cant;
+            //Actualizamos los importes
+            venta.calcular_importes();
+            //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
+            $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + venta.items.servicios[tr.row].subtotal.toFixed(2));
+        });
+
+    //Borrar desde el boton de busqueda de productos
+    $('.btnClearSearchServicios').on('click', function () {
+        $('input[name="searchServicios"]').val('').focus();
+    });
+
+    //Borrar todos los productos
+    $('.btnRemoveAllServicios').on('click', function () {
+        if (venta.items.servicios.length === 0) return false;
+        //Mostramos el Modal de Eliminacion
+        $('#deleteModal').modal('show');
+        $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar todos los registros?';
+        $('.btnDelete').on('click', function (e) {
+            $('#deleteModal').modal('hide');
+            //removemos el listado de productos
+            venta.items.servicios = [];
+            //Actualizamos el Listado
+            venta.listServicios();
+        });
+
     });
 });

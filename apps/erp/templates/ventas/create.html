@@ -94,24 +94,27 @@
                                 <div class="form-group">
                                     <label>Buscador de productos:</label>
                                     <div class="input-group">
-                                        <select class="form-control select2" name="searchProductos">
-                                        </select>
-
+                                        <input type="text" class="form-control" name="searchProductos"
+                                               placeholder="Ingrese una descripción de producto" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
                                     </div>
                                 </div>
                                 <hr>
-                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAll">
-                                    <i class="fas fa-trash"></i> Eliminar todos mis items
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                    <i class="fas fa-trash"></i> Eliminar todos
                                 </button>
                                 <hr>
                                 <table class="table table-bordered" id="tablaProductos">
                                     <thead>
                                     <tr>
-                                        <th>Eliminar</th>
-                                        <th>Producto</th>
-                                        <th>Importe</th>
-                                        <th>Cantidad</th>
-                                        <th>Subtotal</th>
+                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                        <th scope="col" style="width: 60%;">Producto</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -131,24 +134,27 @@
                                 <div class="form-group">
                                     <label>Buscador de servicios:</label>
                                     <div class="input-group">
-                                        <select class="form-control select2" name="searchServicio">
-
-                                        </select>
-
+                                        <input type="text" class="form-control" name="searchServicios"
+                                               placeholder="Ingrese una descripción de Servicio" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchServicios"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
                                     </div>
                                 </div>
                                 <hr>
-                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAll">
-                                    <i class="fas fa-trash"></i> Eliminar todos mis items
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
+                                    <i class="fas fa-trash"></i> Eliminar todos
                                 </button>
                                 <hr>
                                 <table class="table table-bordered" id="tablaServicios">
                                     <thead>
                                     <tr>
-                                        <th>Eliminar</th>
-                                        <th>Servicio</th>
-                                        <th>Cantidad</th>
-                                        <th>Subtotal</th>
+                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                        <th scope="col" style="width: 60%;">Servicio</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -333,4 +339,27 @@
             </div>
         </form>
     </div>
+
+    <!-- Modal Delete-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="msjErrorModal">¿Estás seguro de eliminar el registro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btnDelete">Si</button>
+                    <button type="button" class="btn btn-danger btnNo" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
