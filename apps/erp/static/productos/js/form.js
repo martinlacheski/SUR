@@ -48,6 +48,15 @@ $(function () {
         maxboostedstep: 10,
         postfix: '%'
     });
+    $("input[name='precioVenta']").TouchSpin({
+        min: 0,
+        max: 10000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
 
     //Funcion Mostrar Errores del Formulario
     function message_error(obj, errorList) {
@@ -87,6 +96,9 @@ $(function () {
     });
     $('select[name="iva"]').on('change', function () {
         calcularPrecio();
+    });
+    $('input[name="precioVenta"]').on('change', function () {
+        calcularUtilidad();
     });
 
     //Boton Categoria Modal Mostrar
@@ -284,6 +296,36 @@ function calcularPrecio() {
     if (iva > 0) {
         var precio = (costo * utilidad * iva);
         $('input[name="precioVenta"]').val(precio);
+    }
+}
+
+//Funcion para calcular el precio entre COSTO IVA y TOTAL
+function calcularUtilidad() {
+    var id = $('select[name="iva"]').val();
+    var iva = 0;
+    var costo = $('input[name="costo"]').val();
+    var total = $('input[name="precioVenta"]').val();
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'search_iva',
+            'pk': id
+        },
+        dataType: 'json',
+        success: function (data) {
+            iva = (data.iva);
+            iva = (iva / 100) + 1;
+            if (iva > 0) {
+                var precio = (((total / iva) / costo) - 1) * 100;
+                $('input[name="utilidad"]').val(precio.toFixed(2));
+            }
+        }
+    });
+    if (iva > 0) {
+        var precio = (((total / iva) / costo) - 1) * 100;
+        $('input[name="utilidad"]').val(precio);
     }
 }
 

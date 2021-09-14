@@ -160,7 +160,7 @@ class Productos(models.Model):
     stockMinimo = models.PositiveIntegerField(default=0, verbose_name='Stock Mínimo')
     reposicion = models.PositiveIntegerField(default=0, verbose_name='Pedido Reposición')
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Costo')
-    utilidad = models.DecimalField(default=30, max_digits=9, decimal_places=2, verbose_name='Margen de Utilidad')
+    utilidad = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Margen de Utilidad')
     iva = models.ForeignKey(TiposIVA, models.DO_NOTHING, verbose_name='Tipo de IVA')
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
     imagen = models.ImageField(upload_to='productos/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
