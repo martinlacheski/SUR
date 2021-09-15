@@ -19,6 +19,7 @@ class tiposEvento(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['usuarioNotif'] = self.usuarioNotif.toJSON()
         return item
 
     class Meta:

@@ -20,7 +20,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             form = self.get_form()
             if form.is_valid():
                 form.save()
-                scheduler_eventos()
+                #scheduler_eventos()
             else:
                 print(form.errors)
         except Exception as e:

@@ -32,7 +32,7 @@ $(function () {
             {"data": "recordarSistema"},
             {"data": "recordarTelegram"},
             {"data": "recordarEmail"},
-            {"data": "usuarioNotif"},
+            {"data": "usuarioNotif.username"},
             {"data": "nombre"}, //va duplicado algun campo por la botonera
 
         ],
