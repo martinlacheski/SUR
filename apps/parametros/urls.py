@@ -8,6 +8,7 @@ from apps.parametros.views.modelos.views import *
 from apps.parametros.views.prioridades.views import *
 from apps.parametros.views.tiposComprobante.views import *
 from apps.parametros.views.tiposIVA.views import *
+from apps.parametros.views.tiposPercepciones.views import *
 
 app_name = 'parametros'
 
@@ -22,6 +23,11 @@ urlpatterns = [
     path('condiciones-iva/add/', CondicionesIVACreateView.as_view(), name='condicionesIVA_create'),
     path('condiciones-iva/update/<int:pk>/', CondicionesIVAUpdateView.as_view(), name='condicionesIVA_update'),
     path('condiciones-iva/delete/<int:pk>/', CondicionesIVADeleteView.as_view(), name='condicionesIVA_delete'),
+    #Tipos de Percepciones
+    path('tipos-percepciones/list/', TiposPercepcionesListView.as_view(), name='tiposPercepciones_list'),
+    path('tipos-percepciones/add/', TiposPercepcionesCreateView.as_view(), name='tiposPercepciones_create'),
+    path('tipos-percepciones/update/<int:pk>/', TiposPercepcionesUpdateView.as_view(), name='tiposPercepciones_update'),
+    path('tipos-percepciones/delete/<int:pk>/', TiposPercepcionesDeleteView.as_view(), name='tiposPercepciones_delete'),
     #Condiciones de Pago
     path('condiciones-pago/list/', CondicionesPagoListView.as_view(), name='condicionesPago_list'),
     path('condiciones-pago/add/', CondicionesPagoCreateView.as_view(), name='condicionesPago_create'),

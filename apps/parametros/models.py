@@ -47,6 +47,29 @@ class CondicionesIVA(models.Model):
         super(CondicionesIVA, self).save(force_insert, force_update)
 
 
+class TiposPercepciones(models.Model):
+    nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    percepcion = models.DecimalField(default=0, max_digits=9, decimal_places=2, verbose_name='Porcentaje')
+
+    def __str__(self):
+        return self.nombre
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Tipo de Percepción'
+        verbose_name_plural = 'Tipos de Percepciones'
+        db_table = 'parametros_tipos_percepciones'
+        ordering = ['id']
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.nombre = self.nombre.upper()
+        super(TiposPercepciones, self).save(force_insert, force_update)
+
+
 class CondicionesPago(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
 
@@ -167,6 +190,7 @@ class Estados(models.Model):
 #Prioridad de TRABAJOS
 class Prioridades(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    plazoPrioridad = models.PositiveIntegerField(default=0, verbose_name='Días de PLazo')
 
     def __str__(self):
         return self.nombre

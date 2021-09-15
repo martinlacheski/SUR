@@ -306,6 +306,9 @@ class ClientesForm(ModelForm):
                     'placeholder': 'INGRESE UN ALIAS',
                 }
             ),
+            'tipoPercepcion': Select(attrs={
+                'class': 'form-control select2',
+            }),
             'condicionPago': Select(attrs={
                 'class': 'form-control select2',
             }),
@@ -392,6 +395,9 @@ class ProveedoresForm(ModelForm):
                     'placeholder': 'INGRESE UN ALIAS',
                 }
             ),
+            'tipoPercepcion': Select(attrs={
+                'class': 'form-control select2',
+            }),
             'condicionPago': Select(attrs={
                 'class': 'form-control select2',
             }),

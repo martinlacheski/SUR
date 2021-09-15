@@ -32,7 +32,7 @@ function error_action(title, content, callback, cancel) {
     $.confirm({
         theme: 'material',
         title: title,
-        icon: 'fa fa-info',
+        icon: 'fa fa-exclamation-circle',
         content: content,
         columnClass: 'small',
         typeAnimated: true,

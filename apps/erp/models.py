@@ -4,7 +4,7 @@ from django.db import models
 from django.forms import model_to_dict
 
 from apps.geografico.models import Localidades
-from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes
+from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones
 from apps.usuarios.models import Usuarios
 from config.settings import MEDIA_URL, STATIC_URL
 
@@ -20,6 +20,7 @@ class Clientes(models.Model):
     email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
     cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción', null=True, blank=True)
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
@@ -31,6 +32,7 @@ class Clientes(models.Model):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
         item['localidad'] = self.localidad.toJSON()
+        item['tipoPercepcion'] = self.tipoPercepcion.toJSON()
         item['condicionPago'] = self.condicionPago.toJSON()
         item['limiteCtaCte'] = format(self.limiteCtaCte, '.2f')
         return item
@@ -63,6 +65,8 @@ class Proveedores(models.Model):
     email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
     cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción',
+                                       null=True, blank=True)
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
@@ -73,6 +77,7 @@ class Proveedores(models.Model):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
         item['localidad'] = self.localidad.toJSON()
+        item['tipoPercepcion'] = self.tipoPercepcion.toJSON()
         item['condicionPago'] = self.condicionPago.toJSON()
         return item
 
