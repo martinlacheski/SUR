@@ -28,7 +28,7 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 with transaction.atomic():
                     formCliente = ClientesForm(request.POST)
                     data = formCliente.save()
-
+            # Buscamos los distintos productos ingresando por teclado
             elif action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
@@ -41,6 +41,18 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     # Creamos un item VALUE para que reconozca el input de Busqueda
                     item['value'] = i.descripcion
                     data.append(item)
+            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
+            elif action == 'get_producto':
+                term = request.POST['term'].strip()
+                try:
+                    producto = Productos.objects.get(
+                        Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
+                        | Q(codigoBarras1__icontains=term))
+                    item = producto.toJSON()
+                    data['producto'] = item
+                except Exception as e:
+                    data['error'] = str(e)
+            # Buscamos los distintos servicios ingresando por teclado
             elif action == 'search_servicios':
                 data = []
                 term = request.POST['term'].strip()
@@ -52,6 +64,15 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     # Creamos un item VALUE para que reconozca el input de Busqueda
                     item['value'] = i.descripcion
                     data.append(item)
+            # Metodo para obtener un servicio por codigo + ENTER o lector de codigos de barras + ENTER
+            elif action == 'get_servicio':
+                term = request.POST['term'].strip()
+                try:
+                    servicio = Servicios.objects.get(Q(codigo__icontains=term))
+                    item = servicio.toJSON()
+                    data['servicio'] = item
+                except Exception as e:
+                    data['error'] = str(e)
             elif action == 'add':
                 with transaction.atomic():
                     ventas = json.loads(request.POST['ventas'])

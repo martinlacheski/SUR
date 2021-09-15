@@ -260,7 +260,7 @@ class ClientesForm(ModelForm):
         widgets = {
             'razonSocial': TextInput(
                 attrs={
-                    'placeholder': 'INGRESE UNA DESCRIPCIÓN',
+                    'placeholder': 'INGRESE UNA RAZÓN SOCIAL',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -346,7 +346,7 @@ class ProveedoresForm(ModelForm):
         widgets = {
             'razonSocial': TextInput(
                 attrs={
-                    'placeholder': 'INGRESE UNA DESCRIPCIÓN',
+                    'placeholder': 'INGRESE UNA RAZÓN SOCIAL',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }

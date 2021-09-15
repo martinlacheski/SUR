@@ -33,7 +33,7 @@ class TiposUsuarios(models.Model):
 
 #   Clase Usuarios
 class Usuarios(AbstractUser):
-    legajo = models.CharField(max_length=10, null=True, blank=True, verbose_name='Legajo')
+    legajo = models.CharField(max_length=10, null=True, blank=True, verbose_name='Legajo', unique=True)
     fechaIngreso = models.DateField(verbose_name='Fecha de Ingreso', null=True, blank=True)
     cuil = models.CharField(max_length=11, verbose_name='Cuil', null=True, blank=True)
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad', null=True, blank=True)

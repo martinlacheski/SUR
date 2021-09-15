@@ -195,8 +195,6 @@ $(function () {
 
     //Submit Formulario Producto
     $('#ajaxForm').on('submit', function (e) {
-        console.log('x');
-        // $("#ajaxForm").submit(function (e) {
         // VALIDACION DE LOS CAMPOS
         $("#subcategoria").validate();
         $("#descripcion").validate();

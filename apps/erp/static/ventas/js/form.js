@@ -22,24 +22,25 @@ var venta = {
         var subtotal = 0.00;
         var ivaCalculado = 0.00;
         //Recorremos el Array de productos para ir actualizando los importes
-        $.each(this.items.productos, function (pos, dict) {
+        $.each(venta.items.productos, function (pos, dict) {
             dict.pos = pos;
             dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
             ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
             subtotal += dict.subtotal;
         });
-        $.each(this.items.servicios, function (pos, dict) {
+        //Recorremos el Array de servicios para ir actualizando los importes
+        $.each(venta.items.servicios, function (pos, dict) {
             dict.pos = pos;
             dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
             ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
             subtotal += dict.subtotal;
         });
-        this.items.subtotal = subtotal - ivaCalculado;
-        this.items.iva = ivaCalculado;
-        this.items.total = this.items.subtotal + this.items.iva;
-        $('input[name="subtotal"]').val(this.items.subtotal.toFixed(2));
-        $('input[name="iva"]').val(this.items.iva.toFixed(2));
-        $('input[name="total"]').val(this.items.total.toFixed(2));
+        venta.items.subtotal = subtotal - ivaCalculado;
+        venta.items.iva = ivaCalculado;
+        venta.items.total = venta.items.subtotal + venta.items.iva;
+        $('input[name="subtotal"]').val(venta.items.subtotal.toFixed(2));
+        $('input[name="iva"]').val(venta.items.iva.toFixed(2));
+        $('input[name="total"]').val(venta.items.total.toFixed(2));
     },
     //Funcion Agregar Producto al Array
     addProducto: function (item) {
@@ -55,7 +56,6 @@ var venta = {
     //Listar los productos en el Datatables
     listProductos: function () {
         this.calcular_importes();
-        //this.calculate_invoice();
         tablaProductos = $('#tablaProductos').DataTable({
             paging: false,
             searching: false,
@@ -65,7 +65,7 @@ var venta = {
             lengthMenu: [25, 50, 75, 100],
             autoWidth: false,
             destroy: true,
-            data: this.items.productos,
+            data: venta.items.productos,
             columns: [
                 {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
@@ -395,43 +395,43 @@ $(function () {
 
 //------------------------------------EVENTOS PRODUCTOS----------------------------------------//
     //Buscar Productos
-    $('input[name="searchProductos"]').autocomplete({
-        source: function (request, response) {
+    $('input[name="searchProductos"]')
+        .autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    url: window.location.pathname,
+                    type: 'POST',
+                    data: {
+                        'action': 'search_productos',
+                        'term': request.term
+                    },
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                }).done(function (data) {
+                    response(data);
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                }).always(function (data) {
+                });
+            },
+            delay: 500,
+            minLength: 1,
+            select: function (event, ui) {
+                event.preventDefault();
+                ui.item.cantidad = 1;
+                ui.item.subtotal = 0.00;
+                venta.addProducto(ui.item);
+                $(this).val('');
+            },
+        }).on('keydown', function (evt) {
+        if (evt.key === "Enter" || evt.keyCode === 13) {
+            evt.preventDefault();
             $.ajax({
                 url: window.location.pathname,
                 type: 'POST',
                 data: {
-                    'action': 'search_productos',
-                    'term': request.term
-                },
-                dataType: 'json',
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-            }).done(function (data) {
-                response(data);
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-            }).always(function (data) {
-            });
-        },
-        delay: 500,
-        minLength: 1,
-        select: function (event, ui) {
-            event.preventDefault();
-            ui.item.cantidad = 1;
-            ui.item.subtotal = 0.00;
-            venta.addProducto(ui.item);
-            $(this).val('');
-        },
-    });
-
-    $('input[name="searchProductos"]').on('keydown', function (e) {
-        if (event.keyCode === 13) {
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: {
-                    'action': 'search_productos',
+                    'action': 'get_producto',
                     'term': $(this).val()
                 },
                 dataType: 'json',
@@ -440,15 +440,18 @@ $(function () {
                 },
             }).done(function (data) {
                 if (!data.hasOwnProperty('error')) {
-                    e.preventDefault();
-                    console.log("entra al evento");
-                    // event.preventDefault();
-                    // item.cantidad = 1;
-                    // item.subtotal = 0.00;
-                    // venta.addProducto(item);
-                    // $(this).val('');
+                    var item = (data.producto);
+                    item.cantidad = 1;
+                    item.subtotal = 0.00;
+                    venta.addProducto(item);
+                    $('input[name="searchProductos"]').val('');
+                    $('input[name="searchProductos"]').focus();
                 } else {
-                    console.log("No existe producto");
+                    error_action('Error', 'No existe el producto con el código ingresado', function () {
+                        //pass
+                    }, function () {
+                        //pass
+                    });
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function (data) {
@@ -456,21 +459,19 @@ $(function () {
         }
     });
 
-
 // eventos tabla Productos
     $('#tablaProductos tbody')
         //Evento eliminar renglon del detalle
         .on('click', 'a[rel="remove"]', function () {
             //obtenemos la posicion del datatables
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
-            //Mostramos el Modal de Eliminacion
-            $('#deleteModal').modal('show');
-            $('.btnDelete').on('click', function (e) {
-                $('#deleteModal').modal('hide');
+            //Ejecutar la Funcion de Confirmacion
+            confirm_action('Confirmación', '¿Estas seguro de eliminar el registro?', function () {
                 //removemos la posicion del array con la cantidad de elementos a eliminar
                 venta.items.productos.splice(tr.row, 1);
                 //Actualizamos el Listado
                 venta.listProductos();
+            }, function () {
             });
         })
         //evento cambiar renglon (cantidad) del detalle
@@ -494,17 +495,14 @@ $(function () {
 //Borrar todos los productos
     $('.btnRemoveAllProductos').on('click', function () {
         if (venta.items.productos.length === 0) return false;
-        //Mostramos el Modal de Eliminacion
-        $('#deleteModal').modal('show');
-        $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar todos los registros?';
-        $('.btnDelete').on('click', function (e) {
-            $('#deleteModal').modal('hide');
+        //Ejecutar la Funcion de Confirmacion
+        confirm_action('Confirmación', '¿Estas seguro de eliminar todos los registros?', function () {
             //removemos el listado de productos
             venta.items.productos = [];
             //Actualizamos el Listado
             venta.listProductos();
+        }, function () {
         });
-
     });
 
 //------------------------------------EVENTOS SERVICIOS----------------------------------------//
@@ -536,6 +534,39 @@ $(function () {
             ui.item.subtotal = 0.00;
             venta.addServicio(ui.item);
             $(this).val('');
+        },
+    }).on('keydown', function (evt) {
+        if (evt.key === "Enter" || evt.keyCode === 13) {
+            evt.preventDefault();
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'get_servicio',
+                    'term': $(this).val()
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    var item = (data.servicio);
+                    item.cantidad = 1;
+                    item.subtotal = 0.00;
+                    venta.addServicio(item);
+                    $('input[name="searchServicios"]').val('');
+                    $('input[name="searchServicios"]').focus();
+                } else {
+                    error_action('Error', 'No existe el servicio con el código ingresado', function () {
+                        //pass
+                    }, function () {
+                        //pass
+                    });
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+            });
         }
     });
 
@@ -545,14 +576,13 @@ $(function () {
         .on('click', 'a[rel="remove"]', function () {
             //obtenemos la posicion del datatables
             var tr = tablaServicios.cell($(this).closest('td, li')).index();
-            //Mostramos el Modal de Eliminacion
-            $('#deleteModal').modal('show');
-            $('.btnDelete').on('click', function (e) {
-                $('#deleteModal').modal('hide');
+            //Ejecutar la Funcion de Confirmacion
+            confirm_action('Confirmación', '¿Estas seguro de eliminar el registro?', function () {
                 //removemos la posicion del array con la cantidad de elementos a eliminar
                 venta.items.servicios.splice(tr.row, 1);
                 //Actualizamos el Listado
                 venta.listServicios();
+            }, function () {
             });
         })
         //evento cambiar renglon (cantidad) del detalle
@@ -573,20 +603,16 @@ $(function () {
         $('input[name="searchServicios"]').val('').focus();
     });
 
-//Borrar todos los productos
+//Borrar todos los Servicios
     $('.btnRemoveAllServicios').on('click', function () {
         if (venta.items.servicios.length === 0) return false;
-        //Mostramos el Modal de Eliminacion
-        $('#deleteModal').modal('show');
-        $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar todos los registros?';
-        $('.btnDelete').on('click', function (e) {
-            $('#deleteModal').modal('hide');
-            //removemos el listado de productos
+        //Ejecutar la Funcion de Confirmacion
+        confirm_action('Confirmación', '¿Estas seguro de eliminar todos los registros?', function () {
+            //removemos el listado de servicios
             venta.items.servicios = [];
             //Actualizamos el Listado
             venta.listServicios();
+        }, function () {
         });
-
     });
 })
-;
