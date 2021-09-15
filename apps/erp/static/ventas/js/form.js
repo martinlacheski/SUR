@@ -218,7 +218,7 @@ function isValidEmail(mail) {
 };
 
 //Inicializamos a CERO los campos de importes
-$(document).ready(function() {
+$(document).ready(function () {
     $('input[name="subtotal"]').val('0.00');
     $('input[name="iva"]').val('0.00');
     $('input[name="percepcion"]').val('0.00');
@@ -285,7 +285,6 @@ $(function () {
         maxboostedstep: 10,
         postfix: 'Días'
     });
-
 
 
 //------------------------------------MODAL CLIENTES----------------------------------------//
@@ -423,11 +422,42 @@ $(function () {
             ui.item.subtotal = 0.00;
             venta.addProducto(ui.item);
             $(this).val('');
+        },
+    });
+
+    $('input[name="searchProductos"]').on('keydown', function (e) {
+        if (event.keyCode === 13) {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'search_productos',
+                    'term': $(this).val()
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    e.preventDefault();
+                    console.log("entra al evento");
+                    // event.preventDefault();
+                    // item.cantidad = 1;
+                    // item.subtotal = 0.00;
+                    // venta.addProducto(item);
+                    // $(this).val('');
+                } else {
+                    console.log("No existe producto");
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+            });
         }
     });
 
 
-    // eventos tabla Productos
+// eventos tabla Productos
     $('#tablaProductos tbody')
         //Evento eliminar renglon del detalle
         .on('click', 'a[rel="remove"]', function () {
@@ -456,12 +486,12 @@ $(function () {
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + venta.items.productos[tr.row].subtotal.toFixed(2));
         });
 
-    //Borrar desde el boton de busqueda de productos
+//Borrar desde el boton de busqueda de productos
     $('.btnClearSearchProductos').on('click', function () {
         $('input[name="searchProductos"]').val('').focus();
     });
 
-    //Borrar todos los productos
+//Borrar todos los productos
     $('.btnRemoveAllProductos').on('click', function () {
         if (venta.items.productos.length === 0) return false;
         //Mostramos el Modal de Eliminacion
@@ -478,7 +508,7 @@ $(function () {
     });
 
 //------------------------------------EVENTOS SERVICIOS----------------------------------------//
-    //Buscar Servicios
+//Buscar Servicios
     $('input[name="searchServicios"]').autocomplete({
         source: function (request, response) {
             $.ajax({
@@ -509,7 +539,7 @@ $(function () {
         }
     });
 
-    // eventos tabla Servicios
+// eventos tabla Servicios
     $('#tablaServicios tbody')
         //Evento eliminar renglon del detalle
         .on('click', 'a[rel="remove"]', function () {
@@ -538,12 +568,12 @@ $(function () {
             $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + venta.items.servicios[tr.row].subtotal.toFixed(2));
         });
 
-    //Borrar desde el boton de busqueda de productos
+//Borrar desde el boton de busqueda de productos
     $('.btnClearSearchServicios').on('click', function () {
         $('input[name="searchServicios"]').val('').focus();
     });
 
-    //Borrar todos los productos
+//Borrar todos los productos
     $('.btnRemoveAllServicios').on('click', function () {
         if (venta.items.servicios.length === 0) return false;
         //Mostramos el Modal de Eliminacion
@@ -558,4 +588,5 @@ $(function () {
         });
 
     });
-});
+})
+;
