@@ -184,6 +184,7 @@
                             id: "{{ evento.id }}",
                             title: "{{ evento.tipoEvento }}" ,
                             start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                            repeat: 1
                         },
                     {% endfor %}
                 ],
@@ -192,7 +193,7 @@
                 locale: 'es',
                 height: 650,
                 headerToolbar: {
-                    left: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    left: 'dayGridMonth',
                     center: 'title',
                     right: 'prevYear,prev,next,nextYear'
                 },

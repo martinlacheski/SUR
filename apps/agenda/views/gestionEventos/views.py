@@ -5,7 +5,7 @@ from apps.agenda.forms import *
 from apps.mixins import ValidatePermissionRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-
+from apps.agenda.jobs import scheduler_eventos
 
 
 class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
@@ -20,6 +20,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             form = self.get_form()
             if form.is_valid():
                 form.save()
+                scheduler_eventos()
             else:
                 print(form.errors)
         except Exception as e:
@@ -30,6 +31,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         context = super().get_context_data(**kwargs)
         context['eventos'] = eventosAgenda.objects.all()
         context['update_url'] = 'agenda/updateEvento/'
+        context['delete_url'] = '/agenda/deleteEvento/'
         context['action'] = 'add'
         return context
 

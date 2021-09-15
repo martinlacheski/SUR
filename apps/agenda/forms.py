@@ -50,11 +50,14 @@ class GestionEventosForm(ModelForm):
             )
         }
 
-    def save(self):
+    def save(self, commit=True):
         data = {}
         form = super()
         try:
-            form.save()
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
         return data
@@ -67,6 +70,7 @@ class GestionTiposEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre'].widget.attrs['autofocus'] = True
+
 
     class Meta:
         model = tiposEvento
@@ -108,17 +112,20 @@ class GestionTiposEventosForm(ModelForm):
             ),
             'usuarioNotif': Select(
                 attrs={
-                    'class' : 'form-select form-control select2'
+                    'class' : 'form-select form-control select2',
+                    'required': '',
                 }
             ),
         }
 
-    def save(self):
+    def save(self, commit=True):
         data = {}
         form = super()
         try:
-
-            form.save()
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
         return data

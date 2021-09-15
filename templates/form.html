@@ -80,6 +80,7 @@
         //Hacemos el envio del Formulario mediante AJAX
         $("#ajaxForm").submit(function (e) {
             e.preventDefault();
+            console.log("entramos ak");
             $.ajax({
                 url: window.location.href,
                 type: 'POST',
@@ -92,6 +93,7 @@
                         location.replace(data.redirect);
                     } else {
                         message_error(data.error);
+                        console.log("entramos al error");
                     }
                 }
             });

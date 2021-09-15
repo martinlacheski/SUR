@@ -51,7 +51,7 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         data = {}
         try:
             form = self.get_form()
-            form.save()
+            data = form.save()
             data['redirect'] = self.url_redirect
             print("hola1")
             print(data)
@@ -86,7 +86,6 @@ class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         data = {}
         try:
             form = self.get_form()
-            #data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
             form.save()
             data['redirect'] = self.success_url
         except Exception as e:
