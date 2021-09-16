@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -24,7 +25,12 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
         data = {}
         try:
             action = request.POST['action']
-            if action == 'create_cliente':
+            # buscamos la percepcion del cliente
+            if action == 'search_percepcion':
+                cliente = Clientes.objects.get(id=request.POST['pk'])
+                data['percepcion'] = cliente.tipoPercepcion.percepcion
+            # si no existe el cliente lo creamos
+            elif action == 'create_cliente':
                 with transaction.atomic():
                     formCliente = ClientesForm(request.POST)
                     data = formCliente.save()
@@ -75,18 +81,20 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     data['error'] = str(e)
             elif action == 'add':
                 with transaction.atomic():
-                    ventas = json.loads(request.POST['ventas'])
+                    formVentaRequest = json.loads(request.POST['venta'])
                     venta = Ventas()
-                    venta.fecha = ventas['fecha']
-                    venta.tipoComprobante_id = ventas['tipoComprobante']
-                    venta.cliente_id = ventas['cliente']
-                    venta.condicionPago_id = ventas['condicionPago']
-                    venta.subtotal = float(ventas['subtotal'])
-                    venta.iva = float(ventas['iva'])
-                    venta.percepcion = float(ventas['percepcion'])
-                    venta.total = float(ventas['total'])
+                    venta.fecha = formVentaRequest['fecha']
+                    venta.tipoComprobante_id = formVentaRequest['tipoComprobante']
+                    # venta.usuario = formVentaRequest['usuario']
+                    venta.usuario = request.user
+                    venta.cliente_id = formVentaRequest['cliente']
+                    venta.condicionPago_id = formVentaRequest['condicionPago']
+                    venta.subtotal = float(formVentaRequest['subtotal'])
+                    venta.iva = float(formVentaRequest['iva'])
+                    venta.percepcion = float(formVentaRequest['percepcion'])
+                    venta.total = float(formVentaRequest['total'])
                     venta.save()
-                    for i in ventas['productos']:
+                    for i in formVentaRequest['productos']:
                         det = DetalleProductosVenta()
                         det.venta_id = venta.id
                         det.producto_id = i['id']
@@ -96,7 +104,7 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                         det.save()
                         det.producto.stockReal -= det.cantidad
                         det.producto.save()
-                    for i in ventas['servicios']:
+                    for i in formVentaRequest['servicios']:
                         det = DetalleServiciosVenta()
                         det.venta_id = venta.id
                         det.servicio_id = i['id']
@@ -109,6 +117,7 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):

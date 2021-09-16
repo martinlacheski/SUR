@@ -32,7 +32,10 @@ class Clientes(models.Model):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
         item['localidad'] = self.localidad.toJSON()
-        item['tipoPercepcion'] = self.tipoPercepcion.toJSON()
+        try:
+            item['tipoPercepcion'] = self.tipoPercepcion.toJSON()
+        except:
+            pass
         item['condicionPago'] = self.condicionPago.toJSON()
         item['limiteCtaCte'] = format(self.limiteCtaCte, '.2f')
         return item
@@ -277,7 +280,7 @@ class Servicios(models.Model):
 
 #   Clase Ventas
 class Ventas(models.Model):
-    tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante', null=True, blank=True)
+    tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante')
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
     fecha = models.DateField(default=datetime.now)
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')

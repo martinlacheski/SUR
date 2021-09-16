@@ -1,5 +1,6 @@
 var tablaProductos;
 var tablaServicios;
+var percepcionPorcentaje = 0.00;
 //Definimos una estructura en JS para crear la venta
 var venta = {
     items: {
@@ -17,31 +18,7 @@ var venta = {
         //detalle de servicios
         servicios: []
     },
-    calcular_importes: function () {
-        //Inicializamos variables para calcular importes
-        var subtotal = 0.00;
-        var ivaCalculado = 0.00;
-        //Recorremos el Array de productos para ir actualizando los importes
-        $.each(venta.items.productos, function (pos, dict) {
-            dict.pos = pos;
-            dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-            ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
-            subtotal += dict.subtotal;
-        });
-        //Recorremos el Array de servicios para ir actualizando los importes
-        $.each(venta.items.servicios, function (pos, dict) {
-            dict.pos = pos;
-            dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-            ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
-            subtotal += dict.subtotal;
-        });
-        venta.items.subtotal = subtotal - ivaCalculado;
-        venta.items.iva = ivaCalculado;
-        venta.items.total = venta.items.subtotal + venta.items.iva;
-        $('input[name="subtotal"]').val(venta.items.subtotal.toFixed(2));
-        $('input[name="iva"]').val(venta.items.iva.toFixed(2));
-        $('input[name="total"]').val(venta.items.total.toFixed(2));
-    },
+
     //Funcion Agregar Producto al Array
     addProducto: function (item) {
         this.items.productos.push(item);
@@ -55,7 +32,7 @@ var venta = {
     //----------------------------------------------------------------------------//
     //Listar los productos en el Datatables
     listProductos: function () {
-        this.calcular_importes();
+        calcular_importes();
         tablaProductos = $('#tablaProductos').DataTable({
             paging: false,
             searching: false,
@@ -127,7 +104,7 @@ var venta = {
     //----------------------------------------------------------------------------//
     //Listar los servicios en el Datatables
     listServicios: function () {
-        this.calcular_importes();
+        calcular_importes();
         //this.calculate_invoice();
         tablaServicios = $('#tablaServicios').DataTable({
             paging: false,
@@ -217,12 +194,70 @@ function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 };
 
+//Funcion para Calcular los importes
+function calcular_importes() {
+    //Inicializamos variables para calcular importes
+    var subtotal = 0.00;
+    var ivaCalculado = 0.00;
+    var percepcion = 0.00;
+    //Recorremos el Array de productos para ir actualizando los importes
+    $.each(venta.items.productos, function (pos, dict) {
+        dict.pos = pos;
+        dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
+        ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
+        subtotal += dict.subtotal;
+    });
+    //Recorremos el Array de servicios para ir actualizando los importes
+    $.each(venta.items.servicios, function (pos, dict) {
+        dict.pos = pos;
+        dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
+        ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
+        subtotal += dict.subtotal;
+    });
+    //Asignamos los valores a los campos
+    venta.items.subtotal = subtotal - ivaCalculado;
+    venta.items.iva = ivaCalculado;
+    venta.items.percepcion = percepcion;
+    if (percepcionPorcentaje > 0) {
+        venta.items.percepcion = venta.items.subtotal * (percepcionPorcentaje / 100);
+        venta.items.total = venta.items.subtotal + venta.items.iva + venta.items.percepcion;
+    } else {
+        venta.items.percepcion = percepcion;
+        venta.items.total = venta.items.subtotal + venta.items.iva;
+    }
+    $('input[name="subtotal"]').val(venta.items.subtotal.toFixed(2));
+    $('input[name="iva"]').val(venta.items.iva.toFixed(2));
+    $('input[name="percepcion"]').val(venta.items.percepcion.toFixed(2));
+    $('input[name="total"]').val(venta.items.total.toFixed(2));
+};
+
+//Funcion para buscar la percepcion del cliente
+function searchPercepcion() {
+    var id = $('select[name="cliente"]').val();
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'search_percepcion',
+            'pk': id
+        },
+        dataType: 'json',
+        success: function (data) {
+            percepcionPorcentaje = parseFloat(data.percepcion);
+        }
+    });
+};
+
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
     $('input[name="subtotal"]').val('0.00');
     $('input[name="iva"]').val('0.00');
     $('input[name="percepcion"]').val('0.00');
     $('input[name="total"]').val('0.00');
+    $('select[name="cliente"]').val(null).trigger('change');
+    $('input[name="searchProductos"]').attr('disabled', true);
+    $('input[name="searchServicios"]').attr('disabled', true);
 });
 
 $(function () {
@@ -286,9 +321,35 @@ $(function () {
         postfix: 'Días'
     });
 
+//----------------------Buscamos si el cliente tiene Percepcion-----------------------------//
+    $('select[name="cliente"]').on('change', function () {
+        var id = $('select[name="cliente"]').val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_percepcion',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                //asignamos a la variable global el porcentaje de percepcion
+                percepcionPorcentaje = parseFloat(data.percepcion);
+                //actualizamos los importes
+                calcular_importes();
+            }
+        });
+        if (id !== null && id !== '' && id !== undefined) {
+            $('input[name="searchProductos"]').attr('disabled', false);
+            $('input[name="searchServicios"]').attr('disabled', false);
+        } else {
+            $('input[name="searchProductos"]').attr('disabled', true);
+            $('input[name="searchServicios"]').attr('disabled', true);
+        }
+    });
 
 //------------------------------------MODAL CLIENTES----------------------------------------//
-
     //Boton Cliente Modal Mostrar
     $('.btnAddCliente').on('click', function () {
         $('#modalCliente').modal('show');
@@ -450,7 +511,8 @@ $(function () {
                     error_action('Error', 'No existe el producto con el código ingresado', function () {
                         //pass
                     }, function () {
-                        //pass
+                        $('input[name="searchProductos"]').val('');
+                        $('input[name="searchProductos"]').focus();
                     });
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -491,7 +553,6 @@ $(function () {
     $('.btnClearSearchProductos').on('click', function () {
         $('input[name="searchProductos"]').val('').focus();
     });
-
 //Borrar todos los productos
     $('.btnRemoveAllProductos').on('click', function () {
         if (venta.items.productos.length === 0) return false;
@@ -506,7 +567,7 @@ $(function () {
     });
 
 //------------------------------------EVENTOS SERVICIOS----------------------------------------//
-//Buscar Servicios
+// Buscar Servicios
     $('input[name="searchServicios"]').autocomplete({
         source: function (request, response) {
             $.ajax({
@@ -561,7 +622,8 @@ $(function () {
                     error_action('Error', 'No existe el servicio con el código ingresado', function () {
                         //pass
                     }, function () {
-                        //pass
+                        $('input[name="searchServicios"]').val('');
+                        $('input[name="searchServicios"]').focus();
                     });
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
@@ -569,8 +631,7 @@ $(function () {
             });
         }
     });
-
-// eventos tabla Servicios
+    // eventos tabla Servicios
     $('#tablaServicios tbody')
         //Evento eliminar renglon del detalle
         .on('click', 'a[rel="remove"]', function () {
@@ -598,12 +659,12 @@ $(function () {
             $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + venta.items.servicios[tr.row].subtotal.toFixed(2));
         });
 
-//Borrar desde el boton de busqueda de productos
+    //Borrar desde el boton de busqueda de productos
     $('.btnClearSearchServicios').on('click', function () {
         $('input[name="searchServicios"]').val('').focus();
     });
 
-//Borrar todos los Servicios
+    //Borrar todos los Servicios
     $('.btnRemoveAllServicios').on('click', function () {
         if (venta.items.servicios.length === 0) return false;
         //Ejecutar la Funcion de Confirmacion
@@ -615,4 +676,67 @@ $(function () {
         }, function () {
         });
     });
-})
+
+    // Submit VENTA
+    $('#ventaForm').on('submit', function (e) {
+        e.preventDefault();
+        if (venta.items.productos.length === 0 && venta.items.servicios.length === 0) {
+            error_action('Error', 'Debe al menos tener un producto o servicio en sus detalles', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        } else {
+            confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+                //realizamos la venta mediante Ajax
+                venta.items.tipoComprobante = $('select[name="tipoComprobante"]').val();
+                venta.items.usuario = $('input[name="usuario"]').val();
+                console.log($('input[name="usuario"]').val());
+                console.log($('input[name="action"]').val());
+                venta.items.fecha = $('input[name="fecha"]').val();
+                console.log(venta.items.fecha);
+                venta.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                console.log(venta.items.fecha);
+                venta.items.cliente = $('select[name="cliente"]').val();
+                var parameters = new FormData();
+                //Pasamos la accion ADD
+                parameters.append('action', $('input[name="action"]').val());
+                //Agregamos la estructura de Venta con los detalles correspondientes
+                parameters.append('venta', JSON.stringify(venta.items));
+                //Bloque AJAX VENTA
+                $.ajax({
+                    url: window.location.href,
+                    type: 'POST',
+                    data: parameters,
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (!data.hasOwnProperty('error')) {
+                            /*alert_action('Notificación', '¿Desea imprimir la boleta de venta?', function () {
+                            window.open('/erp/sale/invoice/pdf/' + response.id + '/', '_blank');
+                            location.href = '/erp/sale/list/';
+                            }, function () {
+                            location.href = '/erp/sale/list/';
+                            });*/
+                            location.replace(data.redirect);
+                        } else {
+                            error_action('Error', data.error, function () {
+                                //pass
+                            }, function () {
+                                //pass
+                            });
+                        }
+                    }
+                });
+            }, function () {
+                //pass
+            });
+        }
+        ;
+    });
+});
+
