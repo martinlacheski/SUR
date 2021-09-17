@@ -1,19 +1,22 @@
 
 
-from django.forms import ModelForm, Textarea, Select, DateTimeField, CheckboxInput, TimeField, \
-    TextInput, TimeInput, DateField, DateInput
+from django.forms import ModelForm, Textarea, Select, CheckboxInput, TextInput, TimeInput, DateInput, DateField
+
 from apps.agenda.models import *
 from django import forms
+
+
 
 class GestionEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     fechaNotificacion = forms.DateField(
-        input_formats=['%Y-%m-%d'],
+        input_formats=['%d-%m-%Y'],
         widget=forms.DateInput(attrs={
             'class': 'form-control datetimepicker-input',
-            'data-target': '#reservationdate'
+            'data-target': '#fechaNotificacio',
+            'data-toggle': 'datetimepicker'
         })
     )
 
@@ -38,7 +41,8 @@ class GestionEventosForm(ModelForm):
             # 'fechaNotificacion': DateInput(
             #     attrs={
             #         'class': 'form-control datetimepicker-input',
-            #         'data-target': '#reservationdate',
+            #         'data-target': '#fechaNotificacio',
+            #         'data-toggle': 'datetimepicker'
             #     }
             # ),
             'repeticion' : Select(

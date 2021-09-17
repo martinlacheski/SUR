@@ -16,22 +16,37 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
     success_url = reverse_lazy('agenda:dashboard')
 
     def post(self, request, *args, **kwargs):
-        try:
-            form = self.get_form()
-            if form.is_valid():
-                form.save()
-                #scheduler_eventos()
-            else:
-                print(form.errors)
-        except Exception as e:
-            print(str(e))
-        return HttpResponseRedirect(self.success_url)
+        action = request.POST['action']
+        data = {}
+        if action == 'add':
+            try:
+                form = self.get_form()
+                if form.is_valid():
+                    form.save()
+                    scheduler_eventos()
+                else:
+                    print(form.errors)
+            except Exception as e:
+                print(str(e))
+            return HttpResponseRedirect(self.success_url)
+        if action == 'search_data':
+            evento = eventosAgenda.objects.get(pk=request.POST['pk'])
+            data['tipoEvento'] = str(evento.tipoEvento)
+            data['fechaNotif'] = str(evento.fechaNotificacion)
+            data['descripcion'] = str(evento.descripcion)
+            data['repeticion'] = str(evento.repeticion)
+            data['userAsoc'] =  str(evento.tipoEvento.usuarioNotif)
+            data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
+                                     ['Sistema', evento.tipoEvento.recordarSistema],
+                                     ['Telegram', evento.tipoEvento.recordarTelegram])
+        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eventos'] = eventosAgenda.objects.all()
         context['update_url'] = 'agenda/updateEvento/'
         context['delete_url'] = '/agenda/deleteEvento/'
+        context['dashboard_url'] = reverse_lazy('agenda:dashboard')
         context['action'] = 'add'
         return context
 
@@ -50,15 +65,29 @@ class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        try:
-            form = self.get_form()
-            if form.is_valid():
-                form.save()
-            else:
-                print(form.errors)
-        except Exception as e:
-            print(str(e))
-        return HttpResponseRedirect(self.success_url)
+        action = request.POST['action']
+        data = {}
+        if action == 'edit':
+            try:
+                form = self.get_form()
+                if form.is_valid():
+                    form.save()
+                else:
+                    print(form.errors)
+            except Exception as e:
+                print(str(e))
+            return HttpResponseRedirect(self.success_url)
+        if action == 'search_data':
+            evento = eventosAgenda.objects.get(pk=request.POST['pk'])
+            data['tipoEvento'] = str(evento.tipoEvento)
+            data['fechaNotif'] = str(evento.fechaNotificacion)
+            data['descripcion'] = str(evento.descripcion)
+            data['repeticion'] = str(evento.repeticion)
+            data['userAsoc'] = str(evento.tipoEvento.usuarioNotif)
+            data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
+                                     ['Sistema', evento.tipoEvento.recordarSistema],
+                                     ['Telegram', evento.tipoEvento.recordarTelegram])
+            return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

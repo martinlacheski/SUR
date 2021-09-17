@@ -53,12 +53,8 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             form = self.get_form()
             data = form.save()
             data['redirect'] = self.url_redirect
-            print("hola1")
-            print(data)
         except Exception as e:
             data['error'] = str(e)
-            print(data)
-            print("hola2")
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):

@@ -50,6 +50,7 @@
                         </div>
                         <div class="card-body">
                             <div class="row">
+                                <input type="hidden" name="action" value="{{ action }}">
                                 <div class="col-12 mb-4">
                                     <label>Tipo de evento</label>
                                     {{ form.tipoEvento }}
@@ -60,11 +61,8 @@
                                 </div>
                                 <div class="col-12 mb-4">
                                     <label>Fecha de Notificación</label>
-                                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                    <div class="date" id="fechaNotificacio" data-target-input="nearest">
                                         {{ form.fechaNotificacion }}
-                                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-12 mb-1">
@@ -124,6 +122,40 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <div class="mb-2 row">
+                            <div class="col-6">
+                                <strong>TIPO EVENTO </strong>
+                                <i>
+                                    <p id="modal_tipo_evento"></p>
+                                </i>
+                                <strong>DESCRIPCIÓN </strong>
+                                <i>
+                                    <p id="modal_descripción"></p>
+                                </i>
+                            </div>
+                            <div class="col-6">
+                                <strong>FECHA DE NOTIFICACIÓN </strong>
+                                <i>
+                                    <p id="modal_fecha_notif"></p>
+                                </i>
+                                <strong>REPETICIÓN</strong>
+                                <i>
+                                    <p id="modal_repeticion"></p>
+                                </i>
+                            </div>
+                            <div class="col-6">
+                                <strong>USUARIO ASOCIADO </strong>
+                                <i>
+                                    <p id="modal_user_asoc"></p>
+                                </i>
+                            </div>
+                            <div class="col-6">
+                                <strong>NOTIFICADO MEDIANTE </strong>
+                                <i>
+                                    <p id="modal_tipo_notif"></p>
+                                </i>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-6">
                                 <!-- cambiar a dubmit dsp -->
@@ -165,10 +197,10 @@
     <!-- Inicialización de datimepicker -->
     <script>
         //Date picker
-        $('#reservationdate').datetimepicker({
-            minDate: new Date(),
-            format: 'yyyy-MM-DD',
+        $('#fechaNotificacio').datetimepicker({
+            format: 'DD-MM-yyyy',
             locale: 'es',
+            icons: {date: 'far fa-calendar-alt'},
         });
     </script>
 
@@ -202,6 +234,7 @@
                 eventClick: function(info) {
                     info.el.style.borderColor = 'red';
                     $('#modal-lg-eventos').modal();
+                    dataToModal(info.event.id);
                     $('#btnMod').attr('evento_id', info.event.id);
                     $('#btnDelete').attr('evento_id', info.event.id);
 
@@ -212,18 +245,45 @@
             });
             calendar.render();
         });
+
+        function dataToModal(id_evento){
+            getToken(name);
+            $.ajax({
+                url: '{{ dashboard_url }}',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_data',
+                    'pk' : id_evento
+                },
+                success : function (data){
+                    document.getElementById('modal_tipo_evento').innerHTML = data.tipoEvento;
+                    document.getElementById('modal_descripción').innerHTML = data.descripcion;
+                    document.getElementById('modal_user_asoc').innerHTML = data.userAsoc;
+                    document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
+                    document.getElementById('modal_repeticion').innerHTML = data.repeticion;
+
+                    let notifMsj = "";
+                    for (let i = 0; i <= 2; i++){
+                        if(data.notifMediante[i][1] === true){
+                            notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
+                        }
+                    }
+                    document.getElementById('modal_tipo_notif').innerHTML = notifMsj.slice(0, -2);
+
+                }
+            });
+        }
     </script>
 
     <script>
         $('#btnMod').click(function(){
-            // id_evento = ()
             evento_id = $('#btnMod').attr('evento_id');
             location.replace('/' + '{{ update_url }}' + evento_id);
         });
     </script>
 
     <script>
-        // Esconde modal y abre nuevo modal
         $('#btnDel').on('click', function() {
             $('#modal-lg-eventos').modal('hide'); // Escondemos el modal
             $('#deleteModal').modal('show') //Abrimos modal de confirmacion
@@ -235,7 +295,7 @@
 
             id_evento = $('#btnDelete').attr('evento_id'); // Obtiene id
 
-              $.ajax({
+            $.ajax({
                 url: '{{ delete_url }}' + id_evento + '/',
                 type: 'POST',
                 data: {
@@ -253,10 +313,6 @@
                 }
             });
         });
-
-
-
-
     </script>
 
 
@@ -280,12 +336,15 @@
         });
     </script>
 
+    <!-- Activación de select2 -->
     <script>
         $('.form-select').select2({
             theme: "bootstrap4",
             language: 'es'
         });
     </script>
+
+
 
 
 {% endblock %}
