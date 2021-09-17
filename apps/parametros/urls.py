@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.parametros.views.condicionesIVA.views import *
 from apps.parametros.views.condicionesPago.views import *
+from apps.parametros.views.mediosPago.views import *
 from apps.parametros.views.estados.views import *
 from apps.parametros.views.marcas.views import *
 from apps.parametros.views.modelos.views import *
@@ -33,6 +34,11 @@ urlpatterns = [
     path('condiciones-pago/add/', CondicionesPagoCreateView.as_view(), name='condicionesPago_create'),
     path('condiciones-pago/update/<int:pk>/', CondicionesPagoUpdateView.as_view(), name='condicionesPago_update'),
     path('condiciones-pago/delete/<int:pk>/', CondicionesPagoDeleteView.as_view(), name='condicionesPago_delete'),
+    #Medios de Pago
+    path('medios-pago/list/', MediosPagoListView.as_view(), name='mediosPago_list'),
+    path('medios-pago/add/', MediosPagoCreateView.as_view(), name='mediosPago_create'),
+    path('medios-pago/update/<int:pk>/', MediosPagoUpdateView.as_view(), name='mediosPago_update'),
+    path('medios-pago/delete/<int:pk>/', MediosPagoDeleteView.as_view(), name='mediosPago_delete'),
     #Tipos de Comprobantes
     path('tipos-comprobante/list/', TiposComprobantesListView.as_view(), name='tiposComprobantes_list'),
     path('tipos-comprobante/add/', TiposComprobantesCreateView.as_view(), name='tiposComprobantes_create'),

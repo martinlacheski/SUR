@@ -71,7 +71,7 @@
 
                 <!-- Ventas -->
                 <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:ventas_create' %}" class="nav-link">
+                    <a href="{% url 'erp:ventas_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-shopping-cart"></i>
                         <p>
                             Ventas
@@ -224,6 +224,12 @@
                                     <a href="{% url 'parametros:condicionesPago_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Condiciones de Pago</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{% url 'parametros:mediosPago_list' %}" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Medios de Pago</p>
                                     </a>
                                 </li>
                             </ul>

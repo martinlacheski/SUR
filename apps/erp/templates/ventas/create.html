@@ -22,6 +22,7 @@
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
         <!-- Moment -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
         <!-- Tempus Dominus -->
         <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
@@ -52,22 +53,38 @@
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
-                <input type="hidden" name="usuario" value="{{ user }}">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card card-secondary">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-4 mb-4">
+                                    <div class="form-group col-3 mb-4">
                                         <label>Tipo de Comprobante:</label>
                                         <br>
                                         {{ form.tipoComprobante }}
                                     </div>
-                                    <div class="form-group col-4 mb-4">
-                                        <label>Fecha de venta:</label>
-                                        {{ form.fecha }}
+                                    <div class="form-group col-3 mb-4">
+                                        <label>Condición:</label>
+                                        <br>
+                                        {{ form.condicionVenta }}
                                     </div>
-                                    <div class="form-group col-4 mb-4">
+                                    <div class="form-group col-3 mb-4">
+                                        <label>Medio de pago:</label>
+                                        <br>
+                                        {{ form.medioPago }}
+                                    </div>
+                                    <div class="form-group col-1 mb-4">
+
+                                    </div>
+                                    <div class="form-group col-2 mb-4">
+                                        <label>Fecha de venta:</label>
+                                        <div class="col-12 date" id="fecha" data-target-input="nearest">
+                                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-6 mb-4">
                                         <label>Cliente:</label>
                                         <div class="input-group">
                                             {{ form.cliente }}
@@ -127,7 +144,7 @@
                     <div class="col-12">
                         <div class="card card-secondary">
                             <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de servicios</h3>
+                                <h3 class="card-title"><i class="fas fa-wrench"></i> Detalle de servicios</h3>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
@@ -167,9 +184,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card card-secondary">
-
                             <div class="card-body">
-                                <input type="hidden" name="action" value="{{ action }}">
                                 <div class="row">
                                     <div class="form-group col-3 mb-3">
                                         <label>Subtotal:</label>
@@ -338,4 +353,13 @@
             </div>
         </form>
     </div>
+
+    <script>
+        //Esto permite cargar los productos y servicios al editar una venta
+        //venta.items.productos = {{ detalleProductos|safe }};
+        //venta.items.servicios = {{ detalleServicios|safe }};
+        //venta.listProductos();
+        //venta.listServicios();
+    </script>
+
 {% endblock %}

@@ -8,7 +8,8 @@ var venta = {
         usuario: '',
         fecha: '',
         cliente: '',
-        condicionPago: '',
+        condicionVenta: '',
+        medioPago: '',
         subtotal: 0.00,
         iva: 0.00,
         percepcion: 0.00,
@@ -251,13 +252,31 @@ function searchPercepcion() {
 
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
-    $('input[name="subtotal"]').val('0.00');
-    $('input[name="iva"]').val('0.00');
-    $('input[name="percepcion"]').val('0.00');
-    $('input[name="total"]').val('0.00');
-    $('select[name="cliente"]').val(null).trigger('change');
-    $('input[name="searchProductos"]').attr('disabled', true);
-    $('input[name="searchServicios"]').attr('disabled', true);
+    var accion = $('input[name="action"]').val();
+    if (accion === 'add') {
+        $('input[name="subtotal"]').val('0.00');
+        $('input[name="iva"]').val('0.00');
+        $('input[name="percepcion"]').val('0.00');
+        $('input[name="total"]').val('0.00');
+        $('select[name="tipoComprobante"]').val(null).trigger('change');
+        $('select[name="cliente"]').val(null).trigger('change');
+        $('select[name="condicionVenta"]').val(null).trigger('change');
+        $('select[name="medioPago"]').val(null).trigger('change');
+        $('input[name="searchProductos"]').attr('disabled', true);
+        $('input[name="searchServicios"]').attr('disabled', true);
+        //Inicialización de datetimepicker
+        $('#fecha').datetimepicker({
+            format: 'DD-MM-YYYY',
+            date: moment(),
+            locale: 'es',
+            maxDate: moment(),
+        });
+    } else {
+        $('#fecha').datetimepicker({
+            format: 'DD-MM-YYYY',
+            locale: 'es',
+        });
+    }
 });
 
 $(function () {
@@ -292,14 +311,6 @@ $(function () {
         autoWidth: false,
     });
 
-    //Inicializamos DateTimePicker
-    $('#fecha').datetimepicker({
-        format: 'DD-MM-YYYY',
-        date: moment(),
-        locale: 'es',
-        //Para que las fechas de Venta se realicen como maximo hasta el dia de la fecha
-        maxDate: moment(),
-    });
 
     //Inicializamos los campos de tipo TOUCHSPIN
     $("input[name='limiteCtaCte']").TouchSpin({
@@ -319,6 +330,20 @@ $(function () {
         boostat: 5,
         maxboostedstep: 10,
         postfix: 'Días'
+    });
+
+    //Verificamos que la fecha no sea mayor a la actual
+    $('input[name="fecha"]').on('blur', function () {
+        var fecha = $('input[name="fecha"]').val();
+        var now = moment().format('DD-MM-YYYY');
+        if (fecha > now) {
+            error_action('Error', 'La fecha de venta no puede ser superior a la actual', function () {
+                //pass
+            }, function () {
+                $('input[name="fecha"]').val(moment().format('DD-MM-YYYY'));
+            });
+
+        }
     });
 
 //----------------------Buscamos si el cliente tiene Percepcion-----------------------------//
@@ -544,7 +569,7 @@ $(function () {
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
             venta.items.productos[tr.row].cantidad = cant;
             //Actualizamos los importes
-            venta.calcular_importes();
+            calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + venta.items.productos[tr.row].subtotal.toFixed(2));
         });
@@ -690,11 +715,8 @@ $(function () {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                 //realizamos la venta mediante Ajax
                 venta.items.tipoComprobante = $('select[name="tipoComprobante"]').val();
-                venta.items.usuario = $('input[name="usuario"]').val();
-                console.log($('input[name="usuario"]').val());
-                console.log($('input[name="action"]').val());
-                venta.items.fecha = $('input[name="fecha"]').val();
-                console.log(venta.items.fecha);
+                venta.items.condicionVenta = $('select[name="condicionVenta"]').val();
+                venta.items.medioPago = $('select[name="medioPago"]').val();
                 venta.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
                 console.log(venta.items.fecha);
                 venta.items.cliente = $('select[name="cliente"]').val();
@@ -738,5 +760,9 @@ $(function () {
         }
         ;
     });
+    // Esto se puso aqui para que funcione bien el editar y calcule bien los valores del iva.
+    // sino tomaría el valor del iva de la base debe
+    // coger el que pusimos al inicializarlo.
+
 });
 

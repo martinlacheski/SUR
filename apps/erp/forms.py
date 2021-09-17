@@ -253,7 +253,6 @@ class ClientesForm(ModelForm):
         self.fields['limiteCtaCte'].widget.attrs['disabled'] = True
         self.fields['plazoCtaCte'].widget.attrs['disabled'] = True
 
-
     class Meta:
         model = Clientes
         fields = '__all__'
@@ -342,7 +341,6 @@ class ProveedoresForm(ModelForm):
         # Desactivamos los campos al inicializar el formulario
         self.fields['plazoCtaCte'].widget.attrs['disabled'] = True
 
-
     class Meta:
         model = Proveedores
         fields = '__all__'
@@ -425,22 +423,32 @@ class VentasForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-
     class Meta:
         model = Ventas
         fields = '__all__'
         widgets = {
-            'tipoComprobante': Select(attrs={
-                'class': 'custom-select select2',
-            }),
-            'cliente': Select(attrs={
-                'class': 'custom-select select2',
-            }),
-            'fecha': DateInput(
-                format='%dd-%MM-%yyyy',
+            'tipoComprobante': Select(
                 attrs={
-                    'value': datetime.now().strftime('%dd-%MM-%yyyy'),
-                    'autocomplete': 'off',
+                    'class': 'form-control select2',
+                }
+            ),
+            'condicionVenta': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'medioPago': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'cliente': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'fecha': DateInput(
+                attrs={
                     'class': 'form-control datetimepicker-input',
                     'id': 'fecha',
                     'data-target': '#fecha',

@@ -1,18 +1,23 @@
 {% extends 'list.html' %}
 {% load static %}
 {% block head_list %}
+    <!-- Moment -->
+    <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+    <!-- archivo JS -->
     <script src="{% static 'ventas/js/list.js' %}"></script>
 {% endblock %}
 
 {% block columns %}
     <tr>
-        <th scope="col">Nro</th>
-        <th scope="col">Cliente</th>
-        <th scope="col">Fecha de registro</th>
-        <th scope="col">Subtotal</th>
-        <th scope="col">Iva</th>
-        <th scope="col">Total</th>
-        <th scope="col">Opciones</th>
+        <th scope="col" style="width: 10%;">Nro</th>
+        <th scope="col" style="width: 10%;">Fecha</th>
+        <th scope="col" style="width: 30%;">Cliente</th>
+        <th scope="col" style="width: 10%;">Subtotal</th>
+        <th scope="col" style="width: 10%;">IVA</th>
+        <th scope="col" style="width: 10%;">Perc.</th>
+        <th scope="col" style="width: 10%;">Total</th>
+        <th scope="col" style="width: 30%;">Opciones</th>
     </tr>
 {% endblock %}
 
@@ -21,31 +26,60 @@
 {% endblock %}
 
 {% block javascript %}
-    <div class="modal fade" id="myModelDet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Consulta de
-                        detalle de productos</b></h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Detalle de
+                        Venta</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <table class="table table-bordered" id="tblDet">
-                        <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Categoría</th>
-                            <th>PVP</th>
-                            <th>Cantidad</th>
-                            <th>Subtotal</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
+                                </div>
+                                <table class="table table-bordered" id="tablaProductos">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 70%;">Producto</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de Servicios</h3>
+                                </div>
+                                <table class="table table-bordered" id="tablaServicios">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 70%;">Servicio</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

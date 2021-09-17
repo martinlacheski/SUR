@@ -4,7 +4,8 @@ from django.db import models
 from django.forms import model_to_dict
 
 from apps.geografico.models import Localidades
-from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones
+from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
+    MediosPago
 from apps.usuarios.models import Usuarios
 from config.settings import MEDIA_URL, STATIC_URL
 
@@ -282,9 +283,10 @@ class Servicios(models.Model):
 class Ventas(models.Model):
     tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante')
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
-    fecha = models.DateField(default=datetime.now)
+    fecha = models.DateField(verbose_name='Fecha')
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
-    condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Medio de pago')
+    condicionVenta = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Medio de pago')
+    medioPago = models.ForeignKey(MediosPago, models.DO_NOTHING, verbose_name='Medio de pago')
     # trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo Asociado', null=True, blank=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -303,7 +305,8 @@ class Ventas(models.Model):
         item['tipoComprobante'] = self.tipoComprobante.toJSON()
         item['usuario'] = self.usuario.toJSON()
         item['cliente'] = self.cliente.toJSON()
-        item['condicionPago'] = self.condicionPago.toJSON()
+        item['medioPago'] = self.medioPago.toJSON()
+        item['condicionVenta'] = self.condicionVenta.toJSON()
         #item['trabajo'] = self.trabajo.toJSON()
         return item
 
@@ -326,7 +329,7 @@ class DetalleProductosVenta(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['venta'])
-        item['prod'] = self.producto.toJSON()
+        item['producto'] = self.producto.toJSON()
         item['precio'] = format(self.precio, '.2f')
         item['subtotal'] = format(self.subtotal, '.2f')
         return item
@@ -349,7 +352,7 @@ class DetalleServiciosVenta(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['venta'])
-        item['prod'] = self.servicio.toJSON()
+        item['servicio'] = self.servicio.toJSON()
         item['precio'] = format(self.precio, '.2f')
         item['subtotal'] = format(self.subtotal, '.2f')
         return item

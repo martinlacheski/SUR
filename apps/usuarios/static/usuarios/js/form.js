@@ -6,9 +6,8 @@ $(function () {
     });
     //Inicialización de datetimepicker
     $('#fechaIngreso').datetimepicker({
-        format: 'DD/MM/yyyy',
+        format: 'DD-MM-YYYY',
         locale: 'es',
-        icons: {date: 'far fa-calendar-alt'},
     });
 
     //Funcion Mostrar Errores del Formulario
