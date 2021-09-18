@@ -97,6 +97,14 @@
                         </div>
                     </div>
                 </form>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-1 bg-olive color-palette"><span>Único</span></div>
+                        <div class="mb-1 bg-navy color-palette"><span>Diario</span></div>
+                        <div class="mb-1 bg-primary color-palette"><span>Semanal</span></div>
+                        <div class="bg-purple color-palette"><span>Mensual</span></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -196,18 +204,12 @@
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
 
-    <!-- Inicialización de datimepicker -->
-    <script>
-        //Date picker
-        $('#fechaNotificacio').datetimepicker({
-            format: 'DD-MM-yyyy',
-            locale: 'es',
-            icons: {date: 'far fa-calendar-alt'},
-        });
-    </script>
+    <!-- Funciones Específicas (no librerias)-->
+    <script src="{% static 'gestionEventos/js/functions.js' %}"> </script>
 
 
-    <!-- Inicialización de fullCalendar -->
+
+    <!-- Inicialización de fullCalendar, no se puede mover por cuestones de contexto de template -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -217,15 +219,24 @@
                         {
                             id: "{{ evento.id }}",
                             title: "{{ evento.tipoEvento }}" ,
-                        {% if evento.repeticion %}
-                            rrule: {
-                                freq: "{{ evento.repeticion }}",
-                                dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
-                            }
-                        {% else %}
-                            start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
-                        {%  endif %}
+                            {% if evento.repeticion %}
+                                rrule: {
+                                    freq: "{{ evento.repeticion }}",
+                                    dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                                },
+                            {% else %}
+                                start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                            {%  endif %}
 
+                            {% if evento.repeticion == '' %}
+                                color: '#3d9970',
+                            {% elif evento.repeticion == 'daily' %}
+                                color: '#001f3f',
+                            {% elif evento.repeticion == 'weekly' %}
+                                color: '#007bff',
+                            {% elif evento.repeticion == 'monthly' %}
+                                color: '#605ca8',
+                            {% endif %}
                         },
                     {% endfor %}
                 ],
@@ -270,6 +281,20 @@
                     document.getElementById('modal_descripción').innerHTML = data.descripcion;
                     document.getElementById('modal_user_asoc').innerHTML = data.userAsoc;
                     document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
+
+                    switch(data.repeticion) {
+                        case 'daily':
+                            data.repeticion = 'Diaria';
+                            break;
+                        case 'weekly':
+                            data.repeticion = 'Semanal';
+                            break;
+                        case 'monthly':
+                            data.repeticion = 'Mensual';
+                            break;
+                        default:
+                            data.repeticion = 'Única';
+                    }
                     document.getElementById('modal_repeticion').innerHTML = data.repeticion;
 
                     let notifMsj = "";
@@ -285,6 +310,7 @@
         }
     </script>
 
+    <!-- Redirección a edición de objeto. No se puede mover porcuesitones de context -->
     <script>
         $('#btnMod').click(function(){
             evento_id = $('#btnMod').attr('evento_id');
@@ -293,11 +319,6 @@
     </script>
 
     <script>
-        $('#btnDel').on('click', function() {
-            $('#modal-lg-eventos').modal('hide'); // Escondemos el modal
-            $('#deleteModal').modal('show') //Abrimos modal de confirmacion
-        });
-
         // Obtiene id de evento y hace ajax request para borrar
         $('#btnDelete').on('click', function (){
             getToken(name);
@@ -325,33 +346,6 @@
     </script>
 
 
-    <!-- Funcionalidad de toggle en caso de que se desee repetición. Activa desactiva select -->
-    <script>
-        $('#customCheckbox1').on('click', function (){
-            if (this.checked) {
-                $('#selectRepeticion').prop('disabled', false);
-            } else {
-                $('#selectRepeticion').prop('disabled', true);
-            }
-        });
-    </script>
-
-    <!-- Checkbox marcada en caso de que estémos en una update page -->
-    <script>
-        $(document).ready( function () {
-            if(window.location.pathname.includes('updateEvento')){
-                $("#customCheckbox1").prop("checked", true);
-            }
-        });
-    </script>
-
-    <!-- Activación de select2 -->
-    <script>
-        $('.form-select').select2({
-            theme: "bootstrap4",
-            language: 'es'
-        });
-    </script>
 
 
 

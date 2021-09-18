@@ -37,16 +37,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
 
         # Busca datos de un evento en específico para modal en calendar
         if action == 'search_data':
-            evento = eventosAgenda.objects.get(pk=request.POST['pk'])
-            data['tipoEvento'] = str(evento.tipoEvento)
-            data['fechaNotif'] = str(evento.fechaNotificacion)
-            data['descripcion'] = str(evento.descripcion)
-            data['repeticion'] = str(evento.repeticion)
-            data['userAsoc'] =  str(evento.tipoEvento.usuarioNotif)
-            data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
-                                     ['Sistema', evento.tipoEvento.recordarSistema],
-                                     ['Telegram', evento.tipoEvento.recordarTelegram])
-
+            data = datos_evento(request.POST['pk'])
             return JsonResponse(data)
 
         # Vendrá en ppróxima versión. Que avise al sistema. Se requiere integración con OTRA lib
@@ -86,10 +77,6 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         return context
 
 
-
-
-
-
 class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
     model = eventosAgenda
     form_class = GestionEventosForm
@@ -115,15 +102,7 @@ class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                 print(str(e))
             return HttpResponseRedirect(self.success_url)
         if action == 'search_data':
-            evento = eventosAgenda.objects.get(pk=request.POST['pk'])
-            data['tipoEvento'] = str(evento.tipoEvento)
-            data['fechaNotif'] = str(evento.fechaNotificacion)
-            data['descripcion'] = str(evento.descripcion)
-            data['repeticion'] = str(evento.repeticion)
-            data['userAsoc'] = str(evento.tipoEvento.usuarioNotif)
-            data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
-                                     ['Sistema', evento.tipoEvento.recordarSistema],
-                                     ['Telegram', evento.tipoEvento.recordarTelegram])
+            data = datos_evento(request.POST['pk'])
             return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -157,3 +136,19 @@ class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
             except Exception as e:
                 data['check'] = str(e)
         return JsonResponse(data)
+
+
+def datos_evento(evento_id):
+    data = {}
+    evento = eventosAgenda.objects.get(pk=evento_id)
+    data['tipoEvento'] = str(evento.tipoEvento)
+    data['fechaNotif'] = str(evento.fechaNotificacion.day) +\
+                             "/"+ str(evento.fechaNotificacion.month) +\
+                             "/" + str(evento.fechaNotificacion.year)
+    data['descripcion'] = str(evento.descripcion)
+    data['repeticion'] = str(evento.repeticion)
+    data['userAsoc'] = str(evento.tipoEvento.usuarioNotif)
+    data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
+                             ['Sistema', evento.tipoEvento.recordarSistema],
+                             ['Telegram', evento.tipoEvento.recordarTelegram])
+    return data

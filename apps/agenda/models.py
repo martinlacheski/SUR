@@ -44,6 +44,9 @@ class eventosAgenda(models.Model):
         ('monthly', 'Mensualmente'),
     )
     repeticion = models.CharField(max_length=7, choices=REPETICION, blank=True)
+    COLOR = (
+        ''
+    )
     # estado = models.BooleanField(default=True)
 #Para save en campo repeticion, se guarda así (es solo un ejemplo):
     # p = eventosAgenda(name="Fred Flintstone", repeticion="DIA")

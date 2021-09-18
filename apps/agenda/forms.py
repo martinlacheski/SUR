@@ -16,7 +16,8 @@ class GestionEventosForm(ModelForm):
         widget=forms.DateInput(attrs={
             'class': 'form-control datetimepicker-input',
             'data-target': '#fechaNotificacio',
-            'data-toggle': 'datetimepicker'
+            'data-toggle': 'datetimepicker',
+            'autocomplete': 'off',
         })
     )
 

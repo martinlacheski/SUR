@@ -51,8 +51,7 @@ INSTALLED_APPS = [
 
     'apps.usuarios',
     'apps.erp',
-    'apps.agenda',
-    'django_apscheduler',
+    'apps.agenda'
 ]
 
 MIDDLEWARE = [
