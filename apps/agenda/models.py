@@ -39,11 +39,11 @@ class eventosAgenda(models.Model):
     fechaNotificacion = models.DateField()
     descripcion = models.TextField()
     REPETICION = (
-        ('DIA', 'Diariamente'),
-        ('SEM', 'Semanalmente'),
-        ('MEN', 'Mensualmente'),
+        ('daily', 'Diariamente'),
+        ('weekly', 'Semanalmente'),
+        ('monthly', 'Mensualmente'),
     )
-    repeticion = models.CharField(max_length=3, choices=REPETICION, blank=True)
+    repeticion = models.CharField(max_length=7, choices=REPETICION, blank=True)
     # estado = models.BooleanField(default=True)
 #Para save en campo repeticion, se guarda así (es solo un ejemplo):
     # p = eventosAgenda(name="Fred Flintstone", repeticion="DIA")

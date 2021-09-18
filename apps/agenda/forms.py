@@ -30,8 +30,8 @@ class GestionEventosForm(ModelForm):
             'descripcion': Textarea(
                 attrs={
                     'placeholder': 'Describa su evento',
-                    'rows' : '3',
-                    'class' : 'form-control',
+                    'rows': '3',
+                    'class': 'form-control',
 
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',

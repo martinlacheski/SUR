@@ -169,7 +169,8 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Probablemente innecesarios. Si joden, chau
-# DATE_INPUT_FORMATS = ['%d/%m/%Y']
+#DATE_FORMAT = '%d-%m-%y'
+# DATE_INPUT_FORMATS = ['%d-%m-%Y']
 # DATETIME_INPUT_FORMATS = ['%d/%m/%Y %H:%M:%S']
 
 # Necesarios

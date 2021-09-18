@@ -9,8 +9,17 @@ from apps.agenda.models import eventosAgenda
 bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 
 
-def msj_telegram(text):
-    bot.send_message(text=text, chat_id=630659758)
+def notificaciones(evento):
+    if evento.tipoEvento.recordarTelegram:
+        msj = 'RECORDATORIO\n \nEvento de tipo: ' + evento.tipoEvento.nombre + '\n' \
+              + 'Descripción: ' + evento.descripcion + '\nVence en la fecha: ' \
+              + str(evento.fechaNotificacion.day) + '/' + str(evento.fechaNotificacion.month) \
+              + '/' + str(evento.fechaNotificacion.year)
+        bot.send_message(text=msj, chat_id=630659758)
+
+    if evento.tipoEvento.recordarEmail:
+        print("enviamos email")
+
 
 def scheduler_eventos():
 
@@ -29,62 +38,51 @@ def scheduler_eventos():
     eventosList = eventosAgenda.objects.all()
     for evento in eventosList:
         print(evento.repeticion)
-        if(evento.repeticion == ''):
-            msj = 'RECORDATORIO\n \nEvento de tipo: ' + evento.tipoEvento.nombre + '\n' \
-                  + 'Descripción: ' + evento.descripcion + '\nVence en la fecha: ' \
-                  + str(evento.fechaNotificacion.day) + '/' + str(evento.fechaNotificacion.month) \
-                  + '/' + str(evento.fechaNotificacion.year)
+
+        if evento.repeticion == '' :
             print("crea evento único")
-            scheduler_eventos.add_job(msj_telegram, 'date',
+            scheduler_eventos.add_job(notificaciones, 'date',
                                       run_date=datetime.datetime(evento.fechaNotificacion.year,
                                                                  evento.fechaNotificacion.month,
                                                                  evento.fechaNotificacion.day,
                                                                  evento.tipoEvento.horarioRecordatorio.hour,
                                                                  evento.tipoEvento.horarioRecordatorio.minute,
                                                                  0),
-                                      args=[msj]
+                                      args=[evento]
                                       )
 
-        if evento.repeticion == 'DIA':
+        if evento.repeticion == 'daily':
             msj = 'RECORDATORIO\n \nEvento de tipo: ' + evento.tipoEvento.nombre + '\n' \
                   + 'Descripción: ' + evento.descripcion + '\nVence a las: ' \
                   + str(evento.tipoEvento.horarioRecordatorio.hour) + ' horas ' \
                   + 'y ' + str(evento.tipoEvento.horarioRecordatorio.minute) + 'minutos' \
                   + ' del día de hoy'
             print("crea evento diario")
-            scheduler_eventos.add_job(msj_telegram, 'cron',
+            scheduler_eventos.add_job(notificaciones, 'cron',
                                       hour=evento.tipoEvento.horarioRecordatorio.hour,
                                       minute=evento.tipoEvento.horarioRecordatorio.minute,
                                       second=0,
-                                      args=[msj]
+                                      args=[evento]
                                       )
-
-        if evento.repeticion == 'SEM':
-            # Se requiere una fun que convierta dia de la semana a español
-            msj = 'RECORDATORIO\n \nEvento de tipo: ' + evento.tipoEvento.nombre + '\n' \
-                  + 'Descripción: ' + evento.descripcion + '\nVence el dia: ' \
-                  + 'resultado func' + 'de esta semana'
+        if evento.repeticion == 'weekly':
             print("creamos evento sem")
-            scheduler_eventos.add_job(msj_telegram, 'cron',
+            scheduler_eventos.add_job(notificaciones, 'cron',
                                       day_of_week=evento.fechaNotificacion.weekday(),
                                       hour=evento.tipoEvento.horarioRecordatorio.hour,
                                       minute=evento.tipoEvento.horarioRecordatorio.minute,
                                       second=0,
-                                      args=[msj]
+                                      args=[evento]
                                       )
-        if evento.repeticion == 'MEN':
-
-            msj = 'RECORDATORIO\n \nEvento de tipo: ' + evento.tipoEvento.nombre + '\n' \
-                  + 'Descripción: ' + evento.descripcion + '\nVence el dia: ' \
-                  + 'resultado func' + 'de esta semana (MES)'
+        if evento.repeticion == 'monthly':
             print("crea evento MENSUAL")
-            scheduler_eventos.add_job(msj_telegram, 'cron',
+            scheduler_eventos.add_job(notificaciones, 'cron',
                                       day=evento.fechaNotificacion.day,
                                       hour=evento.tipoEvento.horarioRecordatorio.hour,
                                       minute=evento.tipoEvento.horarioRecordatorio.minute,
                                       second=0,
-                                      args=[msj]
+                                      args=[evento]
                                       )
+
     scheduler_eventos.start()
 
     # if(evento.repeticion == 'DIA'):

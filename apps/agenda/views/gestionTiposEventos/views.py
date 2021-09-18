@@ -107,17 +107,17 @@ class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        data = {}
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            data = {}
             try:
                 self.object.delete()
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
             except Exception as e:
                 data['check'] = str(e)
-        return JsonResponse(data, save=False)
+        return JsonResponse(data)
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)

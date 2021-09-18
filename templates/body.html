@@ -50,5 +50,30 @@
 
 
     {% endblock %}
+
+
+    <!-- Probablemente se borre. Por el momento no realiza ninguna acción.  -->
+    <!-- Su proposito inicial era el de mandar request cada tanto al servidor -->
+    <!--
+    <script>
+        getToken(name)
+        function nuevasNotif() {
+            $.ajax({
+                url: '/agenda/list/',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'get_news'
+                },
+                success: function (data) {
+                    console.log(data);
+                }
+        });
+        }
+
+        var actualizador = setInterval(nuevasNotif, 10000);
+    </script>
+    -->
     </body>
 {% endblock %}

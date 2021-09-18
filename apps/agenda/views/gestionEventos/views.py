@@ -1,3 +1,6 @@
+import datetime
+from datetime import timedelta
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DeleteView, UpdateView
 from apps.agenda.models import *
@@ -15,6 +18,8 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
     permission_required = 'agenda.add_eventosagenda'
     success_url = reverse_lazy('agenda:dashboard')
 
+
+
     def post(self, request, *args, **kwargs):
         action = request.POST['action']
         data = {}
@@ -23,12 +28,14 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
                 form = self.get_form()
                 if form.is_valid():
                     form.save()
-                    scheduler_eventos()
+                    # scheduler_eventos()
                 else:
                     print(form.errors)
             except Exception as e:
                 print(str(e))
             return HttpResponseRedirect(self.success_url)
+
+        # Busca datos de un evento en específico para modal en calendar
         if action == 'search_data':
             evento = eventosAgenda.objects.get(pk=request.POST['pk'])
             data['tipoEvento'] = str(evento.tipoEvento)
@@ -39,8 +46,36 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
                                      ['Sistema', evento.tipoEvento.recordarSistema],
                                      ['Telegram', evento.tipoEvento.recordarTelegram])
-        return JsonResponse(data)
 
+            return JsonResponse(data)
+
+        # Vendrá en ppróxima versión. Que avise al sistema. Se requiere integración con OTRA lib
+        """
+        if action == 'get_news':
+
+            # Obtenemos eventos que se muesten en Sistema y su horario de notif sea
+            # cercano al actual (margen de 10 min)
+            hora_actual = datetime.datetime.today()
+            rango = datetime.datetime.today() - timedelta(minutes=10)
+            tiposEventoSistema = tiposEvento.objects.filter(recordarSistema=True,
+                                                            horarioRecordatorio__range=(rango.time(), hora_actual.time()))
+            data = eventosAgenda.objects.filter(tipoEvento__in=tiposEventoSistema).values('id')
+
+            # Comprobamos tipo de repeticion de evento
+
+            for evento in data:
+                if(evento.repeticion == ''):
+                    eventos_display.a
+
+            eventoSist = [evento for evento in data]
+            data = tuple(eventoSist)
+            # preguntar si es único (si lo es, verificar que sea fecha de hoy y enviar)
+            # preguntar si es diario(si lo es, enviar)
+            # preguntar si es semanal (si su dia de la semana es el día de la semana actual, enviar)
+            # preguntar si es mensual (primero verificar si su día es el último dia del mes y el día del mes actual lo es, enviar)
+            #                         (luego si su día del mes es el día del mes actual, tambien enviar)
+            return JsonResponse(data, safe=False)
+        """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eventos'] = eventosAgenda.objects.all()
@@ -49,6 +84,8 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         context['dashboard_url'] = reverse_lazy('agenda:dashboard')
         context['action'] = 'add'
         return context
+
+
 
 
 
