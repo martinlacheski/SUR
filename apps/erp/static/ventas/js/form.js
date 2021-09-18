@@ -737,6 +737,8 @@ $(function () {
         });
     });
 
+
+//------------------------------------SUBMIT VENTA----------------------------------------//
     // Submit VENTA
     $('#ventaForm').on('submit', function (e) {
         e.preventDefault();
@@ -748,52 +750,58 @@ $(function () {
             });
         } else {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
-                //realizamos la venta mediante Ajax
-                venta.items.tipoComprobante = $('select[name="tipoComprobante"]').val();
-                venta.items.condicionVenta = $('select[name="condicionVenta"]').val();
-                venta.items.medioPago = $('select[name="medioPago"]').val();
-                venta.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                console.log(venta.items.fecha);
-                venta.items.cliente = $('select[name="cliente"]').val();
-                var parameters = new FormData();
-                //Pasamos la accion ADD
-                parameters.append('action', $('input[name="action"]').val());
-                //Agregamos la estructura de Venta con los detalles correspondientes
-                parameters.append('venta', JSON.stringify(venta.items));
-                //Bloque AJAX VENTA
-                $.ajax({
-                    url: window.location.href,
-                    type: 'POST',
-                    data: parameters,
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRFToken': csrftoken
-                    },
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        if (!data.hasOwnProperty('error')) {
-                            /*alert_action('Notificación', '¿Desea imprimir la boleta de venta?', function () {
-                            window.open('/erp/sale/invoice/pdf/' + response.id + '/', '_blank');
-                            location.href = '/erp/sale/list/';
-                            }, function () {
-                            location.href = '/erp/sale/list/';
-                            });*/
-                            location.replace(data.redirect);
-                        } else {
-                            error_action('Error', data.error, function () {
-                                //pass
-                            }, function () {
-                                //pass
-                            });
+                    //realizamos la venta mediante Ajax
+                    venta.items.tipoComprobante = $('select[name="tipoComprobante"]').val();
+                    venta.items.condicionVenta = $('select[name="condicionVenta"]').val();
+                    venta.items.medioPago = $('select[name="medioPago"]').val();
+                    venta.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                    console.log(venta.items.fecha);
+                    venta.items.cliente = $('select[name="cliente"]').val();
+                    var parameters = new FormData();
+                    //Pasamos la accion ADD
+                    parameters.append('action', $('input[name="action"]').val());
+                    //Agregamos la estructura de Venta con los detalles correspondientes
+                    parameters.append('venta', JSON.stringify(venta.items));
+                    //Bloque AJAX VENTA
+                    $.ajax({
+                        url: window.location.href,
+                        type: 'POST',
+                        data: parameters,
+                        dataType: 'json',
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            if (!data.hasOwnProperty('error')) {
+                                confirm_action('Notificación', '¿Desea imprimir la nota de venta?', function () {
+                                    window.open('/ventas/pdf/' + data.id + '/', '_blank');
+                                    location.replace(data.redirect);
+                                }, function () {
+                                    location.replace(data.redirect);
+                                });
+                            //location.replace(data.redirect);
+                            } else {
+                                error_action('Error', data.error, function () {
+                                    //pass
+                                }, function () {
+                                    //pass
+                                });
+                            }
                         }
-                    }
-                });
-            }, function () {
-                //pass
-            });
+                    });
+                }
+                ,
+
+                function () {
+                    //pass
+                }
+            );
         }
         ;
-    });
-});
+    })
+    ;
+})
+;
 

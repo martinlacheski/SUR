@@ -239,7 +239,7 @@ class Prioridades(models.Model):
 class Empresa(models.Model):
     razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
     condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
-    cuit = models.CharField(max_length=11, verbose_name='Cuit', unique=True)
+    cuit = models.CharField(max_length=13, verbose_name='Cuit', unique=True)
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
     direccion = models.CharField(max_length=100, verbose_name='Dirección')
     telefono = models.CharField(max_length=100, verbose_name='Teléfono')

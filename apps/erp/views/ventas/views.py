@@ -3,7 +3,7 @@ import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -317,6 +317,7 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
+                    # Devolvemos en Data la ID de la nueva Venta para poder generar la Boleta
                     data = {'id': venta.id}
                     data['redirect'] = self.url_redirect
             else:
@@ -380,7 +381,8 @@ class VentasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         return context
 
 
-class VentasPdfView(View):
+class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
+    permission_required = 'erp.view_ventas'
 
     def get(self, request, *args, **kwargs):
         try:
@@ -389,9 +391,20 @@ class VentasPdfView(View):
             # Utilizamos el template para generar el PDF
             template = get_template('ventas/pdf.html')
             # template = get_template('ventas/invoice.html')
+            # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
+            subtotalProductos = DetalleProductosVenta.objects.filter(venta_id=self.kwargs['pk'])
+            subtotalServicios = DetalleServiciosVenta.objects.filter(venta_id=self.kwargs['pk'])
+            productos = 0
+            for i in subtotalProductos:
+                productos += i.subtotal
+            servicios = 0
+            for i in subtotalServicios:
+                servicios += i.subtotal
             # cargamos los datos del contexto
             context = {
                 'venta': Ventas.objects.get(pk=self.kwargs['pk']),
+                'subtotalProductos': productos,
+                'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
 

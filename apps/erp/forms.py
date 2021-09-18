@@ -427,11 +427,6 @@ class VentasForm(ModelForm):
         model = Ventas
         fields = '__all__'
         widgets = {
-            'tipoComprobante': Select(
-                attrs={
-                    'class': 'form-control select2',
-                }
-            ),
             'condicionVenta': Select(
                 attrs={
                     'class': 'form-control select2',

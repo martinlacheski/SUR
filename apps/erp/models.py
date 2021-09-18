@@ -279,7 +279,6 @@ class Servicios(models.Model):
 
 #   Clase Ventas
 class Ventas(models.Model):
-    tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante')
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
     fecha = models.DateField(verbose_name='Fecha')
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
@@ -301,7 +300,6 @@ class Ventas(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
-        item['tipoComprobante'] = self.tipoComprobante.toJSON()
         item['usuario'] = self.usuario.toJSON()
         item['cliente'] = self.cliente.toJSON()
         item['medioPago'] = self.medioPago.toJSON()
