@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.db import models
 from django.forms import model_to_dict
 
@@ -292,6 +290,7 @@ class Ventas(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    estadoVenta = models.BooleanField(default=True)
 
     def __str__(self):
         # return self.cliente.razonSocial
@@ -314,7 +313,7 @@ class Ventas(models.Model):
         verbose_name = 'Venta'
         verbose_name_plural = 'Ventas'
         db_table = 'erp_ventas'
-        ordering = ['id']
+        ordering = ['fecha', 'id']
 
 
 class DetalleProductosVenta(models.Model):

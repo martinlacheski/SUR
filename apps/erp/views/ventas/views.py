@@ -1,15 +1,22 @@
 import json
+import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import VentasForm, ClientesForm
 from apps.erp.models import Ventas, Productos, Servicios, DetalleProductosVenta, DetalleServiciosVenta, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.parametros.models import Empresa
+from config import settings
+
+from weasyprint import HTML, CSS
 
 
 class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -141,6 +148,7 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
+                        # Descontamos el Stock de los productos
                         det.producto.stockReal -= det.cantidad
                         det.producto.save()
                     for i in formVentaRequest['servicios']:
@@ -184,28 +192,6 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         form = VentasForm(instance=instance)
         form.fields['cliente'].queryset = Clientes.objects.filter(id=instance.cliente.id)
         return form
-
-    def get_detalle_productos(self):
-        data = []
-        try:
-            for i in DetalleProductosVenta.objects.filter(venta_id=self.get_object().id):
-                item = i.producto.toJSON()
-                item['cantidad'] = i.cantidad
-                data.append(item)
-        except:
-            pass
-        return data
-
-    def get_detalle_servicios(self):
-        data = []
-        try:
-            for i in DetalleServiciosVenta.objects.filter(venta_id=self.get_object().id):
-                item = i.servicio.toJSON()
-                item['cantidad'] = i.cantidad
-                data.append(item)
-        except:
-            pass
-        return data
 
     def post(self, request, *args, **kwargs):
         data = {}
@@ -265,10 +251,31 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            elif action == 'get_detalle_productos':
+                data = []
+                try:
+                    for i in DetalleProductosVenta.objects.filter(venta_id=self.get_object().id):
+                        item = i.producto.toJSON()
+                        item['cantidad'] = i.cantidad
+                        item['precio'] = i.precio
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
+            elif action == 'get_detalle_servicios':
+                data = []
+                try:
+                    for i in DetalleServiciosVenta.objects.filter(venta_id=self.get_object().id):
+                        item = i.servicio.toJSON()
+                        item['cantidad'] = i.cantidad
+                        item['precio'] = i.precio
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
             elif action == 'edit':
                 with transaction.atomic():
                     formVentaRequest = json.loads(request.POST['venta'])
-                    venta = Ventas()
+                    # Obtenemos la venta que se esta editando
+                    venta = self.get_object()
                     venta.fecha = formVentaRequest['fecha']
                     venta.tipoComprobante_id = formVentaRequest['tipoComprobante']
                     # obtenemos el Usuario actual
@@ -281,6 +288,13 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     venta.percepcion = float(formVentaRequest['percepcion'])
                     venta.total = float(formVentaRequest['total'])
                     venta.save()
+                    # Reestablecemos el stock de los productos
+                    for prod in DetalleProductosVenta.objects.filter(venta_id=self.get_object().id):
+                        prod.producto.stockReal += prod.cantidad
+                        prod.producto.save()
+                    # Eliminamos todos los productos del Detalle
+                    venta.detalleproductosventa_set.all().delete()
+                    # Volvemos a cargar los productos al Detalle
                     for i in formVentaRequest['productos']:
                         det = DetalleProductosVenta()
                         det.venta_id = venta.id
@@ -289,8 +303,12 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
+                        # Descontamos el Stock de los Productos del Detalle
                         det.producto.stockReal -= det.cantidad
                         det.producto.save()
+                    # Eliminamos del detalle todos los Servicios del Detalle
+                    venta.detalleserviciosventa_set.all().delete()
+                    # Volvemos a cargar todos los Servicios del Detalle
                     for i in formVentaRequest['servicios']:
                         det = DetalleServiciosVenta()
                         det.venta_id = venta.id
@@ -314,6 +332,78 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['formCliente'] = ClientesForm()
-        context['detalleProductos'] = self.get_detalle_productos()
-        context['detalleServicios'] = self.get_detalle_servicios()
         return context
+
+
+class VentasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = Ventas
+    form_class = VentasForm
+    template_name = 'ventas/create.html'
+    success_url = reverse_lazy('erp:ventas_list')
+    permission_required = 'erp.delete_ventas'
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'delete':
+                with transaction.atomic():
+                    # Obtenemos la venta que se esta editando
+                    venta = self.get_object()
+                    # Reestablecemos el stock de los productos
+                    for prod in DetalleProductosVenta.objects.filter(venta_id=self.get_object().id):
+                        prod.producto.stockReal += prod.cantidad
+                        prod.producto.save()
+                    # Eliminamos la venta
+                    venta.estadoVenta = False
+                    venta.save()
+                    data['redirect'] = self.url_redirect
+                    data['check'] = 'ok'
+            else:
+                data['error'] = 'No ha ingresado a ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+            print(str(e))
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Cancelar una Venta'
+        context['entity'] = 'Ventas'
+        context['list_url'] = self.success_url
+        context['action'] = 'delete'
+        return context
+
+
+class VentasPdfView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Traemos la empresa para obtener los valores
+            empresa = Empresa.objects.get(id=1)
+            # Utilizamos el template para generar el PDF
+            template = get_template('ventas/pdf.html')
+            # template = get_template('ventas/invoice.html')
+            # cargamos los datos del contexto
+            context = {
+                'venta': Ventas.objects.get(pk=self.kwargs['pk']),
+                'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+
+                # 'imagen': '{}{}'.format(settings.MEDIA_URL, empresa.get_imagen())
+            }
+            # Generamos el render del contexto
+            html = template.render(context)
+            # Asignamos la ruta del CSS de BOOTSTRAP
+            css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+            # Creamos el PDF
+            pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+            return HttpResponse(pdf, content_type='application/pdf')
+        except:
+            pass
+        return HttpResponseRedirect(reverse_lazy('erp:ventas_list'))

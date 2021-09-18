@@ -1,6 +1,9 @@
 from django.db import models
 from django.forms import model_to_dict
 
+from apps.geografico.models import Localidades
+from config.settings import MEDIA_URL, STATIC_URL
+
 
 class TiposIVA(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
@@ -231,3 +234,50 @@ class Prioridades(models.Model):
     def save(self, force_insert=False, force_update=False):
         self.nombre = self.nombre.upper()
         super(Prioridades, self).save(force_insert, force_update)
+
+
+class Empresa(models.Model):
+    razonSocial = models.CharField(max_length=100, verbose_name='Razón Social')
+    condicionIVA = models.ForeignKey(CondicionesIVA, models.DO_NOTHING, verbose_name='Condición frente al IVA')
+    cuit = models.CharField(max_length=11, verbose_name='Cuit', unique=True)
+    localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad')
+    direccion = models.CharField(max_length=100, verbose_name='Dirección')
+    telefono = models.CharField(max_length=100, verbose_name='Teléfono')
+    email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
+    passwordEmail = models.CharField(max_length=128)
+    botTelegram = models.CharField(max_length=100, verbose_name='Bot Telegram', null=True, blank=True)
+    tokenTelegram = models.CharField(max_length=100, verbose_name='Token Telegram', null=True, blank=True)
+    facebook = models.CharField(max_length=100, verbose_name='Cuenta de Facebook', null=True, blank=True)
+    instagram = models.CharField(max_length=100, verbose_name='Cuenta de Instagram', null=True, blank=True)
+    paginaWeb = models.CharField(max_length=100, verbose_name='Dirección de Página Web', null=True, blank=True)
+    imagen = models.ImageField(upload_to='empresas/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
+    cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
+    alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
+    nroCuenta = models.CharField(max_length=100, verbose_name='Número de Cuenta', null=True, blank=True)
+
+    def __str__(self):
+        return self.razonSocial
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['imagen'] = self.get_imagen()
+        return item
+
+    def get_imagen(self):
+        if self.imagen:
+            return '{}{}'.format(MEDIA_URL, self.imagen)
+        return '{}{}'.format(STATIC_URL, 'img/empty.png')
+
+    class Meta:
+        verbose_name = 'Datos Empresa'
+        db_table = 'parametros_empresa'
+
+    # Para convertir a MAYUSCULA
+    def save(self, force_insert=False, force_update=False):
+        self.razonSocial = self.razonSocial.upper()
+        self.direccion = self.direccion.upper()
+        try:
+            self.alias = self.alias.upper()
+        except:
+            pass
+        super(Empresa, self).save(force_insert, force_update)

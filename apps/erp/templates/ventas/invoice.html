@@ -1,108 +1,197 @@
-<!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminLTE 3 | Invoice</title>
 
-        * {
-            color: black;
-        }
-
-        body {
-            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
-            padding: 0;
-            margin: 0;
-            color: black;
-        }
-
-        .name-company {
-            font-size: 30px;
-            padding: 0;
-            margin: 0;
-            font-weight: bold;
-            text-transform: uppercase;
-            text-align: center;
-        }
-
-        table thead tr th {
-            border: 1px solid black !important;
-            padding: 3px;
-        }
-
-        table tbody tr td {
-            border: 1px solid black;
-            padding: 3px;
-        }
-
-        .img-logo {
-            margin-top: 10px;
-            width: 75px;
-            height: 75px;
-            margin-bottom: 10px;
-        }
-
-    </style>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/dist/css/adminlte.min.css' %}">
 </head>
 <body>
 <div class="container-fluid">
-    <img src="{% static 'img/logo.png' %}" class="img-fluid d-block mx-auto img-logo">
-    <h1 class="name-company">{{ company.name }}</h1>
-    <p class="text-center">
-        Cdla. Dager, Calle Rio Zamora entre Av.Tumbes y Av. Tarqui<br>
-        Celular: +593 0979014551<br>
-        Teléfono: 297541221<br>
-        Web: algorisoft.com<br>
-    </p>
-    <p>
-        <b>Cliente:</b> {{ sale.cli.get_full_name }}<br>
-        <b>Número de cedula:</b> {{ sale.cli.dni }}<br>
-        <b>Fecha de venta:</b> {{ sale.date_joined|date:'c' }}<br>
-    </p>
-    <table class="table" style="width: 100%;">
-        <thead>
-        <tr style="border: 1px solid black;">
-            <th style="width: 20%;">Cantidad</th>
-            <th style="width: 40%;">Producto</th>
-            <th style="width: 20%;">P.Unitario</th>
-            <th style="width: 20%;" class="text-right">Subtotal</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for det in sale.detsale_set.all %}
-            <tr>
-                <td class="text-center">{{ det.cant }}</td>
-                <td>{{ det.prod.name }}</td>
-                <td class="text-center">{{ det.price|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
-            </tr>
-        {% endfor %}
-        <tr>
-            <td colspan="3" class="text-right"><b>Subtotal</b></td>
-            <td class="text-right">{{ sale.subtotal|floatformat:2 }}</td>
-        </tr>
-        <tr>
-            <td colspan="3" class="text-right"><b>Iva %</b></td>
-            <td class="text-right">{{ sale.iva|floatformat:2 }}</td>
-        </tr>
-        <tr>
-            <td colspan="3" class="text-right"><b>Total a pagar</b></td>
-            <td class="text-right">{{ sale.total|floatformat:2 }}</td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <p class="text-uppercase font-weight-bold text-center">
-                    Total de productos {{ sale.detsale_set.all.count }}<br>
-                    !Gracias por su preferencia!<br>
-                    Una vez que usted a recibido el pedido<br>
-                    No hay derecho a reclamo ni devolución del producto<br>
-                    Que tenga un excelente día
-                </p>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="row">
+        <div class="col-12">
+            <!-- title row -->
+            <div class="row">
+                <div class="col-6">
+                    <h4>
+                        <i class="fas fa-globe"></i> AdminLTE, Inc.
+                    </h4>
+                </div>
+                <div class="col-6">
+                    <h4>
+                        <small class="float-right">Date: 2/10/2014</small>
+                    </h4>
+                </div>
+
+                <!-- /.col -->
+            </div>
+            <!-- info row -->
+            <div class="row">
+                <div class="col-6">
+                    From
+                    <address>
+                        <strong>Admin, Inc.</strong><br>
+                        795 Folsom Ave, Suite 600<br>
+                        San Francisco, CA 94107<br>
+                        Phone: (804) 123-5432<br>
+                        Email: info@almasaeedstudio.com
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-6 float-right">
+                    To
+                    <address>
+                        <strong>John Doe</strong><br>
+                        795 Folsom Ave, Suite 600<br>
+                        San Francisco, CA 94107<br>
+                        Phone: (555) 539-1037<br>
+                        Email: john.doe@example.com
+                    </address>
+                </div>
+                </div>
+            </div>
+
+            <!-- Table row -->
+            <div class="row">
+                <div class="col-12 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Qty</th>
+                            <th>Product</th>
+                            <th>Serial #</th>
+                            <th>Description</th>
+                            <th>Subtotal</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Call of Duty</td>
+                            <td>455-981-221</td>
+                            <td>El snort testosterone trophy driving gloves handsome</td>
+                            <td>$64.50</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Need for Speed IV</td>
+                            <td>247-925-726</td>
+                            <td>Wes Anderson umami biodiesel</td>
+                            <td>$50.00</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Monsters DVD</td>
+                            <td>735-845-642</td>
+                            <td>Terry Richardson helvetica tousled street art master</td>
+                            <td>$10.70</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>Grown Ups Blue Ray</td>
+                            <td>422-568-642</td>
+                            <td>Tousled lomo letterpress</td>
+                            <td>$25.99</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+            <div class="row">
+                <!-- accepted payments column -->
+                <div class="col-6">
+                    <p class="lead">Payment Methods:</p>
+
+
+                    <p class="text-muted well well-sm shadow-none" style="margin-top: 10px;">
+                        Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles, weebly ning heekya handango
+                        imeem
+                        plugg
+                        dopplr jibjab, movity jajah plickers sifteo edmodo ifttt zimbra.
+                    </p>
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                    <p class="lead">Amount Due 2/22/2014</p>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th style="width:50%">Subtotal:</th>
+                                <td>$250.30</td>
+                            </tr>
+                            <tr>
+                                <th>Tax (9.3%)</th>
+                                <td>$10.34</td>
+                            </tr>
+                            <tr>
+                                <th>Shipping:</th>
+                                <td>$5.80</td>
+                            </tr>
+                            <tr>
+                                <th>Total:</th>
+                                <td>$265.24</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+            <!-- this row will not appear when printing -->
+            <div class="row no-print">
+                <div class="col-12">
+                    <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i
+                            class="fas fa-print"></i> Print</a>
+                    <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i>
+                        Submit
+                        Payment
+                    </button>
+                    <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                        <i class="fas fa-download"></i> Generate PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- /.invoice -->
+    </div><!-- /.col -->
+</div><!-- /.row -->
+
+
+<!-- /.content-wrapper -->
+<footer class="main-footer no-print">
+    <div class="float-right d-none d-sm-block">
+        <b>Version</b> 3.1.0
+    </div>
+    <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+</footer>
+
+<!-- Control Sidebar -->
+<aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+</aside>
+<!-- /.control-sidebar -->
 </div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{% static 'lib/adminlte-3.1.0/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'lib/adminlte-3.1.0/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'lib/adminlte-3.1.0/dist/js/adminlte.min.js' %}"></script>
+
 </body>
 </html>

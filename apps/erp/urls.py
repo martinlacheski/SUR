@@ -6,10 +6,7 @@ from apps.erp.views.productos.views import *
 from apps.erp.views.servicios.views import *
 from apps.erp.views.ventas.views import *
 
-
 from django.urls import path
-
-from apps.home.views import HomeView
 
 app_name = 'erp'
 
@@ -48,5 +45,6 @@ urlpatterns = [
     path('ventas/list/', VentasListView.as_view(), name='ventas_list'),
     path('ventas/add/', VentasCreateView.as_view(), name='ventas_create'),
     path('ventas/update/<int:pk>/', VentasUpdateView.as_view(), name='ventas_update'),
-    # path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
+    path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
+    path('ventas/pdf/<int:pk>/', VentasPdfView.as_view(), name='ventas_pdf'),
 ]

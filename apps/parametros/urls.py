@@ -2,6 +2,7 @@ from django.urls import path
 
 from apps.parametros.views.condicionesIVA.views import *
 from apps.parametros.views.condicionesPago.views import *
+from apps.parametros.views.empresa.views import *
 from apps.parametros.views.mediosPago.views import *
 from apps.parametros.views.estados.views import *
 from apps.parametros.views.marcas.views import *
@@ -14,6 +15,11 @@ from apps.parametros.views.tiposPercepciones.views import *
 app_name = 'parametros'
 
 urlpatterns = [
+    #Empresa
+    path('empresa/list/', EmpresaListView.as_view(), name='empresa_list'),
+    path('empresa/view/<int:pk>/', EmpresaView.as_view(), name='empresa_view'),
+    path('empresa/add/', EmpresaCreateView.as_view(), name='empresa_create'),
+    path('empresa/update/<int:pk>/', EmpresaUpdateView.as_view(), name='empresa_update'),
     #Tipos de IVA
     path('tipos-iva/list/', TiposIVAListView.as_view(), name='tiposIVA_list'),
     path('tipos-iva/add/', TiposIVACreateView.as_view(), name='tiposIVA_create'),

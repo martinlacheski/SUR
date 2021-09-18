@@ -276,7 +276,42 @@ $(document).ready(function () {
             format: 'DD-MM-YYYY',
             locale: 'es',
         });
+        //Buscamos el detalle de los productos por ajax
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_detalle_productos',
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                //asignamos el detalle a la estructura
+                venta.items.productos = data;
+                //actualizamos el listado de productos
+                venta.listProductos();
+            }
+        });
+        //Buscamos el detalle de los servicios por ajax
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_detalle_servicios',
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                //asignamos el detalle a la estructura
+                venta.items.servicios = data;
+                //actualizamos el listado de productos
+                venta.listServicios();
+            }
+        });
     }
+
 });
 
 $(function () {
@@ -679,7 +714,7 @@ $(function () {
             var tr = tablaServicios.cell($(this).closest('td, li')).index();
             venta.items.servicios[tr.row].cantidad = cant;
             //Actualizamos los importes
-            venta.calcular_importes();
+            calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
             $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + venta.items.servicios[tr.row].subtotal.toFixed(2));
         });
@@ -760,9 +795,5 @@ $(function () {
         }
         ;
     });
-    // Esto se puso aqui para que funcione bien el editar y calcule bien los valores del iva.
-    // sino tomaría el valor del iva de la base debe
-    // coger el que pusimos al inicializarlo.
-
 });
 

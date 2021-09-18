@@ -10,7 +10,7 @@ $(function () {
 
     //Inicializamos los campos de tipo TOUCHSPIN
     $("input[name='stockReal']").TouchSpin({
-        min: 0,
+        min: -1000000,
         max: 1000000,
         step: 1,
         boostat: 5,
@@ -198,7 +198,7 @@ $(function () {
         // VALIDACION DE LOS CAMPOS
         $("#subcategoria").validate();
         $("#descripcion").validate();
-        $("#stockReal").validate();
+        //$("#stockReal").validate();
         $("#stockMinimo").validate();
         $("#reposicion").validate();
         $("#costo").validate();
