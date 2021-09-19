@@ -129,7 +129,6 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     formVentaRequest = json.loads(request.POST['venta'])
                     venta = Ventas()
                     venta.fecha = formVentaRequest['fecha']
-                    venta.tipoComprobante_id = formVentaRequest['tipoComprobante']
                     # obtenemos el Usuario actual
                     venta.usuario = request.user
                     venta.cliente_id = formVentaRequest['cliente']
@@ -277,7 +276,6 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     # Obtenemos la venta que se esta editando
                     venta = self.get_object()
                     venta.fecha = formVentaRequest['fecha']
-                    venta.tipoComprobante_id = formVentaRequest['tipoComprobante']
                     # obtenemos el Usuario actual
                     venta.usuario = request.user
                     venta.cliente_id = formVentaRequest['cliente']
