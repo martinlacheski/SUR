@@ -358,3 +358,61 @@ class DetalleServiciosVenta(models.Model):
         verbose_name = 'Detalle de Venta - Productos'
         verbose_name_plural = 'Detalle de Ventas - Productos'
         ordering = ['id']
+
+
+#   Clase Compras
+class Compras(models.Model):
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
+    fecha = models.DateField(verbose_name='Fecha')
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
+    medioPago = models.ForeignKey(MediosPago, models.DO_NOTHING, verbose_name='Medio de pago')
+    tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante')
+    nroComprobante = models.CharField(max_length=100, verbose_name='Número de Comprobante', blank=True, null=True)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    estadoCompra = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.get_full_sale()
+
+    def get_full_sale(self):
+        return '{} - {}'.format(self.fecha, self.proveedor.razonSocial)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['usuario'] = self.usuario.toJSON()
+        item['proveedor'] = self.proveedor.toJSON()
+        item['medioPago'] = self.medioPago.toJSON()
+        item['tipoComprobante'] = self.tipoComprobante.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Compra'
+        verbose_name_plural = 'Compras'
+        db_table = 'erp_compras'
+        ordering = ['fecha', 'id']
+
+
+class DetalleProductosCompra(models.Model):
+    compra = models.ForeignKey(Compras, models.DO_NOTHING)
+    producto = models.ForeignKey(Productos, models.DO_NOTHING)
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['compra'])
+        item['producto'] = self.producto.toJSON()
+        item['costo'] = format(self.costo, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Compra'
+        verbose_name_plural = 'Detalle de Compras'
+        ordering = ['id']

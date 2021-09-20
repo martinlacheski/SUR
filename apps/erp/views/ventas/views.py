@@ -3,7 +3,7 @@ import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Q, Sum
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -189,6 +189,7 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
     def get_form(self, form_class=None):
         instance = self.get_object()
         form = VentasForm(instance=instance)
+        # Obtenemos unicamente el CLIENTE en el que se CREO la VENTA, para poder modificar la misma
         form.fields['cliente'].queryset = Clientes.objects.filter(id=instance.cliente.id)
         return form
 

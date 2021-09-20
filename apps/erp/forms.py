@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
 
-from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras
 
 
 class CategoriasForm(ModelForm):
@@ -448,6 +448,63 @@ class VentasForm(ModelForm):
                     'id': 'fecha',
                     'data-target': '#fecha',
                     'data-toggle': 'datetimepicker'
+                }
+            ),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'percepcion': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
+        exclude = ['usuario']
+
+
+class ComprasForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Compras
+        fields = '__all__'
+        widgets = {
+            'fecha': DateInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'proveedor': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'medioPago': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'tipoComprobante': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
+            'nroComprobante': TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese un número de comprobante',
                 }
             ),
             'iva': TextInput(attrs={
