@@ -98,7 +98,7 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term))
+                        | Q(codigoBarras1__icontains=term)| Q(codigoBarras2__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:

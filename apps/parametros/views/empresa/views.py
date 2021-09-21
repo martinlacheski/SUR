@@ -37,6 +37,7 @@ class EmpresaListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
         context['create_url'] = reverse_lazy('parametros:empresa_create')
         context['list_url'] = reverse_lazy('parametros:empresa_list')
         context['entity'] = 'Empresa'
+        context['cantEmpresa'] = Empresa.objects.count()
         return context
 
 
