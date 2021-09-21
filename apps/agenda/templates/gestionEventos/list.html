@@ -1,0 +1,248 @@
+{% extends 'body.html' %}
+{% load static %}
+<!-- CONTIENE EL CALENDARIO PRINCIPAL Y ES UNA PANTALLA TODO_EN_UNO DE ABM de eventos -->
+{% block head %}
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/fullcalendar/main.css' %}">
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
+    <!-- Tempus Dominus -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+    <!-- dropzonejs -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/dropzone/min/dropzone.min.css' %}">
+{% endblock %}
+
+{% block content %}
+
+    <div class="modal fade" id="deleteModal">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="msjErrorModal">¿Estás seguro de eliminar el registro?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnDelete" class="btn btn-primary">Ok</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="sticky-top mb-3">
+
+                <!-- /.card -->
+
+                <form id="formAgenda" action="." method="post">
+                    {% csrf_token %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Crear un evento</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-4">
+                                    <label>Tipo de evento</label>
+                                    {{ form.tipoEvento }}
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <label>Descripción</label>
+                                    {{ form.descripcion }}
+                                </div>
+                                <div class="col-12 mb-4">
+                                    <label>Fecha de Notificación</label>
+                                    <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
+                                        {{ form.fechaNotificacion }}
+                                        <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">
+                                        <label for="customCheckbox1" class="custom-control-label"> Se repite</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    {{ form.repeticion }}
+                                </div>
+                                {% if action == 'add' %}
+                                    <div class="col-12">
+                                        <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btn-sm btnAdd">
+                                            <i class="fas fa-save"></i> Registrar
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <div class="col-4">
+                                        <button type="submit" id="btnAdd" class="btn btn-warning btn-flat btn-block btn-sm">
+                                            <i class="fas fa-save"></i> Modif.
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-flat btn-block btn-sm">
+                                            <i class="fas fa-trash-alt"></i> Elim.
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <a href="{% url 'agenda:dashboard' %}"><button type="button" id="btnVolverEvento" class="btn btn-primary btn-flat btn-block btn-sm">
+                                            <i class="fas fa-undo"></i> Volver
+                                        </button></a>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+
+
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="card card-primary">
+                <div class="card-body p-0">
+                    <!-- THE CALENDAR -->
+                    <div id="calendar">
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+
+
+{% endblock %}
+{% block javascript %}
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js'%}"></script>
+
+    <!-- IMPORTANTE. Para poner en español algunos complementos en AdminLTE3 se necesita de moment.js -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js'%}"></script>
+
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/inputmask/jquery.inputmask.min.js'%}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/fullcalendar/main.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/fullcalendar/locales-all.min.js' %}"></script>
+
+    <!-- Inicialización de datimepicker -->
+    <script>
+        //Date picker
+        $('#reservationdatetime').datetimepicker({
+            minDate: new Date(),
+            format: 'DD/MM/yyyy HH:mm',
+            locale: 'es',
+            icons: {time: 'far fa-clock' },
+        });
+    </script>
+
+
+
+    <!-- Inicialización de fullCalendar -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                events: [
+                    {% for evento in eventos %}
+                        {
+                            id: "{{ evento.id }}",
+                            title: "{{ evento.tipoEvento }}" ,
+                            start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                        },
+                    {% endfor %}
+                ],
+                // Opciones  básicas
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                height: 650,
+                headerToolbar: {
+                    left: 'dayGridMonth,timeGridWeek,timeGridDay',
+                    center: 'title',
+                    right: 'prevYear,prev,next,nextYear'
+                },
+
+                // Ubicar contenido de un evento en formulario para su posterior mod o eliminacion.
+                eventClick: function(info) {
+                    // Al hacer click en cualquier evento, nos vamos al link de editar evento.
+                    location.replace('/' + '{{ update_url }}' + info.event.id);
+                    info.el.style.borderColor = 'red';
+                }
+            });
+            calendar.render();
+        });
+    </script>
+
+    <script>
+        // eliminación de un evento.
+        $('#btnDelete').on('click', function(){
+
+            // Obtenemos id del evendo para borrarlo.
+            let id_evento = "{{ request.get_full_path }}";
+            id_evento = id_evento.replace(/[^0-9]/g,'')
+
+            getToken(name);
+            // Llamada ajax a view para borrar
+            $.ajax({
+                url: '{{ delete_url }}' + id_evento + '/',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'delete',
+                    'pk' : id_evento
+                },
+                success : function (data){
+                    // Control de eliminación de un registro que es dependencia de otros.
+                    if (data.check === 'ok'){
+                        location.replace(data.redirect);
+                    }else {
+                        console.log('algo salió mal');
+                    }
+                }
+            });
+
+        });
+    </script>
+
+
+    <!-- Funcionalidad de toggle en caso de que se desee repetición -->
+    <script>
+        $('#customCheckbox1').on('click', function (){
+            if (this.checked) {
+                $('#selectRepeticion').prop('disabled', false); // If checked enable item
+            } else {
+                $('#selectRepeticion').prop('disabled', true); // If checked disable item
+            }
+        });
+    </script>
+
+    <!-- Checkbox marcada en caso de que estémos en una update page -->
+    <script>
+        $(document).ready( function () {
+            if(window.location.pathname.includes('updateEvento')){
+                $("#customCheckbox1").prop("checked", true);
+            }
+        });
+    </script>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+

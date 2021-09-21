@@ -1,0 +1,24 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'proveedores/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th scope="col" style="width: 25%;">Razón Social</th>
+        <th scope="col" style="width: 10%;">CUIT</th>
+        <th scope="col" style="width: 25%;">Localidad</th>
+        <th scope="col" style="width: 20%;">E-mail</th>
+        <th scope="col" style="width: 10%;">Teléfono</th>
+        <th scope="col" style="width: 10%;">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}

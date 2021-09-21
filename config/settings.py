@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,10 +43,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #Librerias
     'widget_tweaks',
-    #Apps
+    #Aplicaciones
+    'apps.parametros',
     'apps.login',
     'apps.home',
     'apps.geografico',
+
+    'apps.usuarios',
+    'apps.erp',
+    'apps.agenda'
 ]
 
 MIDDLEWARE = [
@@ -82,6 +88,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+CRONJOBS = [('* * * * *', 'apps.agenda.cron.cron_prueba')]
 
 DATABASES = {
     'default': {
@@ -137,11 +145,11 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Base url de los archivos
-MEDIA_URL = '/media/'
-
 # Path donde los arhivos seran almacenados
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# Base url de los archivos
+MEDIA_URL = '/media/'
 
 #Redireccion al Login Correcto
 LOGIN_REDIRECT_URL = '/home/'
@@ -152,7 +160,12 @@ LOGOUT_REDIRECT_URL = '/login/'
 #Direccion de Login
 LOGIN_URL = '/login/'
 
+#Extension Modelo Abstracto Usuarios
+AUTH_USER_MODEL = 'usuarios.Usuarios'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+

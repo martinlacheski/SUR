@@ -1,0 +1,25 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'productos/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <tr>
+        <th scope="col" style="width: 50%;">Descripcion</th>
+        <th scope="col" style="width: 15%;">Codigo</th>
+        <th scope="col" style="width: 15%;">Cod. Prov.</th>
+        <th scope="col" style="width: 5%;">Imagen</th>
+        <th scope="col" style="width: 5%;">Stock</th>
+        <th scope="col" style="width: 5%;">Precio</th>
+        <th scope="col" style="width: 5%;">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
