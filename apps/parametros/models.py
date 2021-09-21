@@ -244,7 +244,7 @@ class Empresa(models.Model):
     direccion = models.CharField(max_length=100, verbose_name='Dirección')
     telefono = models.CharField(max_length=100, verbose_name='Teléfono')
     email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
-    passwordEmail = models.CharField(max_length=128)
+    passwordEmail = models.CharField(max_length=128, null=True, blank=True)
     botTelegram = models.CharField(max_length=100, verbose_name='Bot Telegram', null=True, blank=True)
     tokenTelegram = models.CharField(max_length=100, verbose_name='Token Telegram', null=True, blank=True)
     facebook = models.CharField(max_length=100, verbose_name='Cuenta de Facebook', null=True, blank=True)

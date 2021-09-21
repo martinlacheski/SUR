@@ -23,6 +23,13 @@ $(function () {
                 li.innerText = value;
                 errorList.appendChild(li);
             });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
         }
     }
 

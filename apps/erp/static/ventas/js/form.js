@@ -449,15 +449,21 @@ $(function () {
     //Validamos EMAIL CORRECTO en el formulario de CLiente
     $("#email").on('focusout', function (e) {
         var btn = document.getElementById('btnAddCliente');
-        var check = isValidEmail($('input[name="email"]').val());
-        if (check == false) {
-            //alert('Dirección de correo electrónico no válido');
-            $("#errorEmail").removeAttr("hidden");
-            btn.disabled = true;
-            $("#email").focus();
-        } else {
+        if ($('input[name="email"]').val().lenght == 0 || !$('input[name="email"]').val())  {
+            //email vacio
             $('#errorEmail').attr("hidden", "");
             btn.disabled = false;
+        } else {
+            var check = isValidEmail($('input[name="email"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorEmail").removeAttr("hidden");
+                btn.disabled = true;
+                $("#email").focus();
+            } else {
+                $('#errorEmail').attr("hidden", "");
+                btn.disabled = false;
+            }
         }
     });
 
@@ -468,7 +474,6 @@ $(function () {
     $("#localidad").validate();
     $("#direccion").validate();
     $("#telefono").validate();
-    $("#email").validate();
 
     //Funcion Mostrar Errores del Formulario Cliente
     function message_error_cliente(obj) {
@@ -483,6 +488,13 @@ $(function () {
                 li.innerText = value;
                 errorList.appendChild(li);
             });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
         }
     }
 
@@ -502,6 +514,7 @@ $(function () {
             processData: false,
             contentType: false,
         }).done(function (data) {
+            console.log(data.error);
             if (!data.hasOwnProperty('error')) {
                 var newOption = new Option(data.razonSocial, data.id, false, true);
                 $('select[name="cliente"]').append(newOption).trigger('change');
@@ -780,7 +793,7 @@ $(function () {
                                 }, function () {
                                     location.replace(data.redirect);
                                 });
-                            //location.replace(data.redirect);
+                                //location.replace(data.redirect);
                             } else {
                                 error_action('Error', data.error, function () {
                                     //pass

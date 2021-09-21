@@ -10,10 +10,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from apps.erp.forms import ComprasForm, ProveedoresForm
+from apps.erp.forms import ComprasForm, ProveedoresForm, ProductosForm
 from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.models import Empresa
+from apps.parametros.models import Empresa, TiposIVA
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -99,6 +99,15 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     data['producto'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
+            # si no existe el Producto lo creamos
+            elif action == 'create_producto':
+                with transaction.atomic():
+                    formProducto = ProductosForm(request.POST)
+                    data = formProducto.save()
             elif action == 'add':
                 with transaction.atomic():
                     formCompraRequest = json.loads(request.POST['compra'])
@@ -107,7 +116,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     # obtenemos el Usuario actual
                     compra.usuario = request.user
                     compra.proveedor_id = formCompraRequest['proveedor']
-                    compra.medioPago_id = formCompraRequest['medioPago']
+                    compra.condicionPagoCompra_id = formCompraRequest['condicionPagoCompra']
                     compra.tipoComprobante_id = formCompraRequest['tipoComprobante']
                     compra.nroComprobante = formCompraRequest['nroComprobante']
                     compra.subtotal = float(formCompraRequest['subtotal'])
@@ -147,6 +156,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['formProveedor'] = ProveedoresForm()
+        context['formProducto'] = ProductosForm()
         context['productos'] = Productos.objects.all()
         return context
 
@@ -208,6 +218,15 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
+            # si no existe el Producto lo creamos
+            elif action == 'create_producto':
+                with transaction.atomic():
+                    formProducto = ProductosForm(request.POST)
+                    data = formProducto.save()
             elif action == 'edit':
                 with transaction.atomic():
                     formCompraRequest = json.loads(request.POST['compra'])
@@ -217,7 +236,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                     # obtenemos el Usuario actual
                     compra.usuario = request.user
                     compra.proveedor_id = formCompraRequest['proveedor']
-                    compra.medioPago_id = formCompraRequest['medioPago']
+                    compra.condicionPagoCompra_id = formCompraRequest['condicionPagoCompra']
                     compra.tipoComprobante_id = formCompraRequest['tipoComprobante']
                     compra.nroComprobante = formCompraRequest['nroComprobante']
                     compra.subtotal = float(formCompraRequest['subtotal'])
@@ -264,6 +283,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['formProveedor'] = ProveedoresForm()
+        context['formProducto'] = ProductosForm()
         return context
 
 

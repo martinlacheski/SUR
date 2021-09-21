@@ -28,7 +28,7 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-12" class="form-control">
+                        <div class="form-group col-12">
                             <label>Razón Social:</label>
                             <br>
                             {{ form.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -76,7 +76,7 @@
                     </div>
                     <div class="form-group col-4">
                         <label>Contraseña:</label>
-                            {{ form.passwordEmail|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        {{ form.passwordEmail|add_class:'form-control' }}
                     </div>
                     <div class="form-group col-4">
                         <label>Teléfono:</label>
@@ -89,29 +89,27 @@
                     <div class="form-group col-4">
                         <label>Bot Telegram:</label>
                         <br>
-                        {{ form.botTelegram|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        {{ form.botTelegram|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                     <div class="form-group col-4">
                         <label>Token Telegram:</label>
-                        <div class="col-12" class="form-control">
-                            {{ form.tokenTelegram|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                        </div>
+                        {{ form.tokenTelegram|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-4">
                         <label>Facebook:</label>
-                        {{ form.facebook|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        {{ form.facebook|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                     <div class="form-group col-4">
                         <label>Instagram:</label>
-                            {{ form.instagram|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        {{ form.instagram|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-8">
                         <label>Página Web:</label>
-                        {{ form.paginaWeb|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        {{ form.paginaWeb|add_class:'form-control'|attr:'autocomplete:off' }}
 
                     </div>
                     <div class="col-4 mb-4">
@@ -124,15 +122,15 @@
                 <div class="row">
                     <div class="form-group col-4">
                         <label>CBU - CVU:</label>
-                            {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                     <div class="form-group col-4">
                         <label>Alias:</label>
-                            {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                     <div class="form-group col-4">
                         <label>Número de Cuenta:</label>
-                            {{ form.nroCuenta|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.nroCuenta|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                 </div>
             </div>

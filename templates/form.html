@@ -21,20 +21,6 @@
             </div>
             <div class="card-body">
                 {% csrf_token %}
-                {#Error en el Formulario#}
-                {% if form.errors %}
-                    <div class="alert alert-danger alert-dismissible errorForm">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
-                        <ul>
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
                 <input type="hidden" name="action" value="{{ action }}">
                 {% for field in form.visible_fields %}
                     <div class="form-group">
@@ -45,7 +31,7 @@
             </div>
             <div class="card-footer">
                 {#Mensaje de error#}
-                <ul id="errorList"  class="alert-danger"></ul>
+                <ul id="errorList" class="alert-danger"></ul>
                 {#Botones#}
                 <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
                     <i class="fas fa-save"></i> Guardar registro
@@ -71,8 +57,16 @@
                     li.innerText = value;
                     errorList.appendChild(li);
                 });
+            } else {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                var li = document.createElement("li");
+                li.innerText = obj;
+                errorList.appendChild(li);
             }
         }
+
         //Llamamos a la funcion de Token
         getToken(name);
         //Hacemos el envio del Formulario mediante AJAX

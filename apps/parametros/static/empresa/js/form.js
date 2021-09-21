@@ -1,8 +1,7 @@
 $(function () {
     $('.select2').select2({
         theme: "bootstrap4",
-        language: 'es',
-        placeholder: 'Seleccionar'
+        language: 'es'
     });
     //Funcion Mostrar Errores del Formulario
     function message_error(obj) {
@@ -17,7 +16,14 @@ $(function () {
                 li.innerText = value;
                 errorList.appendChild(li);
             });
-        }
+        } else {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                var li = document.createElement("li");
+                li.innerText = obj;
+                errorList.appendChild(li);
+            }
     }
     //Llamamos a la funcion de Token
     getToken(name);
@@ -32,7 +38,7 @@ $(function () {
             processData: false,
             contentType: false,
             success: function (data) {
-                if (!data.hasOwnProperty('error')) {
+            if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
                     message_error(data.error);

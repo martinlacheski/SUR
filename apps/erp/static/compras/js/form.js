@@ -6,7 +6,7 @@ var compra = {
         usuario: '',
         fecha: '',
         proveedor: '',
-        medioPago: '',
+        condicionPagoCompra: '',
         tipoComprobante: '',
         nroComprobante: '',
         subtotal: 0.00,
@@ -58,7 +58,7 @@ var compra = {
                     orderable: false,
                     render: function (data, type, row) {
                         // return '$' + parseFloat(data).toFixed(2);
-                        return '<input type="Text" name="costo" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.costo + '">';
+                        return '<input type="Text" name="costoProd" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.costo + '">';
                     }
                 },
                 {
@@ -88,7 +88,7 @@ var compra = {
                     boostat: 5,
                     maxboostedstep: 10,
                 });
-                $(row).find('input[name="costo"]').TouchSpin({
+                $(row).find('input[name="costoProd"]').TouchSpin({
                     min: 1,
                     max: 1000000,
                     step: 0.1,
@@ -182,7 +182,7 @@ $(document).ready(function () {
         $('select[name="tipoComprobante"]').val(null).trigger('change');
         $('input[name="nroComprobante"]').val('');
         $('select[name="proveedor"]').val(null).trigger('change');
-        $('select[name="medioPago"]').val(null).trigger('change');
+        $('select[name="condicionPagoCompra"]').val(null).trigger('change');
         $('input[name="searchProductos"]').attr('disabled', true);
         //Inicialización de datetimepicker
         $('#fecha').datetimepicker({
@@ -208,7 +208,6 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 //asignamos el detalle a la estructura
                 compra.items.productos = data;
                 //actualizamos el listado de productos
@@ -359,6 +358,13 @@ $(function () {
                 li.innerText = value;
                 errorList.appendChild(li);
             });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
         }
     }
 
@@ -390,8 +396,219 @@ $(function () {
         });
     });
 
+//------------------------------------MODAL PRODUCTOS----------------------------------------//
+
+    //Inicializamos los componentes
+
+
+    //Inicializamos los campos de tipo TOUCHSPIN
+    $("input[name='stockReal']").TouchSpin({
+        min: -1000000,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
+    $("input[name='stockMinimo']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
+    $("input[name='reposicion']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
+    $("input[name='costo']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
+    $("input[name='utilidad']").TouchSpin({
+        min: 0,
+        max: 100,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '%'
+    });
+    $("input[name='precioVenta']").TouchSpin({
+        min: 0,
+        max: 10000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
+
+    //Al cerrar el Modal de Productos reseteamos los valores del formulario
+    $('#modalProducto').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formProducto').trigger('reset');
+        //Reseteamos los Select2 del Modal
+        $(".subcategoria").val('').trigger('change.select2');
+        $(".iva").val('').trigger('change.select2');
+        var errorList = document.getElementById("errorListFormProducto");
+        errorList.innerHTML = '';
+    });
+
+    //Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD e IVA)
+    $('input[name="costo"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('input[name="utilidad"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('select[name="iva"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('input[name="precioVenta"]').on('change', function () {
+        calcularUtilidad();
+    });
+
+    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
+    function calcularPrecio() {
+        var id = $('select[name="iva"]').val();
+        var iva = 0;
+        var costo = $('input[name="costo"]').val();
+        var utilidad = $('input[name="utilidad"]').val();
+        utilidad = (utilidad / 100) + 1;
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_iva',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                iva = (data.iva);
+                console.log(data.iva);
+                iva = (iva / 100) + 1;
+                if (iva > 0) {
+                    var precio = (costo * utilidad * iva);
+                    $('input[name="precioVenta"]').val(precio.toFixed(2));
+                }
+            }
+        });
+        if (iva > 0) {
+            var precio = (costo * utilidad * iva);
+            $('input[name="precioVenta"]').val(precio);
+        }
+    }
+
+//Funcion para calcular el precio entre COSTO IVA y TOTAL
+    function calcularUtilidad() {
+        var id = $('select[name="iva"]').val();
+        var iva = 0;
+        var costo = $('input[name="costo"]').val();
+        var total = $('input[name="precioVenta"]').val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_iva',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                iva = (data.iva);
+                iva = (iva / 100) + 1;
+                if (iva > 0) {
+                    var precio = (((total / iva) / costo) - 1) * 100;
+                    $('input[name="utilidad"]').val(precio.toFixed(2));
+                }
+            }
+        });
+        if (iva > 0) {
+            var precio = (((total / iva) / costo) - 1) * 100;
+            $('input[name="utilidad"]').val(precio);
+        }
+    }
+
+    //agregar al campo numerico lo siguiente
+    //onkeypress="return isNumberKey(event)"
+    function isNumberKey(evt) {
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode < 48 || charCode > 57)
+            return false;
+        return true;
+    }
+
+    //Funcion Mostrar Errores del Formulario Producto
+    function message_error_producto(obj) {
+        var errorList = document.getElementById("errorListFormProducto");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
+
+    //Creamos un nuevo Producto desde el Modal
+    $('#formProducto').on('submit', function (e) {
+        // VALIDACION DE LOS CAMPOS
+        $("#subcategoria").validate();
+        $("#descripcion").validate();
+        //$("#stockReal").validate();
+        $("#stockMinimo").validate();
+        $("#reposicion").validate();
+        $("#costo").validate();
+        $("#utilidad").validate();
+        $("#iva").validate();
+        $("#precioVenta").validate();
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_producto');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                $('#modalProducto').modal('hide');
+            } else {
+                message_error_producto(data.error);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
+
 //------------------------------------EVENTOS PRODUCTOS----------------------------------------//
-    //Buscar Productos
+//Buscar Productos
     $('input[name="searchProductos"]')
         .autocomplete({
             source: function (request, response) {
@@ -444,8 +661,12 @@ $(function () {
                     $('input[name="searchProductos"]').val('');
                     $('input[name="searchProductos"]').focus();
                 } else {
-                    error_action('Error', 'No existe el producto con el código ingresado', function () {
-                        //pass
+                    // error_action('Error', 'No existe el producto con el código ingresado', function () {
+                    confirm_action('Error', 'No existe el producto, ¿Desea registrarlo?', function () {
+                        //$('#modalProducto').modal('show');
+                        $('#modalProducto').modal('show');
+                        $('input[name="searchProductos"]').val('');
+                        $('input[name="searchProductos"]').focus();
                     }, function () {
                         $('input[name="searchProductos"]').val('');
                         $('input[name="searchProductos"]').focus();
@@ -485,7 +706,7 @@ $(function () {
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + compra.items.productos[tr.row].subtotal.toFixed(2));
         })
         //evento cambiar renglon (cantidad) del detalle
-        .on('change', 'input[name="costo"]', function () {
+        .on('change', 'input[name="costoProd"]', function () {
             //asignamos a una variable el costo, en la posicion actual
             var costo = parseFloat($(this).val());
             //Obtenemos la posicion del elemento a modificar dentro del Datatables
@@ -515,10 +736,10 @@ $(function () {
     });
 
 //------------------------------------SUBMIT COMPRA----------------------------------------//
-    // Submit COMPRA
+// Submit COMPRA
     $('#compraForm').on('submit', function (e) {
         e.preventDefault();
-        if (compra.items.productos.length === 0 ) {
+        if (compra.items.productos.length === 0) {
             error_action('Error', 'Debe al menos tener un producto en sus detalle', function () {
                 //pass
             }, function () {
@@ -529,7 +750,7 @@ $(function () {
                     //realizamos la compra mediante Ajax
                     compra.items.tipoComprobante = $('select[name="tipoComprobante"]').val();
                     compra.items.nroComprobante = $('input[name="nroComprobante"]').val();
-                    compra.items.medioPago = $('select[name="medioPago"]').val();
+                    compra.items.condicionPagoCompra = $('select[name="condicionPagoCompra"]').val();
                     compra.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
                     compra.items.proveedor = $('select[name="proveedor"]').val();
                     var parameters = new FormData();
@@ -556,7 +777,7 @@ $(function () {
                                 }, function () {
                                     location.replace(data.redirect);
                                 });
-                            //location.replace(data.redirect);
+                                //location.replace(data.redirect);
                             } else {
                                 error_action('Error', data.error, function () {
                                     //pass
@@ -568,15 +789,11 @@ $(function () {
                     });
                 }
                 ,
-
                 function () {
                     //pass
                 }
             );
         }
         ;
-    })
-    ;
-})
-;
-
+    });
+});

@@ -164,6 +164,7 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):

@@ -271,7 +271,7 @@
                                 <label>Dirección de email:</label>
                                 <br>
                                 <div class="input-group" type="email" class="form-control" id="email" name="email">
-                                    {{ formCliente.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    {{ formCliente.email|add_class:'form-control'|attr:'autocomplete:off' }}
                                     <span hidden id="errorEmail"
                                           style="color: red;">Dirección de correo electrónico no válido </span>
                                 </div>
@@ -303,17 +303,25 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-4 mb-4">
+                            <div class="form-group col-6 mb-4">
                                 <label>Condición de Pago:</label>
                                 <br>
                                 {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
                             </div>
+                            <div class="col-6 mb-6">
+                            <label>Tipo de Percepción:</label>
+                            <div class="input-group class="form-control">
+                                {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                            </div>
+                        </div>
+                        </div>
 
+                        <div class="row">
                             <div class="form-group col-2 mb-2">
                                 <label>¿Cuenta Corriente?:</label>
                                 <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
                             </div>
-                            <div class="form-group col-3 mb-3">
+                            <div class="form-group col-4 mb-4">
                                 <label>Límite:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
@@ -321,7 +329,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group col-3 mb-3">
+                            <div class="form-group col-4 mb-4">
                                 <label>Plazo:</label>
                                 <br>
                                 <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">

@@ -345,6 +345,7 @@ class EmpresaForm(ModelForm):
         widgets = {
             'razonSocial': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese una Razón Social',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
@@ -356,6 +357,7 @@ class EmpresaForm(ModelForm):
             }),
             'cuit': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'INGRESE UN CUIT',
                 }
             ),
@@ -366,6 +368,7 @@ class EmpresaForm(ModelForm):
             ),
             'direccion': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'INGRESE UNA DIRECCIÓN',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase'
@@ -373,65 +376,76 @@ class EmpresaForm(ModelForm):
             ),
             'telefono': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
                 }
             ),
             'email': EmailInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese un correo electrónico válido',
                     'style': 'width: 100%'
                 }
             ),
             'passwordEmail': PasswordInput(render_value=True,
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese la contraseña del Correo',
                     'style': 'width: 100%'
                 }
             ),
             'botTelegram': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese el Bot de Telegram',
                     'style': 'width: 100%'
                 }
             ),
             'tokenTelegram': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese el Token de Telegram',
                     'style': 'width: 100%'
                 }
             ),
             'facebook': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese la cuenta de Facebook',
                     'style': 'width: 100%'
                 }
             ),
             'instagram': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese la cuenta de Instagram',
                     'style': 'width: 100%'
                 }
             ),
             'paginaWeb': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese la URL del Sitio Web Empresarial',
                     'style': 'width: 100%'
                 }
             ),
             'cbu': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese un CBU/CVU',
                     'style': 'width: 100%'
                 }
             ),
             'alias': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese un Alias',
                     'style': 'width: 100%'
                 }
             ),
             'nroCuenta': TextInput(
                 attrs={
+                    'class': 'form-control',
                     'placeholder': 'Ingrese un Número de Cuenta',
                     'style': 'width: 100%'
                 }

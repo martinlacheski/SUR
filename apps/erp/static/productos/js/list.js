@@ -14,8 +14,8 @@ $(function () {
             dataSrc: ""
         },
         columns: [
-            {"data": "subcategoria.nombre"},
             {"data": "descripcion"},
+            {"data": "codigo"},
             {"data": "codigoProveedor"},
             {"data": "imagen"},
             {"data": "stockReal"},

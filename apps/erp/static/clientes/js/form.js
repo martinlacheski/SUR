@@ -1,6 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var plazo = $("input[name='plazoCtaCte']").val();
-    if (plazo > 0){
+    if (plazo > 0) {
         document.getElementById("ctaCte").checked = true;
         $('input[name="plazoCtaCte"]').attr('disabled', false);
     }
@@ -65,6 +65,13 @@ $(function () {
                 li.innerText = value;
                 errorList.appendChild(li);
             });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
         }
     }
 
@@ -97,20 +104,25 @@ $(function () {
     $("#localidad").validate();
     $("#direccion").validate();
     $("#telefono").validate();
-    $("#email").validate();
 
     //Validamos EMAIL CORRECTO
     $("#email").on('focusout', function (e) {
         var btn = document.getElementById('btnAdd');
-        var check = isValidEmail($('input[name="email"]').val());
-        if (check == false) {
-            //alert('Dirección de correo electrónico no válido');
-            $("#errorEmail").removeAttr("hidden");
-            btn.disabled = true;
-            $("#email").focus();
-        } else {
+        if ($('input[name="email"]').val().lenght == 0 || !$('input[name="email"]').val())  {
+            //email vacio
             $('#errorEmail').attr("hidden", "");
             btn.disabled = false;
+        } else {
+            var check = isValidEmail($('input[name="email"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorEmail").removeAttr("hidden");
+                btn.disabled = true;
+                $("#email").focus();
+            } else {
+                $('#errorEmail').attr("hidden", "");
+                btn.disabled = false;
+            }
         }
     });
 });

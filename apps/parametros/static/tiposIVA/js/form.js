@@ -8,6 +8,7 @@ $(function () {
         maxboostedstep: 10,
         postfix: '%'
     });
+
     //Funcion Mostrar Errores del Formulario
     function message_error(obj) {
         var errorList = document.getElementById("errorList");
@@ -21,8 +22,16 @@ $(function () {
                 li.innerText = value;
                 errorList.appendChild(li);
             });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
         }
     }
+
     //Llamamos a la funcion de Token
     getToken(name);
     //Hacemos el envio del Formulario mediante AJAX

@@ -215,7 +215,7 @@ class ServiciosForm(ModelForm):
             ),
             'codigo': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de producto',
+                    'placeholder': 'Ingrese un código',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -486,12 +486,12 @@ class ComprasForm(ModelForm):
                     'data-toggle': 'datetimepicker'
                 }
             ),
-            'proveedor': Select(
+            'condicionPagoCompra': Select(
                 attrs={
                     'class': 'form-control select2',
                 }
             ),
-            'medioPago': Select(
+            'proveedor': Select(
                 attrs={
                     'class': 'form-control select2',
                 }
