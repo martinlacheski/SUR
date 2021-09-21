@@ -22,12 +22,6 @@ source bin/ activate #Para activar el entorno virtual
 
 Luego ejecutar lo siguiente para instalar las librerias necesarias:
 
-pip install Django==3.2.6 #Para instalar django en el entorno virtual 
-pip install django-widget-tweaks==1.4.8 #Libreria necesaria para el proyecto.
-pip install Pillow==8.3.1 #Para poder utilizar imagenes en el proyecto
-
-Otra alternativa es en vez de ejecutar lo anterior, podemos ejecutar el comando siguiente en la terminal, despues de activado el entorno virtual:
-
 En la carpeta raiz del proyecto ejecutamos:
 
 pip install -r requirements.txt
