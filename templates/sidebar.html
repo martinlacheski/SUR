@@ -101,10 +101,20 @@
 
                 <!-- Presupuestos -->
                 <li class="nav-item has-treeview">
-                    <a href="{% url 'presupuestos:presupuestosBase_list' %}" class="nav-link">
+                    <a href="{% url 'presupuestos:presupuestos_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-tasks"></i>
                         <p>
                             Presupuestos
+                        </p>
+                    </a>
+                </li>
+
+                <!-- Presupuestos BASE -->
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'presupuestos:presupuestosBase_list' %}" class="nav-link">
+                        <i class="nav-icon fas fa-tasks"></i>
+                        <p>
+                            Plantilla Presupuestos
                         </p>
                     </a>
                 </li>

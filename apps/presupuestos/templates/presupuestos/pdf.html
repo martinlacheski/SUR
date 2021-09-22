@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 250px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="name-company text-center">Presupuesto</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+        </div>
+        <div class="col-4">
+
+            {#            <h1 class="name-company">{{ empresa.nombre }}</h1>#}
+            {#            <p class="text-center">#}
+            {#                <b>CUIT: </b>{{ empresa.cuit }}<br>#}
+            {#                {{ empresa.direccion }}<br>#}
+            {#                {{ empresa.localidad }}<br>#}
+            {#            </p>#}
+        </div>
+        <div class="col-6">
+            <p class="text-right">
+                <b>Número:</b> {{ presupuesto.id }}<br>
+                <b>Marca:</b> {{ presupuesto.modelo.marca.nombre }}<br>
+                <b>Modelo:</b> {{ presupuesto.modelo.nombre }}<br>
+                <b>Descripción:</b> {{ presupuesto.descripcion }}<br>
+            </p>
+        </div>
+    </div>
+    <p class="text-uppercase font-weight-bold text-center">
+        Detalle de Productos <br>
+    </p>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 10%;">Cantidad</th>
+            <th class="text-center" style="width: 70%;">Producto</th>
+            <th class="text-center" style="width: 10%;">Importe</th>
+            <th class="text-center" style="width: 10%;">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in presupuesto.detalleproductospresupuesto_set.all %}
+            <tr>
+                <td class="text-center">{{ det.cantidad }}</td>
+                <td class="text-center">{{ det.producto.descripcion }}</td>
+                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
+                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-uppercase font-weight-bold text-right">
+        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase font-weight-bold text-center">
+        detalle de Servicios <br>
+    </p>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 10%;">Cantidad</th>
+            <th class="text-center" style="width: 70%;">Servicio</th>
+            <th class="text-center" style="width: 10%;">Importe</th>
+            <th class="text-center" style="width: 10%;">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in presupuesto.detalleserviciospresupuesto_set.all %}
+            <tr>
+                <td class="text-center">{{ det.cantidad }}</td>
+                <td class="text-center">{{ det.servicio.descripcion }}</td>
+                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
+                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-uppercase font-weight-bold text-right">
+        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase font-weight-bold text-right">
+        <b>Total a pagar: $</b> {{ presupuesto.total|floatformat:2 }}<br>
+    </p>
+</div>
+</body>
+</html>
