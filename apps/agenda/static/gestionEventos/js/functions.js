@@ -1,10 +1,6 @@
 
 // Inicialización de datimepicker
-$('#fechaNotificacio').datetimepicker({
-    format: 'DD-MM-yyyy',
-    locale: 'es',
-    icons: {date: 'far fa-calendar-alt'},
-});
+
 
 // Realiza un movimiento de modales. Nada wow
 $('#btnDel').on('click', function() {
@@ -13,14 +9,8 @@ $('#btnDel').on('click', function() {
 });
 
 
-// Toggle de activación de select
-$('#customCheckbox1').on('click', function (){
-    if (this.checked) {
-        $('#selectRepeticion').prop('disabled', false);
-    } else {
-        $('#selectRepeticion').prop('disabled', true);
-    }
-});
+// Toggle de activación de select y de fecha de finalización
+
 
 // Checkbox marcada en caso de que estémos en una update page
 $(document).ready( function () {

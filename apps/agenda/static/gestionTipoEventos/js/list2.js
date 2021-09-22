@@ -26,19 +26,17 @@ $(function () {
             dataSrc: ""
         },
         columns: [
-            //{"data": "id"},
             {"data": "nombre"},
             {"data": "horarioRecordatorio"},
             {"data": "recordarSistema"},
             {"data": "recordarTelegram"},
-            {"data": "recordarEmail"},
             {"data": "usuarioNotif.username"},
             {"data": "nombre"}, //va duplicado algun campo por la botonera
 
         ],
         columnDefs: [
             {
-                targets: [-1],
+                targets: [5],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -59,12 +57,6 @@ $(function () {
                     return simple_traduc(data);
                 }
             },
-            {
-                targets: [4],
-                render: function (data, type, row){
-                    return simple_traduc(data);
-                }
-            }
         ],
         initComplete: function (settings, json) {
 

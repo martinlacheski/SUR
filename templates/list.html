@@ -16,6 +16,7 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="card card-default">
         <div class="card-header">
             <h3 class="card-title">
@@ -38,12 +39,16 @@
             </table>
         </div>
         <div class="card-footer">
-            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
-                <i class="fas fa-plus"></i> Nuevo registro
-            </a>
-            <a href="{{ list_url }}" class="btn btn-success btn-flat">
-                <i class="fas fa-sync"></i> Actualizar
-            </a>
+            {% if notifCreada == 'verdadero' %}
+
+            {% elif notifCreada == 'falso' %}
+                <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                    <i class="fas fa-plus"></i> Nuevo registro
+                </a>
+            {% endif %}
+             <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                    <i class="fas fa-sync"></i> Actualizar
+                </a>
         </div>
     </div>
     <!-- Modal -->
@@ -74,10 +79,10 @@
         getToken(name);
         //Funcion para Eliminar mediante AJAX
         function btnEliminar(id, href) {
-                // Reactivación de botón y mensaje a default.
-                $('.btnDelete').attr('style', 'visibility: true');
-                $('.btnNo').text("No");
-                $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar el registro?';
+            // Reactivación de botón y mensaje a default.
+            $('.btnDelete').attr('style', 'visibility: true');
+            $('.btnNo').text("No");
+            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de eliminar el registro?';
 
             $('.btnDelete').on('click', function (e) {
                 e.preventDefault();

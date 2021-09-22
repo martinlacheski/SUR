@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="col-12 mb-4">
                                     <label>Fecha de Notificación</label>
-                                    <div class="date" id="fechaNotificacio" data-target-input="nearest">
+                                    <div class="date input-group" id="fechaNotificacion" data-target-input="nearest">
                                         {{ form.fechaNotificacion }}
                                     </div>
                                 </div>
@@ -74,6 +74,13 @@
                                 <div class="col-12 mb-4">
                                     {{ form.repeticion }}
                                 </div>
+                                <div hidden id="fechaFinalizacionField" class="col-12 mb-4">
+                                    <label>Fecha de Finalización</label>
+                                    <div class="date input-group" id="fechaFinalizacion" data-target-input="nearest">
+                                        {{ form.fechaFinalizacion }}
+                                    </div>
+                                </div>
+                                <p hidden id="errorFechas" style="color:red;">Fecha de Finalización es menor a la de Notificación </p>
                                 {% if action == 'add' %}
                                     <div class="col-12">
                                         <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
@@ -91,6 +98,7 @@
                                             <i class="fas fa-undo"></i> Volver
                                         </button></a>
                                     </div>
+
                                 {% endif %}
 
                             </div>
@@ -223,11 +231,14 @@
                                 rrule: {
                                     freq: "{{ evento.repeticion }}",
                                     dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                                    until: "{{ evento.fechaFinalizacion|date:"Y-m-d" }}",
                                 },
                             {% else %}
                                 start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
                             {%  endif %}
 
+
+                            // Color de eventos
                             {% if evento.repeticion == '' %}
                                 color: '#3d9970',
                             {% elif evento.repeticion == 'daily' %}
@@ -298,7 +309,7 @@
                     document.getElementById('modal_repeticion').innerHTML = data.repeticion;
 
                     let notifMsj = "";
-                    for (let i = 0; i <= 2; i++){
+                    for (let i = 0; i <= 1; i++){
                         if(data.notifMediante[i][1] === true){
                             notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
                         }
@@ -345,6 +356,61 @@
         });
     </script>
 
+    <script>
+        $('#fechaNotificacion').datetimepicker({
+            format: 'DD-MM-yyyy',
+            minDate: new Date(),
+            locale: 'es'
+        });
+
+
+        $('#fechaFinalizacion').datetimepicker({
+            format: 'DD-MM-yyyy',
+            locale: 'es',
+        });
+
+
+        $('#customCheckbox1').on('click', function (){
+            if (this.checked) {
+                $('#selectRepeticion').prop('disabled', false);
+                $('#fechaFinalizacionField').prop('hidden', false);
+
+
+            } else {
+                $('#selectRepeticion').prop('disabled', true);
+                $('#fechaFinalizacionField').prop('hidden', true);
+                $('#id_fechaFinalizacion').val('');
+            }
+        });
+
+        $('#customCheckbox1').ready(function(){
+                if($('#customCheckbox1').prop('checked')){
+                    $('#fechaFinalizacionField').prop('hidden', false);
+                }else{
+                    $('#fechaFinalizacionField').prop('hidden', true);
+                }
+            });
+
+
+
+        // Verifica fechas de finalización que no sea menor que fecha de notificacion
+        // La librería daterangepicker (no datetimepicker, ojo) no soporta chequeos dinámicos. Una basura.
+        $("#formAgenda").submit(function (e) {
+            e.preventDefault();
+
+            strFechaNotif = $('#id_fechaNotificacion')[0].value.split('-');
+            strFechaFinal = $('#id_fechaFinalizacion')[0].value.split('-');
+            fechaNotif = new Date(strFechaNotif[2], strFechaNotif[1] - 1, strFechaNotif[0]);
+            fechaFinal = new Date(strFechaFinal[2], strFechaFinal[1] - 1, strFechaFinal[0]);
+
+            if(fechaFinal < fechaNotif){
+                $('#errorFechas').prop('hidden', false);
+            }else{
+                document.getElementById('formAgenda').submit();
+            }
+
+        });
+    </script>
 
 
 

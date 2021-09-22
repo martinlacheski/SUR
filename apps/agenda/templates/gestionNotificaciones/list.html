@@ -1,0 +1,26 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'gestionNotificaciones/js/list3.js' %}"></script> <!-- si lo renombro a list.js NO ANDA (??????) -->
+{% endblock %}
+
+{% block columns %}
+     <tr>
+        <th scope="col" style="width: 15%;">Días de Antelación</th>
+        <th scope="col" style="width: 10%;">Lunes</th>
+        <th scope="col" style="width: 10%;">Martes</th>
+        <th scope="col" style="width: 10%;">Miercoles</th>
+        <th scope="col" style="width: 10%;">Jueves</th>
+        <th scope="col" style="width: 10%;">Viernes</th>
+        <th scope="col" style="width: 10%;">Sábado</th>
+        <th scope="col" style="width: 10%;">Domingo</th>
+        <th scope="col" style="width: 10%;">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+{%  endblock %}

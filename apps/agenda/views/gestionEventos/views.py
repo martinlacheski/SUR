@@ -23,10 +23,12 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
     def post(self, request, *args, **kwargs):
         action = request.POST['action']
         data = {}
+        notificaciones = {}
         if action == 'add':
             try:
                 form = self.get_form()
                 if form.is_valid():
+                    print(form.cleaned_data['fechaFinalizacion'])
                     form.save()
                     # scheduler_eventos()
                 else:
@@ -40,33 +42,23 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             data = datos_evento(request.POST['pk'])
             return JsonResponse(data)
 
-        # Vendrá en ppróxima versión. Que avise al sistema. Se requiere integración con OTRA lib
-        """
+        # Obtenemos eventos que se muesten en Sistema y su horario de notif sea cercano al actual (margen de 10 min)
         if action == 'get_news':
-
-            # Obtenemos eventos que se muesten en Sistema y su horario de notif sea
-            # cercano al actual (margen de 10 min)
             hora_actual = datetime.datetime.today()
             rango = datetime.datetime.today() - timedelta(minutes=10)
+            print(hora_actual)
+            print(rango)
+
             tiposEventoSistema = tiposEvento.objects.filter(recordarSistema=True,
                                                             horarioRecordatorio__range=(rango.time(), hora_actual.time()))
-            data = eventosAgenda.objects.filter(tipoEvento__in=tiposEventoSistema).values('id')
+            print(tiposEventoSistema)
+            data = eventosAgenda.objects.filter(tipoEvento__in=tiposEventoSistema)
+            print(data)
 
-            # Comprobamos tipo de repeticion de evento
+            return JsonResponse(data)
 
-            for evento in data:
-                if(evento.repeticion == ''):
-                    eventos_display.a
+        #   acá iría un if action 'news_readed' o algo asi y aceptaría un array de notificaciones
 
-            eventoSist = [evento for evento in data]
-            data = tuple(eventoSist)
-            # preguntar si es único (si lo es, verificar que sea fecha de hoy y enviar)
-            # preguntar si es diario(si lo es, enviar)
-            # preguntar si es semanal (si su dia de la semana es el día de la semana actual, enviar)
-            # preguntar si es mensual (primero verificar si su día es el último dia del mes y el día del mes actual lo es, enviar)
-            #                         (luego si su día del mes es el día del mes actual, tambien enviar)
-            return JsonResponse(data, safe=False)
-        """
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['eventos'] = eventosAgenda.objects.all()
@@ -145,10 +137,22 @@ def datos_evento(evento_id):
     data['fechaNotif'] = str(evento.fechaNotificacion.day) +\
                              "/"+ str(evento.fechaNotificacion.month) +\
                              "/" + str(evento.fechaNotificacion.year)
+    data['fechaFinal'] = str(evento.fechaNotificacion.day) + \
+                         "/" + str(evento.fechaNotificacion.month) + \
+                         "/" + str(evento.fechaNotificacion.year)
     data['descripcion'] = str(evento.descripcion)
     data['repeticion'] = str(evento.repeticion)
     data['userAsoc'] = str(evento.tipoEvento.usuarioNotif)
-    data['notifMediante'] = (['Email', evento.tipoEvento.recordarEmail],
-                             ['Sistema', evento.tipoEvento.recordarSistema],
+    data['notifMediante'] = (['Sistema', evento.tipoEvento.recordarSistema],
                              ['Telegram', evento.tipoEvento.recordarTelegram])
     return data
+
+def save_ultima_notif(idevento):
+    event = eventosAgenda.objects.get(pk=idevento)
+    event.ultimaNotificacionSist = datetime.date.today()
+    event.save()
+
+def save_ultima_vista(idevento):
+    event = eventosAgenda.objects.get(pk=idevento)
+    event.ultimaVistaNotifiSist = datetime.date.today()
+    event.save()

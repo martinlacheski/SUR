@@ -70,7 +70,7 @@ class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
     model = tiposEvento
     form_class = GestionTiposEventosForm
     template_name = 'gestionTipoEventos/create.html'
-    success_url = reverse_lazy('agenda:tiposEventoList')
+    success_url = reverse_lazy('agenda:notifEventosList')
     permission_required = 'agenda.change_tiposevento'
     url_redirect = success_url
 
