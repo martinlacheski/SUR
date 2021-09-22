@@ -10,6 +10,10 @@
     <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
           rel="stylesheet"/>
+
+    <!-- Bootstrap Touchspin -->
+        <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
 {% endblock %}
 
 {%  block form_content %}
@@ -37,7 +41,9 @@
                 <div class="row">
                     <div class="col-12">
                         <label>Dias de antelacion</label>
-                        {{ form.diasAntelacion }}
+                        <div class="col-1" class="input-group-text" id="diasAntelacion">
+                             {{ form.diasAntelacion }}
+                        </div>
                     </div>
                 </div>
                 <div class="row mt-4">
@@ -181,5 +187,13 @@
             theme: "bootstrap4",
             language: 'es'
         });
+    </script>
+
+    <script>
+        $("input[name='diasAntelacion']").TouchSpin({
+        min: 0,
+        max: 7,
+        step: 1,
+    });
     </script>
 {% endblock %}

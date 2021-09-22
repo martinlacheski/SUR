@@ -151,14 +151,11 @@ class GestionNotifEventosForm(ModelForm):
         fields = ['diasAntelacion', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo']
 
         widgets = {
-            # 'diasAntelacion': TextInput(
-            #     attrs={
-            #         'placeholder': 'Ingrese un tipo de evento',
-            #         'style': 'text-transform: uppercase',
-            #         'type': 'text',
-            #         'class': 'form-control'
-            #     }
-            # ),
+            'diasAntelacion': TextInput(
+                attrs={
+                    'class': 'form-control'
+                }
+            ),
             'lunes': CheckboxInput(
                 attrs={
                     'type':'checkbox',

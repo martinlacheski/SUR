@@ -42,6 +42,7 @@ class eventosAgenda(models.Model):
     descripcion = models.TextField()
     cantNotifTelegram = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas', blank=True)
     cantNotifSistema = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas')
+    vencido = models.BooleanField(default=False)
     REPETICION = (
         ('daily', 'Diariamente'),
         ('weekly', 'Semanalmente'),
