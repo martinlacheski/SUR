@@ -55,9 +55,9 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="c" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    var buttons = '<a rel="detallePresupuesto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/presupuestosBase/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    if (row.estadoVenta) {
+                    if (row.estado) {
                         buttons += '<a href="/presupuestosBase/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a href="/presupuestosBase/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }

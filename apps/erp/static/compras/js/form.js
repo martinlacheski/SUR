@@ -355,7 +355,7 @@ $(function () {
             errorList.appendChild(li);
             $.each(obj, function (key, value) {
                 var li = document.createElement("li");
-                li.innerText = value;
+                li.innerText = key + ': ' + value;
                 errorList.appendChild(li);
             });
         } else {
@@ -557,7 +557,7 @@ $(function () {
             errorList.appendChild(li);
             $.each(obj, function (key, value) {
                 var li = document.createElement("li");
-                li.innerText = value;
+                li.innerText = key + ': ' + value;
                 errorList.appendChild(li);
             });
         } else {

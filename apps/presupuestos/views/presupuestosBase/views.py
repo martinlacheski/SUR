@@ -155,7 +155,7 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         det.presupuestoBase_id = presupuestoBase.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precio'])
+                        det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
                     for i in formPresupuestoBaseRequest['servicios']:
@@ -163,7 +163,7 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         det.presupuestoBase_id = presupuestoBase.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precio'])
+                        det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
                     data = {'id': presupuestoBase.id}
@@ -209,18 +209,28 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
         data = {}
         try:
             action = request.POST['action']
-            # si no existe la marca la creamos
-            if action == 'create_marca':
-                with transaction.atomic():
-                    formMarca = MarcasForm(request.POST)
-                    data = formMarca.save()
-            # si no existe el modelo lo creamos
-            elif action == 'create_modelo':
-                with transaction.atomic():
-                    formModelo = ModelosForm(request.POST)
-                    data = formModelo.save()
+            if action == 'get_detalle_productos':
+                data = []
+                try:
+                    for i in DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=self.get_object().id):
+                        item = i.producto.toJSON()
+                        item['cantidad'] = i.cantidad
+                        item['precio'] = i.precio
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
+            elif action == 'get_detalle_servicios':
+                data = []
+                try:
+                    for i in DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=self.get_object().id):
+                        item = i.servicio.toJSON()
+                        item['cantidad'] = i.cantidad
+                        item['precio'] = i.precio
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
             # Buscamos los distintos productos ingresando por teclado
-            if action == 'search_productos':
+            elif action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
                 data.append({'id': term, 'text': term})
@@ -291,7 +301,7 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         det.presupuestoBase_id = presupuestoBase.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precio'])
+                        det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
                     # Eliminamos todos los productos del Detalle
@@ -302,7 +312,7 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         det.presupuestoBase_id = presupuestoBase.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precio'])
+                        det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
                     # Devolvemos en Data la ID del Presupuesto Base para poder generar la Boleta
@@ -334,7 +344,7 @@ class PresupuestosBaseDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
     model = PresupuestosBase
     form_class = PresupuestosBaseForm
     template_name = 'presupuestosBase/create.html'
-    success_url = reverse_lazy('prespuestos:presupuestosBase_list')
+    success_url = reverse_lazy('presupuestos:presupuestosBase_list')
     permission_required = 'presupuestos.delete_presupuestosBase'
     url_redirect = success_url
 
@@ -359,7 +369,6 @@ class PresupuestosBaseDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
-            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
@@ -380,9 +389,19 @@ class PresupuestosBasePdfView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             empresa = Empresa.objects.get(id=1)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestosBase/pdf.html')
-
+            # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
+            subtotalProductos = DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=self.kwargs['pk'])
+            subtotalServicios = DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=self.kwargs['pk'])
+            productos = 0
+            for i in subtotalProductos:
+                productos += i.subtotal
+            servicios = 0
+            for i in subtotalServicios:
+                servicios += i.subtotal
             context = {
-                'presupuestoBase': PresupuestosBase.objects.get(pk=self.kwargs['pk']),
+                'presupuesto': PresupuestosBase.objects.get(pk=self.kwargs['pk']),
+                'subtotalProductos': productos,
+                'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
             }
@@ -393,6 +412,7 @@ class PresupuestosBasePdfView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             # Creamos el PDF
             pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
             return HttpResponse(pdf, content_type='application/pdf')
-        except:
-            pass
-        return HttpResponseRedirect(reverse_lazy('presupuestos:presupuestoBase_list'))
+        except Exception as e:
+            print(str(e))
+
+        return HttpResponseRedirect(reverse_lazy('presupuestos:presupuestosBase_list'))

@@ -38,7 +38,7 @@
     {% endblock %}
 {% endblock %}
 {% block content %}
-    <form id="ventaForm" method="post" action="." enctype="multipart/form-data">
+    <form id="presupuestoForm" method="post" action="." enctype="multipart/form-data">
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
@@ -71,7 +71,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-6 mb-6">
                         <label>Modelo:</label>
                         <div class="input-group">
@@ -275,6 +274,10 @@
                         <div class="form-group">
                             <label for="Modelo">Nombre:</label>
                             {{ formModelo.nombre|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                        <div class="form-group">
+                            <label for="Modelo">Descripción:</label>
+                            {{ formModelo.descripcion|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
                     <div class="modal-footer">

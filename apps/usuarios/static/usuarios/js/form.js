@@ -20,7 +20,7 @@ $(function () {
             errorList.appendChild(li);
             $.each(obj, function (key, value) {
                 var li = document.createElement("li");
-                li.innerText = value;
+                li.innerText = key + ': ' + value;
                 errorList.appendChild(li);
             });
         } else {
@@ -39,11 +39,19 @@ $(function () {
     //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
         e.preventDefault();
+        var parameters = new FormData(this);
+        //Agregamos la Fecha
+        parameters.append('fechaIngreso', moment($('input[name="fechaIngreso"]').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'));
+        parameters.append('action', $('input[name="action"]').val());
+
         $.ajax({
             url: window.location.href,
             type: 'POST',
-            data: new FormData(this),
+            data: parameters,
             dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
             processData: false,
             contentType: false,
             success: function (data) {
@@ -51,6 +59,7 @@ $(function () {
                     location.replace(data.redirect);
                 } else {
                     message_error(data.error);
+
                 }
             }
         });

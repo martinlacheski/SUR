@@ -49,7 +49,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h1 class="name-company text-center">Nota de Compra</h1>
+            <h1 class="name-company text-center">Presupuesto Base</h1>
         </div>
     </div>
     <div class="row">
@@ -67,11 +67,10 @@
         </div>
         <div class="col-6">
             <p class="text-right">
-                <b>Número:</b> {{ compra.id }}<br>
-                <b>Fecha:</b> {{ compra.fecha|date:'d-m-Y' }}<br>
-                <b>Proveedor:</b> {{ compra.proveedor.razonSocial }}<br>
-                <b>Condición de Pago:</b> {{ compra.condicionPagoCompra.nombre }}<br>
-                <b>Comprobante:</b> {{ compra.nroComprobante }}<br>
+                <b>Número:</b> {{ presupuesto.id }}<br>
+                <b>Marca:</b> {{ presupuesto.modelo.marca.nombre }}<br>
+                <b>Modelo:</b> {{ presupuesto.modelo.nombre }}<br>
+                <b>Descripción:</b> {{ presupuesto.descripcion }}<br>
             </p>
         </div>
     </div>
@@ -83,25 +82,52 @@
         <tr style="border: 1px solid black;">
             <th class="text-center" style="width: 10%;">Cantidad</th>
             <th class="text-center" style="width: 70%;">Producto</th>
-            <th class="text-center" style="width: 10%;">Costo</th>
+            <th class="text-center" style="width: 10%;">Importe</th>
             <th class="text-center" style="width: 10%;">Subtotal</th>
         </tr>
         </thead>
         <tbody>
-        {% for det in compra.detalleproductoscompra_set.all %}
+        {% for det in presupuesto.detalleproductospresupuestobase_set.all %}
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">{{ det.costo|floatformat:2 }}</td>
+                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
                 <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Total: $</b> {{ compra.total|floatformat:2 }}<br>
-        <b>IVA: $</b> {{ compra.iva|floatformat:2 }}<br>
-        <b>Percepción: $</b> {{ compra.percepcion|floatformat:2 }}<br>
+        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase font-weight-bold text-center">
+        detalle de Servicios <br>
+    </p>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 10%;">Cantidad</th>
+            <th class="text-center" style="width: 70%;">Servicio</th>
+            <th class="text-center" style="width: 10%;">Importe</th>
+            <th class="text-center" style="width: 10%;">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in presupuesto.detalleserviciospresupuestobase_set.all %}
+            <tr>
+                <td class="text-center">{{ det.cantidad }}</td>
+                <td class="text-center">{{ det.servicio.descripcion }}</td>
+                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
+                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-uppercase font-weight-bold text-right">
+        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase font-weight-bold text-right">
+        <b>Total a pagar: $</b> {{ presupuesto.total|floatformat:2 }}<br>
     </p>
 </div>
 </body>

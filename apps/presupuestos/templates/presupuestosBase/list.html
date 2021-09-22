@@ -52,7 +52,7 @@
             </a>
         </div>
     </div>
-    <!-- Modal Cancelar Compra -->
+    <!-- Modal Cancelar Presupuesto Base -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -64,7 +64,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="msjErrorModal">¿Estás seguro de cancelar la compra?</p>
+                    <p id="msjErrorModal">¿Estás seguro de cancelar el Presupuesto Base?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btnDelete">Si</button>
@@ -73,14 +73,14 @@
             </div>
         </div>
     </div>
-    <!-- Modal Detalle Compra -->
+    <!-- Modal Detalle Presupuesto Base -->
     <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Detalle de
-                        Compra</b></h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-tasks"></i> Detalle de
+                        Presupuesto</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -107,6 +107,27 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row" id="rowServicios">
+                        <div class="col-lg-12">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de Servicios</h3>
+                                </div>
+                                <table class="table table-bordered" id="tablaServicios">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 70%;">Servicio</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -120,7 +141,7 @@
             // Reactivación de botón y mensaje a default.
             $('.btnDelete').attr('style', 'visibility: true');
             $('.btnNo').text("No");
-            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar la compra?';
+            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar el Presupuesto?';
             $('.btnDelete').on('click', function (e) {
                 e.preventDefault();
                 $.ajax({

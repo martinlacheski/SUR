@@ -43,7 +43,7 @@ class Usuarios(AbstractUser):
     imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
 
     def toJSON(self):
-        item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups'])
+        item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups', 'fechaIngreso'])
         try:
             item['fechaIngreso'] = self.fechaIngreso.strftime('%dd/%MM/%yyyy')
         except:

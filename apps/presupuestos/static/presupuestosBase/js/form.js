@@ -35,7 +35,7 @@ var presupuesto = {
             lengthMenu: [25, 50, 75, 100],
             autoWidth: false,
             destroy: true,
-            data: venta.items.productos,
+            data: presupuesto.items.productos,
             columns: [
                 {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
@@ -191,19 +191,19 @@ function calcular_importes() {
     $.each(presupuesto.items.productos, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-        subtotalProductos = dict.subtotal;
+        subtotalProductos += dict.subtotal;
     });
     //Recorremos el Array de servicios para ir actualizando los importes
     $.each(presupuesto.items.servicios, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-        subtotalServicios = dict.subtotal;
+        subtotalServicios += dict.subtotal;
     });
     //Asignamos los valores a los campos
     presupuesto.items.total = subtotalProductos + subtotalServicios;
 
     $('input[name="subtotalProductos"]').val(subtotalProductos.toFixed(2));
-    $('input[name="SubtotalServicios"]').val(subtotalServicios.toFixed(2));
+    $('input[name="subtotalServicios"]').val(subtotalServicios.toFixed(2));
     $('input[name="total"]').val(presupuesto.items.total.toFixed(2));
 };
 
@@ -212,7 +212,7 @@ $(document).ready(function () {
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
         $('input[name="subtotalProductos"]').val('0.00');
-        $('input[name="SubtotalServicios"]').val('0.00');
+        $('input[name="subtotalServicios"]').val('0.00');
         $('input[name="total"]').val('0.00');
         $('input[name="descripcion"]').val('');
         $('select[name="marca"]').val(null).trigger('change');
@@ -287,6 +287,29 @@ $(function () {
         autoWidth: false,
     });
 
+    //Funcion Mostrar Errores del Formulario
+    function message_error(obj, errorList) {
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+
+        }
+    }
+
     //Select Anidado (Seleccionamos MARCA y cargamos los MODELOS de dicha MARCA
     var select_modelos = $('select[name="modelo"]');
     $('.selectMarca').on('change', function () {
@@ -318,6 +341,105 @@ $(function () {
         });
     });
 
+//----------------------Seleccionamos un MODELO-----------------------------//
+    $('select[name="modelo"]').on('change', function () {
+        var id = $('select[name="modelo"]').val();
+        if (id !== null && id !== '' && id !== undefined) {
+            $('input[name="searchProductos"]').attr('disabled', false);
+            $('input[name="searchServicios"]').attr('disabled', false);
+        } else {
+            $('input[name="searchProductos"]').attr('disabled', true);
+            $('input[name="searchServicios"]').attr('disabled', true);
+        }
+    });
+
+//------------------------------------MODAL MARCAS----------------------------------------//
+    //Boton Marca Modal Mostrar
+    $('.btnAddMarca').on('click', function () {
+        $('#modalMarca').modal('show');
+    });
+
+    //Boton Marca Modal Ocultar y Resetear
+    $('#modalMarca').on('hidden.bs.modal', function (e) {
+        $('#formMarca').trigger('reset');
+
+        errorList = document.getElementById("errorListMarca");
+        errorList.innerHTML = '';
+        location.reload();
+    });
+
+    //Submit Modal Marca
+    $('#formMarca').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_marca');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('#selectMarca').append(newOption).trigger('change');
+                $('#modalMarca').modal('hide');
+            } else {
+                var errorList = document.getElementById("errorListMarca");
+                message_error(data.error, errorList);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
+//------------------------------------MODAL MODELOS----------------------------------------//
+    //Boton Modelo Modal Mostrar
+    $('.btnAddModelo').on('click', function () {
+        $('#modalModelo').modal('show');
+    });
+
+    //Boton Modelo Modal Ocultar y Resetear
+    $('#modalModelo').on('hidden.bs.modal', function (e) {
+        $('#formModelo').trigger('reset');
+
+        errorList = document.getElementById("errorListModelo");
+        errorList.innerHTML = '';
+        location.reload();
+    });
+
+    //Submit Modal Modelo
+    $('#formModelo').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_modelo');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('#selectModelo').append(newOption).trigger('change');
+                $('#modalModelo').modal('hide');
+            } else {
+                var errorList = document.getElementById("errorListModelo");
+                message_error(data.error, errorList);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
 
 //------------------------------------EVENTOS PRODUCTOS----------------------------------------//
     //Buscar Productos
@@ -543,7 +665,7 @@ $(function () {
     });
 
 //------------------------------------SUBMIT PRESUPUESTO----------------------------------------//
-    // Submit VENTA
+    // Submit PRESUPUESTO
     $('#presupuestoForm').on('submit', function (e) {
         e.preventDefault();
         if (presupuesto.items.productos.length === 0 && presupuesto.items.servicios.length === 0) {
@@ -560,7 +682,7 @@ $(function () {
                     var parameters = new FormData();
                     //Pasamos la accion ADD
                     parameters.append('action', $('input[name="action"]').val());
-                    //Agregamos la estructura de Venta con los detalles correspondientes
+                    //Agregamos la estructura de Presupuesto con los detalles correspondientes
                     parameters.append('presupuestoBase', JSON.stringify(presupuesto.items));
                     //Bloque AJAX Presupuesto
                     $.ajax({
