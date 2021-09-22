@@ -230,7 +230,7 @@ class MarcasForm(ModelForm):
 class ModelosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['nombre'].widget.attrs['autofocus'] = True
+        self.fields['marca'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Modelos

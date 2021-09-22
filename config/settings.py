@@ -48,9 +48,9 @@ INSTALLED_APPS = [
     'apps.login',
     'apps.home',
     'apps.geografico',
-
     'apps.usuarios',
     'apps.erp',
+    'apps.presupuestos',
     'apps.agenda'
 ]
 

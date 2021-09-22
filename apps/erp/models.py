@@ -313,7 +313,7 @@ class Ventas(models.Model):
         db_table = 'erp_ventas'
         ordering = ['fecha', 'id']
 
-
+# Detalle de Productos de la venta
 class DetalleProductosVenta(models.Model):
     venta = models.ForeignKey(Ventas, models.DO_NOTHING)
     producto = models.ForeignKey(Productos, models.DO_NOTHING)
@@ -336,7 +336,7 @@ class DetalleProductosVenta(models.Model):
         verbose_name_plural = 'Detalle de Ventas - Productos'
         ordering = ['id']
 
-
+# Detalle de Servicios de la venta
 class DetalleServiciosVenta(models.Model):
     venta = models.ForeignKey(Ventas, models.DO_NOTHING)
     servicio = models.ForeignKey(Servicios, models.DO_NOTHING)
@@ -355,8 +355,8 @@ class DetalleServiciosVenta(models.Model):
         return item
 
     class Meta:
-        verbose_name = 'Detalle de Venta - Productos'
-        verbose_name_plural = 'Detalle de Ventas - Productos'
+        verbose_name = 'Detalle de Venta - Servicios'
+        verbose_name_plural = 'Detalle de Ventas - Servicios'
         ordering = ['id']
 
 

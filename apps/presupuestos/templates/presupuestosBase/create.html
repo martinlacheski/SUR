@@ -1,0 +1,294 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+        <!-- Datatables -->
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+        <!-- Jquery UI -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+        <!-- Select2 -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+              rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+        <!-- Moment -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+        <!-- Tempus Dominus -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"
+              rel="stylesheet"/>
+        <!-- JQuery-Validation -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
+        <!-- Bootstrap Touchspin -->
+        <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+        <!-- archivo JS -->
+        <script src="{% static 'presupuestosBase/js/form.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <form id="ventaForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="col-6 mb-6">
+                        <label>Marca:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectMarca" id="selectMarca"
+                                    aria-label="selectMarca">
+                                <option value="">---------</option>
+                                {% for m in marcas %}
+                                    <option value={{ m.id }}>{{ m.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="input-group-append">
+                                <button class="btn btn-success btn-flat btnAddMarca" type="button">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-6 mb-6">
+                        <label>Modelo:</label>
+                        <div class="input-group">
+                            {{ form.modelo|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                            <div class="input-group-append">
+                                <button class="btn btn-success btn-flat btnAddModelo" type="button">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-6">
+                        <br>
+                        <div class="form-group">
+                            <label>Descripción:</label>
+                            <br>
+                            {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-secondary">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Buscador de productos:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="searchProductos"
+                                               placeholder="Ingrese una descripción de producto" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                    <i class="fas fa-trash"></i> Eliminar todos
+                                </button>
+                                <hr>
+                                <table class="table table-bordered" id="tablaProductos">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                        <th scope="col" style="width: 60%;">Producto</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-secondary">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fas fa-wrench"></i> Detalle de servicios</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Buscador de servicios:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="searchServicios"
+                                               placeholder="Ingrese una descripción de servicio" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchServicios"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
+                                    <i class="fas fa-trash"></i> Eliminar todos
+                                </button>
+                                <hr>
+                                <table class="table table-bordered" id="tablaServicios">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                        <th scope="col" style="width: 60%;">Servicio</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-secondary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-3 mb-3">
+                                        <label>Subtotal Productos:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="subtotalProductos"
+                                                   autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-3 mb-3">
+                                        <label>Subtotal Servicios:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" name="subtotalServicios"
+                                                   autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-3 mb-3">
+
+                                    </div>
+                                    <div class="form-group col-3 mb-3">
+                                        <label>Total a pagar:</label>
+                                        {{ form.total }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary btn-flat">
+                        <i class="fas fa-save"></i> Guardar registro
+                    </button>
+                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Modal Marcas -->
+    <div class="modal fade" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="modalMarca"
+         aria-hidden="true">
+        <form id="formMarca" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-boxes"></i> Crear una Marca</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in formMarca.visible_fields %}
+                            <div class="form-group">
+                                <label for="">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListMarca" class="alert-danger col-12"></ul>
+                        {#Boton SUBMIT#}
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Marca
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal Modelo -->
+    <div class="modal fade" id="modalModelo" tabindex="-1" role="dialog" aria-labelledby="modalModelo"
+         aria-hidden="true">
+        <form id="formModelo" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-box"></i> Crear un Modelo</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group" id="MarcaFormSub">
+                            <label for="Marca">Marca:</label>
+                            {{ formModelo.marca|add_class:'form-control MarcaFormSub' }}
+                        </div>
+                        <div class="form-group">
+                            <label for="Modelo">Nombre:</label>
+                            {{ formModelo.nombre|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListModelo" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Modelo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+{% endblock %}
