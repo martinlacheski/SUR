@@ -39,13 +39,9 @@
             </table>
         </div>
         <div class="card-footer">
-            {% if notifCreada == 'verdadero' %}
-
-            {% elif notifCreada == 'falso' %}
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat">
                     <i class="fas fa-plus"></i> Nuevo registro
                 </a>
-            {% endif %}
              <a href="{{ list_url }}" class="btn btn-success btn-flat">
                     <i class="fas fa-sync"></i> Actualizar
                 </a>
@@ -72,6 +68,8 @@
             </div>
         </div>
     </div>
+
+
 
 
     <script type="application/javascript">
