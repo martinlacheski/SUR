@@ -20,7 +20,9 @@ $(function () {
         },
         columns: [
             {"data": "id"},
+            {"data": "id"},
             {"data": "fecha"},
+            {"data": "modelo.marca.nombre"},
             {"data": "modelo.nombre"},
             {"data": "cliente.razonSocial"},
             {"data": "total"},
@@ -30,11 +32,23 @@ $(function () {
             {
                 targets: [0],
                 class: 'text-center',
+            },
+            {
+                targets: [1],
+                class: 'text-center',
                 render: function (data, type, row) {
                     if (row.estado) {
-                        return '<span class="badge badge-success">' + ' Activo' + '</span>'
+                        return '<span class="badge badge-success">' + ' Confirmado' + '</span>'
                     }
-                    return '<span class="badge badge-danger">' + ' Baja' + '</span>'
+                    return '<span class="badge badge-danger">' + ' No confirmado' + '</span>'
+                }
+            },
+            {
+                targets: [-6],
+                class: 'text-center',
+                orderable: false,
+                render: function (data, type, row) {
+                    return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
                 }
             },
             {
@@ -57,7 +71,7 @@ $(function () {
                 render: function (data, type, row) {
                     var buttons = '<a rel="detallePresupuesto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/presupuestos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    if (row.estado) {
+                    if (!row.estado) {
                         buttons += '<a href="/presupuestos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a href="/presupuestos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }

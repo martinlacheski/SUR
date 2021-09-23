@@ -204,6 +204,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
@@ -244,7 +245,11 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         data = {}
         try:
             action = request.POST['action']
-            if action == 'get_detalle_productos':
+            # buscamos la percepcion del cliente
+            if action == 'search_percepcion':
+                cliente = Clientes.objects.get(id=request.POST['pk'])
+                data['percepcion'] = cliente.tipoPercepcion.percepcion
+            elif action == 'get_detalle_productos':
                 data = []
                 try:
                     for i in DetalleProductosPresupuesto.objects.filter(presupuesto_id=self.get_object().id):

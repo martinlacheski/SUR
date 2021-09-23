@@ -200,20 +200,25 @@ function calcular_importes() {
     var subtotal = 0.00;
     var ivaCalculado = 0.00;
     var percepcion = percepcionPorcentaje;
+    var subtotalProductos = 0.00;
+    var subtotalServicios = 0.00;
     //Recorremos el Array de productos para ir actualizando los importes
     $.each(presupuesto.items.productos, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
-        subtotal += dict.subtotal;
+        subtotalProductos += dict.subtotal;
+        subtotal +=dict.subtotal;
     });
     //Recorremos el Array de servicios para ir actualizando los importes
     $.each(presupuesto.items.servicios, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
-        subtotal += dict.subtotal;
+        subtotalServicios += dict.subtotal;
+        subtotal +=dict.subtotal;
     });
+
     //Asignamos los valores a los campos
     presupuesto.items.subtotal = subtotal - ivaCalculado;
     presupuesto.items.iva = ivaCalculado;
@@ -225,7 +230,8 @@ function calcular_importes() {
         presupuesto.items.percepcion = percepcion;
         presupuesto.items.total = presupuesto.items.subtotal + presupuesto.items.iva;
     }
-    $('input[name="subtotal"]').val(presupuesto.items.subtotal.toFixed(2));
+    $('input[name="subtotalProductos"]').val(subtotalProductos.toFixed(2));
+    $('input[name="subtotalServicios"]').val(subtotalServicios.toFixed(2));
     $('input[name="iva"]').val(presupuesto.items.iva.toFixed(2));
     $('input[name="percepcion"]').val(presupuesto.items.percepcion.toFixed(2));
     $('input[name="total"]').val(presupuesto.items.total.toFixed(2));
@@ -251,10 +257,6 @@ function searchPercepcion() {
 
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
-    $('select[name="cliente"]').val(null).trigger('change');
-    $('select[name="marca"]').val(null).trigger('change');
-    $('select[name="modelo"]').val(null).trigger('change');
-    $('select[name="selectPlantilla"]').val(null).trigger('change');
     //Inicializamos los campos de tipo TOUCHSPIN
     $("input[name='validez']").TouchSpin({
         min: 1,
@@ -291,6 +293,7 @@ $(document).ready(function () {
         });
         //Buscamos si el cliente tiene percepcion
         searchPercepcion();
+        console.log(percepcionPorcentaje);
         //Buscamos el detalle de los productos por ajax
         $.ajax({
             url: window.location.pathname,
@@ -894,13 +897,19 @@ $(function () {
         } else {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                     //realizamos la creacion del Presupuesto mediante Ajax
+                    presupuesto.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                    presupuesto.items.validez = $('input[name="validez"]').val();
+                    presupuesto.items.cliente = $('select[name="cliente"]').val();
                     presupuesto.items.modelo = $('select[name="modelo"]').val();
-                    presupuesto.items.descripcion = $('input[name="descripcion"]').val();
+                    presupuesto.items.observaciones = $('input[name="observaciones"]').val();
+                    // presupuesto.items.iva = $('input[name="iva"]').val();
+                    // presupuesto.items.percepcion = $('input[name="percepcion"]').val();
+                    // presupuesto.items.total = $('input[name="total"]').val();
                     var parameters = new FormData();
                     //Pasamos la accion ADD
                     parameters.append('action', $('input[name="action"]').val());
                     //Agregamos la estructura de Presupuesto con los detalles correspondientes
-                    parameters.append('presupuestoBase', JSON.stringify(presupuesto.items));
+                    parameters.append('presupuesto', JSON.stringify(presupuesto.items));
                     //Bloque AJAX Presupuesto
                     $.ajax({
                         url: window.location.href,
@@ -914,8 +923,8 @@ $(function () {
                         contentType: false,
                         success: function (data) {
                             if (!data.hasOwnProperty('error')) {
-                                confirm_action('Notificación', '¿Desea imprimir el Presupuesto Base?', function () {
-                                    window.open('/presupuestosBase/pdf/' + data.id + '/', '_blank');
+                                confirm_action('Notificación', '¿Desea imprimir el Presupuesto?', function () {
+                                    window.open('/presupuestos/pdf/' + data.id + '/', '_blank');
                                     location.replace(data.redirect);
                                 }, function () {
                                     location.replace(data.redirect);

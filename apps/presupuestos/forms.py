@@ -18,6 +18,9 @@ class PresupuestosBaseForm(ModelForm):
             ),
             'descripcion': TextInput(attrs={
                 'class': 'form-control',
+                'placeholder': 'INGRESE UNA DESCRIPCIÓN',
+                # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                'style': 'text-transform: uppercase'
             }),
             'total': TextInput(attrs={
                 'readonly': True,
@@ -72,8 +75,10 @@ class PresupuestosForm(ModelForm):
                 'class': 'form-control',
             }),
             'observaciones': TextInput(attrs={
-                'placeholder': 'INGRESE UNA OBSERVACIÓN',
                 'class': 'form-control',
+                'placeholder': 'INGRESE UNA OBSERVACIÓN',
+                # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                'style': 'text-transform: uppercase'
             }),
         }
         exclude = ['usuario']

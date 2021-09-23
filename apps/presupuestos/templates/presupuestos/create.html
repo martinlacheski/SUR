@@ -291,7 +291,6 @@
             </div>
         </form>
     </div>
-
     <!-- Modal Modelo -->
     <div class="modal fade" id="modalModelo" tabindex="-1" role="dialog" aria-labelledby="modalModelo"
          aria-hidden="true">
@@ -364,7 +363,6 @@
                                     <br>
                                     {{ formCliente.condicionIVA|add_class:'form-control condicionIvaFormCliente'|attr:'required:true' }}
                                 </div>
-
                                 <div class="form-group col-6 mb-6">
                                     <label>Cuil - Cuit:</label>
                                     <br>
@@ -375,7 +373,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-6 mb-6">
                                 <label>Localidad:</label>
@@ -389,7 +386,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-6 mb-6">
                                 <label>Dirección de email:</label>
@@ -409,7 +405,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-6 mb-6">
                                 <label>CBU - CVU:</label>
@@ -425,7 +420,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-6 mb-4">
                                 <label>Condición de Pago:</label>
@@ -434,43 +428,42 @@
                             </div>
                             <div class="col-6 mb-6">
                                 <label>Tipo de Percepción:</label>
-                                <div class="input-group class=" form-control
-                                ">
-                                {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                                <div class="input-group">
+                                    {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-2 mb-2">
+                                <label>¿Cuenta Corriente?:</label>
+                                <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>Límite:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
+                                    {{ formCliente.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+
+                            <div class="form-group col-4 mb-4">
+                                <label>Plazo:</label>
+                                <br>
+                                <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
+                                    {{ formCliente.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="form-group col-2 mb-2">
-                            <label>¿Cuenta Corriente?:</label>
-                            <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
-                        </div>
-                        <div class="form-group col-4 mb-4">
-                            <label>Límite:</label>
-                            <br>
-                            <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
-                                {{ formCliente.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
-                            </div>
-                        </div>
-
-                        <div class="form-group col-4 mb-4">
-                            <label>Plazo:</label>
-                            <br>
-                            <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
-                                {{ formCliente.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
-                            </div>
-                        </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormCliente" name="errorListFormCliente" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" id="btnAddCliente"
+                                class="btn btn-primary btn-block btnAddCliente btn-flat">
+                            <i class="fas fa-save"></i> Guardar Cliente
+                        </button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    {#Mensaje de error#}
-                    <ul id="errorListFormCliente" name="errorListFormCliente" class="alert-danger col-12"></ul>
-                    {#Botones#}
-                    <button type="submit" id="btnAddCliente"
-                            class="btn btn-primary btn-block btnAddCliente btn-flat">
-                        <i class="fas fa-save"></i> Guardar Cliente
-                    </button>
                 </div>
             </div>
         </form>

@@ -50,6 +50,9 @@
     <div class="row">
         <div class="col-12">
             <h1 class="name-company text-center">Presupuesto</h1>
+            <p class="text-uppercase font-weight-bold text-center">
+                Tiene una validez de {{ presupuesto.validez }} días <br>
+            </p>
         </div>
     </div>
     <div class="row">
@@ -70,7 +73,7 @@
                 <b>Número:</b> {{ presupuesto.id }}<br>
                 <b>Marca:</b> {{ presupuesto.modelo.marca.nombre }}<br>
                 <b>Modelo:</b> {{ presupuesto.modelo.nombre }}<br>
-                <b>Descripción:</b> {{ presupuesto.descripcion }}<br>
+                <b>Descripción:</b> {{ presupuesto.observaciones }}<br>
             </p>
         </div>
     </div>
