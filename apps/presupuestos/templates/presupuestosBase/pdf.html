@@ -82,8 +82,7 @@
         <tr style="border: 1px solid black;">
             <th class="text-center" style="width: 10%;">Cantidad</th>
             <th class="text-center" style="width: 70%;">Producto</th>
-            <th class="text-center" style="width: 10%;">Importe</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
+
         </tr>
         </thead>
         <tbody>
@@ -91,15 +90,12 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
-    </p>
+
     <p class="text-uppercase font-weight-bold text-center">
         detalle de Servicios <br>
     </p>
@@ -108,8 +104,7 @@
         <tr style="border: 1px solid black;">
             <th class="text-center" style="width: 10%;">Cantidad</th>
             <th class="text-center" style="width: 70%;">Servicio</th>
-            <th class="text-center" style="width: 10%;">Importe</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
+
         </tr>
         </thead>
         <tbody>
@@ -117,18 +112,12 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.servicio.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
-    </p>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Total a pagar: $</b> {{ presupuesto.total|floatformat:2 }}<br>
-    </p>
+
 </div>
 </body>
 </html>

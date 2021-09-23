@@ -1,10 +1,18 @@
 var tablaProductos;
 var tablaServicios;
-//Definimos una estructura en JS para crear el PRESUPUESTO BASE
+var percepcionPorcentaje = 0.00;
+//Definimos una estructura en JS para crear el PRESUPUESTO
 var presupuesto = {
     items: {
+        usuario: '',
+        fecha: '',
+        validez: '',
+        cliente: '',
         modelo: '',
-        descripcion: '',
+        observaciones: '',
+        subtotal: 0.00,
+        iva: 0.00,
+        percepcion: 0.00,
         total: 0.00,
         //detalle de productos
         productos: [],
@@ -179,47 +187,110 @@ function isNumberKey(evt) {
     if (charCode < 48 || charCode > 57)
         return false;
     return true;
-}
-;
+};
+
+//Funcion para validar que el email tenga el formato correcto
+function isValidEmail(mail) {
+    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
+};
 
 //Funcion para Calcular los importes
 function calcular_importes() {
     //Inicializamos variables para calcular importes
-    var subtotalProductos = 0.00;
-    var subtotalServicios = 0.00;
+    var subtotal = 0.00;
+    var ivaCalculado = 0.00;
+    var percepcion = percepcionPorcentaje;
     //Recorremos el Array de productos para ir actualizando los importes
     $.each(presupuesto.items.productos, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-        subtotalProductos += dict.subtotal;
+        ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
+        subtotal += dict.subtotal;
     });
     //Recorremos el Array de servicios para ir actualizando los importes
     $.each(presupuesto.items.servicios, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-        subtotalServicios += dict.subtotal;
+        ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
+        subtotal += dict.subtotal;
     });
     //Asignamos los valores a los campos
-    presupuesto.items.total = subtotalProductos + subtotalServicios;
-
-    $('input[name="subtotalProductos"]').val(subtotalProductos.toFixed(2));
-    $('input[name="subtotalServicios"]').val(subtotalServicios.toFixed(2));
+    presupuesto.items.subtotal = subtotal - ivaCalculado;
+    presupuesto.items.iva = ivaCalculado;
+    presupuesto.items.percepcion = percepcion;
+    if (percepcionPorcentaje > 0) {
+        presupuesto.items.percepcion = presupuesto.items.subtotal * (percepcionPorcentaje / 100);
+        presupuesto.items.total = presupuesto.items.subtotal + presupuesto.items.iva + presupuesto.items.percepcion;
+    } else {
+        presupuesto.items.percepcion = percepcion;
+        presupuesto.items.total = presupuesto.items.subtotal + presupuesto.items.iva;
+    }
+    $('input[name="subtotal"]').val(presupuesto.items.subtotal.toFixed(2));
+    $('input[name="iva"]').val(presupuesto.items.iva.toFixed(2));
+    $('input[name="percepcion"]').val(presupuesto.items.percepcion.toFixed(2));
     $('input[name="total"]').val(presupuesto.items.total.toFixed(2));
+};
+
+//Funcion para buscar la percepcion del cliente
+function searchPercepcion() {
+    var id = $('select[name="cliente"]').val();
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'search_percepcion',
+            'pk': id
+        },
+        dataType: 'json',
+        success: function (data) {
+            percepcionPorcentaje = parseFloat(data.percepcion);
+        }
+    });
 };
 
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
+    $('select[name="cliente"]').val(null).trigger('change');
+    $('select[name="marca"]').val(null).trigger('change');
+    $('select[name="modelo"]').val(null).trigger('change');
+    $('select[name="selectPlantilla"]').val(null).trigger('change');
+    //Inicializamos los campos de tipo TOUCHSPIN
+    $("input[name='validez']").TouchSpin({
+        min: 1,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
         $('input[name="subtotalProductos"]').val('0.00');
         $('input[name="subtotalServicios"]').val('0.00');
+        $('input[name="iva"]').val('0.00');
+        $('input[name="percepcion"]').val('0.00');
         $('input[name="total"]').val('0.00');
         $('input[name="descripcion"]').val('');
+        $('select[name="cliente"]').val(null).trigger('change');
         $('select[name="marca"]').val(null).trigger('change');
         $('select[name="modelo"]').val(null).trigger('change');
+        $('select[name="selectPlantilla"]').val(null).trigger('change');
         $('input[name="searchProductos"]').attr('disabled', true);
         $('input[name="searchServicios"]').attr('disabled', true);
+        //Inicialización de datetimepicker
+        $('#fecha').datetimepicker({
+            format: 'DD-MM-YYYY',
+            date: moment(),
+            locale: 'es',
+            maxDate: moment(),
+        });
     } else {
+        $('#fecha').datetimepicker({
+            format: 'DD-MM-YYYY',
+            locale: 'es',
+        });
+        //Buscamos si el cliente tiene percepcion
+        searchPercepcion();
         //Buscamos el detalle de los productos por ajax
         $.ajax({
             url: window.location.pathname,
@@ -287,6 +358,20 @@ $(function () {
         autoWidth: false,
     });
 
+    //Verificamos que la fecha no sea mayor a la actual
+    $('input[name="fecha"]').on('blur', function () {
+        var fecha = $('input[name="fecha"]').val();
+        var now = moment().format('DD-MM-YYYY');
+        if (fecha > now) {
+            error_action('Error', 'La fecha de venta no puede ser superior a la actual', function () {
+                //pass
+            }, function () {
+                $('input[name="fecha"]').val(moment().format('DD-MM-YYYY'));
+            });
+
+        }
+    });
+
     //Funcion Mostrar Errores del Formulario
     function message_error(obj, errorList) {
         errorList.innerHTML = '';
@@ -310,7 +395,19 @@ $(function () {
         }
     }
 
-    //Select Anidado (Seleccionamos MARCA y cargamos los MODELOS de dicha MARCA
+//----------------------Seleccionamos un MODELO-----------------------------//
+    $('select[name="modelo"]').on('change', function () {
+        var id = $('select[name="modelo"]').val();
+        if (id !== null && id !== '' && id !== undefined) {
+            $('input[name="searchProductos"]').attr('disabled', false);
+            $('input[name="searchServicios"]').attr('disabled', false);
+        } else {
+            $('input[name="searchProductos"]').attr('disabled', true);
+            $('input[name="searchServicios"]').attr('disabled', true);
+        }
+    });
+
+//Select Anidado (Seleccionamos MODELO y cargamos los MODELOS de dicha MARCA)
     var select_modelos = $('select[name="modelo"]');
     $('.selectMarca').on('change', function () {
         var id = $(this).val();
@@ -341,9 +438,99 @@ $(function () {
         });
     });
 
-//----------------------Seleccionamos un MODELO-----------------------------//
-    $('select[name="modelo"]').on('change', function () {
-        var id = $('select[name="modelo"]').val();
+//Select Anidado (Seleccionamos MODELO y cargamos las PLANTILLAS DE DICHO PRESUPUESTO)
+    var select_plantillas = $('select[name="selectPlantilla"]');
+    $('.selectModelo').on('change', function () {
+        var id = $(this).val();
+        var options = '<option value="">---------</option>';
+        if (id === '') {
+            select_plantillas.html(options);
+            return false;
+        }
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_plantillas',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                    select_plantillas.html('').select2({
+                        theme: "bootstrap4",
+                        language: 'es',
+                        data: data
+                    });
+                }
+            }
+        });
+    });
+
+//Cargamos al detalle de productos y servicios los datos de la PLANTILLA
+    $('.selectPlantilla').on('change', function () {
+        var id = $(this).val();
+        if (id === '') {
+            return false;
+        } else {
+            //Buscamos el detalle de los productos por ajax
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'get_detalle_productos',
+                    'pk': id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    //asignamos el detalle a la estructura
+                    presupuesto.items.productos = data;
+                    //actualizamos el listado de productos
+                    presupuesto.listProductos();
+                }
+            });
+            //Buscamos el detalle de los servicios por ajax
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'get_detalle_servicios',
+                    'pk': id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    //asignamos el detalle a la estructura
+                    presupuesto.items.servicios = data;
+                    //actualizamos el listado de productos
+                    presupuesto.listServicios();
+                }
+            });
+        }
+    });
+
+//----------------------Buscamos si el cliente tiene Percepcion-----------------------------//
+    $('select[name="cliente"]').on('change', function () {
+        var id = $('select[name="cliente"]').val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_percepcion',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                //asignamos a la variable global el porcentaje de percepcion
+                percepcionPorcentaje = parseFloat(data.percepcion);
+                //actualizamos los importes
+                calcular_importes();
+            }
+        });
         if (id !== null && id !== '' && id !== undefined) {
             $('input[name="searchProductos"]').attr('disabled', false);
             $('input[name="searchServicios"]').attr('disabled', false);
@@ -353,26 +540,100 @@ $(function () {
         }
     });
 
-//------------------------------------MODAL MARCAS----------------------------------------//
-    //Boton Marca Modal Mostrar
-    $('.btnAddMarca').on('click', function () {
-        $('#modalMarca').modal('show');
+//------------------------------------MODAL CLIENTES----------------------------------------//
+    //Boton Cliente Modal Mostrar
+    $('.btnAddCliente').on('click', function () {
+        $('#modalCliente').modal('show');
     });
 
-    //Boton Marca Modal Ocultar y Resetear
-    $('#modalMarca').on('hidden.bs.modal', function (e) {
-        $('#formMarca').trigger('reset');
-
-        errorList = document.getElementById("errorListMarca");
+    //Al cerrar el Modal de Cliente reseteamos los valores del formulario
+    $('#modalCliente').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formCliente').trigger('reset');
+        //Reseteamos los Select2 del Modal
+        $(".condicionIvaFormCliente").val('').trigger('change.select2');
+        $(".localidadFormCliente").val('').trigger('change.select2');
+        $(".condicionPagoFormCliente").val('').trigger('change.select2');
+        var errorList = document.getElementById("errorListFormCliente");
         errorList.innerHTML = '';
-        location.reload();
     });
 
-    //Submit Modal Marca
-    $('#formMarca').on('submit', function (e) {
+    //CHECKBOX Cta Cte
+    $('#ctaCte').on('click', function () {
+        if (this.checked) {
+            $('input[name="limiteCtaCte"]').attr('disabled', false);
+            $('input[name="plazoCtaCte"]').attr('disabled', false);
+            $('input[name="limiteCtaCte"]').attr('readonly', false);
+            $('input[name="plazoCtaCte"]').attr('readonly', false);
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 1000000});
+        } else {
+            $('input[name="limiteCtaCte"]').val('0.00');
+            $('input[name="plazoCtaCte"]').val(0);
+            $('input[name="limiteCtaCte"]').attr('readonly', true);
+            $('input[name="plazoCtaCte"]').attr('readonly', true);
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {min: 0});
+            $('input[name="plazoCtaCte"]').trigger("touchspin.updatesettings", {max: 0});
+        }
+    });
+
+    //Validamos EMAIL CORRECTO en el formulario de CLiente
+    $("#email").on('focusout', function (e) {
+        var btn = document.getElementById('btnAddCliente');
+        if ($('input[name="email"]').val().lenght == 0 || !$('input[name="email"]').val()) {
+            //email vacio
+            $('#errorEmail').attr("hidden", "");
+            btn.disabled = false;
+        } else {
+            var check = isValidEmail($('input[name="email"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorEmail").removeAttr("hidden");
+                btn.disabled = true;
+                $("#email").focus();
+            } else {
+                $('#errorEmail').attr("hidden", "");
+                btn.disabled = false;
+            }
+        }
+    });
+
+    // VALIDAMOS LOS CAMPOS
+    $("#razonSocial").validate();
+    $("#condicionIVA").validate();
+    $("#cuil").validate();
+    $("#localidad").validate();
+    $("#direccion").validate();
+    $("#telefono").validate();
+
+    //Funcion Mostrar Errores del Formulario Cliente
+    function message_error_cliente(obj) {
+        var errorList = document.getElementById("errorListFormCliente");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
+
+    //Creamos un nuevo Cliente desde el Modal
+    $('#formCliente').on('submit', function (e) {
         e.preventDefault();
         var parameters = new FormData(this);
-        parameters.append('action', 'create_marca');
+        parameters.append('action', 'create_cliente');
         $.ajax({
             url: window.location.pathname,
             type: 'POST',
@@ -385,61 +646,17 @@ $(function () {
             contentType: false,
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
-                var newOption = new Option(data.nombre, data.id, false, true);
-                $('#selectMarca').append(newOption).trigger('change');
-                $('#modalMarca').modal('hide');
+                var newOption = new Option(data.razonSocial, data.id, false, true);
+                $('select[name="cliente"]').append(newOption).trigger('change');
+                $('#modalCliente').modal('hide');
             } else {
-                var errorList = document.getElementById("errorListMarca");
-                message_error(data.error, errorList);
+                message_error_cliente(data.error);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
         });
     });
 
-//------------------------------------MODAL MODELOS----------------------------------------//
-    //Boton Modelo Modal Mostrar
-    $('.btnAddModelo').on('click', function () {
-        $('#modalModelo').modal('show');
-    });
-
-    //Boton Modelo Modal Ocultar y Resetear
-    $('#modalModelo').on('hidden.bs.modal', function (e) {
-        $('#formModelo').trigger('reset');
-
-        errorList = document.getElementById("errorListModelo");
-        errorList.innerHTML = '';
-        location.reload();
-    });
-
-    //Submit Modal Modelo
-    $('#formModelo').on('submit', function (e) {
-        e.preventDefault();
-        var parameters = new FormData(this);
-        parameters.append('action', 'create_modelo');
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: parameters,
-            dataType: 'json',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-            processData: false,
-            contentType: false,
-        }).done(function (data) {
-            if (!data.hasOwnProperty('error')) {
-                var newOption = new Option(data.nombre, data.id, false, true);
-                $('#selectModelo').append(newOption).trigger('change');
-                $('#modalModelo').modal('hide');
-            } else {
-                var errorList = document.getElementById("errorListModelo");
-                message_error(data.error, errorList);
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-        }).always(function (data) {
-        });
-    });
 
 //------------------------------------EVENTOS PRODUCTOS----------------------------------------//
     //Buscar Productos

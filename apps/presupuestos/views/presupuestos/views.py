@@ -16,7 +16,8 @@ from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
 from apps.parametros.models import Modelos, Empresa, Marcas
 from apps.presupuestos.forms import PresupuestosForm
-from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto
+from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
+    PresupuestosBase, DetalleProductosPresupuestoBase, DetalleServiciosPresupuestoBase
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -82,20 +83,35 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 with transaction.atomic():
                     formCliente = ClientesForm(request.POST)
                     data = formCliente.save()
-            # si no existe la marca la creamos
-            if action == 'create_marca':
-                with transaction.atomic():
-                    formMarca = MarcasForm(request.POST)
-                    data = formMarca.save()
-            # si no existe el modelo lo creamos
-            elif action == 'create_modelo':
-                with transaction.atomic():
-                    formModelo = ModelosForm(request.POST)
-                    data = formModelo.save()
             elif action == 'search_modelos':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Modelos.objects.filter(marca_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
+            # Buscamos las plantillas de Presupuestos creadas
+            elif action == 'search_plantillas':
+                data = [{'id': '', 'text': '---------'}]
+                for i in PresupuestosBase.objects.filter(modelo_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.get_full_name()})
+            elif action == 'get_detalle_productos':
+                data = []
+                try:
+                    for i in DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=request.POST['pk']):
+                        item = i.producto.toJSON()
+                        item['cantidad'] = i.cantidad
+                        item['precio'] = i.producto.precioVenta
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
+            elif action == 'get_detalle_servicios':
+                data = []
+                try:
+                    for i in DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=request.POST['pk']):
+                        item = i.servicio.toJSON()
+                        item['cantidad'] = i.cantidad
+                        item['precio'] = i.servicio.precioVenta
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
             # Buscamos los distintos productos ingresando por teclado
             elif action == 'search_productos':
                 data = []
@@ -202,6 +218,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['formMarca'] = MarcasForm()
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
+        context['presupuestosBase'] = PresupuestosBase.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context

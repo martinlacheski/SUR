@@ -5,7 +5,6 @@ var presupuesto = {
     items: {
         modelo: '',
         descripcion: '',
-        total: 0.00,
         //detalle de productos
         productos: [],
         //detalle de servicios
@@ -25,7 +24,6 @@ var presupuesto = {
     //----------------------------------------------------------------------------//
     //Listar los productos en el Datatables
     listProductos: function () {
-        calcular_importes();
         tablaProductos = $('#tablaProductos').DataTable({
             paging: false,
             searching: false,
@@ -39,9 +37,7 @@ var presupuesto = {
             columns: [
                 {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
-                {"data": "precioVenta"},
                 {"data": "cantidad"},
-                {"data": "subtotal"},
             ],
             columnDefs: [
                 {
@@ -53,29 +49,19 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-3],
-                    class: 'text-center',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
-                    }
-                },
-                {
                     targets: [-2],
                     class: 'text-center',
                     orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
-                    }
                 },
                 {
                     targets: [-1],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
                     }
                 },
+
             ],
             //Este metodo permite personalizar datos de la fila y celda, tanto al agregar como al eliminar
             rowCallback(row, data, displayNum, displayIndex, dataIndex) {
@@ -97,8 +83,6 @@ var presupuesto = {
     //----------------------------------------------------------------------------//
     //Listar los servicios en el Datatables
     listServicios: function () {
-        calcular_importes();
-        //this.calculate_invoice();
         tablaServicios = $('#tablaServicios').DataTable({
             paging: false,
             searching: false,
@@ -112,9 +96,7 @@ var presupuesto = {
             columns: [
                 {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
-                {"data": "precioVenta"},
                 {"data": "cantidad"},
-                {"data": "subtotal"},
             ],
             columnDefs: [
                 {
@@ -126,27 +108,16 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-3],
-                    class: 'text-center',
-                    orderable: false,
-                    render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
-                    }
-                },
-                {
                     targets: [-2],
                     class: 'text-center',
                     orderable: false,
-                    render: function (data, type, row) {
-                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
-                    }
                 },
                 {
                     targets: [-1],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '$' + parseFloat(data).toFixed(2);
+                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
                     }
                 },
             ],
@@ -182,38 +153,10 @@ function isNumberKey(evt) {
 }
 ;
 
-//Funcion para Calcular los importes
-function calcular_importes() {
-    //Inicializamos variables para calcular importes
-    var subtotalProductos = 0.00;
-    var subtotalServicios = 0.00;
-    //Recorremos el Array de productos para ir actualizando los importes
-    $.each(presupuesto.items.productos, function (pos, dict) {
-        dict.pos = pos;
-        dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-        subtotalProductos += dict.subtotal;
-    });
-    //Recorremos el Array de servicios para ir actualizando los importes
-    $.each(presupuesto.items.servicios, function (pos, dict) {
-        dict.pos = pos;
-        dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
-        subtotalServicios += dict.subtotal;
-    });
-    //Asignamos los valores a los campos
-    presupuesto.items.total = subtotalProductos + subtotalServicios;
-
-    $('input[name="subtotalProductos"]').val(subtotalProductos.toFixed(2));
-    $('input[name="subtotalServicios"]').val(subtotalServicios.toFixed(2));
-    $('input[name="total"]').val(presupuesto.items.total.toFixed(2));
-};
-
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
-        $('input[name="subtotalProductos"]').val('0.00');
-        $('input[name="subtotalServicios"]').val('0.00');
-        $('input[name="total"]').val('0.00');
         $('input[name="descripcion"]').val('');
         $('select[name="marca"]').val(null).trigger('change');
         $('select[name="modelo"]').val(null).trigger('change');
@@ -468,7 +411,6 @@ $(function () {
             select: function (event, ui) {
                 event.preventDefault();
                 ui.item.cantidad = 1;
-                ui.item.subtotal = 0.00;
                 presupuesto.addProducto(ui.item);
                 $(this).val('');
             },
@@ -490,7 +432,6 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     var item = (data.producto);
                     item.cantidad = 1;
-                    item.subtotal = 0.00;
                     presupuesto.addProducto(item);
                     $('input[name="searchProductos"]').val('');
                     $('input[name="searchProductos"]').focus();
@@ -530,10 +471,6 @@ $(function () {
             //Obtenemos la posicion del elemento a modificar dentro del Datatables
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
             presupuesto.items.productos[tr.row].cantidad = cant;
-            //Actualizamos los importes
-            calcular_importes();
-            //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
-            $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + presupuesto.items.productos[tr.row].subtotal.toFixed(2));
         });
 
 //Borrar desde el boton de busqueda de productos
@@ -579,7 +516,6 @@ $(function () {
         select: function (event, ui) {
             event.preventDefault();
             ui.item.cantidad = 1;
-            ui.item.subtotal = 0.00;
             presupuesto.addServicio(ui.item);
             $(this).val('');
         },
@@ -601,7 +537,6 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     var item = (data.servicio);
                     item.cantidad = 1;
-                    item.subtotal = 0.00;
                     presupuesto.addServicio(item);
                     $('input[name="searchServicios"]').val('');
                     $('input[name="searchServicios"]').focus();
@@ -640,10 +575,6 @@ $(function () {
             //Obtenemos la posicion del elemento a modificar dentro del Datatables
             var tr = tablaServicios.cell($(this).closest('td, li')).index();
             presupuesto.items.servicios[tr.row].cantidad = cant;
-            //Actualizamos los importes
-            calcular_importes();
-            //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
-            $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + presupuesto.items.servicios[tr.row].subtotal.toFixed(2));
         });
 
     //Borrar desde el boton de busqueda de productos

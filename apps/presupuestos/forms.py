@@ -43,7 +43,6 @@ class PresupuestosForm(ModelForm):
                 }
             ),
             'validez': TextInput(attrs={
-                'readonly': True,
                 'class': 'form-control',
             }),
             'cliente': Select(

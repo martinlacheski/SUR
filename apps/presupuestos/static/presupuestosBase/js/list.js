@@ -23,7 +23,6 @@ $(function () {
             {"data": "modelo.marca.nombre"},
             {"data": "modelo.nombre"},
             {"data": "descripcion"},
-            {"data": "total"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -41,14 +40,6 @@ $(function () {
                 targets: [-3, -4, -5],
                 class: 'text-center',
                 orderable: false,
-            },
-            {
-                targets: [-2],
-                class: 'text-center',
-                orderable: false,
-                render: function (data, type, row) {
-                    return '$' + parseFloat(data).toFixed(2);
-                }
             },
             {
                 targets: [-1],
@@ -98,21 +89,12 @@ $(function () {
                 },
                 columns: [
                     {"data": "producto.descripcion"},
-                    {"data": "precio"},
                     {"data": "cantidad"},
-                    {"data": "subtotal"},
                 ],
                 columnDefs: [
                     {
-                        targets: [-2],
+                        targets: [-2, -1],
                         class: 'text-center',
-                    },
-                    {
-                        targets: [-1, -3],
-                        class: 'text-center',
-                        render: function (data, type, row) {
-                            return '$' + parseFloat(data).toFixed(2);
-                        }
                     },
                 ],
                 initComplete: function (settings, json) {
@@ -148,21 +130,12 @@ $(function () {
                 },
                 columns: [
                     {"data": "servicio.descripcion"},
-                    {"data": "precio"},
                     {"data": "cantidad"},
-                    {"data": "subtotal"},
                 ],
                 columnDefs: [
                     {
-                        targets: [-2],
+                        targets: [-2, -1],
                         class: 'text-center',
-                    },
-                    {
-                        targets: [-1, -3],
-                        class: 'text-center',
-                        render: function (data, type, row) {
-                            return '$' + parseFloat(data).toFixed(2);
-                        }
                     },
                 ],
                 initComplete: function (settings, json) {

@@ -12,7 +12,6 @@ from apps.usuarios.models import Usuarios
 class PresupuestosBase(models.Model):
     modelo = models.ForeignKey(Modelos, models.DO_NOTHING, verbose_name='Modelo')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción', unique=True)
-    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -24,6 +23,7 @@ class PresupuestosBase(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['modelo'] = self.modelo.toJSON()
+        item['full_name'] = self.get_full_name()
         return item
 
     class Meta:
@@ -46,9 +46,7 @@ class PresupuestosBase(models.Model):
 class DetalleProductosPresupuestoBase(models.Model):
     presupuestoBase = models.ForeignKey(PresupuestosBase, models.DO_NOTHING)
     producto = models.ForeignKey(Productos, models.DO_NOTHING)
-    precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 
     def __str__(self):
         return self.producto.descripcion
@@ -56,8 +54,6 @@ class DetalleProductosPresupuestoBase(models.Model):
     def toJSON(self):
         item = model_to_dict(self, exclude=['presupuestoBase'])
         item['producto'] = self.producto.toJSON()
-        item['precio'] = format(self.precio, '.2f')
-        item['subtotal'] = format(self.subtotal, '.2f')
         return item
 
     class Meta:
@@ -71,9 +67,7 @@ class DetalleProductosPresupuestoBase(models.Model):
 class DetalleServiciosPresupuestoBase(models.Model):
     presupuestoBase = models.ForeignKey(PresupuestosBase, models.DO_NOTHING)
     servicio = models.ForeignKey(Servicios, models.DO_NOTHING)
-    precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 
     def __str__(self):
         return self.servicio.descripcion
@@ -81,8 +75,6 @@ class DetalleServiciosPresupuestoBase(models.Model):
     def toJSON(self):
         item = model_to_dict(self, exclude=['presupuestoBase'])
         item['servicio'] = self.servicio.toJSON()
-        item['precio'] = format(self.precio, '.2f')
-        item['subtotal'] = format(self.subtotal, '.2f')
         return item
 
     class Meta:
@@ -96,7 +88,7 @@ class DetalleServiciosPresupuestoBase(models.Model):
 class Presupuestos(models.Model):
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
     fecha = models.DateField(verbose_name='Fecha')
-    validez = models.PositiveIntegerField(default=0,verbose_name='Validez del Presupuesto')
+    validez = models.PositiveIntegerField(default=1,verbose_name='Validez del Presupuesto')
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
     modelo = models.ForeignKey(Modelos, models.DO_NOTHING, verbose_name='Modelo')
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)

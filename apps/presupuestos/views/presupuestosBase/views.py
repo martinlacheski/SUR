@@ -148,23 +148,18 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     presupuestoBase = PresupuestosBase()
                     presupuestoBase.modelo_id = formPresupuestoBaseRequest['modelo']
                     presupuestoBase.descripcion = formPresupuestoBaseRequest['descripcion']
-                    presupuestoBase.total = float(formPresupuestoBaseRequest['total'])
                     presupuestoBase.save()
                     for i in formPresupuestoBaseRequest['productos']:
                         det = DetalleProductosPresupuestoBase()
                         det.presupuestoBase_id = presupuestoBase.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precioVenta'])
-                        det.subtotal = float(i['subtotal'])
                         det.save()
                     for i in formPresupuestoBaseRequest['servicios']:
                         det = DetalleServiciosPresupuestoBase()
                         det.presupuestoBase_id = presupuestoBase.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precioVenta'])
-                        det.subtotal = float(i['subtotal'])
                         det.save()
                     data = {'id': presupuestoBase.id}
                     data['redirect'] = self.url_redirect
@@ -215,7 +210,6 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     for i in DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=self.get_object().id):
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
-                        item['precio'] = i.precio
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
@@ -225,7 +219,6 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     for i in DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=self.get_object().id):
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
-                        item['precio'] = i.precio
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
@@ -291,7 +284,6 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     presupuestoBase = self.get_object()
                     presupuestoBase.modelo_id = formPresupuestoBaseRequest['modelo']
                     presupuestoBase.descripcion = formPresupuestoBaseRequest['descripcion']
-                    presupuestoBase.total = float(formPresupuestoBaseRequest['total'])
                     presupuestoBase.save()
                     # Eliminamos todos los productos del Detalle
                     presupuestoBase.detalleproductospresupuestobase_set.all().delete()
@@ -301,8 +293,6 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         det.presupuestoBase_id = presupuestoBase.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precioVenta'])
-                        det.subtotal = float(i['subtotal'])
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     presupuestoBase.detalleserviciospresupuestobase_set.all().delete()
@@ -312,8 +302,6 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         det.presupuestoBase_id = presupuestoBase.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
-                        det.precio = float(i['precioVenta'])
-                        det.subtotal = float(i['subtotal'])
                         det.save()
                     # Devolvemos en Data la ID del Presupuesto Base para poder generar la Boleta
                     data = {'id': presupuestoBase.id}
@@ -390,18 +378,8 @@ class PresupuestosBasePdfView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestosBase/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
-            subtotalProductos = DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=self.kwargs['pk'])
-            subtotalServicios = DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=self.kwargs['pk'])
-            productos = 0
-            for i in subtotalProductos:
-                productos += i.subtotal
-            servicios = 0
-            for i in subtotalServicios:
-                servicios += i.subtotal
             context = {
                 'presupuesto': PresupuestosBase.objects.get(pk=self.kwargs['pk']),
-                'subtotalProductos': productos,
-                'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
             }

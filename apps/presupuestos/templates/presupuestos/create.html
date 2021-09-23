@@ -34,7 +34,7 @@
         <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
         <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
         <!-- archivo JS -->
-        <script src="{% static 'presupuestosBase/js/form.js' %}"></script>
+        <script src="{% static 'presupuestos/js/form.js' %}"></script>
     {% endblock %}
 {% endblock %}
 {% block content %}
@@ -54,6 +54,36 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
+                    <div class="form-group col-6">
+                        <label>Cliente:</label>
+                        <div class="input-group">
+                            {{ form.cliente }}
+                            <div class="input-group-append">
+                                <button class="btn btn-success btn-flat btnAddCliente" type="button">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-1">
+
+                    </div>
+                    <div class="form-group col-2">
+                        <label>Validez Presupuesto:</label>
+                        <br>
+                        {{ form.validez }}
+                    </div>
+                    <div class="form-group col-1">
+
+                    </div>
+                    <div class="form-group col-2">
+                        <label>Fecha:</label>
+                        <div class="col-12 date" id="fecha" data-target-input="nearest">
+                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-6 mb-6">
                         <label>Marca:</label>
                         <div class="input-group">
@@ -64,32 +94,31 @@
                                     <option value={{ m.id }}>{{ m.nombre }}</option>
                                 {% endfor %}
                             </select>
-                            <div class="input-group-append">
-                                <button class="btn btn-success btn-flat btnAddMarca" type="button">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
                         </div>
                     </div>
                     <div class="col-6 mb-6">
                         <label>Modelo:</label>
                         <div class="input-group">
-                            {{ form.modelo|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
-                            <div class="input-group-append">
-                                <button class="btn btn-success btn-flat btnAddModelo" type="button">
-                                    <i class="fas fa-plus"></i>
-                                </button>
-                            </div>
+                            {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-6">
-                        <br>
+                    <div class="col-6">
+                        <label>Plantilla:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
+                                    name="selectPlantilla" aria-label="selectPlantilla">
+                                <option value="">---------</option>
+                            </select>
+
+                        </div>
+                    </div>
+                    <div class="col-6">
                         <div class="form-group">
-                            <label>Descripción:</label>
+                            <label>Observaciones:</label>
                             <br>
-                            {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {{ form.observaciones|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>
@@ -179,24 +208,35 @@
                         <div class="card card-secondary">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-3 mb-3">
+                                    <div class="form-group col-2">
                                         <label>Subtotal Productos:</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="subtotalProductos"
                                                    autocomplete="off" readonly>
                                         </div>
                                     </div>
-                                    <div class="form-group col-3 mb-3">
+                                    <div class="form-group col-2">
                                         <label>Subtotal Servicios:</label>
                                         <div class="input-group">
                                             <input type="text" class="form-control" name="subtotalServicios"
                                                    autocomplete="off" readonly>
                                         </div>
                                     </div>
-                                    <div class="form-group col-3 mb-3">
+                                    <div class="form-group col-1">
 
                                     </div>
-                                    <div class="form-group col-3 mb-3">
+                                    <div class="form-group col-2">
+                                        <label>IVA:</label>
+                                        {{ form.iva }}
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label>Percepción:</label>
+                                        {{ form.percepcion }}
+                                    </div>
+                                    <div class="form-group col-1">
+
+                                    </div>
+                                    <div class="form-group col-2">
                                         <label>Total a pagar:</label>
                                         {{ form.total }}
                                     </div>
@@ -293,5 +333,299 @@
         </form>
     </div>
 
+    <!-- Modal CLIENTE -->
+    <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formCliente" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-user-plus"></i> Crear un Cliente</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>Razón Social:</label>
+                                    <br>
+                                    {{ formCliente.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6 mb-6">
+                                    <label>Condición frente al IVA:</label>
+                                    <br>
+                                    {{ formCliente.condicionIVA|add_class:'form-control condicionIvaFormCliente'|attr:'required:true' }}
+                                </div>
+
+                                <div class="form-group col-6 mb-6">
+                                    <label>Cuil - Cuit:</label>
+                                    <br>
+                                    <div class="col-12" class="form-control" id="cuil" name="cuil"
+                                         onkeypress="return isNumberKey(event)">
+                                        {{ formCliente.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-6 mb-6">
+                                <label>Localidad:</label>
+                                <br>
+                                {{ formCliente.localidad|add_class:'form-control localidadFormCliente'|attr:'required:true' }}
+                            </div>
+                            <div class="form-group col-6 mb-6">
+                                <label>Dirección:</label>
+                                <div class="col-12" class="form-control" id="direccion" name="direccion">
+                                    {{ formCliente.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-6 mb-6">
+                                <label>Dirección de email:</label>
+                                <br>
+                                <div class="input-group" type="email" class="form-control" id="email" name="email">
+                                    {{ formCliente.email|add_class:'form-control'|attr:'autocomplete:off' }}
+                                    <span hidden id="errorEmail"
+                                          style="color: red;">Dirección de correo electrónico no válido </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>Teléfono:</label>
+                                <div class="col-12" class="form-control" id="telefono" name="telefono"
+                                     onkeypress="return isNumberKey(event)"
+                                     autocomplete="off" required>
+                                    {{ formCliente.telefono|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-6 mb-6">
+                                <label>CBU - CVU:</label>
+                                <br>
+                                <div class="input-group" type="text" class="form-control" id="cbu" name="cbu">
+                                    {{ formCliente.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>Alias:</label>
+                                <div class="col-12" class="form-control" id="alias" name="alias">
+                                    {{ formCliente.alias|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-6 mb-4">
+                                <label>Condición de Pago:</label>
+                                <br>
+                                {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
+                            </div>
+                            <div class="col-6 mb-6">
+                                <label>Tipo de Percepción:</label>
+                                <div class="input-group class=" form-control
+                                ">
+                                {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-2 mb-2">
+                            <label>¿Cuenta Corriente?:</label>
+                            <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
+                        </div>
+                        <div class="form-group col-4 mb-4">
+                            <label>Límite:</label>
+                            <br>
+                            <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
+                                {{ formCliente.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+
+                        <div class="form-group col-4 mb-4">
+                            <label>Plazo:</label>
+                            <br>
+                            <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
+                                {{ formCliente.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    {#Mensaje de error#}
+                    <ul id="errorListFormCliente" name="errorListFormCliente" class="alert-danger col-12"></ul>
+                    {#Botones#}
+                    <button type="submit" id="btnAddCliente"
+                            class="btn btn-primary btn-block btnAddCliente btn-flat">
+                        <i class="fas fa-save"></i> Guardar Cliente
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal PRODUCTO -->
+    <div class="modal fade" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-plus"></i> Crear un Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6">
+                                    <label>Subcategoría:</label>
+                                    <br>
+                                    {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6 mb-6">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+
+                                <div class="form-group col-3 mb-3">
+                                    <label>Abreviatura:</label>
+                                    <br>
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Código:</label>
+                                <br>
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código Proveedor:</label>
+                                {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
+
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código de Barras 1:</label>
+                                <br>
+                                {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código de Barras 2:</label>
+                                {{ formProducto.codigoBarras2|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockReal|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock Mínimo:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockMinimo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Pedido Reposición:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.reposicion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="costo" name="costo">
+                                    {{ formProducto.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Margen de Utilidad:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="utilidad" name="utilidad">
+                                    {{ formProducto.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Tipo de IVA:</label>
+                                <br>
+                                {{ formProducto.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
+                                    {{ formProducto.precioVenta|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Ubicacion Física:</label>
+                                <br>
+                                {{ formProducto.ubicacion|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Observaciones:</label>
+                                <br>
+                                {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-1 mb-1">
+                                <label> </label>
+                                <br>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>¿Es Insumo?: </label>
+                                <br>
+                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
+                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-6">
+                                <label>Imagen:</label>
+                                {{ formProducto.imagen }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormProducto" name="errorListFormProducto" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" id="btnAddProducto"
+                                class="btn btn-primary btn-block btnAddProducto btn-flat">
+                            <i class="fas fa-save"></i> Guardar Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}
