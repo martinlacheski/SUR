@@ -1,9 +1,7 @@
-*Presupuesto base se va a llamar Plantilla presupuesto
-
-*En plantilla presupuesto y presupuesto agregar opcion
-    para agregar producto y servicio por MODAL
+*Agregar Boton Crear Producto y un buscador por select2 visualizando todos los productos y servicios en:
+    VENTA, Presupuesto, Plantilla Presupuesto
 
 *En presupuesto quitar opcion eliminar, reemplazar por confirmación de trabajo
 
 *Pensar como hacer para optimizar el proceso de presupuesto ya confirmado de una.
-    CARGAR DESDE TRABAJO pero acceder a la plantilla BASE
+    podria ser CARGAR DESDE TRABAJO pero acceder a la plantilla BASE

@@ -1,6 +1,6 @@
 var tablaProductos;
 var tablaServicios;
-//Definimos una estructura en JS para crear el PRESUPUESTO BASE
+//Definimos una estructura en JS para crear el PRESUPUESTO
 var presupuesto = {
     items: {
         modelo: '',
@@ -384,7 +384,210 @@ $(function () {
         });
     });
 
+//------------------------------------MODAL PRODUCTOS----------------------------------------//
+    //Inicializamos SELECT2
+    $('.ivaProducto').select2({
+        theme: "bootstrap4",
+        language: 'es'
+    });
+
+    //Inicializamos los campos de tipo TOUCHSPIN
+    $("input[name='stockReal']").TouchSpin({
+        min: -1000000,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
+    $("input[name='stockMinimo']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
+    $("input[name='reposicion']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+    });
+    $("input[name='costo']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
+    $("input[name='utilidad']").TouchSpin({
+        min: 0,
+        max: 1000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '%'
+    });
+    $('.precioVenta').TouchSpin({
+        min: 0,
+        max: 10000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
+
+    //Al cerrar el Modal de Productos reseteamos los valores del formulario
+    $('#modalProducto').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formProducto').trigger('reset');
+        //Reseteamos los Select2 del Modal
+        $(".subcategoria").val('').trigger('change.select2');
+        $(".iva").val('').trigger('change.select2');
+        var errorList = document.getElementById("errorListFormProducto");
+        errorList.innerHTML = '';
+    });
+
+    //Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD e IVA)
+    $('input[name="costo"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('input[name="utilidad"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('select[name="iva"]').on('change', function () {
+        calcularPrecio();
+    });
+    $('input[name="precioVenta"]').on('change', function () {
+        calcularUtilidad();
+    });
+
+    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
+    function calcularPrecio() {
+        var id = $('select[name="iva"]').val();
+        var iva = 0;
+        var costo = $('input[name="costo"]').val();
+        var utilidad = $('input[name="utilidad"]').val();
+        utilidad = (utilidad / 100) + 1;
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_iva',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                iva = (data.iva);
+                iva = (iva / 100) + 1;
+                if (iva > 0) {
+                    var precio = (costo * utilidad * iva);
+                    $('input[name="precioVenta"]').val(precio.toFixed(2));
+                }
+            }
+        });
+        if (iva > 0) {
+            var precio = (costo * utilidad * iva);
+            $('input[name="precioVenta"]').val(precio);
+        }
+    }
+
+    //Funcion para calcular el precio entre COSTO IVA y TOTAL
+    function calcularUtilidad() {
+        var id = $('select[name="iva"]').val();
+        var iva = 0;
+        var costo = $('input[name="costo"]').val();
+        var total = $('input[name="precioVenta"]').val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_iva',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                iva = (data.iva);
+                iva = (iva / 100) + 1;
+                if (iva > 0) {
+                    var precio = (((total / iva) / costo) - 1) * 100;
+                    $('input[name="utilidad"]').val(precio.toFixed(2));
+                }
+            }
+        });
+        if (iva > 0) {
+            var precio = (((total / iva) / costo) - 1) * 100;
+            $('input[name="utilidad"]').val(precio);
+        }
+    }
+
+    //Funcion Mostrar Errores del Formulario Producto
+    function message_error_producto(obj) {
+        var errorList = document.getElementById("errorListFormProducto");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
+
+    //Creamos un nuevo Producto desde el Modal
+    $('#formProducto').on('submit', function (e) {
+        // VALIDACION DE LOS CAMPOS
+        $("#subcategoria").validate();
+        $("#descripcion").validate();
+        //$("#stockReal").validate();
+        $("#stockMinimo").validate();
+        $("#reposicion").validate();
+        $("#costo").validate();
+        $("#utilidad").validate();
+        $("#iva").validate();
+        $("#precioVenta").validate();
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_producto');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                $('#modalProducto').modal('hide');
+            } else {
+                message_error_producto(data.error);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
 //------------------------------------EVENTOS PRODUCTOS----------------------------------------//
+
     //Buscar Productos
     $('input[name="searchProductos"]')
         .autocomplete({
@@ -436,8 +639,11 @@ $(function () {
                     $('input[name="searchProductos"]').val('');
                     $('input[name="searchProductos"]').focus();
                 } else {
-                    error_action('Error', 'No existe el producto con el código ingresado', function () {
-                        //pass
+                    //error_action('Error', 'No existe el producto con el código ingresado', function () {
+                    confirm_action('Error', 'No existe el producto, ¿Desea registrarlo?', function () {
+                        $('#modalProducto').modal('show');
+                        $('input[name="searchProductos"]').val('');
+                        $('input[name="searchProductos"]').focus();
                     }, function () {
                         $('input[name="searchProductos"]').val('');
                         $('input[name="searchProductos"]').focus();
@@ -449,7 +655,7 @@ $(function () {
         }
     });
 
-// eventos tabla Productos
+    // eventos tabla Productos
     $('#tablaProductos tbody')
         //Evento eliminar renglon del detalle
         .on('click', 'a[rel="remove"]', function () {
@@ -473,11 +679,11 @@ $(function () {
             presupuesto.items.productos[tr.row].cantidad = cant;
         });
 
-//Borrar desde el boton de busqueda de productos
+    //Borrar desde el boton de busqueda de productos
     $('.btnClearSearchProductos').on('click', function () {
         $('input[name="searchProductos"]').val('').focus();
     });
-//Borrar todos los productos
+    //Borrar todos los productos
     $('.btnRemoveAllProductos').on('click', function () {
         if (presupuesto.items.productos.length === 0) return false;
         //Ejecutar la Funcion de Confirmacion
@@ -487,6 +693,125 @@ $(function () {
             //Actualizamos el Listado
             presupuesto.listProductos();
         }, function () {
+        });
+    });
+
+//------------------------------------MODAL SERVICIOS----------------------------------------//
+    $("input[name='ivaServicio']").select2({
+        postfix: '%'
+    });
+
+    //Inicializamos los campos de tipo TOUCHSPIN
+    $("input[name='costoServicio']").TouchSpin({
+        min: 0,
+        max: 1000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
+    });
+
+    //Al cerrar el Modal de Productos reseteamos los valores del formulario
+    $('#modalServicio').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formServicio').trigger('reset');
+        //Reseteamos los Select2 del Modal
+        $(".ivaServicio").val('').trigger('change.select2');
+        var errorList = document.getElementById("errorListFormServicio");
+        errorList.innerHTML = '';
+    });
+
+    //Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD e IVA)
+    $('input[name="costoServicio"]').on('change', function () {
+        calcularPrecioServicio();
+    });
+    $('.ivaServicio').on('change', function () {
+        calcularPrecioServicio();
+    });
+
+    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
+    function calcularPrecioServicio() {
+        var id = $('.ivaServicio').val();
+        var iva = 0;
+        var costo = $('.costoServicio').val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_iva',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                iva = (data.iva);
+                iva = (iva / 100) + 1;
+                if (iva > 0) {
+                    var precio = (costo * iva);
+                    $('.precioVentaServicio').val(precio.toFixed(2));
+                }
+            }
+        });
+        if (iva > 0) {
+            var precio = (costo * iva);
+            $('.precioVentaServicio').val(precio.toFixed(2));
+        }
+    }
+
+    //Funcion Mostrar Errores del Formulario
+    function message_error_servicio(obj) {
+        var errorList = document.getElementById("errorListFormServicio");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+
+        }
+    }
+
+    //Hacemos el envio del Formulario mediante AJAX
+    $("#formServicio").submit(function (e) {
+        // VALIDACION DE LOS CAMPOS
+        $("#descripcionServicio").validate();
+        $("#codigoServicio").validate();
+        $("#costoServicio").validate();
+        $("#ivaServicio").validate();
+        $("#precioVentaServicio").validate();
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_servicio');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                $('#modalServicio').modal('hide');
+            } else {
+                message_error_servicio(data.error);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
         });
     });
 
@@ -614,7 +939,7 @@ $(function () {
                     //Pasamos la accion ADD
                     parameters.append('action', $('input[name="action"]').val());
                     //Agregamos la estructura de Presupuesto con los detalles correspondientes
-                    parameters.append('presupuestoBase', JSON.stringify(presupuesto.items));
+                    parameters.append('presupuestoPlantilla', JSON.stringify(presupuesto.items));
                     //Bloque AJAX Presupuesto
                     $.ajax({
                         url: window.location.href,
@@ -628,8 +953,8 @@ $(function () {
                         contentType: false,
                         success: function (data) {
                             if (!data.hasOwnProperty('error')) {
-                                confirm_action('Notificación', '¿Desea imprimir el Presupuesto Base?', function () {
-                                    window.open('/presupuestosBase/pdf/' + data.id + '/', '_blank');
+                                confirm_action('Notificación', '¿Desea imprimir la Plantilla de Presupuesto?', function () {
+                                    window.open('/presupuestosPlantilla/pdf/' + data.id + '/', '_blank');
                                     location.replace(data.redirect);
                                 }, function () {
                                     location.replace(data.redirect);

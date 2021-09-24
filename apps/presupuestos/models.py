@@ -9,7 +9,7 @@ from apps.parametros.models import Modelos
 from apps.usuarios.models import Usuarios
 
 
-class PresupuestosBase(models.Model):
+class PlantillaPresupuestos(models.Model):
     modelo = models.ForeignKey(Modelos, models.DO_NOTHING, verbose_name='Modelo')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción', unique=True)
     estado = models.BooleanField(default=True)
@@ -30,7 +30,7 @@ class PresupuestosBase(models.Model):
         unique_together = ['modelo', 'descripcion']
         verbose_name = 'Presupuesto Base'
         verbose_name_plural = 'Presupuestos Base'
-        db_table = 'presupuestos_base'
+        db_table = 'presupuestos_plantilla'
         ordering = ['id']
 
         # Para convertir a MAYUSCULA
@@ -39,12 +39,12 @@ class PresupuestosBase(models.Model):
             self.descripcion = self.descripcion.upper()
         except:
             pass
-        super(PresupuestosBase, self).save(force_insert, force_update)
+        super(PlantillaPresupuestos, self).save(force_insert, force_update)
 
 
 # Detalle de Productos del Presupuesto Base
-class DetalleProductosPresupuestoBase(models.Model):
-    presupuestoBase = models.ForeignKey(PresupuestosBase, models.DO_NOTHING)
+class DetalleProductosPlantillaPresupuesto(models.Model):
+    presupuestoPlantilla = models.ForeignKey(PlantillaPresupuestos, models.DO_NOTHING)
     producto = models.ForeignKey(Productos, models.DO_NOTHING)
     cantidad = models.IntegerField(default=0)
 
@@ -52,20 +52,20 @@ class DetalleProductosPresupuestoBase(models.Model):
         return self.producto.descripcion
 
     def toJSON(self):
-        item = model_to_dict(self, exclude=['presupuestoBase'])
+        item = model_to_dict(self, exclude=['presupuestoPlantilla'])
         item['producto'] = self.producto.toJSON()
         return item
 
     class Meta:
-        verbose_name = 'Detalle de Productos - Presupuesto Base'
-        verbose_name_plural = 'Detalle de Productos - Presupuestos Base'
-        db_table = 'presupuestos_base_detalle_productos'
+        verbose_name = 'Detalle de Productos - Plantilla Presupuesto'
+        verbose_name_plural = 'Detalle de Productos - Plantilla de Presupuesto'
+        db_table = 'presupuestos_plantilla_detalle_productos'
         ordering = ['id']
 
 
 # Detalle de Servicios del Presupuesto Base
-class DetalleServiciosPresupuestoBase(models.Model):
-    presupuestoBase = models.ForeignKey(PresupuestosBase, models.DO_NOTHING)
+class DetalleServiciosPlantillaPresupuesto(models.Model):
+    presupuestoPlantilla = models.ForeignKey(PlantillaPresupuestos, models.DO_NOTHING)
     servicio = models.ForeignKey(Servicios, models.DO_NOTHING)
     cantidad = models.IntegerField(default=0)
 
@@ -73,14 +73,14 @@ class DetalleServiciosPresupuestoBase(models.Model):
         return self.servicio.descripcion
 
     def toJSON(self):
-        item = model_to_dict(self, exclude=['presupuestoBase'])
+        item = model_to_dict(self, exclude=['presupuestoPlantilla'])
         item['servicio'] = self.servicio.toJSON()
         return item
 
     class Meta:
-        verbose_name = 'Detalle de Servicios - Presupuesto Base'
-        verbose_name_plural = 'Detalle de Servicios - Presupuestos Base'
-        db_table = 'presupuestos_base_detalle_servicios'
+        verbose_name = 'Detalle de Servicios - Plantilla Presupuesto'
+        verbose_name_plural = 'Detalle de Servicios - Plantilla Presupuesto'
+        db_table = 'presupuestos_plantilla_detalle_servicios'
         ordering = ['id']
 
 
@@ -96,7 +96,7 @@ class Presupuestos(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default=False)
-    observaciones = models.CharField(max_length=100, verbose_name='Observaciones')
+    observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
 
     def __str__(self):
         return self.get_full_name()

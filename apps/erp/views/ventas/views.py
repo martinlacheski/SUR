@@ -10,10 +10,10 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from apps.erp.forms import VentasForm, ClientesForm
+from apps.erp.forms import VentasForm, ClientesForm, ServiciosForm, ProductosForm
 from apps.erp.models import Ventas, Productos, Servicios, DetalleProductosVenta, DetalleServiciosVenta, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.models import Empresa
+from apps.parametros.models import Empresa, TiposIVA
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -124,6 +124,20 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos y Servicios
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
+            # si no existe el Producto lo creamos
+            elif action == 'create_producto':
+                with transaction.atomic():
+                    formProducto = ProductosForm(request.POST)
+                    data = formProducto.save()
+            # si no existe el Servicio lo creamos
+            elif action == 'create_servicio':
+                with transaction.atomic():
+                    formServicio = ServiciosForm(request.POST)
+                    data = formServicio.save()
             elif action == 'add':
                 with transaction.atomic():
                     formVentaRequest = json.loads(request.POST['venta'])
@@ -174,6 +188,8 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['formCliente'] = ClientesForm()
+        context['formProducto'] = ProductosForm()
+        context['formServicio'] = ServiciosForm()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
@@ -272,6 +288,20 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos y Servicios
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
+            # si no existe el Producto lo creamos
+            elif action == 'create_producto':
+                with transaction.atomic():
+                    formProducto = ProductosForm(request.POST)
+                    data = formProducto.save()
+            # si no existe el Servicio lo creamos
+            elif action == 'create_servicio':
+                with transaction.atomic():
+                    formServicio = ServiciosForm(request.POST)
+                    data = formServicio.save()
             elif action == 'edit':
                 with transaction.atomic():
                     formVentaRequest = json.loads(request.POST['venta'])
@@ -333,6 +363,8 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['formCliente'] = ClientesForm()
+        context['formProducto'] = ProductosForm()
+        context['formServicio'] = ServiciosForm()
         return context
 
 

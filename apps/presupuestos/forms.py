@@ -1,14 +1,14 @@
 from django.forms import ModelForm, Select, TextInput, DateInput
 
-from apps.presupuestos.models import PresupuestosBase, Presupuestos
+from apps.presupuestos.models import PlantillaPresupuestos, Presupuestos
 
 
-class PresupuestosBaseForm(ModelForm):
+class PresupuestosPlantillaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     class Meta:
-        model = PresupuestosBase
+        model = PlantillaPresupuestos
         fields = '__all__'
         widgets = {
             'modelo': Select(

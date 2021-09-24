@@ -41,7 +41,7 @@ $(function () {
     });
     $("input[name='utilidad']").TouchSpin({
         min: 0,
-        max: 100,
+        max: 1000,
         step: 0.1,
         decimals: 2,
         boostat: 5,

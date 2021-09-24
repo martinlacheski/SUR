@@ -309,11 +309,11 @@
                                 {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
                             </div>
                             <div class="col-6 mb-6">
-                            <label>Tipo de Percepción:</label>
-                            <div class="input-group class="form-control">
-                                {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                                <label>Tipo de Percepción:</label>
+                                <div class="input-group" class=" form-control">
+                                    {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                                </div>
                             </div>
-                        </div>
                         </div>
 
                         <div class="row">
@@ -351,4 +351,237 @@
             </div>
         </form>
     </div>
+
+    <!-- Modal PRODUCTO -->
+    <div class="modal fade" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-plus"></i> Crear un Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6">
+                                    <label>Subcategoría:</label>
+                                    <br>
+                                    {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6 mb-6">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+
+                                <div class="form-group col-3 mb-3">
+                                    <label>Abreviatura:</label>
+                                    <br>
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Código:</label>
+                                <br>
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código Proveedor:</label>
+                                {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
+
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código de Barras 1:</label>
+                                <br>
+                                {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código de Barras 2:</label>
+                                {{ formProducto.codigoBarras2|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockReal|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock Mínimo:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockMinimo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Pedido Reposición:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.reposicion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="costo" name="costo">
+                                    {{ formProducto.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Margen de Utilidad:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="utilidad" name="utilidad">
+                                    {{ formProducto.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Tipo de IVA:</label>
+                                <br>
+                                {{ formProducto.iva|add_class:'form-control ivaProducto'|attr:'autocomplete:off'|attr:'required:true' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
+                                    {{ formProducto.precioVenta|add_class:'form-control precioVenta'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Ubicacion Física:</label>
+                                <br>
+                                {{ formProducto.ubicacion|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Observaciones:</label>
+                                <br>
+                                {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-1 mb-1">
+                                <label> </label>
+                                <br>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>¿Es Insumo?: </label>
+                                <br>
+                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
+                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-6">
+                                <label>Imagen:</label>
+                                {{ formProducto.imagen }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormProducto" name="errorListFormProducto" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" id="btnAddProducto"
+                                class="btn btn-primary btn-block btnAddProducto btn-flat">
+                            <i class="fas fa-save"></i> Guardar Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal Servicios -->
+    <div class="modal fade" id="modalServicio" tabindex="-1" role="dialog" aria-labelledby="modalServicio"
+         aria-hidden="true">
+        <form id="formServicio" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-wrench"></i> Crear un Servicio</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-9 mb-9">
+                                <label>Descripción:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="descripcionServicio"
+                                     name="descripcionServicio">
+                                    {{ formServicio.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Código:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="codigoServicio" name="codigoServicio">
+                                    {{ formServicio.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-4 mb-4">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="costoServicio" name="costoCosto">
+                                    {{ formServicio.costo|add_class:'form-control costoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-4 mb-4">
+                                <label>Tipo de IVA:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="ivaServicio" name="ivaServicio">
+                                    {{ formServicio.iva|add_class:'form-control ivaServicio'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-4 mb-4">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="precioVentaServicio"
+                                     name="precioVentaServicio">
+                                    {{ formServicio.precioVenta|add_class:'form-control precioVentaServicio'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-6">
+                                <label>Imagen:</label>
+                                <div class="col-12" class="form-control" id="imagenServicio" name="imagenServicio">
+                                    {{ formServicio.imagen }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormServicio" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Servicio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
 {% endblock %}

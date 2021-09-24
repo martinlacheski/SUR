@@ -663,7 +663,6 @@ $(function () {
                 } else {
                     // error_action('Error', 'No existe el producto con el código ingresado', function () {
                     confirm_action('Error', 'No existe el producto, ¿Desea registrarlo?', function () {
-                        //$('#modalProducto').modal('show');
                         $('#modalProducto').modal('show');
                         $('input[name="searchProductos"]').val('');
                         $('input[name="searchProductos"]').focus();

@@ -14,18 +14,18 @@ from apps.erp.forms import ProductosForm, ServiciosForm
 from apps.erp.models import Productos, Servicios
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas
-from apps.presupuestos.forms import PresupuestosBaseForm
-from apps.presupuestos.models import PresupuestosBase, DetalleProductosPresupuestoBase, DetalleServiciosPresupuestoBase
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA
+from apps.presupuestos.forms import PresupuestosPlantillaForm
+from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
 from config import settings
 
 from weasyprint import HTML, CSS
 
 
-class PresupuestosBaseListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = PresupuestosBase
-    template_name = 'presupuestosBase/list.html'
-    permission_required = 'presupuestos.view_presupuestosbase'
+class PresupuestosPlantillaListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = PlantillaPresupuestos
+    template_name = 'presupuestosPlantilla/list.html'
+    permission_required = 'presupuestos.view_plantillapresupuestos'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -36,15 +36,15 @@ class PresupuestosBaseListView(LoginRequiredMixin, ValidatePermissionRequiredMix
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in PresupuestosBase.objects.all()[0:15]:
+                for i in PlantillaPresupuestos.objects.all()[0:15]:
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
-                for i in DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=request.POST['id']):
+                for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['id']):
                     data.append(i.toJSON())
             elif action == 'search_detalle_servicios':
                 data = []
-                for i in DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=request.POST['id']):
+                for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['id']):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -54,19 +54,19 @@ class PresupuestosBaseListView(LoginRequiredMixin, ValidatePermissionRequiredMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Presupuestos Base'
-        context['create_url'] = reverse_lazy('presupuestos:presupuestosBase_create')
-        context['list_url'] = reverse_lazy('presupuestos:presupuestosBase_list')
-        context['entity'] = 'Presupuestos Base'
+        context['title'] = 'Listado de Plantilla de Presupuestos'
+        context['create_url'] = reverse_lazy('presupuestos:presupuestosPlantilla_create')
+        context['list_url'] = reverse_lazy('presupuestos:presupuestosPlantilla_list')
+        context['entity'] = 'Plantilla de Presupuestos'
         return context
 
 
-class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = PresupuestosBase
-    form_class = PresupuestosBaseForm
-    template_name = 'presupuestosBase/create.html'
-    success_url = reverse_lazy('presupuestos:presupuestosBase_list')
-    permission_required = 'presupuestos.add_presupuestosbase'
+class PresupuestosPlantillaCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+    model = PlantillaPresupuestos
+    form_class = PresupuestosPlantillaForm
+    template_name = 'presupuestosPlantilla/create.html'
+    success_url = reverse_lazy('presupuestos:presupuestosPlantilla_list')
+    permission_required = 'presupuestos.add_plantillapresupuestos'
     url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
@@ -132,6 +132,10 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos y Servicios
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -144,24 +148,24 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     data = formServicio.save()
             elif action == 'add':
                 with transaction.atomic():
-                    formPresupuestoBaseRequest = json.loads(request.POST['presupuestoBase'])
-                    presupuestoBase = PresupuestosBase()
-                    presupuestoBase.modelo_id = formPresupuestoBaseRequest['modelo']
-                    presupuestoBase.descripcion = formPresupuestoBaseRequest['descripcion']
-                    presupuestoBase.save()
-                    for i in formPresupuestoBaseRequest['productos']:
-                        det = DetalleProductosPresupuestoBase()
-                        det.presupuestoBase_id = presupuestoBase.id
+                    formPresupuestoPlantillaRequest = json.loads(request.POST['presupuestoPlantilla'])
+                    presupuestoPlantilla = PlantillaPresupuestos()
+                    presupuestoPlantilla.modelo_id = formPresupuestoPlantillaRequest['modelo']
+                    presupuestoPlantilla.descripcion = formPresupuestoPlantillaRequest['descripcion']
+                    presupuestoPlantilla.save()
+                    for i in formPresupuestoPlantillaRequest['productos']:
+                        det = DetalleProductosPlantillaPresupuesto()
+                        det.presupuestoPlantilla_id = presupuestoPlantilla.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.save()
-                    for i in formPresupuestoBaseRequest['servicios']:
-                        det = DetalleServiciosPresupuestoBase()
-                        det.presupuestoBase_id = presupuestoBase.id
+                    for i in formPresupuestoPlantillaRequest['servicios']:
+                        det = DetalleServiciosPlantillaPresupuesto()
+                        det.presupuestoPlantilla_id = presupuestoPlantilla.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.save()
-                    data = {'id': presupuestoBase.id}
+                    data = {'id': presupuestoPlantilla.id}
                     data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -171,8 +175,8 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Crear un Presupuesto Base'
-        context['entity'] = 'Presupuestos Base'
+        context['title'] = 'Crear una Plantilla de Presupuesto'
+        context['entity'] = 'Plantilla de Presupuestos'
         context['list_url'] = self.success_url
         context['action'] = 'add'
         context['formProducto'] = ProductosForm()
@@ -185,18 +189,18 @@ class PresupuestosBaseCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
         return context
 
 
-class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = PresupuestosBase
-    form_class = PresupuestosBaseForm
-    template_name = 'presupuestosBase/create.html'
-    success_url = reverse_lazy('presupuestos:presupuestosBase_list')
-    permission_required = 'presupuestos.change_presupuestosbase'
+class PresupuestosPlantillaUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = PlantillaPresupuestos
+    form_class = PresupuestosPlantillaForm
+    template_name = 'presupuestosPlantilla/create.html'
+    success_url = reverse_lazy('presupuestos:presupuestosPlantilla_list')
+    permission_required = 'presupuestos.change_plantillapresupuestos'
     url_redirect = success_url
 
     def get_form(self, form_class=None):
         instance = self.get_object()
-        form = PresupuestosBaseForm(instance=instance)
-        # Obtenemos unicamente el MODELO en el que se CREO el PRESUPUESTO BASE, para poder modificar la misma
+        form = PresupuestosPlantillaForm(instance=instance)
+        # Obtenemos unicamente el MODELO en el que se CREO la PLANTILLA DE PRESUPUESTO, para poder modificar la misma
         form.fields['modelo'].queryset = Modelos.objects.filter(id=instance.modelo.id)
         return form
 
@@ -207,7 +211,7 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
             if action == 'get_detalle_productos':
                 data = []
                 try:
-                    for i in DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=self.get_object().id):
+                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=self.get_object().id):
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         data.append(item)
@@ -216,7 +220,7 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
             elif action == 'get_detalle_servicios':
                 data = []
                 try:
-                    for i in DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=self.get_object().id):
+                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=self.get_object().id):
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         data.append(item)
@@ -267,6 +271,10 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos y Servicios
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -279,32 +287,32 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     data = formServicio.save()
             elif action == 'edit':
                 with transaction.atomic():
-                    formPresupuestoBaseRequest = json.loads(request.POST['presupuestoBase'])
+                    formPresupuestoPlantillaRequest = json.loads(request.POST['presupuestoPlantilla'])
                     # Obtenemos el Presupuesto Base que se esta editando
-                    presupuestoBase = self.get_object()
-                    presupuestoBase.modelo_id = formPresupuestoBaseRequest['modelo']
-                    presupuestoBase.descripcion = formPresupuestoBaseRequest['descripcion']
-                    presupuestoBase.save()
+                    presupuestoPlantilla = self.get_object()
+                    presupuestoPlantilla.modelo_id = formPresupuestoPlantillaRequest['modelo']
+                    presupuestoPlantilla.descripcion = formPresupuestoPlantillaRequest['descripcion']
+                    presupuestoPlantilla.save()
                     # Eliminamos todos los productos del Detalle
-                    presupuestoBase.detalleproductospresupuestobase_set.all().delete()
+                    presupuestoPlantilla.detalleproductosplantillapresupuesto_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
-                    for i in formPresupuestoBaseRequest['productos']:
-                        det = DetalleProductosPresupuestoBase()
-                        det.presupuestoBase_id = presupuestoBase.id
+                    for i in formPresupuestoPlantillaRequest['productos']:
+                        det = DetalleProductosPlantillaPresupuesto()
+                        det.presupuestoPlantilla_id = presupuestoPlantilla.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.save()
                     # Eliminamos todos los productos del Detalle
-                    presupuestoBase.detalleserviciospresupuestobase_set.all().delete()
+                    presupuestoPlantilla.detalleserviciosplantillapresupuesto_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
-                    for i in formPresupuestoBaseRequest['servicios']:
-                        det = DetalleServiciosPresupuestoBase()
-                        det.presupuestoBase_id = presupuestoBase.id
+                    for i in formPresupuestoPlantillaRequest['servicios']:
+                        det = DetalleServiciosPlantillaPresupuesto()
+                        det.presupuestoPlantilla_id = presupuestoPlantilla.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.save()
                     # Devolvemos en Data la ID del Presupuesto Base para poder generar la Boleta
-                    data = {'id': presupuestoBase.id}
+                    data = {'id': presupuestoPlantilla.id}
                     data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -314,8 +322,8 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Editar un Presupuesto Base'
-        context['entity'] = 'Presupuestos Base'
+        context['title'] = 'Editar una Plantilla de Presupuesto'
+        context['entity'] = 'Plantilla de Presupuestos'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
         context['formProducto'] = ProductosForm()
@@ -328,12 +336,12 @@ class PresupuestosBaseUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
         return context
 
 
-class PresupuestosBaseDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = PresupuestosBase
-    form_class = PresupuestosBaseForm
-    template_name = 'presupuestosBase/create.html'
-    success_url = reverse_lazy('presupuestos:presupuestosBase_list')
-    permission_required = 'presupuestos.delete_presupuestosBase'
+class PresupuestosPlantillaDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
+    model = PlantillaPresupuestos
+    form_class = PresupuestosPlantillaForm
+    template_name = 'presupuestosPlantilla/create.html'
+    success_url = reverse_lazy('presupuestos:presupuestosPlantilla_list')
+    permission_required = 'presupuestos.delete_plantillapresupuestos'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -346,11 +354,11 @@ class PresupuestosBaseDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
             action = request.POST['action']
             if action == 'delete':
                 with transaction.atomic():
-                    # Obtenemos el PRESUPUESTO BASE que se esta editando
-                    presupuestoBase = self.get_object()
-                    # Eliminamos el Presupuesto Base
-                    presupuestoBase.estado = False
-                    presupuestoBase.save()
+                    # Obtenemos la PLANTILLA de PRESUPUESTO que se esta editando
+                    presupuestoPlantilla = self.get_object()
+                    # Eliminamos el Presupuesto
+                    presupuestoPlantilla.estado = False
+                    presupuestoPlantilla.save()
                     data['redirect'] = self.url_redirect
                     data['check'] = 'ok'
             else:
@@ -361,25 +369,25 @@ class PresupuestosBaseDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Dar de Baja un Presupuesto Base'
-        context['entity'] = 'Presupuestos Base'
+        context['title'] = 'Dar de Baja una Plantilla de Presupuesto'
+        context['entity'] = 'Plantilla de Presupuestos'
         context['list_url'] = self.success_url
         context['action'] = 'delete'
         return context
 
 
-class PresupuestosBasePdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
-    permission_required = 'presupuestos.view_presupuestosbase'
+class PresupuestosPlantillaPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
+    permission_required = 'presupuestos.view_plantillapresupuestos'
 
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(id=1)
             # Utilizamos el template para generar el PDF
-            template = get_template('presupuestosBase/pdf.html')
+            template = get_template('presupuestosPlantilla/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
             context = {
-                'presupuesto': PresupuestosBase.objects.get(pk=self.kwargs['pk']),
+                'presupuesto': PlantillaPresupuestos.objects.get(pk=self.kwargs['pk']),
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
             }
@@ -393,4 +401,4 @@ class PresupuestosBasePdfView(LoginRequiredMixin, ValidatePermissionRequiredMixi
         except Exception as e:
             print(str(e))
 
-        return HttpResponseRedirect(reverse_lazy('presupuestos:presupuestosBase_list'))
+        return HttpResponseRedirect(reverse_lazy('presupuestos:presupuestosPlantilla_list'))

@@ -14,10 +14,10 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA
 from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
-    PresupuestosBase, DetalleProductosPresupuestoBase, DetalleServiciosPresupuestoBase
+    PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -90,12 +90,12 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             # Buscamos las plantillas de Presupuestos creadas
             elif action == 'search_plantillas':
                 data = [{'id': '', 'text': '---------'}]
-                for i in PresupuestosBase.objects.filter(modelo_id=request.POST['pk']):
+                for i in PlantillaPresupuestos.objects.filter(modelo_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.get_full_name()})
             elif action == 'get_detalle_productos':
                 data = []
                 try:
-                    for i in DetalleProductosPresupuestoBase.objects.filter(presupuestoBase_id=request.POST['pk']):
+                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['pk']):
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.producto.precioVenta
@@ -105,7 +105,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'get_detalle_servicios':
                 data = []
                 try:
-                    for i in DetalleServiciosPresupuestoBase.objects.filter(presupuestoBase_id=request.POST['pk']):
+                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['pk']):
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.servicio.precioVenta
@@ -157,6 +157,10 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos y Servicios
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -219,7 +223,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['formMarca'] = MarcasForm()
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
-        context['presupuestosBase'] = PresupuestosBase.objects.all()
+        context['presupuestosPlantilla'] = PlantillaPresupuestos.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
@@ -314,6 +318,10 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos el IVA para el MODAL de Productos y Servicios
+            elif action == 'search_iva':
+                iva = TiposIVA.objects.get(id=request.POST['pk'])
+                data['iva'] = iva.iva
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
