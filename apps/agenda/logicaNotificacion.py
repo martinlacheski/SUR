@@ -1,3 +1,4 @@
+from datetime import date, timedelta, datetime
 
 def diaDeNotificacion(diaSemana, diaNotificacion):
     if diaSemana == 0 :
@@ -20,17 +21,17 @@ def diaDeNotificacion(diaSemana, diaNotificacion):
             return True
         else:
             return False
-    if diaSemana == 5:
-        if diaNotificacion.vienres:
+    if diaSemana == 4:
+        if diaNotificacion.viernes:
             return True
         else:
             return False
-    if diaSemana == 6:
+    if diaSemana == 5:
         if diaNotificacion.sabado:
             return True
         else:
             return False
-    if diaSemana == 7:
+    if diaSemana == 6:
         if diaNotificacion.domingo:
             return True
         else:
@@ -49,4 +50,15 @@ def eventosNotificadosHoy(eventosQuery):
     for evento in eventosQuery:
         eventos[evento.id] = 'no_notificar'
     return eventos
+
+
+def restarDiasHabiles(Fnotif, diasAntelacion):
+    fecha_resultado = Fnotif
+    dias_hab_restados = 0
+    while dias_hab_restados < diasAntelacion:
+        fecha_resultado = fecha_resultado - timedelta(days=1)
+        if fecha_resultado.weekday() in range(5):
+            dias_hab_restados = dias_hab_restados + 1
+
+    return fecha_resultado
 

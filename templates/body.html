@@ -69,34 +69,48 @@
                 },
                 success: function (data) {
                     console.log(data);
+                    limpiarNotif()
+
+
                     // Vemos si hay nuevos ev para notificar
-                    for (let prop in data)
+                    for (let prop in data){
                         if (data[prop] === 'notificar') {
-                            toastr.info('¡Tiene una nueva notificación!');
+                            toastr.info('¡Tiene nuevas notificaciónes!');
                             iconNotif = iconNotif + 1;
-                        } else if (data[prop] === 'no_notificar_pendiente'){
-                            iconNotif = iconNotif + 1;
-                        } else if (data[prop] === 'no_notificar'){
-                            console.log("agregarmos notificacion a lista de notif")
                         }
-
-                        console.log("agregarmos notificacion a lista de notif")
-
-                    document.getElementById('cantNotifIcon').innerHTML = iconNotif;
+                        console.log(data.id);
+                        console.log(data['no_notificar']);
                     }
 
-
-
-
-
-
+                    document.getElementById('cantNotifIcon').innerHTML = iconNotif;
+                }
             });
         }
 
         function agregarNotif(id_evento){
+            var listaNotif = document.getElementById("listaNotif");
+            listaNotif.innerHTML = '';
+            var notifElement = '<div class="dropdown-divider"></div>'+'<a enventoRef='+'"'+ id_evento+'"' +'class="bg-info color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Nueva notificación sin leer!</a>';
+            listaNotif.insertAdjacentHTML('afterbegin', notifElement);
+        }
 
+        function limpiarNotif() {
+            var listaNotif = document.getElementById("listaNotif");
+            listaNotif.innerHTML = '';
+            var defaultElement = '<div class="dropdown-divider"></div> <a class="dropdown-item"><i class="fas fa-bell mr-2"></i>No hay nuevas notificaciones</a>';
+            listaNotif.insertAdjacentHTML('afterbegin', defaultElement);
         }
         // var actualizador = setInterval(nuevasNotif, 10000);
+    </script>
+
+    <script>
+        {#$('#fatherListElement').click(function limpiarNotif(){#}
+        {#    var listaNotif = document.getElementById("listaNotif");#}
+        {#    listaNotif.innerHTML = '';#}
+        {#    id_evento = 3;#}
+        {#    var notifElement = '<div class="dropdown-divider"></div>'+'<a enventoRef='+'"'+ id_evento+'"' +'class="bg-info color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Nueva notificación sin leer!</a>';#}
+        {#    listaNotif.insertAdjacentHTML('afterbegin', defaultElement);#}
+        {# }); #}
     </script>
     </body>
 {% endblock %}

@@ -1,5 +1,4 @@
-import datetime
-from datetime import timedelta
+from datetime import date, timedelta, datetime
 from apps.agenda.logicaNotificacion import *
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView, DeleteView, UpdateView
@@ -44,64 +43,64 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
 
         # Obtenemos eventos que se muesten en Sistema y su horario de notif sea cercano al actual (margen de 10 min)
         if action == 'get_news':
-            dia_hoy = datetime.date.today()
-            dia_notif = diasAvisoEvento.objects.all()
-            hora_actual = datetime.datetime.today()
-            rango = datetime.datetime.today() - timedelta(minutes=10)
+            print("hola")
             eventos = {}
 
-
-            evento_prueba = eventosAgenda.objects.get(pk=8)
-
-            diasHabRestados = 0
-            fechaNotifEvento = evento_prueba.fechaNotificacion
-            fechaResultado = dia_hoy
-            while diasHabRestados < dia_notif.diasAntelacion:
-                fechaResultado = fechaNotifEvento - timedelta(days=1)
-                if fechaResultado.weekday() in range(5):
-                    diasHabRestados = diasHabRestados + 1
+            dia_hoy = date.today()
+            hora_actual = datetime.today()
+            rango = datetime.today() - timedelta(minutes=10)
+            dias_aviso = diasAvisoEvento.objects.get(diasAntelacion__gte=0)
 
 
-
-
-        """
             # Si hoy es dìa de notificación, empezamos. Sino, no hacemos nada
-            if diaDeNotificacion(dia_hoy.weekday(), dia_notif[0]):
+            if diaDeNotificacion(dia_hoy.weekday(), dias_aviso):
                 tiposEventoSistema = tiposEvento.objects.filter(recordarSistema=True,
                                                                 horarioRecordatorio__range=(rango.time(),
                                                                                             hora_actual.time()))
+                print(tiposEventoSistema)
                 data = eventosAgenda.objects.filter(tipoEvento__in=tiposEventoSistema)
                 print(data)
-
                 # Si no hay eventos en este rango horario, traigo los que ya se notificaron hoy
                 if not data:
+                    print("no encontramos datos, no hacemos na")
                     eventos = eventosNotificadosHoy(eventosAgenda.objects.filter(ultimaNotificacionSist=dia_hoy))
+                    print(eventos)
                     return JsonResponse(eventos)
 
                 # Si hay eventos, los analizo
                 else:
+                    print("vamos al for")
                     for evento in data:
                         if evento.ultimaNotificacionSist == dia_hoy:
                             eventos[evento.id] = 'no_notificar'
                         else:
-                            if evento.vencido:
+                            if evento.vencido or evento.ultimaVistaNotifiSist:
+                                print("el evento está vencido o el usuario ya lo descartó")
                                 pass
                             else:
-                                if evento.cantNotifSistema >= dia_notif.diasAntelacion:
+                                if evento.cantNotifSistema >= dias_aviso.diasAntelacion:
                                     eventos[evento.id] = 'notificar_heavy'
                                     print("mensaje a telgram")
-                                    evento_instancia = eventosAgenda.objects.get(pk=evento.id)
-                                    evento_instancia.vencido = True
-                                    evento_instancia.save()
-                                if evento.cantNotifSistema < dia_notif.diasAntelacion:
+                                    evento.vencido = True
+                                    evento.save()
+                                if evento.cantNotifSistema < dias_aviso.diasAntelacion:
                                     if evento.ultimaNotificacionSist == dia_hoy:
                                         eventos[evento.id] = 'no_notificar'
+                                        print("no notificamos1")
                                     else:
+                                        if restarDiasHabiles(evento.fechaNotificacion, dias_aviso.diasAntelacion) <= dia_hoy:
+                                            eventos[evento.id] = 'notificar'
+                                            evento.ultimaNotificacionSist = date.today()
+                                            evento.cantNotifSistema = evento.cantNotifSistema + 1
+                                            evento.save()
+                                            print("notificamos")
 
-
-                print(eventos)
-        """
-
+                                        else:
+                                            evento[evento.id] = 'no_notificar'
+                                            print("no notificamos1")
+            else:
+                print("no es dia de notificacion")
+            return JsonResponse(eventos)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
