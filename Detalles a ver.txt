@@ -1,0 +1,9 @@
+*Presupuesto base se va a llamar Plantilla presupuesto
+
+*En plantilla presupuesto y presupuesto agregar opcion
+    para agregar producto y servicio por MODAL
+
+*En presupuesto quitar opcion eliminar, reemplazar por confirmación de trabajo
+
+*Pensar como hacer para optimizar el proceso de presupuesto ya confirmado de una.
+    CARGAR DESDE TRABAJO pero acceder a la plantilla BASE
