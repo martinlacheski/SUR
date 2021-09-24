@@ -396,10 +396,90 @@ $(function () {
         });
     });
 
+//------------------------------------MODAL Buscar PRODUCTOS----------------------------------------//
+
+    //Boton Buscar Productos Mostrar Modal
+    $('.btnSearchProductos').on('click', function () {
+        tablaSearchProductos = $('#tablaSearchProductos').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_all_productos',
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "subcategoria.nombre"},
+                {"data": "descripcion"},
+                {"data": "stockReal"},
+                {"data": "precioVenta"},
+                {"data": "id"},
+            ],
+            columnDefs: [
+                {
+                    targets: [-5, -4],
+                    class: 'text-center',
+                },
+                {
+                    targets: [-3],
+                    class: 'text-center',
+                    render: function (data, type, row) {
+                        if (row.stockReal > 0) {
+                            return '<span class="badge badge-success">' + data + '</span>'
+                        }
+                        return '<span class="badge badge-danger">' + data + '</span>'
+                    }
+                },
+                {
+                    targets: [-2],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '$' + parseFloat(data).toFixed(2);
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var buttons = '<a rel="addProducto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-plus"></i></a> ';
+                        return buttons;
+                    }
+                },
+            ],
+            initComplete: function (settings, json) {
+
+            }
+        });
+        $('#modalSearchProductos').modal('show');
+    });
+
+    $('#tablaSearchProductos tbody')
+        .on('click', 'a[rel="addProducto"]', function () {
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaSearchProductos.cell($(this).closest('td, li')).index();
+            //Asignamos a una variable el producto en base al renglon
+            var producto = tablaSearchProductos.row(tr.row).data();
+            producto.cantidad = 1;
+            producto.subtotal = 0.00;
+            compra.addProducto(producto);
+            //Una vez cargado el producto, sacamos del listado del Datatables
+            tablaSearchProductos.row($(this).parents('tr')).remove().draw();
+        });
+
 //------------------------------------MODAL PRODUCTOS----------------------------------------//
 
-    //Inicializamos los componentes
-
+    //Boton Agregar Producto Mostrar Modal
+    $('.btnAddProducto').on('click', function () {
+        $('#modalProducto').modal('show');
+    });
 
     //Inicializamos los campos de tipo TOUCHSPIN
     $("input[name='stockReal']").TouchSpin({
@@ -606,8 +686,8 @@ $(function () {
         });
     });
 
+//------------------------------------EVENTOS Tabla PRODUCTOS----------------------------------------//
 
-//------------------------------------EVENTOS PRODUCTOS----------------------------------------//
 //Buscar Productos
     $('input[name="searchProductos"]')
         .autocomplete({

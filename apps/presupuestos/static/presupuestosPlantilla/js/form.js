@@ -384,11 +384,94 @@ $(function () {
         });
     });
 
+//------------------------------------MODAL Buscar PRODUCTOS----------------------------------------//
+
+    //Boton Buscar Productos Mostrar Modal
+    $('.btnSearchProductos').on('click', function () {
+        tablaSearchProductos = $('#tablaSearchProductos').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_all_productos',
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "subcategoria.nombre"},
+                {"data": "descripcion"},
+                {"data": "stockReal"},
+                {"data": "precioVenta"},
+                {"data": "id"},
+            ],
+            columnDefs: [
+                {
+                    targets: [-5, -4],
+                    class: 'text-center',
+                },
+                {
+                    targets: [-3],
+                    class: 'text-center',
+                    render: function (data, type, row) {
+                        if (row.stockReal > 0) {
+                            return '<span class="badge badge-success">' + data + '</span>'
+                        }
+                        return '<span class="badge badge-danger">' + data + '</span>'
+                    }
+                },
+                {
+                    targets: [-2],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '$' + parseFloat(data).toFixed(2);
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var buttons = '<a rel="addProducto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-plus"></i></a> ';
+                        return buttons;
+                    }
+                },
+            ],
+            initComplete: function (settings, json) {
+
+            }
+        });
+        $('#modalSearchProductos').modal('show');
+    });
+
+    $('#tablaSearchProductos tbody')
+        .on('click', 'a[rel="addProducto"]', function () {
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaSearchProductos.cell($(this).closest('td, li')).index();
+            //Asignamos a una variable el producto en base al renglon
+            var producto = tablaSearchProductos.row(tr.row).data();
+            producto.cantidad = 1;
+            producto.subtotal = 0.00;
+            presupuesto.addProducto(producto);
+            //Una vez cargado el producto, sacamos del listado del Datatables
+            tablaSearchProductos.row($(this).parents('tr')).remove().draw();
+        });
+
 //------------------------------------MODAL PRODUCTOS----------------------------------------//
-    //Inicializamos SELECT2
-    $('.ivaProducto').select2({
-        theme: "bootstrap4",
-        language: 'es'
+
+    ///Boton Agregar Producto Mostrar Modal
+    $('.btnAddProducto').on('click', function () {
+        $('#modalProducto').modal('show');
+        //Inicializamos SELECT2
+        $('.ivaProducto').select2({
+            theme: "bootstrap4",
+            language: 'es'
+        });
     });
 
     //Inicializamos los campos de tipo TOUCHSPIN
@@ -586,7 +669,7 @@ $(function () {
         });
     });
 
-//------------------------------------EVENTOS PRODUCTOS----------------------------------------//
+//------------------------------------EVENTOS Tabla PRODUCTOS----------------------------------------//
 
     //Buscar Productos
     $('input[name="searchProductos"]')
@@ -642,6 +725,11 @@ $(function () {
                     //error_action('Error', 'No existe el producto con el código ingresado', function () {
                     confirm_action('Error', 'No existe el producto, ¿Desea registrarlo?', function () {
                         $('#modalProducto').modal('show');
+                        //Inicializamos SELECT2
+                        $('.ivaProducto').select2({
+                            theme: "bootstrap4",
+                            language: 'es'
+                        });
                         $('input[name="searchProductos"]').val('');
                         $('input[name="searchProductos"]').focus();
                     }, function () {
@@ -696,9 +784,82 @@ $(function () {
         });
     });
 
+//------------------------------------MODAL Buscar SERVICIOS----------------------------------------//
+
+    //Boton Buscar Servicios Mostrar Modal
+    $('.btnSearchServicios').on('click', function () {
+        tablaSearchServicios = $('#tablaSearchServicios').DataTable({
+            responsive: true,
+            autoWidth: false,
+            destroy: true,
+            deferRender: true,
+            ajax: {
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_all_servicios',
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "descripcion"},
+                {"data": "precioVenta"},
+                {"data": "id"},
+            ],
+            columnDefs: [
+                {
+                    targets: [-3],
+                    class: 'text-center',
+                },
+                {
+                    targets: [-2],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '$' + parseFloat(data).toFixed(2);
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        var buttons = '<a rel="addServicio" class="btn btn-success btn-xs btn-flat"><i class="fas fa-plus"></i></a> ';
+                        return buttons;
+                    }
+                },
+            ],
+            initComplete: function (settings, json) {
+
+            }
+        });
+        $('#modalSearchServicios').modal('show');
+    });
+
+    $('#tablaSearchServicios tbody')
+        .on('click', 'a[rel="addServicio"]', function () {
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaSearchServicios.cell($(this).closest('td, li')).index();
+            //Asignamos a una variable el servicio en base al renglon
+            var servicio = tablaSearchServicios.row(tr.row).data();
+            servicio.cantidad = 1;
+            servicio.subtotal = 0.00;
+            presupuesto.addServicio(servicio);
+            //Una vez cargado el producto, sacamos del listado del Datatables
+            tablaSearchServicios.row($(this).parents('tr')).remove().draw();
+        });
+
 //------------------------------------MODAL SERVICIOS----------------------------------------//
-    $("input[name='ivaServicio']").select2({
-        postfix: '%'
+
+    ///Boton Agregar Servicio Mostrar Modal
+    $('.btnAddServicio').on('click', function () {
+        $('#modalServicio').modal('show');
+        //Inicializamos SELECT2
+        $('.ivaServicio').select2({
+            theme: "bootstrap4",
+            language: 'es'
+        });
     });
 
     //Inicializamos los campos de tipo TOUCHSPIN
@@ -815,7 +976,7 @@ $(function () {
         });
     });
 
-//------------------------------------EVENTOS SERVICIOS----------------------------------------//
+//------------------------------------EVENTOS Tabla SERVICIOS----------------------------------------//
 // Buscar Servicios
     $('input[name="searchServicios"]').autocomplete({
         source: function (request, response) {
@@ -866,8 +1027,16 @@ $(function () {
                     $('input[name="searchServicios"]').val('');
                     $('input[name="searchServicios"]').focus();
                 } else {
-                    error_action('Error', 'No existe el servicio con el código ingresado', function () {
-                        //pass
+                    //error_action('Error', 'No existe el servicio con el código ingresado', function () {
+                    confirm_action('Error', 'No existe el servicio, ¿Desea registrarlo?', function () {
+                        $('#modalServicio').modal('show');
+                        //Inicializamos SELECT2
+                        $('.ivaServicio').select2({
+                            theme: "bootstrap4",
+                            language: 'es'
+                        });
+                        $('input[name="searchServicios"]').val('');
+                        $('input[name="searchServicios"]').focus();
                     }, function () {
                         $('input[name="searchServicios"]').val('');
                         $('input[name="searchServicios"]').focus();

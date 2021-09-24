@@ -99,6 +99,11 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     data['producto'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los productos
+            elif action == 'search_all_productos':
+                data = []
+                for i in Productos.objects.all():
+                    data.append(i.toJSON())
             # Buscamos el IVA para el MODAL de Productos
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
@@ -208,6 +213,11 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                     data['producto'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los productos
+            elif action == 'search_all_productos':
+                data = []
+                for i in Productos.objects.all():
+                    data.append(i.toJSON())
             elif action == 'get_detalle_productos':
                 data = []
                 try:

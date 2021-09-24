@@ -116,6 +116,12 @@
                                     </div>
                                 </div>
                                 <hr>
+                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
+                                        class="fas fa-search"></i> Buscar todos
+                                </button>
+                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddProducto"><i
+                                        class="fas fa-plus"></i> Agregar Producto
+                                </button>
                                 <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
                                     <i class="fas fa-trash"></i> Eliminar todos
                                 </button>
@@ -458,5 +464,35 @@
                 </div>
             </div>
         </form>
+    </div>
+    <!-- Modal Buscar PRODUCTOS -->
+    <div class="modal fade" id="modalSearchProductos" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <b><i class="fas fa-search"></i> Búsqueda de Productos</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover" id="tablaSearchProductos">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 30%;">Subcategoría</th>
+                            <th scope="col" style="width: 40%;">Producto</th>
+                            <th scope="col" style="width: 10%;">Stock</th>
+                            <th scope="col" style="width: 10%;">Precio</th>
+                            <th scope="col" style="width: 10%;">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

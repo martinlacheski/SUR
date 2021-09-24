@@ -103,6 +103,11 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     data['producto'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los productos
+            elif action == 'search_all_productos':
+                data = []
+                for i in Productos.objects.all():
+                    data.append(i.toJSON())
             # Buscamos los distintos servicios ingresando por teclado
             elif action == 'search_servicios':
                 data = []
@@ -124,6 +129,11 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los Servicios
+            elif action == 'search_all_servicios':
+                data = []
+                for i in Servicios.objects.all():
+                    data.append(i.toJSON())
             # Buscamos el IVA para el MODAL de Productos y Servicios
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
@@ -247,6 +257,11 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     data['producto'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los productos
+            elif action == 'search_all_productos':
+                data = []
+                for i in Productos.objects.all():
+                    data.append(i.toJSON())
             # Buscamos los distintos servicios ingresando por teclado
             elif action == 'search_servicios':
                 data = []
