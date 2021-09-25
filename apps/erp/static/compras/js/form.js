@@ -67,7 +67,7 @@ var compra = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.cantidad + '">';
+                        return '<input type="Text" name="cantidad" class="form-control form-control-sm input-sm text-center" autocomplete="off" value="' + row.cantidad + '">';
                     }
                 },
                 {
@@ -97,14 +97,6 @@ var compra = {
                     boostat: 5,
                     maxboostedstep: 10,
                 });
-                // $(row).find('input[name="costoProd"]').TouchSpin({
-                //     min: 1,
-                //     max: 1000000,
-                //     step: 0.1,
-                //     decimals: 2,
-                //     boostat: 5,
-                //     maxboostedstep: 10,
-                // });
             },
             initComplete: function (settings, json) {
 
@@ -140,6 +132,22 @@ function calcular_importes() {
     var percepcion = 0.00;
     //Recorremos el Array de productos para ir actualizando los importes
     $.each(compra.items.productos, function (pos, dict) {
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_precioProducto',
+                'pk': dict.id
+            },
+            dataType: 'json',
+            success: function (data) {
+                dict.costo = parseFloat(data);
+                //Actualizamos el precio del list
+                compra.items.productos[pos].costo = parseFloat(data);
+                console.log(compra.items.productos[pos].costo);
+            }
+        });
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.costo);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
@@ -597,7 +605,7 @@ $(function () {
         }
     }
 
-//Funcion para calcular el precio entre COSTO IVA y TOTAL
+    //Funcion para calcular el precio entre COSTO IVA y TOTAL
     function calcularUtilidad() {
         var id = $('select[name="iva"]').val();
         var iva = 0;
@@ -766,7 +774,31 @@ $(function () {
         }
     });
 
-// eventos tabla Productos
+//------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
+
+
+    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
+    function calcularPrecioActualizacion() {
+        var iva = $('input[name="actualizarIva"]').val();
+        var costo = $('input[name="actualizarCosto"]').val();
+        var utilidad = $('input[name="actualizarUtilidad"]').val();
+        utilidad = (utilidad / 100) + 1;
+        iva = (iva / 100) + 1;
+        var precio = (costo * utilidad * iva);
+        $('input[name="actualizarPrecioVenta"]').val(precio.toFixed(2));
+    }
+
+    //Funcion para calcular el precio entre COSTO IVA y TOTAL
+    function calcularUtilidadActualizacion() {
+        var iva = $('input[name="actualizarIva"]').val();
+        var costo = $('input[name="actualizarCosto"]').val();
+        var total = $('input[name="actualizarPrecioVenta"]').val();
+        iva = (iva / 100) + 1;
+        var precio = (((total / iva) / costo) - 1) * 100;
+        $('input[name="actualizarUtilidad"]').val(precio.toFixed(2));
+    }
+
+    // eventos tabla Productos
     $('#tablaProductos tbody')
         //Evento eliminar renglon del detalle
         .on('click', 'a[rel="remove"]', function () {
@@ -811,27 +843,115 @@ $(function () {
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
             //Asignamos a una variable el producto en base al renglon
             var prod = tablaProductos.row(tr.row).data();
-            console.log(prod);
-            console.log(prod.subcategoria.nombre);
-            console.log(prod.descripcion);
-            console.log(prod.costo);
-            console.log(prod.utilidad);
-            console.log(prod.iva.iva);
-            console.log(prod.precioVenta);
+
             //Cargamos los valores del Producto en el modal
-            $('#precioProductoSubcategoria').val(prod.subcategoria.nombre);
-            // $('input[name="precioProductoDescripcion"]').val(prod.descripcion);
-            $('#precioProductoDescripcion').val(prod.descripcion);
-            // $('input[name="precioProductoCosto"]').val(prod.costo);
-            $('#precioProductoCosto').val(prod.costo);
-            // $('input[name="precioProductoUtilidad"]').val(prod.utilidad);
-            $('#precioProductoUtilidad').val(prod.utilidad);
-            // $('select[name="precioProductoIva"]').val(prod.iva);
-            $('#precioProductoIva').val(prod.iva.iva);
-            // $('input[name="precioProductoPrecioVenta"]').val(prod.precioVenta);
-            $('#precioProductoPrecioVenta').val(prod.precioVenta);
+            $('input[name="idProductoUpdate"]').val(prod.id);   //INPUT HIDDEN ID PRODUCTO
+            $('input[name="actualizarSubcategoria"]').val(prod.subcategoria.nombre);
+            $('input[name="actualizarDescripcion"]').val(prod.descripcion);
+            $('input[name="actualizarCosto"]').val(prod.costo)
+                .TouchSpin({
+                    min: 0,
+                    max: 1000000,
+                    step: 0.1,
+                    decimals: 2,
+                    boostat: 5,
+                    maxboostedstep: 10,
+                    postfix: '$'
+                });
+            $('input[name="actualizarUtilidad"]').val(prod.utilidad)
+                .TouchSpin({
+                    min: 0,
+                    max: 1000,
+                    step: 0.1,
+                    decimals: 2,
+                    boostat: 5,
+                    maxboostedstep: 10,
+                    postfix: '%'
+                });
+            $('input[name="actualizarIva"]').val(prod.iva.iva);
+            $('input[name="actualizarPrecioVenta"]').val(prod.precioVenta)
+                .TouchSpin({
+                    min: 0,
+                    max: 1000000,
+                    step: 0.1,
+                    decimals: 2,
+                    boostat: 5,
+                    maxboostedstep: 10,
+                    postfix: '$'
+                });
             $('#modalPrecioProducto').modal('show');
+            //EN MODAL ACTUALIZAR PRECIO PRODUCTO
+            // Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD y Precio Venta)
+            $('input[name="actualizarCosto"]').on('change', function () {
+                calcularPrecioActualizacion();
+            });
+            $('input[name="actualizarUtilidad"]').on('change', function () {
+                calcularPrecioActualizacion();
+            });
+            $('input[name="actualizarPrecioVenta"]').on('change', function () {
+                calcularUtilidadActualizacion();
+            });
+
+
         });
+
+    //Funcion Mostrar Errores del Formulario Producto
+    function message_error_precio_producto(obj) {
+        var errorList = document.getElementById("errorListformPrecioProducto");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
+
+    //Creamos un nuevo Proveedor desde el Modal
+    $('#formPrecioProducto').on('submit', function (e) {
+        var id = $('input[name="idProductoUpdate"]').val();
+        var costo = $('input[name="actualizarCosto"]').val();
+        var utilidad = $('input[name="actualizarUtilidad"]').val();
+        var precioVenta = $('input[name="actualizarPrecioVenta"]').val();
+        e.preventDefault();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'action': 'update_precioProducto',
+                'pk': id,
+                'costo': costo,
+                'utilidad': utilidad,
+                'precioVenta': precioVenta
+            },
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                $('#modalPrecioProducto').modal('hide');
+
+                //Actualizamos el Listado
+                compra.listProductos();
+            } else {
+                message_error_precio_producto(data.error);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
 
 //Borrar desde el boton de busqueda de productos
     $('.btnClearSearchProductos').on('click', function () {

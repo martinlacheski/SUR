@@ -113,6 +113,18 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
+            # ACTUALIZACION DE PRECIO
+            elif action == 'update_precioProducto':
+                with transaction.atomic():
+                    producto = Productos.objects.get(id=request.POST['pk'])
+                    producto.costo = float(request.POST['costo'])
+                    producto.utilidad = float(request.POST['utilidad'])
+                    producto.precioVenta = float(request.POST['precioVenta'])
+                    producto.save()
+             # Buscamos el Precio del Producto luego de actualizar el precio
+            elif action == 'search_precioProducto':
+                producto = Productos.objects.get(id=request.POST['pk'])
+                data = producto.costo
             elif action == 'add':
                 with transaction.atomic():
                     formCompraRequest = json.loads(request.POST['compra'])
@@ -162,7 +174,6 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
         context['action'] = 'add'
         context['formProveedor'] = ProveedoresForm()
         context['formProducto'] = ProductosForm()
-        context['formPrecioProducto'] = ProductosForm()
         context['productos'] = Productos.objects.all()
         return context
 

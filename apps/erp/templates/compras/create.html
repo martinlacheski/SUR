@@ -130,9 +130,9 @@
                                     <thead>
                                     <tr>
                                         <th scope="col" style="width: 10%;">Eliminar</th>
-                                        <th scope="col" style="width: 50%;">Producto</th>
+                                        <th scope="col" style="width: 48%;">Producto</th>
                                         <th scope="col" style="width: 10%;">Costo</th>
-                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 12%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
                                         <th scope="col" style="width: 10%;">Actualizar</th>
                                     </tr>
@@ -511,21 +511,18 @@
                         </button>
                     </div>
                     <div class="modal-body">
+                        <input type="hidden" name="idProductoUpdate" value="">
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-6">
                                     <label>Subcategoría:</label>
                                     <br>
-
-                                        {{ formPrecioProducto.subcategoria|add_class:'form-control precioProductoSubcategoria'|attr:'readonly' }}
-
+                                    <input type="text" class="form-control" name="actualizarSubcategoria" readonly>
                                 </div>
                                 <div class="form-group col-6 mb-6">
                                     <label>Descripción:</label>
                                     <br>
-
-                                        {{ formPrecioProducto.descripcion|add_class:'form-control precioProductoDescripcion'|attr:'readonly' }}
-
+                                    <input type="text" class="form-control" name="actualizarDescripcion" readonly>
                                 </div>
                             </div>
                         </div>
@@ -533,30 +530,22 @@
                             <div class="col-3 mb-3">
                                 <label>Precio de Costo:</label>
                                 <br>
-
-                                    {{ formPrecioProducto.costo|add_class:'form-control precioProductoCosto'|attr:'autocomplete:off'|attr:'required:true' }}
-
+                                <input type="text" class="form-control" name="actualizarCosto" autocomplete="off">
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Margen de Utilidad:</label>
                                 <br>
-
-                                    {{ formPrecioProducto.utilidad|add_class:'form-control precioProductoUtilidad'|attr:'autocomplete:off'|attr:'required:true' }}
-
+                                <input type="text" class="form-control" name="actualizarUtilidad" autocomplete="off">
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Tipo de IVA:</label>
                                 <br>
-
-                                    {{ formPrecioProducto.iva|add_class:'form-control precioProductoIva'|attr:'autocomplete:off'|attr:'required:true' }}
-
+                                <input type="text" class="form-control" name="actualizarIva" readonly>
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Precio de Venta:</label>
                                 <br>
-
-                                    {{ formPrecioProducto.precioVenta|add_class:'form-control precioProductoPrecioVenta'|attr:'autocomplete:off'|attr:'required:true' }}
-
+                                <input type="text" class="form-control" name="actualizarPrecioVenta" autocomplete="off">
                             </div>
                         </div>
 
