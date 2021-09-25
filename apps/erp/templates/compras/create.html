@@ -516,12 +516,16 @@
                                 <div class="form-group col-6">
                                     <label>Subcategoría:</label>
                                     <br>
-                                    {{ formPrecioProducto.subcategoria|add_class:'form-control'|attr:'readonly' }}
+
+                                        {{ formPrecioProducto.subcategoria|add_class:'form-control precioProductoSubcategoria'|attr:'readonly' }}
+
                                 </div>
                                 <div class="form-group col-6 mb-6">
                                     <label>Descripción:</label>
                                     <br>
-                                    {{ formPrecioProducto.descripcion|add_class:'form-control'|attr:'readonly' }}
+
+                                        {{ formPrecioProducto.descripcion|add_class:'form-control precioProductoDescripcion'|attr:'readonly' }}
+
                                 </div>
                             </div>
                         </div>
@@ -529,28 +533,30 @@
                             <div class="col-3 mb-3">
                                 <label>Precio de Costo:</label>
                                 <br>
-                                <div class="col-12" class="form-control" id="costo" name="costo">
-                                    {{ formPrecioProducto.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                                </div>
+
+                                    {{ formPrecioProducto.costo|add_class:'form-control precioProductoCosto'|attr:'autocomplete:off'|attr:'required:true' }}
+
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Margen de Utilidad:</label>
                                 <br>
-                                <div class="col-12" class="form-control" id="utilidad" name="utilidad">
-                                    {{ formPrecioProducto.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                                </div>
+
+                                    {{ formPrecioProducto.utilidad|add_class:'form-control precioProductoUtilidad'|attr:'autocomplete:off'|attr:'required:true' }}
+
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Tipo de IVA:</label>
                                 <br>
-                                {{ formPrecioProducto.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+
+                                    {{ formPrecioProducto.iva|add_class:'form-control precioProductoIva'|attr:'autocomplete:off'|attr:'required:true' }}
+
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Precio de Venta:</label>
                                 <br>
-                                <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
-                                    {{ formPrecioProducto.precioVenta|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                                </div>
+
+                                    {{ formPrecioProducto.precioVenta|add_class:'form-control precioProductoPrecioVenta'|attr:'autocomplete:off'|attr:'required:true' }}
+
                             </div>
                         </div>
 

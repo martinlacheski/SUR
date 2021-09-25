@@ -807,18 +807,30 @@ $(function () {
             //Evento Editar Precio del Producto del detalle
         })
         .on('click', 'a[rel="update"]', function () {
-            //obtenemos la posicion del datatables
+            //Asignamos a una variable el renglon que necesitamos
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
-            //Ejecutar la Funcion de Confirmacion
+            //Asignamos a una variable el producto en base al renglon
+            var prod = tablaProductos.row(tr.row).data();
+            console.log(prod);
+            console.log(prod.subcategoria.nombre);
+            console.log(prod.descripcion);
+            console.log(prod.costo);
+            console.log(prod.utilidad);
+            console.log(prod.iva.iva);
+            console.log(prod.precioVenta);
+            //Cargamos los valores del Producto en el modal
+            $('#precioProductoSubcategoria').val(prod.subcategoria.nombre);
+            // $('input[name="precioProductoDescripcion"]').val(prod.descripcion);
+            $('#precioProductoDescripcion').val(prod.descripcion);
+            // $('input[name="precioProductoCosto"]').val(prod.costo);
+            $('#precioProductoCosto').val(prod.costo);
+            // $('input[name="precioProductoUtilidad"]').val(prod.utilidad);
+            $('#precioProductoUtilidad').val(prod.utilidad);
+            // $('select[name="precioProductoIva"]').val(prod.iva);
+            $('#precioProductoIva').val(prod.iva.iva);
+            // $('input[name="precioProductoPrecioVenta"]').val(prod.precioVenta);
+            $('#precioProductoPrecioVenta').val(prod.precioVenta);
             $('#modalPrecioProducto').modal('show');
-            // confirm_action('Confirmación', '¿Estas seguro de eliminar el registro?', function () {
-            //     //removemos la posicion del array con la cantidad de elementos a eliminar
-            //     compra.items.productos.splice(tr.row, 1);
-            //     //Actualizamos el Listado
-            //     compra.listProductos();
-            // }, function () {
-            // });
-        // })
         });
 
 //Borrar desde el boton de busqueda de productos

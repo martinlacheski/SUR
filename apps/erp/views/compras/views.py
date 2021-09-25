@@ -162,6 +162,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
         context['action'] = 'add'
         context['formProveedor'] = ProveedoresForm()
         context['formProducto'] = ProductosForm()
+        context['formPrecioProducto'] = ProductosForm()
         context['productos'] = Productos.objects.all()
         return context
 
