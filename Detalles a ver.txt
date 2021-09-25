@@ -1,6 +1,6 @@
-*En presupuesto quitar opcion eliminar, reemplazar por confirmación de trabajo
-
 *En Compra, Venta y Presupuestos poder modificar el precio del producto
+
+*En presupuesto quitar opcion eliminar, reemplazar por confirmación de trabajo
 
 *Pensar como hacer para optimizar el proceso de presupuesto ya confirmado de una.
     podria ser CARGAR DESDE TRABAJO pero acceder a la plantilla BASE

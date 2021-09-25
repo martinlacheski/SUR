@@ -42,6 +42,7 @@ var compra = {
                 {"data": "costo"},
                 {"data": "cantidad"},
                 {"data": "subtotal"},
+                {"data": "id"}, //Para el boton Actualizar
             ],
             columnDefs: [
                 {
@@ -53,16 +54,16 @@ var compra = {
                     }
                 },
                 {
-                    targets: [-3],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        // return '$' + parseFloat(data).toFixed(2);
-                        return '<input type="Text" name="costoProd" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.costo + '">';
+                        return '$' + parseFloat(data).toFixed(2);
+                        //return '<input type="Text" name="costoProd" class="form-control form-control-sm input-sm" autocomplete="off" value="' + row.costo + '">';
                     }
                 },
                 {
-                    targets: [-2],
+                    targets: [-3],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -70,11 +71,19 @@ var compra = {
                     }
                 },
                 {
-                    targets: [-1],
+                    targets: [-2],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         return '$' + parseFloat(data).toFixed(2);
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<a rel="update" class="btn btn-primary btn-xs btn-flat" style="color: white;" ><i class="fas fa-search"></i></a>';
                     }
                 },
             ],
@@ -88,14 +97,14 @@ var compra = {
                     boostat: 5,
                     maxboostedstep: 10,
                 });
-                $(row).find('input[name="costoProd"]').TouchSpin({
-                    min: 1,
-                    max: 1000000,
-                    step: 0.1,
-                    decimals: 2,
-                    boostat: 5,
-                    maxboostedstep: 10,
-                });
+                // $(row).find('input[name="costoProd"]').TouchSpin({
+                //     min: 1,
+                //     max: 1000000,
+                //     step: 0.1,
+                //     decimals: 2,
+                //     boostat: 5,
+                //     maxboostedstep: 10,
+                // });
             },
             initComplete: function (settings, json) {
 
@@ -686,7 +695,7 @@ $(function () {
         });
     });
 
-//------------------------------------EVENTOS Tabla PRODUCTOS----------------------------------------//
+//------------------------------------EVENTOS PRODUCTOS----------------------------------------//
 
 //Buscar Productos
     $('input[name="searchProductos"]')
@@ -795,6 +804,21 @@ $(function () {
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + compra.items.productos[tr.row].subtotal.toFixed(2));
+            //Evento Editar Precio del Producto del detalle
+        })
+        .on('click', 'a[rel="update"]', function () {
+            //obtenemos la posicion del datatables
+            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            //Ejecutar la Funcion de Confirmacion
+            $('#modalPrecioProducto').modal('show');
+            // confirm_action('Confirmación', '¿Estas seguro de eliminar el registro?', function () {
+            //     //removemos la posicion del array con la cantidad de elementos a eliminar
+            //     compra.items.productos.splice(tr.row, 1);
+            //     //Actualizamos el Listado
+            //     compra.listProductos();
+            // }, function () {
+            // });
+        // })
         });
 
 //Borrar desde el boton de busqueda de productos
