@@ -145,7 +145,6 @@ function calcular_importes() {
                 dict.costo = parseFloat(data);
                 //Actualizamos el precio del list
                 compra.items.productos[pos].costo = parseFloat(data);
-                console.log(compra.items.productos[pos].costo);
             }
         });
         dict.pos = pos;
@@ -591,7 +590,6 @@ $(function () {
             dataType: 'json',
             success: function (data) {
                 iva = (data.iva);
-                console.log(data.iva);
                 iva = (iva / 100) + 1;
                 if (iva > 0) {
                     var precio = (costo * utilidad * iva);
@@ -843,7 +841,6 @@ $(function () {
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
             //Asignamos a una variable el producto en base al renglon
             var prod = tablaProductos.row(tr.row).data();
-
             //Cargamos los valores del Producto en el modal
             $('input[name="idProductoUpdate"]').val(prod.id);   //INPUT HIDDEN ID PRODUCTO
             $('input[name="actualizarSubcategoria"]').val(prod.subcategoria.nombre);
@@ -891,8 +888,6 @@ $(function () {
             $('input[name="actualizarPrecioVenta"]').on('change', function () {
                 calcularUtilidadActualizacion();
             });
-
-
         });
 
     //Funcion Mostrar Errores del Formulario Producto
@@ -942,7 +937,7 @@ $(function () {
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
                 $('#modalPrecioProducto').modal('hide');
-
+                //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
                 //Actualizamos el Listado
                 compra.listProductos();
             } else {
