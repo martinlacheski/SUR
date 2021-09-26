@@ -1,3 +1,4 @@
+var renglon;
 var tablaProductos;
 var percepcionPorcentaje = 0.00;
 //Definimos una estructura en JS para crear la COMPRA
@@ -83,7 +84,7 @@ var compra = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<a rel="update" class="btn btn-primary btn-xs btn-flat" style="color: white;" ><i class="fas fa-search"></i></a>';
+                        return '<a rel="update" class="btn btn-warning btn-xs btn-flat" style="color: black;" ><i class="fas fa-edit"></i></a>';
                     }
                 },
             ],
@@ -774,7 +775,6 @@ $(function () {
 
 //------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
 
-
     //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
     function calcularPrecioActualizacion() {
         var iva = $('input[name="actualizarIva"]').val();
@@ -834,11 +834,13 @@ $(function () {
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + compra.items.productos[tr.row].subtotal.toFixed(2));
-            //Evento Editar Precio del Producto del detalle
+
         })
+        //Evento Editar Precio del Producto del detalle
         .on('click', 'a[rel="update"]', function () {
             //Asignamos a una variable el renglon que necesitamos
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            renglon = tr.row;
             //Asignamos a una variable el producto en base al renglon
             var prod = tablaProductos.row(tr.row).data();
             //Cargamos los valores del Producto en el modal
@@ -877,6 +879,8 @@ $(function () {
                     postfix: '$'
                 });
             $('#modalPrecioProducto').modal('show');
+
+
             //EN MODAL ACTUALIZAR PRECIO PRODUCTO
             // Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD y Precio Venta)
             $('input[name="actualizarCosto"]').on('change', function () {
@@ -889,29 +893,6 @@ $(function () {
                 calcularUtilidadActualizacion();
             });
         });
-
-    //Funcion Mostrar Errores del Formulario Producto
-    function message_error_precio_producto(obj) {
-        var errorList = document.getElementById("errorListformPrecioProducto");
-        errorList.innerHTML = '';
-        if (typeof (obj) === 'object') {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            $.each(obj, function (key, value) {
-                var li = document.createElement("li");
-                li.innerText = key + ': ' + value;
-                errorList.appendChild(li);
-            });
-        } else {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            var li = document.createElement("li");
-            li.innerText = obj;
-            errorList.appendChild(li);
-        }
-    }
 
     //Creamos un nuevo Proveedor desde el Modal
     $('#formPrecioProducto').on('submit', function (e) {
@@ -936,17 +917,48 @@ $(function () {
             },
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
-                $('#modalPrecioProducto').modal('hide');
-                //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
                 //Actualizamos el Listado
+                calcular_importes();
                 compra.listProductos();
+                $('#modalPrecioProducto').modal('hide');
+
             } else {
                 message_error_precio_producto(data.error);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
         });
+        //Asignamos a una variable el producto en base al renglon
+        var prod = compra.items.productos[renglon];
+        //actualizamos el costo y subtotal del producto en el array
+        prod.costo = costo;
+        prod.subtotal = costo * prod.cantidad;
+        //Actualizamos el valor del renglon del Datatables
+        tablaProductos.row(renglon).data(prod).draw();
     });
+
+    //Funcion Mostrar Errores del Formulario Producto
+    function message_error_precio_producto(obj) {
+        var errorList = document.getElementById("errorListformPrecioProducto");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
 
 //Borrar desde el boton de busqueda de productos
     $('.btnClearSearchProductos').on('click', function () {
