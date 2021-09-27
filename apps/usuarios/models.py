@@ -46,7 +46,7 @@ class Usuarios(AbstractUser):
     def toJSON(self):
         item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups'])
         try:
-            item['fechaIngreso'] = self.fechaIngreso.strftime('%dd/%MM/%yyyy')
+            item['fechaIngreso'] = self.fechaIngreso.strftime('%dd-%MM-%yyyy')
         except:
             pass
         try:

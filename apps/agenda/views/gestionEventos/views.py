@@ -73,16 +73,20 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
                         if evento.ultimaNotificacionSist == dia_hoy and (not evento.resuelto):
                             # print("entra acá")
                             if evento.ultimaVistaNotifiSist == dia_hoy:
+                                print("entro acá")
                                 eventos[evento.id] = ['no_notificar', str(evento.tipoEvento)]
                                 # print("entra acá1")
                             else:
+                                print("entro acá1")
                                 eventos[evento.id] = ['no_notificar_pendiente', str(evento.tipoEvento)]
                                 # print("entra acá2")
                         else:
                             if evento.vencido or evento.resuelto:
+                                print("entro acá3")
                                 # Mantenemos notificación de ev vencido el día de hoy
                                 if evento.vencido and evento.fechaNotificacion == dia_hoy and (not evento.resuelto):
                                     eventos[evento.id] = ['no_notificar', str(evento.tipoEvento)]
+                                    print("entro acá4")
 
                                 print("el evento está vencido o el usuario ya lo descartó")
                                 pass

@@ -143,6 +143,7 @@
                     // Vemos si hay nuevos ev para notificar
                     listaNotif.innerHTML = '';
                     for (let prop in data){
+                        console.log(data)
                         // Notificaciones que, valga al redundancia, van a ser notificadas
                         if (data[prop][0] === 'notificar') {
                             toastr.info('¡Tiene nuevas notificaciónes!');
@@ -160,7 +161,6 @@
                         }
                         else if (data[prop][0] === 'notificar_heavy') {
                             toastr.error('¡Tiene una nueva notificación URGENTE!');
-                            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand bg-danger color-palette navbar-light');
                             agregarNotifUrgente(prop, data[prop][1]);
                             mostrarIcon();
                         }
@@ -178,6 +178,7 @@
         }
 
         function agregarNotifUrgente(id_evento, tipo_evento){
+            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand bg-danger color-palette navbar-light');
             var listaNotif = document.getElementById("listaNotif");
             var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" eventoRef='+'"'+ id_evento+'"' +'class="elementoNotificacion bg-danger color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Recuerde! Evento de tipo ' + tipo_evento + '</a>';
             listaNotif.insertAdjacentHTML('afterbegin', notifElement);
@@ -208,7 +209,7 @@
             iconNotif.insertAdjacentHTML('afterbegin', iconElement);
         }
 
-         var actualizador = setInterval(nuevasNotif, 10000);
+        var actualizador = setInterval(nuevasNotif, 20000);
     </script>
 
     <script>
