@@ -773,29 +773,6 @@ $(function () {
         }
     });
 
-//------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
-
-    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
-    function calcularPrecioActualizacion() {
-        var iva = $('input[name="actualizarIva"]').val();
-        var costo = $('input[name="actualizarCosto"]').val();
-        var utilidad = $('input[name="actualizarUtilidad"]').val();
-        utilidad = (utilidad / 100) + 1;
-        iva = (iva / 100) + 1;
-        var precio = (costo * utilidad * iva);
-        $('input[name="actualizarPrecioVenta"]').val(precio.toFixed(2));
-    }
-
-    //Funcion para calcular el precio entre COSTO IVA y TOTAL
-    function calcularUtilidadActualizacion() {
-        var iva = $('input[name="actualizarIva"]').val();
-        var costo = $('input[name="actualizarCosto"]').val();
-        var total = $('input[name="actualizarPrecioVenta"]').val();
-        iva = (iva / 100) + 1;
-        var precio = (((total / iva) / costo) - 1) * 100;
-        $('input[name="actualizarUtilidad"]').val(precio.toFixed(2));
-    }
-
     // eventos tabla Productos
     $('#tablaProductos tbody')
         //Evento eliminar renglon del detalle
@@ -824,7 +801,7 @@ $(function () {
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + compra.items.productos[tr.row].subtotal.toFixed(2));
         })
         //evento cambiar renglon (cantidad) del detalle
-        .on('change', 'input[name="costoProd"]', function () {
+        /*.on('change', 'input[name="costoProd"]', function () {
             //asignamos a una variable el costo, en la posicion actual
             var costo = parseFloat($(this).val());
             //Obtenemos la posicion del elemento a modificar dentro del Datatables
@@ -834,8 +811,7 @@ $(function () {
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + compra.items.productos[tr.row].subtotal.toFixed(2));
-
-        })
+        })*/
         //Evento Editar Precio del Producto del detalle
         .on('click', 'a[rel="update"]', function () {
             //Asignamos a una variable el renglon que necesitamos
@@ -880,7 +856,6 @@ $(function () {
                 });
             $('#modalPrecioProducto').modal('show');
 
-
             //EN MODAL ACTUALIZAR PRECIO PRODUCTO
             // Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD y Precio Venta)
             $('input[name="actualizarCosto"]').on('change', function () {
@@ -894,47 +869,74 @@ $(function () {
             });
         });
 
-    //Creamos un nuevo Proveedor desde el Modal
-    $('#formPrecioProducto').on('submit', function (e) {
-        var id = $('input[name="idProductoUpdate"]').val();
+//------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
+
+    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
+    function calcularPrecioActualizacion() {
+        var iva = $('input[name="actualizarIva"]').val();
         var costo = $('input[name="actualizarCosto"]').val();
         var utilidad = $('input[name="actualizarUtilidad"]').val();
-        var precioVenta = $('input[name="actualizarPrecioVenta"]').val();
-        e.preventDefault();
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: {
-                'action': 'update_precioProducto',
-                'pk': id,
-                'costo': costo,
-                'utilidad': utilidad,
-                'precioVenta': precioVenta
-            },
-            dataType: 'json',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-        }).done(function (data) {
-            if (!data.hasOwnProperty('error')) {
-                //Actualizamos el Listado
-                calcular_importes();
-                compra.listProductos();
-                $('#modalPrecioProducto').modal('hide');
+        utilidad = (utilidad / 100) + 1;
+        iva = (iva / 100) + 1;
+        var precio = (costo * utilidad * iva);
+        $('input[name="actualizarPrecioVenta"]').val(precio.toFixed(2));
+    }
 
-            } else {
-                message_error_precio_producto(data.error);
-            }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-        }).always(function (data) {
+    //Funcion para calcular el precio entre COSTO IVA y TOTAL
+    function calcularUtilidadActualizacion() {
+        var iva = $('input[name="actualizarIva"]').val();
+        var costo = $('input[name="actualizarCosto"]').val();
+        var total = $('input[name="actualizarPrecioVenta"]').val();
+        iva = (iva / 100) + 1;
+        var precio = (((total / iva) / costo) - 1) * 100;
+        $('input[name="actualizarUtilidad"]').val(precio.toFixed(2));
+    }
+
+    //Actualizamos el precio del PRODUCTO desde el Modal
+    $('#formPrecioProducto').on('submit', function (e) {
+        e.preventDefault();
+        confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+            var id = $('input[name="idProductoUpdate"]').val();
+            var costo = $('input[name="actualizarCosto"]').val();
+            var utilidad = $('input[name="actualizarUtilidad"]').val();
+            var precioVenta = $('input[name="actualizarPrecioVenta"]').val();
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'update_precioProducto',
+                    'pk': id,
+                    'costo': costo,
+                    'utilidad': utilidad,
+                    'precioVenta': precioVenta
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Actualizamos el Listado
+                    calcular_importes();
+                    compra.listProductos();
+                    $('#modalPrecioProducto').modal('hide');
+
+                } else {
+                    message_error_precio_producto(data.error);
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+            });
+            //Asignamos a una variable el producto en base al renglon
+            var prod = compra.items.productos[renglon];
+            //actualizamos el costo y subtotal del producto en el array
+            prod.costo = costo;
+            prod.subtotal = costo * prod.cantidad;
+            //Actualizamos el valor del renglon del Datatables
+            tablaProductos.row(renglon).data(prod).draw();
+        }, function () {
+            //pass
         });
-        //Asignamos a una variable el producto en base al renglon
-        var prod = compra.items.productos[renglon];
-        //actualizamos el costo y subtotal del producto en el array
-        prod.costo = costo;
-        prod.subtotal = costo * prod.cantidad;
-        //Actualizamos el valor del renglon del Datatables
-        tablaProductos.row(renglon).data(prod).draw();
     });
 
     //Funcion Mostrar Errores del Formulario Producto

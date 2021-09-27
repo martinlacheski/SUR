@@ -79,8 +79,14 @@ class Proveedores(models.Model):
         item = model_to_dict(self)
         item['condicionIVA'] = self.condicionIVA.toJSON()
         item['localidad'] = self.localidad.toJSON()
-        item['tipoPercepcion'] = self.tipoPercepcion.toJSON()
-        item['condicionPago'] = self.condicionPago.toJSON()
+        try:
+            item['tipoPercepcion'] = self.tipoPercepcion.toJSON()
+        except:
+            pass
+        try:
+            item['condicionPago'] = self.condicionPago.toJSON()
+        except:
+            pass
         return item
 
     class Meta:

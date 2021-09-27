@@ -148,6 +148,31 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
                     data = formServicio.save()
+            # Actualizacion de Precio PRODUCTO
+            elif action == 'update_precioProducto':
+                with transaction.atomic():
+                    producto = Productos.objects.get(id=request.POST['pk'])
+                    producto.costo = float(request.POST['costo'])
+                    producto.utilidad = float(request.POST['utilidad'])
+                    producto.precioVenta = float(request.POST['precioVenta'])
+                    producto.save()
+            # Buscamos el Precio del Producto luego de actualizar el precio
+            elif action == 'search_precioProducto':
+                producto = Productos.objects.get(id=request.POST['pk'])
+                data['costo'] = producto.costo
+                data['precioVenta'] = producto.precioVenta
+            # Actualizacion de Precio SERVICIO
+            elif action == 'update_precioServicio':
+                with transaction.atomic():
+                    servicio = Servicios.objects.get(id=request.POST['pk'])
+                    servicio.costo = float(request.POST['costo'])
+                    servicio.precioVenta = float(request.POST['precioVenta'])
+                    servicio.save()
+            # Buscamos el Precio del Servicio luego de actualizar el precio
+            elif action == 'search_precioServicio':
+                servicio = Servicios.objects.get(id=request.POST['pk'])
+                data['costo'] = servicio.costo
+                data['precioVenta'] = servicio.precioVenta
             elif action == 'add':
                 with transaction.atomic():
                     formVentaRequest = json.loads(request.POST['venta'])
@@ -317,6 +342,31 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
                     data = formServicio.save()
+            # Actualizacion de Precio PRODUCTO
+            elif action == 'update_precioProducto':
+                with transaction.atomic():
+                    producto = Productos.objects.get(id=request.POST['pk'])
+                    producto.costo = float(request.POST['costo'])
+                    producto.utilidad = float(request.POST['utilidad'])
+                    producto.precioVenta = float(request.POST['precioVenta'])
+                    producto.save()
+            # Buscamos el Precio del Producto luego de actualizar el precio
+            elif action == 'search_precioProducto':
+                producto = Productos.objects.get(id=request.POST['pk'])
+                data['costo'] = producto.costo
+                data['precioVenta'] = producto.precioVenta
+            # Actualizacion de Precio SERVICIO
+            elif action == 'update_precioServicio':
+                with transaction.atomic():
+                    servicio = Servicios.objects.get(id=request.POST['pk'])
+                    servicio.costo = float(request.POST['costo'])
+                    servicio.precioVenta = float(request.POST['precioVenta'])
+                    servicio.save()
+            # Buscamos el Precio del Servicio luego de actualizar el precio
+            elif action == 'search_precioServicio':
+                servicio = Servicios.objects.get(id=request.POST['pk'])
+                data['costo'] = servicio.costo
+                data['precioVenta'] = servicio.precioVenta
             elif action == 'edit':
                 with transaction.atomic():
                     formVentaRequest = json.loads(request.POST['venta'])
