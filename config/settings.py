@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.usuarios',
     'apps.erp',
     'apps.presupuestos',
+    'apps.trabajos',
     'apps.agenda'
 ]
 
