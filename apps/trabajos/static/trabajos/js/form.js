@@ -2,19 +2,23 @@ var renglon;
 var tablaProductos;
 var tablaServicios;
 var percepcionPorcentaje = 0.00;
-//Definimos una estructura en JS para crear el PRESUPUESTO
-var presupuesto = {
+//Definimos una estructura en JS para crear el TRABAJO
+var trabajo = {
     items: {
         usuario: '',
-        fecha: '',
-        validez: '',
+        fichaTrabajo: '',
+        fechaEntrada: '',
+        fechaSalida: '',
         cliente: '',
         modelo: '',
-        observaciones: '',
+        usuarioAsignado: '',
         subtotal: 0.00,
         iva: 0.00,
         percepcion: 0.00,
         total: 0.00,
+        prioridad: '',
+        estadoTrabajo: '',
+        observaciones: '',
         //detalle de productos
         productos: [],
         //detalle de servicios
@@ -44,7 +48,7 @@ var presupuesto = {
             lengthMenu: [25, 50, 75, 100],
             autoWidth: false,
             destroy: true,
-            data: presupuesto.items.productos,
+            data: trabajo.items.productos,
             columns: [
                 {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
@@ -52,6 +56,7 @@ var presupuesto = {
                 {"data": "cantidad"},
                 {"data": "subtotal"},
                 {"data": "id"}, //Para el boton actualizar
+                {"data": "id"}, //Para el boton Observaciones
             ],
             columnDefs: [
                 {
@@ -63,7 +68,7 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-4],
+                    targets: [-5],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -71,7 +76,7 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-3],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -79,7 +84,7 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-2],
+                    targets: [-3],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -87,11 +92,19 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-1],
+                    targets: [-2],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         return '<a rel="update" class="btn btn-warning btn-xs btn-flat" style="color: black;" ><i class="fas fa-edit"></i></a>';
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<a rel="observaciones" class="btn btn-info btn-xs btn-flat" style="color: black;" ><i class="fas fa-search"></i></a>';
                     }
                 },
             ],
@@ -134,6 +147,7 @@ var presupuesto = {
                 {"data": "cantidad"},
                 {"data": "subtotal"},
                 {"data": "id"}, //Para el boton actualizar
+                {"data": "id"}, //Para el boton observaciones
             ],
             columnDefs: [
                 {
@@ -145,7 +159,7 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-4],
+                    targets: [-5],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -153,7 +167,7 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-3],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -161,7 +175,7 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-2],
+                    targets: [-3],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -169,11 +183,19 @@ var presupuesto = {
                     }
                 },
                 {
-                    targets: [-1],
+                    targets: [-2],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         return '<a rel="update" class="btn btn-warning btn-xs btn-flat" style="color: black;" ><i class="fas fa-edit"></i></a>';
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return '<a rel="observaciones" class="btn btn-info btn-xs btn-flat" style="color: black;" ><i class="fas fa-search"></i></a>';
                     }
                 },
             ],
@@ -222,7 +244,7 @@ function calcular_importes() {
     var subtotalProductos = 0.00;
     var subtotalServicios = 0.00;
     //Recorremos el Array de productos para ir actualizando los importes
-    $.each(presupuesto.items.productos, function (pos, dict) {
+    $.each(trabajo.items.productos, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
@@ -230,7 +252,7 @@ function calcular_importes() {
         subtotal += dict.subtotal;
     });
     //Recorremos el Array de servicios para ir actualizando los importes
-    $.each(presupuesto.items.servicios, function (pos, dict) {
+    $.each(trabajo.items.servicios, function (pos, dict) {
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
@@ -239,21 +261,21 @@ function calcular_importes() {
     });
 
     //Asignamos los valores a los campos
-    presupuesto.items.subtotal = subtotal - ivaCalculado;
-    presupuesto.items.iva = ivaCalculado;
-    presupuesto.items.percepcion = percepcion;
+    trabajo.items.subtotal = subtotal - ivaCalculado;
+    trabajo.items.iva = ivaCalculado;
+    trabajo.items.percepcion = percepcion;
     if (percepcionPorcentaje > 0) {
-        presupuesto.items.percepcion = presupuesto.items.subtotal * (percepcionPorcentaje / 100);
-        presupuesto.items.total = presupuesto.items.subtotal + presupuesto.items.iva + presupuesto.items.percepcion;
+        trabajo.items.percepcion = trabajo.items.subtotal * (percepcionPorcentaje / 100);
+        trabajo.items.total = trabajo.items.subtotal + trabajo.items.iva + trabajo.items.percepcion;
     } else {
-        presupuesto.items.percepcion = percepcion;
-        presupuesto.items.total = presupuesto.items.subtotal + presupuesto.items.iva;
+        trabajo.items.percepcion = percepcion;
+        trabajo.items.total = trabajo.items.subtotal + trabajo.items.iva;
     }
     $('input[name="subtotalProductos"]').val(subtotalProductos.toFixed(2));
     $('input[name="subtotalServicios"]').val(subtotalServicios.toFixed(2));
-    $('input[name="iva"]').val(presupuesto.items.iva.toFixed(2));
-    $('input[name="percepcion"]').val(presupuesto.items.percepcion.toFixed(2));
-    $('input[name="total"]').val(presupuesto.items.total.toFixed(2));
+    $('input[name="iva"]').val(trabajo.items.iva.toFixed(2));
+    $('input[name="percepcion"]').val(trabajo.items.percepcion.toFixed(2));
+    $('input[name="total"]').val(trabajo.items.total.toFixed(2));
 };
 
 //Funcion para buscar la percepcion del cliente
@@ -275,19 +297,11 @@ function searchPercepcion() {
 };
 
 $(document).ready(function () {
+    $('select[name="marca"]').val(null).trigger('change');
     //Inicializamos los Select2
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'
-    });
-
-    //Inicializamos los campos de tipo TOUCHSPIN
-    $("input[name='validez']").TouchSpin({
-        min: 1,
-        max: 1000000,
-        step: 1,
-        boostat: 5,
-        maxboostedstep: 10,
     });
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
@@ -304,17 +318,27 @@ $(document).ready(function () {
         $('input[name="searchProductos"]').attr('disabled', true);
         $('input[name="searchServicios"]').attr('disabled', true);
         //Inicialización de datetimepicker
-        $('#fecha').datetimepicker({
+        $('#fechaEntrada').datetimepicker({
             format: 'DD-MM-YYYY',
             date: moment(),
             locale: 'es',
             maxDate: moment(),
         });
+        // $('#fechaSalida').datetimepicker({
+        //     format: 'DD-MM-YYYY',
+        //     date: moment(),
+        //     locale: 'es',
+        //     maxDate: moment(),
+        // });
     } else {
-        $('#fecha').datetimepicker({
+        $('#fechaEntrada').datetimepicker({
             format: 'DD-MM-YYYY',
             locale: 'es',
         });
+        // $('#fechaSalida').datetimepicker({
+        //     format: 'DD-MM-YYYY',
+        //     locale: 'es',
+        // });
         //Buscamos si el cliente tiene percepcion
         searchPercepcion();
         //Buscamos el detalle de los productos por ajax
@@ -328,9 +352,9 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 //asignamos el detalle a la estructura
-                presupuesto.items.productos = data;
+                trabajo.items.productos = data;
                 //actualizamos el listado de productos
-                presupuesto.listProductos();
+                trabajo.listProductos();
             }
         });
         //Buscamos el detalle de los servicios por ajax
@@ -344,9 +368,9 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (data) {
                 //asignamos el detalle a la estructura
-                presupuesto.items.servicios = data;
+                trabajo.items.servicios = data;
                 //actualizamos el listado de productos
-                presupuesto.listServicios();
+                trabajo.listServicios();
             }
         });
     }
@@ -385,41 +409,18 @@ $(function () {
     });
 
     //Verificamos que la fecha no sea mayor a la actual
-    $('input[name="fecha"]').on('blur', function () {
-        var fecha = $('input[name="fecha"]').val();
+    $('input[name="fechaEntrada"]').on('blur', function () {
+        var fecha = $('input[name="fechaEntrada"]').val();
         var now = moment().format('DD-MM-YYYY');
         if (fecha > now) {
-            error_action('Error', 'La fecha de venta no puede ser superior a la actual', function () {
+            error_action('Error', 'La fecha de entrada no puede ser superior a la actual', function () {
                 //pass
             }, function () {
-                $('input[name="fecha"]').val(moment().format('DD-MM-YYYY'));
+                $('input[name="fechaEntrada"]').val(moment().format('DD-MM-YYYY'));
             });
 
         }
     });
-
-    //Funcion Mostrar Errores del Formulario
-    function message_error(obj, errorList) {
-        errorList.innerHTML = '';
-        if (typeof (obj) === 'object') {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            $.each(obj, function (key, value) {
-                var li = document.createElement("li");
-                li.innerText = key + ': ' + value;
-                errorList.appendChild(li);
-            });
-        } else {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            var li = document.createElement("li");
-            li.innerText = obj;
-            errorList.appendChild(li);
-
-        }
-    }
 
 //----------------------Seleccionamos un MODELO-----------------------------//
     $('select[name="modelo"]').on('change', function () {
@@ -433,7 +434,7 @@ $(function () {
         }
     });
 
-//Select Anidado (Seleccionamos MODELO y cargamos los MODELOS de dicha MARCA)
+    //Select Anidado (Seleccionamos MODELO y cargamos los MODELOS de dicha MARCA)
     var select_modelos = $('select[name="modelo"]');
     $('.selectMarca').on('change', function () {
         var id = $(this).val();
@@ -464,7 +465,7 @@ $(function () {
         });
     });
 
-//Select Anidado (Seleccionamos MODELO y cargamos las PLANTILLAS DE DICHO PRESUPUESTO)
+//Select Anidado (Seleccionamos MODELO y cargamos las PLANTILLAS DE DICHO TRABAJO)
     var select_plantillas = $('select[name="selectPlantilla"]');
     $('.selectModelo').on('change', function () {
         var id = $(this).val();
@@ -495,7 +496,7 @@ $(function () {
         });
     });
 
-//Cargamos al detalle de productos y servicios los datos de la PLANTILLA
+    //Cargamos al detalle de productos y servicios los datos de la PLANTILLA
     $('.selectPlantilla').on('change', function () {
         var id = $(this).val();
         if (id === '') {
@@ -513,9 +514,9 @@ $(function () {
                 dataType: 'json',
                 success: function (data) {
                     //asignamos el detalle a la estructura
-                    presupuesto.items.productos = data;
+                    trabajo.items.productos = data;
                     //actualizamos el listado de productos
-                    presupuesto.listProductos();
+                    trabajo.listProductos();
                 }
             });
             //Buscamos el detalle de los servicios por ajax
@@ -530,9 +531,9 @@ $(function () {
                 dataType: 'json',
                 success: function (data) {
                     //asignamos el detalle a la estructura
-                    presupuesto.items.servicios = data;
+                    trabajo.items.servicios = data;
                     //actualizamos el listado de productos
-                    presupuesto.listServicios();
+                    trabajo.listServicios();
                 }
             });
         }
@@ -747,7 +748,7 @@ $(function () {
         });
         $('#modalSearchProductos').modal('show');
     });
-    //Agregamos el Producto al Presupuesto
+    //Agregamos el Producto al Trabajo
     $('#tablaSearchProductos tbody')
         .on('click', 'a[rel="addProducto"]', function () {
             //Asignamos a una variable el renglon que necesitamos
@@ -756,7 +757,7 @@ $(function () {
             var producto = tablaSearchProductos.row(tr.row).data();
             producto.cantidad = 1;
             producto.subtotal = 0.00;
-            presupuesto.addProducto(producto);
+            trabajo.addProducto(producto);
             //Una vez cargado el producto, sacamos del listado del Datatables
             tablaSearchProductos.row($(this).parents('tr')).remove().draw();
         });
@@ -996,7 +997,7 @@ $(function () {
                 event.preventDefault();
                 ui.item.cantidad = 1;
                 ui.item.subtotal = 0.00;
-                presupuesto.addProducto(ui.item);
+                trabajo.addProducto(ui.item);
                 $(this).val('');
             },
         }).on('keydown', function (evt) {
@@ -1018,7 +1019,7 @@ $(function () {
                     var item = (data.producto);
                     item.cantidad = 1;
                     item.subtotal = 0.00;
-                    presupuesto.addProducto(item);
+                    trabajo.addProducto(item);
                     $('input[name="searchProductos"]').val('');
                     $('input[name="searchProductos"]').focus();
                 } else {
@@ -1048,13 +1049,13 @@ $(function () {
     });
     //Borrar todos los productos
     $('.btnRemoveAllProductos').on('click', function () {
-        if (presupuesto.items.productos.length === 0) return false;
+        if (trabajo.items.productos.length === 0) return false;
         //Ejecutar la Funcion de Confirmacion
         confirm_action('Confirmación', '¿Estas seguro de eliminar todos los registros?', function () {
             //removemos el listado de productos
-            presupuesto.items.productos = [];
+            trabajo.items.productos = [];
             //Actualizamos el Listado
-            presupuesto.listProductos();
+            trabajo.listProductos();
         }, function () {
         });
     });
@@ -1067,9 +1068,9 @@ $(function () {
             //Ejecutar la Funcion de Confirmacion
             confirm_action('Confirmación', '¿Estas seguro de eliminar el registro?', function () {
                 //removemos la posicion del array con la cantidad de elementos a eliminar
-                presupuesto.items.productos.splice(tr.row, 1);
+                trabajo.items.productos.splice(tr.row, 1);
                 //Actualizamos el Listado
-                presupuesto.listProductos();
+                trabajo.listProductos();
             }, function () {
             });
         })
@@ -1079,11 +1080,11 @@ $(function () {
             var cant = parseInt($(this).val());
             //Obtenemos la posicion del elemento a modificar dentro del Datatables
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
-            presupuesto.items.productos[tr.row].cantidad = cant;
+            trabajo.items.productos[tr.row].cantidad = cant;
             //Actualizamos los importes
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
-            $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + presupuesto.items.productos[tr.row].subtotal.toFixed(2));
+            $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + trabajo.items.productos[tr.row].subtotal.toFixed(2));
         })
         //Evento Editar Precio del Producto del detalle
         .on('click', 'a[rel="update"]', function () {
@@ -1190,7 +1191,7 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     //Actualizamos el Listado
                     calcular_importes();
-                    presupuesto.listProductos();
+                    trabajo.listProductos();
                     $('#modalPrecioProducto').modal('hide');
 
                 } else {
@@ -1200,7 +1201,7 @@ $(function () {
             }).always(function (data) {
             });
             //Asignamos a una variable el producto en base al renglon
-            var prod = presupuesto.items.productos[renglon];
+            var prod = trabajo.items.productos[renglon];
             //actualizamos el costo y subtotal del producto en el array
             prod.precioVenta = precioVenta;
             prod.subtotal = precioVenta * prod.cantidad;
@@ -1210,6 +1211,7 @@ $(function () {
             //pass
         });
     });
+
     //Funcion Mostrar Errores del Formulario Producto
     function message_error_precio_producto(obj) {
         var errorList = document.getElementById("errorListformPrecioProducto");
@@ -1232,6 +1234,7 @@ $(function () {
             errorList.appendChild(li);
         }
     }
+
 //------------------------------------MODAL Buscar SERVICIOS----------------------------------------//
     //Boton Buscar Servicios Mostrar Modal
     $('.btnSearchServicios').on('click', function () {
@@ -1283,7 +1286,7 @@ $(function () {
         });
         $('#modalSearchServicios').modal('show');
     });
-    //Agregamos el servicio al Presupuesto
+    //Agregamos el servicio al Trabajo
     $('#tablaSearchServicios tbody')
         .on('click', 'a[rel="addServicio"]', function () {
             //Asignamos a una variable el renglon que necesitamos
@@ -1292,7 +1295,7 @@ $(function () {
             var servicio = tablaSearchServicios.row(tr.row).data();
             servicio.cantidad = 1;
             servicio.subtotal = 0.00;
-            presupuesto.addServicio(servicio);
+            trabajo.addServicio(servicio);
             //Una vez cargado el producto, sacamos del listado del Datatables
             tablaSearchServicios.row($(this).parents('tr')).remove().draw();
         });
@@ -1332,6 +1335,7 @@ $(function () {
     $('.ivaServicio').on('change', function () {
         calcularPrecioServicio();
     });
+
     //Funcion para calcular el precio entre COSTO e IVA
     function calcularPrecioServicio() {
         var id = $('.ivaServicio').val();
@@ -1360,6 +1364,7 @@ $(function () {
             $('.precioVentaServicio').val(precio.toFixed(2));
         }
     }
+
     //Funcion Mostrar Errores del Formulario
     function message_error_servicio(obj) {
         var errorList = document.getElementById("errorListFormServicio");
@@ -1380,9 +1385,9 @@ $(function () {
             var li = document.createElement("li");
             li.innerText = obj;
             errorList.appendChild(li);
-
         }
     }
+
     //Hacemos el envio del Formulario mediante AJAX
     $("#formServicio").submit(function (e) {
         // VALIDACION DE LOS CAMPOS
@@ -1441,7 +1446,7 @@ $(function () {
             event.preventDefault();
             ui.item.cantidad = 1;
             ui.item.subtotal = 0.00;
-            presupuesto.addServicio(ui.item);
+            trabajo.addServicio(ui.item);
             $(this).val('');
         },
     }).on('keydown', function (evt) {
@@ -1463,7 +1468,7 @@ $(function () {
                     var item = (data.servicio);
                     item.cantidad = 1;
                     item.subtotal = 0.00;
-                    presupuesto.addServicio(item);
+                    trabajo.addServicio(item);
                     $('input[name="searchServicios"]').val('');
                     $('input[name="searchServicios"]').focus();
                 } else {
@@ -1493,13 +1498,13 @@ $(function () {
     });
     //Borrar todos los Servicios
     $('.btnRemoveAllServicios').on('click', function () {
-        if (presupuesto.items.servicios.length === 0) return false;
+        if (trabajo.items.servicios.length === 0) return false;
         //Ejecutar la Funcion de Confirmacion
         confirm_action('Confirmación', '¿Estas seguro de eliminar todos los registros?', function () {
             //removemos el listado de servicios
-            presupuesto.items.servicios = [];
+            trabajo.items.servicios = [];
             //Actualizamos el Listado
-            presupuesto.listServicios();
+            trabajo.listServicios();
         }, function () {
         });
     });
@@ -1512,9 +1517,9 @@ $(function () {
             //Ejecutar la Funcion de Confirmacion
             confirm_action('Confirmación', '¿Estas seguro de eliminar el registro?', function () {
                 //removemos la posicion del array con la cantidad de elementos a eliminar
-                presupuesto.items.servicios.splice(tr.row, 1);
+                trabajo.items.servicios.splice(tr.row, 1);
                 //Actualizamos el Listado
-                presupuesto.listServicios();
+                trabajo.listServicios();
             }, function () {
             });
         })
@@ -1524,11 +1529,11 @@ $(function () {
             var cant = parseInt($(this).val());
             //Obtenemos la posicion del elemento a modificar dentro del Datatables
             var tr = tablaServicios.cell($(this).closest('td, li')).index();
-            presupuesto.items.servicios[tr.row].cantidad = cant;
+            trabajo.items.servicios[tr.row].cantidad = cant;
             //Actualizamos los importes
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
-            $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + presupuesto.items.servicios[tr.row].subtotal.toFixed(2));
+            $('td:eq(4)', tablaServicios.row(tr.row).node()).html('$' + trabajo.items.servicios[tr.row].subtotal.toFixed(2));
         })
         .on('click', 'a[rel="update"]', function () {
             //Asignamos a una variable el renglon que necesitamos
@@ -1568,6 +1573,7 @@ $(function () {
     $('input[name="actualizarCostoServicio"]').on('change', function () {
         calcularPrecioActualizacionServicio();
     });
+
     //Funcion para calcular el precio entre COSTO e IVA
     function calcularPrecioActualizacionServicio() {
         var iva = $('input[name="actualizarIvaServicio"]').val();
@@ -1576,6 +1582,7 @@ $(function () {
         var precio = (costo * iva);
         $('input[name="actualizarPrecioVentaServicio"]').val(precio.toFixed(2));
     }
+
     //Actualizamos el precio del Servicio desde el Modal
     $('#formPrecioServicio').on('submit', function (e) {
         e.preventDefault();
@@ -1600,7 +1607,7 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     //Actualizamos el Listado
                     calcular_importes();
-                    presupuesto.listServicios();
+                    trabajo.listServicios();
                     $('#modalPrecioServicio').modal('hide');
 
                 } else {
@@ -1610,7 +1617,7 @@ $(function () {
             }).always(function (data) {
             });
             //Asignamos a una variable el Servicio en base al renglon
-            var serv = presupuesto.items.servicios[renglon];
+            var serv = trabajo.items.servicios[renglon];
             //actualizamos el costo y subtotal del Servicio en el array
             serv.precioVenta = precioVenta;
             serv.subtotal = precioVenta * serv.cantidad;
@@ -1620,6 +1627,7 @@ $(function () {
             //pass
         });
     });
+
     //Funcion Mostrar Errores del Formulario Servicio
     function message_error_precio_servicio(obj) {
         var errorList = document.getElementById("errorListformPrecioServicio");
@@ -1642,11 +1650,12 @@ $(function () {
             errorList.appendChild(li);
         }
     }
-//------------------------------------SUBMIT PRESUPUESTO----------------------------------------//
-    // Submit PRESUPUESTO
-    $('#presupuestoForm').on('submit', function (e) {
+
+//------------------------------------SUBMIT TRABAJO----------------------------------------//
+    // Submit TRABAJO
+    $('#trabajoForm').on('submit', function (e) {
         e.preventDefault();
-        if (presupuesto.items.productos.length === 0 && presupuesto.items.servicios.length === 0) {
+        if (trabajo.items.productos.length === 0 && trabajo.items.servicios.length === 0) {
             error_action('Error', 'Debe al menos tener un producto o servicio en sus detalles', function () {
                 //pass
             }, function () {
@@ -1654,21 +1663,24 @@ $(function () {
             });
         } else {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
-                    //realizamos la creacion del Presupuesto mediante Ajax
-                    presupuesto.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                    presupuesto.items.validez = $('input[name="validez"]').val();
-                    presupuesto.items.cliente = $('select[name="cliente"]').val();
-                    presupuesto.items.modelo = $('select[name="modelo"]').val();
-                    presupuesto.items.observaciones = $('input[name="observaciones"]').val();
-                    // presupuesto.items.iva = $('input[name="iva"]').val();
-                    // presupuesto.items.percepcion = $('input[name="percepcion"]').val();
-                    // presupuesto.items.total = $('input[name="total"]').val();
+                    //realizamos la creacion del Trabajo mediante Ajax
+                    trabajo.items.fechaEntrada = moment(moment($('input[name="fechaEntrada"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                    trabajo.items.fichaTrabajo = $('input[name="fichaTrabajo"]').val();
+                    trabajo.items.cliente = $('select[name="cliente"]').val();
+                    trabajo.items.modelo = $('select[name="modelo"]').val();
+                    trabajo.items.usuarioAsignado = $('select[name="usuarioAsignado"]').val();
+                    trabajo.items.observaciones = $('input[name="observaciones"]').val();
+                    trabajo.items.iva = $('input[name="iva"]').val();
+                    trabajo.items.percepcion = $('input[name="percepcion"]').val();
+                    trabajo.items.total = $('input[name="total"]').val();
+                    trabajo.items.prioridad = $('select[name="prioridad"]').val();
+                    trabajo.items.estadoTrabajo = $('select[name="estadoTrabajo"]').val();
                     var parameters = new FormData();
                     //Pasamos la accion ADD
                     parameters.append('action', $('input[name="action"]').val());
-                    //Agregamos la estructura de Presupuesto con los detalles correspondientes
-                    parameters.append('presupuesto', JSON.stringify(presupuesto.items));
-                    //Bloque AJAX Presupuesto
+                    //Agregamos la estructura de Trabajo con los detalles correspondientes
+                    parameters.append('trabajo', JSON.stringify(trabajo.items));
+                    //Bloque AJAX Trabajo
                     $.ajax({
                         url: window.location.href,
                         type: 'POST',
@@ -1681,8 +1693,8 @@ $(function () {
                         contentType: false,
                         success: function (data) {
                             if (!data.hasOwnProperty('error')) {
-                                confirm_action('Notificación', '¿Desea imprimir el Presupuesto?', function () {
-                                    window.open('/presupuestos/pdf/' + data.id + '/', '_blank');
+                                confirm_action('Notificación', '¿Desea imprimir la nota de Trabajo?', function () {
+                                    window.open('/trabajos/pdf/' + data.id + '/', '_blank');
                                     location.replace(data.redirect);
                                 }, function () {
                                     location.replace(data.redirect);

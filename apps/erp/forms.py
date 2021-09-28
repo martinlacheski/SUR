@@ -106,42 +106,42 @@ class ProductosForm(ModelForm):
             }),
             'descripcion': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una descripción',
+                    'placeholder': 'Ingrese descripción',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'abreviatura': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una abreviatura',
+                    'placeholder': 'Ingrese abreviatura',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigo': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de producto',
+                    'placeholder': 'Ingrese código producto',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigoBarras1': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de Barras',
+                    'placeholder': 'Ingrese código de Barras',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigoBarras2': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de Barras',
+                    'placeholder': 'Ingrese código de Barras',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigoProveedor': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de proveedor',
+                    'placeholder': 'Ingrese código proveedor',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -152,14 +152,14 @@ class ProductosForm(ModelForm):
             }),
             'ubicacion': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una ubicación de producto',
+                    'placeholder': 'Ingrese ubicación producto',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'observaciones': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese unas observaciones',
+                    'placeholder': 'Ingrese observaciones',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -286,12 +286,12 @@ class ClientesForm(ModelForm):
             ),
             'telefono': TextInput(
                 attrs={
-                    'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
+                    'placeholder': 'INGRESE NÚMERO DE TELÉFONO',
                 }
             ),
             'email': EmailInput(
                 attrs={
-                    'placeholder': 'INGRESE UN CORREO ELECTRÓNICO VÁLIDO',
+                    'placeholder': 'INGRESE CORREO ELECTRÓNICO VÁLIDO',
                     'style': 'width: 100%'
                 }
             ),
@@ -374,12 +374,12 @@ class ProveedoresForm(ModelForm):
             ),
             'telefono': TextInput(
                 attrs={
-                    'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
+                    'placeholder': 'INGRESE NÚMERO DE TELÉFONO',
                 }
             ),
             'email': EmailInput(
                 attrs={
-                    'placeholder': 'INGRESE UN CORREO ELECTRÓNICO VÁLIDO',
+                    'placeholder': 'INGRESE CORREO ELECTRÓNICO VÁLIDO',
                     'style': 'width: 100%'
                 }
             ),

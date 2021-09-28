@@ -121,7 +121,7 @@
 
                 <!-- Trabajos -->
                 <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
+                    <a href="{% url 'trabajos:trabajos_list' %}" class="nav-link">
                         <i class="nav-icon far fa-list-alt"></i>
                         <p>
                             Trabajos
@@ -160,8 +160,8 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{% url 'agenda:tiposEventoList' %}" class="nav-link">
-                                    <i class="far fa-calendar-alt nav-icon"></i>
-                                    <p>Tipos de Eventos</p>
+                                        <i class="far fa-calendar-alt nav-icon"></i>
+                                        <p>Tipos de Eventos</p>
                                     </a>
                                 </li>
                             </ul>

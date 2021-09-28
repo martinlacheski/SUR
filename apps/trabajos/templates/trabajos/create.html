@@ -34,11 +34,11 @@
         <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
         <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
         <!-- archivo JS -->
-        <script src="{% static 'presupuestos/js/form.js' %}"></script>
+        <script src="{% static 'trabajos/js/form.js' %}"></script>
     {% endblock %}
 {% endblock %}
 {% block content %}
-    <form id="presupuestoForm" method="post" action="." enctype="multipart/form-data">
+    <form id="trabajoForm" method="post" action="." enctype="multipart/form-data">
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
@@ -57,73 +57,123 @@
                     <div class="form-group col-6">
                         <label>Cliente:</label>
                         <div class="input-group">
-                            {{ form.cliente }}
-                            <div class="input-group-append">
+                            {% if action == 'add' %}
+                                {{ form.cliente }}
+                                <div class="input-group-append">
                                 <button class="btn btn-success btn-flat btnAddCliente" type="button">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
                             </div>
+                            {% else %}
+                                {{ form.cliente|attr:'disabled:true' }}
+                            {% endif %}
                         </div>
                     </div>
-                    <div class="form-group col-1">
-
+                    <div class="form-group col-2">
                     </div>
                     <div class="form-group col-2">
-                        <label>Validez Presupuesto:</label>
-                        <br>
-                        {{ form.validez }}
-                    </div>
-                    <div class="form-group col-1">
-
+                        <label>Fecha de Entrada:</label>
+                        <div class="col-12" id="fechaEntrada" data-target-input="nearest">
+                            {% if action == 'add' %}
+                                {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% else %}
+                                {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled:true' }}
+                            {% endif %}
+                        </div>
                     </div>
                     <div class="form-group col-2">
-                        <label>Fecha:</label>
-                        <div class="col-12 date" id="fecha" data-target-input="nearest">
-                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        <label>Fecha de Salida:</label>
+                        <div class="col-12" id="fechaSalida" data-target-input="nearest">
+                            {{ form.fechaSalida|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-6">
+                    <div class="form-group col-3">
                         <label>Marca:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectMarca" id="selectMarca"
+                                    {% if action == 'add' %}
                                     aria-label="selectMarca">
-                                <option value="">---------</option>
-                                {% for m in marcas %}
-                                    <option value={{ m.id }}>{{ m.nombre }}</option>
-                                {% endfor %}
-                            </select>
+                                            <option value="">---------</option>
+                                            {% for m in marcas %}
+                                                <option value={{ m.id }}>{{ m.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        aria-label="selectMarca" disabled>
+                                        disabled </select>
+                                    {% endif %}
                         </div>
                     </div>
-                    <div class="col-6 mb-6">
+                    <div class="form-group col-3">
                         <label>Modelo:</label>
                         <div class="input-group">
-                            {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                            {% if action == 'add' %}
+                                {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                            {% else %}
+                                {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Plantilla:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
+                                    {% if action == 'add' %}
+                                    name="selectPlantilla" aria-label="selectPlantilla">
+                                            <option value="">---------</option>
+                                        </select>
+                                    {% else %}
+                                        name="selectPlantilla" aria-label="selectPlantilla" disabled>
+                                        </select>
+                                    {% endif %}
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
-                        <label>Plantilla:</label>
-                        <div class="input-group">
-                            <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
-                                    name="selectPlantilla" aria-label="selectPlantilla">
-                                <option value="">---------</option>
-                            </select>
-
-                        </div>
-                    </div>
-                    <div class="col-6">
+                    <div class="form-group col-9">
                         <div class="form-group">
                             <label>Observaciones:</label>
                             <br>
                             {{ form.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
+                    <div class="form-group col-3">
+                        <div class="form-group">
+                            <label>Estado del Trabajo:</label>
+                            <br>
+                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label>Prioridad:</label>
+                            <br>
+                            {{ form.prioridad|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label>Usuario Asignado:</label>
+                            <br>
+                            {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label>Ficha de Trabajo:</label>
+                            <br>
+                            {{ form.fichaTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-12">
+                        <hr>
                         <div class="card card-secondary">
                             <div class="card-header">
                                 <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
@@ -154,12 +204,13 @@
                                 <table class="table table-bordered" id="tablaProductos">
                                     <thead>
                                     <tr>
-                                        <th scope="col" style="width: 10%;">Eliminar</th>
-                                        <th scope="col" style="width: 48%;">Producto</th>
-                                        <th scope="col" style="width: 10%;">Costo</th>
+                                        <th scope="col" style="width: 7%;">Eliminar</th>
+                                        <th scope="col" style="width: 47%;">Producto</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
                                         <th scope="col" style="width: 12%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                        <th scope="col" style="width: 7%;">Actualizar</th>
+                                        <th scope="col" style="width: 7%;">Obs.</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -201,12 +252,13 @@
                                 <table class="table table-bordered" id="tablaServicios">
                                     <thead>
                                     <tr>
-                                        <th scope="col" style="width: 10%;">Eliminar</th>
-                                        <th scope="col" style="width: 48%;">Servicio</th>
+                                        <th scope="col" style="width: 7%;">Eliminar</th>
+                                        <th scope="col" style="width: 47%;">Producto</th>
                                         <th scope="col" style="width: 10%;">Importe</th>
                                         <th scope="col" style="width: 12%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                        <th scope="col" style="width: 7%;">Actualizar</th>
+                                        <th scope="col" style="width: 7%;">Obs.</th>
                                     </tr>
                                     </thead>
                                     <tbody>

@@ -13,7 +13,7 @@
     <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
     <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
     <!-- archivo JS -->
-    <script src="{% static 'presupuestos/js/list.js' %}"></script>
+    <script src="{% static 'trabajos/js/list.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -28,13 +28,14 @@
             <table class="table" id="data">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 5%;">ID</th>
-                    <th scope="col" style="width: 5%;">Estado</th>
-                    <th scope="col" style="width: 10%;">Fecha</th>
+                    <th scope="col" style="width: 4%;">ID</th>
+                    <th scope="col" style="width: 4%;">Estado</th>
+                    <th scope="col" style="width: 5%;">Entrada</th>
+                    <th scope="col" style="width: 5%;">Salida</th>
                     <th scope="col" style="width: 10%;">Marca</th>
-                    <th scope="col" style="width: 20%;">Modelo</th>
-                    <th scope="col" style="width: 25%;">Cliente</th>
-                    <th scope="col" style="width: 10%;">Total</th>
+                    <th scope="col" style="width: 15%;">Modelo</th>
+                    <th scope="col" style="width: 33%;">Cliente</th>
+                    <th scope="col" style="width: 9%;">Total</th>
                     <th scope="col" style="width: 15%;">Opciones</th>
                 </tr>
                 </thead>
@@ -54,7 +55,7 @@
             </a>
         </div>
     </div>
-    <!-- Modal Cancelar Presupuesto Base -->
+    <!-- Modal Cancelar Trabajo -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -66,7 +67,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="msjErrorModal">¿Estás seguro de cancelar el Presupuesto Base?</p>
+                    <p id="msjErrorModal">¿Estás seguro de cancelar el Trabajo?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btnDelete">Si</button>
@@ -75,14 +76,14 @@
             </div>
         </div>
     </div>
-    <!-- Modal Detalle Presupuesto Base -->
+    <!-- Modal Detalle Trabajo -->
     <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-tasks"></i> Detalle de
-                        Presupuesto</b></h5>
+                        Trabajo</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -97,10 +98,11 @@
                                 <table class="table table-bordered" id="tablaProductos">
                                     <thead>
                                     <tr>
-                                        <th scope="col" style="width: 70%;">Producto</th>
-                                        <th scope="col" style="width: 10%;">Importe</th>
-                                        <th scope="col" style="width: 10%;">Cantidad</th>
-                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                        <th scope="col" style="width: 40%;">Producto</th>
+                                        <th scope="col" style="width: 40%;">Observaciones</th>
+                                        <th scope="col" style="width: 8%;">Importe</th>
+                                        <th scope="col" style="width: 4%;">Cantidad</th>
+                                        <th scope="col" style="width: 8%;">Subtotal</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -118,10 +120,11 @@
                                 <table class="table table-bordered" id="tablaServicios">
                                     <thead>
                                     <tr>
-                                        <th scope="col" style="width: 70%;">Servicio</th>
-                                        <th scope="col" style="width: 10%;">Importe</th>
-                                        <th scope="col" style="width: 10%;">Cantidad</th>
-                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                        <th scope="col" style="width: 40%;">Servicio</th>
+                                        <th scope="col" style="width: 40%;">Observaciones</th>
+                                        <th scope="col" style="width: 8%;">Importe</th>
+                                        <th scope="col" style="width: 4%;">Cantidad</th>
+                                        <th scope="col" style="width: 8%;">Subtotal</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -143,7 +146,7 @@
             // Reactivación de botón y mensaje a default.
             $('.btnDelete').attr('style', 'visibility: true');
             $('.btnNo').text("No");
-            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar el Presupuesto?';
+            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar el Trabajo?';
             $('.btnDelete').on('click', function (e) {
                 e.preventDefault();
                 $.ajax({

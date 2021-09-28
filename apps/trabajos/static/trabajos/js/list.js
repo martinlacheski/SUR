@@ -4,7 +4,7 @@ var cantProductos = 0;
 var cantServicios = 0;
 $(function () {
 
-    var tablaPresupuesto = $('#data').DataTable({
+    var tablaTrabajo = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -21,7 +21,8 @@ $(function () {
         columns: [
             {"data": "id"},
             {"data": "id"},
-            {"data": "fecha"},
+            {"data": "fechaEntrada"},
+            {"data": "fechaSalida"},
             {"data": "modelo.marca.nombre"},
             {"data": "modelo.nombre"},
             {"data": "cliente.razonSocial"},
@@ -44,11 +45,23 @@ $(function () {
                 }
             },
             {
-                targets: [-6],
+                targets: [-7],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
                     return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+                }
+            },
+            {
+                targets: [-6],
+                class: 'text-center',
+                orderable: false,
+                render: function (data, type, row) {
+                    if (row.fechaSalida) {
+                        return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+                    } else {
+                        return '<span class="badge badge-danger">' + ' Pendiente' + '</span>'
+                    }
                 }
             },
             {
@@ -69,11 +82,11 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="detallePresupuesto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                    buttons += '<a href="/presupuestos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    if (!row.estado) {
-                        buttons += '<a href="/presupuestos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
-                        buttons += '<a href="/presupuestos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                    var buttons = '<a rel="detalleTrabajo" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                    if (!row.fechaSalida) {
+                        buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                        buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }
                     return buttons;
                 }
@@ -85,10 +98,10 @@ $(function () {
     });
 
     $('#data tbody')
-        .on('click', 'a[rel="detallePresupuesto"]', function () {
+        .on('click', 'a[rel="detalleTrabajo"]', function () {
             //Seleccionamos el Presupuesto sobre la cual queremos traer el detalle
-            var tr = tablaPresupuesto.cell($(this).closest('td, li')).index();
-            var data = tablaPresupuesto.row(tr.row).data();
+            var tr = tablaTrabajo.cell($(this).closest('td, li')).index();
+            var data = tablaTrabajo.row(tr.row).data();
 
             //Cargamos el detalle de productos
             $('#tablaProductos').DataTable({
@@ -112,6 +125,7 @@ $(function () {
                 },
                 columns: [
                     {"data": "producto.descripcion"},
+                    {"data": "observaciones"},
                     {"data": "precio"},
                     {"data": "cantidad"},
                     {"data": "subtotal"},
@@ -162,6 +176,7 @@ $(function () {
                 },
                 columns: [
                     {"data": "servicio.descripcion"},
+                    {"data": "observaciones"},
                     {"data": "precio"},
                     {"data": "cantidad"},
                     {"data": "subtotal"},

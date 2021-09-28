@@ -212,7 +212,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     formTrabajoRequest = json.loads(request.POST['trabajo'])
                     trabajo = Trabajos()
                     trabajo.fechaEntrada = formTrabajoRequest['fechaEntrada']
-                    trabajo.fechaSalida = formTrabajoRequest['fechaSalida']
                     # obtenemos el Usuario actual
                     trabajo.usuario = request.user
                     trabajo.cliente_id = formTrabajoRequest['cliente']
@@ -414,7 +413,6 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     # Obtenemos el Trabajo que se esta editando
                     trabajo = self.get_object()
                     trabajo.fechaEntrada = formTrabajoRequest['fechaEntrada']
-                    trabajo.fechaSalida = formTrabajoRequest['fechaSalida']
                     # obtenemos el Usuario actual
                     trabajo.usuario = request.user
                     trabajo.cliente_id = formTrabajoRequest['cliente']

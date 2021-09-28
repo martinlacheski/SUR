@@ -57,12 +57,16 @@
                     <div class="form-group col-6">
                         <label>Cliente:</label>
                         <div class="input-group">
-                            {{ form.cliente }}
-                            <div class="input-group-append">
-                                <button class="btn btn-success btn-flat btnAddCliente" type="button">
-                                    <i class="fas fa-user-plus"></i>
-                                </button>
-                            </div>
+                            {% if action == 'add' %}
+                                {{ form.cliente }}
+                                <div class="input-group-append">
+                                    <button class="btn btn-success btn-flat btnAddCliente" type="button">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                </div>
+                            {% else %}
+                                {{ form.cliente|attr:'disabled:true' }}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="form-group col-1">
@@ -71,47 +75,69 @@
                     <div class="form-group col-2">
                         <label>Validez Presupuesto:</label>
                         <br>
-                        {{ form.validez }}
+                        {% if action == 'add' %}
+                            {{ form.validez }}
+                        {% else %}
+                            {{ form.validez|attr:'disabled:true' }}
+                        {% endif %}
                     </div>
                     <div class="form-group col-1">
 
                     </div>
                     <div class="form-group col-2">
                         <label>Fecha:</label>
-                        <div class="col-12 date" id="fecha" data-target-input="nearest">
-                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        <div class="col-12" id="fecha" data-target-input="nearest">
+                            {% if action == 'add' %}
+                                {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% else %}
+                                {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled:true' }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-6">
+                    <div class="form-group col-6">
                         <label>Marca:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectMarca" id="selectMarca"
+                                    {% if action == 'add' %}
                                     aria-label="selectMarca">
-                                <option value="">---------</option>
-                                {% for m in marcas %}
-                                    <option value={{ m.id }}>{{ m.nombre }}</option>
-                                {% endfor %}
-                            </select>
+                                            <option value="">---------</option>
+                                            {% for m in marcas %}
+                                                <option value={{ m.id }}>{{ m.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        aria-label="selectMarca" disabled>
+                                        disabled </select>
+                                    {% endif %}
                         </div>
                     </div>
-                    <div class="col-6 mb-6">
+                    <div class="form-group col-3">
                         <label>Modelo:</label>
                         <div class="input-group">
-                            {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                            {% if action == 'add' %}
+                                {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                            {% else %}
+                                {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6">
+                    <div class="form-group col-6">
                         <label>Plantilla:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
+                                    {% if action == 'add' %}
                                     name="selectPlantilla" aria-label="selectPlantilla">
-                                <option value="">---------</option>
+                                            <option value="">---------</option>
+                                        </select>
+                                    {% else %}
+                                        name="selectPlantilla" aria-label="selectPlantilla" disabled>
+                                        </select>
+                                    {% endif %}
                             </select>
-
                         </div>
                     </div>
                     <div class="col-6">
@@ -124,6 +150,7 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
+                        <hr>
                         <div class="card card-secondary">
                             <div class="card-header">
                                 <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
@@ -156,7 +183,7 @@
                                     <tr>
                                         <th scope="col" style="width: 10%;">Eliminar</th>
                                         <th scope="col" style="width: 48%;">Producto</th>
-                                        <th scope="col" style="width: 10%;">Costo</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
                                         <th scope="col" style="width: 12%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
                                         <th scope="col" style="width: 10%;">Actualizar</th>

@@ -86,140 +86,149 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-secondary">
-                            <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label>Buscador de productos:</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="searchProductos"
-                                               placeholder="Ingrese una descripción de producto" autocomplete="off">
-                                        <span class="input-group-append">
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <hr>
+                                        <div class="card card-secondary">
+                                            <div class="card-header">
+                                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos
+                                                </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Buscador de productos:</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="searchProductos"
+                                                               placeholder="Ingrese una descripción de producto"
+                                                               autocomplete="off">
+                                                        <span class="input-group-append">
                                         <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
                                                 class="fas fa-times"></i></button>
                                       </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <button type="button"
+                                                        class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
+                                                        class="fas fa-search"></i> Buscar todos
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-success btn-xs btn-flat btnAddProducto"><i
+                                                        class="fas fa-plus"></i> Agregar Producto
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                                    <i class="fas fa-trash"></i> Eliminar todos
+                                                </button>
+                                                <hr>
+                                                <table class="table table-bordered" id="tablaProductos">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                                        <th scope="col" style="width: 48%;">Producto</th>
+                                                        <th scope="col" style="width: 10%;">Importe</th>
+                                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <hr>
-                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
-                                        class="fas fa-search"></i> Buscar todos
-                                </button>
-                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddProducto"><i
-                                        class="fas fa-plus"></i> Agregar Producto
-                                </button>
-                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
-                                    <i class="fas fa-trash"></i> Eliminar todos
-                                </button>
-                                <hr>
-                                <table class="table table-bordered" id="tablaProductos">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" style="width: 10%;">Eliminar</th>
-                                        <th scope="col" style="width: 48%;">Producto</th>
-                                        <th scope="col" style="width: 10%;">Costo</th>
-                                        <th scope="col" style="width: 12%;">Cantidad</th>
-                                        <th scope="col" style="width: 10%;">Subtotal</th>
-                                        <th scope="col" style="width: 10%;">Actualizar</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card card-secondary">
-                            <div class="card-header">
-                                <h3 class="card-title"><i class="fas fa-wrench"></i> Detalle de servicios</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="form-group">
-                                    <label>Buscador de servicios:</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="searchServicios"
-                                               placeholder="Ingrese una descripción de servicio" autocomplete="off">
-                                        <span class="input-group-append">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card card-secondary">
+                                            <div class="card-header">
+                                                <h3 class="card-title"><i class="fas fa-wrench"></i> Detalle de
+                                                    servicios
+                                                </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Buscador de servicios:</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="searchServicios"
+                                                               placeholder="Ingrese una descripción de servicio"
+                                                               autocomplete="off">
+                                                        <span class="input-group-append">
                                         <button type="button" class="btn btn-danger btn-flat btnClearSearchServicios"><i
                                                 class="fas fa-times"></i></button>
                                       </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <button type="button"
+                                                        class="btn btn-primary btn-xs btn-flat btnSearchServicios"><i
+                                                        class="fas fa-search"></i> Buscar todos
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-success btn-xs btn-flat btnAddServicio"><i
+                                                        class="fas fa-plus"></i> Agregar Servicio
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
+                                                    <i class="fas fa-trash"></i> Eliminar todos
+                                                </button>
+                                                <hr>
+                                                <table class="table table-bordered" id="tablaServicios">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                                        <th scope="col" style="width: 48%;">Servicio</th>
+                                                        <th scope="col" style="width: 10%;">Importe</th>
+                                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <hr>
-                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchServicios"><i
-                                        class="fas fa-search"></i> Buscar todos
-                                </button>
-                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddServicio"><i
-                                        class="fas fa-plus"></i> Agregar Servicio
-                                </button>
-                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
-                                    <i class="fas fa-trash"></i> Eliminar todos
-                                </button>
-                                <hr>
-                                <table class="table table-bordered" id="tablaServicios">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col" style="width: 10%;">Eliminar</th>
-                                        <th scope="col" style="width: 48%;">Servicio</th>
-                                        <th scope="col" style="width: 10%;">Importe</th>
-                                        <th scope="col" style="width: 12%;">Cantidad</th>
-                                        <th scope="col" style="width: 10%;">Subtotal</th>
-                                        <th scope="col" style="width: 10%;">Actualizar</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card card-secondary">
-                            <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-3 mb-3">
-                                        <label>Subtotal:</label>
-                                        {{ form.subtotal }}
+                                    <div class="col-lg-12">
+                                        <div class="card card-secondary">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="form-group col-3 mb-3">
+                                                        <label>Subtotal:</label>
+                                                        {{ form.subtotal }}
+                                                    </div>
+                                                    <div class="form-group col-3 mb-3">
+                                                        <label>IVA:</label>
+                                                        {{ form.iva }}
+                                                    </div>
+                                                    <div class="form-group col-3 mb-3">
+                                                        <label>Percepción:</label>
+                                                        {{ form.percepcion }}
+                                                    </div>
+                                                    <div class="form-group col-3 mb-3">
+                                                        <label>Total a pagar:</label>
+                                                        {{ form.total }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="form-group col-3 mb-3">
-                                        <label>IVA:</label>
-                                        {{ form.iva }}
-                                    </div>
-                                    <div class="form-group col-3 mb-3">
-                                        <label>Percepción:</label>
-                                        {{ form.percepcion }}
-                                    </div>
-                                    <div class="form-group col-3 mb-3">
-                                        <label>Total a pagar:</label>
-                                        {{ form.total }}
-                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary btn-flat">
+                                        <i class="fas fa-save"></i> Guardar registro
+                                    </button>
+                                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </a>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary btn-flat">
-                        <i class="fas fa-save"></i> Guardar registro
-                    </button>
-                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                        <i class="fas fa-times"></i> Cancelar
-                    </a>
-                </div>
-            </div>
-        </div>
     </form>
     <!-- Modal CLIENTE -->
     <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
