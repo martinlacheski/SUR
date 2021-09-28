@@ -615,7 +615,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     # Obtenemos el Trabajo que se esta editando
                     trabajo = self.get_object()
                     trabajo.fechaEntrada = formTrabajoRequest['fechaEntrada']
-                    trabajo.fechaSalida = date.today()
+                    # trabajo.fechaSalida = date.today()
                     # obtenemos el Usuario actual
                     trabajo.usuario = request.user
                     trabajo.cliente_id = formTrabajoRequest['cliente']
