@@ -46,7 +46,7 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="detallePresupuesto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    var buttons = '<a rel="detallePresupuesto" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/presupuestosPlantilla/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     if (row.estado) {
                         buttons += '<a href="/presupuestosPlantilla/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';

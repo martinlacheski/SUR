@@ -144,7 +144,7 @@
                         <div class="form-group">
                             <label>Estado del Trabajo:</label>
                             <br>
-                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>
@@ -153,14 +153,14 @@
                         <div class="form-group">
                             <label>Prioridad:</label>
                             <br>
-                            {{ form.prioridad|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.prioridad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
                             <label>Usuario Asignado:</label>
                             <br>
-                            {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-4">
@@ -313,7 +313,13 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary btn-flat">
-                        <i class="fas fa-save"></i> Guardar registro
+                        {% if action == 'add' %}
+                            <i class="fas fa-save"></i> Guardar registro
+                        {% elif action == 'edit' %}
+                            <i class="fas fa-save"></i> Guardar registro
+                        {% else %}
+                            <i class="fas fa-save"></i> Confirmar trabajo
+                        {% endif %}
                     </button>
                     <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                         <i class="fas fa-times"></i> Cancelar

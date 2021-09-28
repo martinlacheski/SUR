@@ -20,7 +20,7 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "id"},
+            {"data": "estadoTrabajo"},
             {"data": "fechaEntrada"},
             {"data": "fechaSalida"},
             {"data": "modelo.marca.nombre"},
@@ -38,10 +38,17 @@ $(function () {
                 targets: [1],
                 class: 'text-center',
                 render: function (data, type, row) {
-                    if (row.estado) {
-                        return '<span class="badge badge-success">' + ' Confirmado' + '</span>'
+                    if (row.estadoTrabajo == 'PENDIENTE') {
+                        return '<span class="badge badge-warning">' + ' Pendiente' + '</span>'
+                    } else if (row.estadoTrabajo == 'PLANIFICADO') {
+                        return '<span class="badge badge-primary">' + ' Planificado' + '</span>'
+                    } else if (row.estadoTrabajo == 'PROCESO') {
+                        return '<span class="badge badge-secondary">' + ' En Proceso' + '</span>'
+                    } else if (row.estadoTrabajo == 'FINALIZADO') {
+                        return '<span class="badge badge-success">' + ' Finalizado' + '</span>'
+                    } else if (row.estadoTrabajo == 'CANCELADO') {
+                        return '<span class="badge badge-danger">' + ' Cancelado' + '</span>'
                     }
-                    return '<span class="badge badge-danger">' + ' No confirmado' + '</span>'
                 }
             },
             {
@@ -82,10 +89,11 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="detalleTrabajo" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    if (!row.fechaSalida) {
+                    if (!row.fechaSalida && !row.estadoTrabajo !== 'FINALIZADO') {
                         buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                        buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
                         buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }
                     return buttons;

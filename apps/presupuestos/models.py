@@ -95,7 +95,7 @@ class Presupuestos(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    estado = models.BooleanField(default=False)
+    estado = models.BooleanField(default="", blank=True, null=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
 
     def __str__(self):

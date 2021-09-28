@@ -20,10 +20,19 @@ class Trabajos(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    prioridad = models.ForeignKey(Prioridades, models.DO_NOTHING, verbose_name='Prioridad')
-    estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado de Trabajo')
+    prioridad = models.ForeignKey(Prioridades, models.DO_NOTHING, verbose_name='Prioridad', blank=True, null=True)
+    estados = (
+        ('PENDIENTE', 'PENDIENTE'),
+        ('PLANIFICADO', 'PLANIFICADO'),
+        ('PROCESO', 'EN PROCESO'),
+        ('FINALIZADO', 'FINALIZADO'),
+        ('ENTREGADO', 'ENTREGADO'),
+        ('CANCELADO', 'CANCELADO'),
+    )
+    estadoTrabajo = models.CharField(max_length=11, choices=estados, default='PENDIENTE')
+    # estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado de Trabajo', blank=True, null=True)
     fichaTrabajo = models.CharField(max_length=20, verbose_name='Ficha de Trabajo Asociada', blank=True, null=True)
-    estado = models.BooleanField(default=True)
+    # estado = models.BooleanField(default=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
 
     def __str__(self):
@@ -36,11 +45,16 @@ class Trabajos(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         item['usuario'] = self.usuario.toJSON()
-        item['usuarioAsignado'] = self.usuarioAsignado.toJSON()
+        try:
+            item['usuarioAsignado'] = self.usuarioAsignado.toJSON()
+        except:
+            pass
         item['cliente'] = self.cliente.toJSON()
         item['modelo'] = self.modelo.toJSON()
-        item['prioridad'] = self.prioridad.toJSON()
-        item['estadoTrabajo'] = self.estadoTrabajo.toJSON()
+        try:
+            item['prioridad'] = self.prioridad.toJSON()
+        except:
+            pass
         return item
 
     class Meta:

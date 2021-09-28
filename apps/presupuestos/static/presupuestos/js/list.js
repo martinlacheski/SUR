@@ -37,10 +37,13 @@ $(function () {
                 targets: [1],
                 class: 'text-center',
                 render: function (data, type, row) {
-                    if (row.estado) {
+                    if (row.estado == true) {
                         return '<span class="badge badge-success">' + ' Confirmado' + '</span>'
+                    } else if (row.estado == false) {
+                        return '<span class="badge badge-danger">' + ' Cancelado' + '</span>'
+                    } else {
+                        return '<span class="badge badge-warning">' + ' No confirmado' + '</span>'
                     }
-                    return '<span class="badge badge-danger">' + ' No confirmado' + '</span>'
                 }
             },
             {
@@ -69,10 +72,11 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="detallePresupuesto" class="btn btn-success btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    var buttons = '<a rel="detallePresupuesto" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/presupuestos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    if (!row.estado) {
+                    if (row.estado !== false && row.estado !== true) {
                         buttons += '<a href="/presupuestos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                        buttons += '<a href="/presupuestos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
                         buttons += '<a href="/presupuestos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }
                     return buttons;

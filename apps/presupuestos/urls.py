@@ -16,6 +16,7 @@ urlpatterns = [
     path('presupuestos/list/', PresupuestosListView.as_view(), name='presupuestos_list'),
     path('presupuestos/add/', PresupuestosCreateView.as_view(), name='presupuestos_create'),
     path('presupuestos/update/<int:pk>/', PresupuestosUpdateView.as_view(), name='presupuestos_update'),
+    path('presupuestos/confirm/<int:pk>/', PresupuestosConfirmView.as_view(), name='presupuestos_confirm'),
     path('presupuestos/delete/<int:pk>/', PresupuestosDeleteView.as_view(), name='presupuestos_delete'),
     path('presupuestos/pdf/<int:pk>/', PresupuestosPdfView.as_view(), name='presupuestos_pdf'),
 ]

@@ -288,7 +288,13 @@
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary btn-flat">
-                        <i class="fas fa-save"></i> Guardar registro
+                        {% if action == 'add' %}
+                            <i class="fas fa-save"></i> Guardar registro
+                        {% elif action == 'edit' %}
+                            <i class="fas fa-save"></i> Guardar registro
+                        {% else %}
+                            <i class="fas fa-save"></i> Confirmar presupuesto
+                        {% endif %}
                     </button>
                     <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                         <i class="fas fa-times"></i> Cancelar
