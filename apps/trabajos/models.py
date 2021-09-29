@@ -30,9 +30,7 @@ class Trabajos(models.Model):
         ('CANCELADO', 'CANCELADO'),
     )
     estadoTrabajo = models.CharField(max_length=11, choices=estados, default='PENDIENTE')
-    # estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado de Trabajo', blank=True, null=True)
     fichaTrabajo = models.CharField(max_length=20, verbose_name='Ficha de Trabajo Asociada', blank=True, null=True)
-    # estado = models.BooleanField(default=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
 
     def __str__(self):
@@ -86,6 +84,8 @@ class DetalleProductosTrabajo(models.Model):
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
     estado = models.BooleanField(default=False)
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
+    fechaDetalle = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.producto.descripcion
@@ -120,6 +120,8 @@ class DetalleServiciosTrabajo(models.Model):
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
     estado = models.BooleanField(default=False)
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
+    fechaDetalle = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.servicio.descripcion
