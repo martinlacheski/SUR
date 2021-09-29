@@ -1,5 +1,3 @@
-*Una vez confirmado el presupuesto, insertar como trabajo --- REALIZADO
-
 *HACER MODAL OBSERVACIONES DETALLE DE TRABAJO
 
 *TRABAJAR CON MODULO PLANIFICACION
