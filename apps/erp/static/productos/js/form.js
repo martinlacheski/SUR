@@ -10,7 +10,7 @@ $(function () {
 
     //Inicializamos los campos de tipo TOUCHSPIN
     $("input[name='stockReal']").TouchSpin({
-        min: 0,
+        min: -1000000,
         max: 1000000,
         step: 1,
         boostat: 5,
@@ -41,18 +41,56 @@ $(function () {
     });
     $("input[name='utilidad']").TouchSpin({
         min: 0,
-        max: 100,
+        max: 1000,
         step: 0.1,
         decimals: 2,
         boostat: 5,
         maxboostedstep: 10,
         postfix: '%'
     });
-
-    //Inicializamos oculto el campo de ERROR DUPLICADO
-    $('#subcategoria').on('focus', function () {
-        $('#ErrorDuplicado').attr("hidden", "");
+    $("input[name='precioVenta']").TouchSpin({
+        min: 0,
+        max: 10000000,
+        step: 0.1,
+        decimals: 2,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '$'
     });
+
+    //Funcion Mostrar Errores del Formulario
+    function message_error(obj, errorList) {
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+
+        }
+    }
+
+    //Funcion Mostrar Errores del Formulario
+    function message_error_categoria(errorList) {
+        errorList.innerHTML = '';
+        var h5 = document.createElement("h5");
+        h5.textContent = "Error:";
+        errorList.appendChild(h5);
+        var li = document.createElement("li");
+        li.innerText = "Ya existe un/a Categoría con este/a Nombre.";
+        errorList.appendChild(li);
+    }
 
     //Llamamos a la funcion de Token
     getToken(name);
@@ -67,6 +105,9 @@ $(function () {
     $('select[name="iva"]').on('change', function () {
         calcularPrecio();
     });
+    $('input[name="precioVenta"]').on('change', function () {
+        calcularUtilidad();
+    });
 
     //Boton Categoria Modal Mostrar
     $('.btnAddCategoria').on('click', function () {
@@ -76,8 +117,14 @@ $(function () {
     //Boton Categoria Modal Ocultar y Resetear
     $('#modalCategoria').on('hidden.bs.modal', function (e) {
         $('#formCategoria').trigger('reset');
+
+        errorList = document.getElementById("errorListCategoria");
+        errorList.innerHTML = '';
+        location.reload();
     });
 
+
+    var select_categorias = $('#CategoriaFormSub');
     //Boton Subcategoria Modal Mostrar
     $('.btnAddSubcategoria').on('click', function () {
         $('#modalSubcategoria').modal('show');
@@ -85,7 +132,12 @@ $(function () {
 
     //Boton Subcategoria Modal Ocultar y Resetear
     $('#modalSubcategoria').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
         $('#formSubcategoria').trigger('reset');
+        //Reseteamos los Select2 del Modal
+        $(".CategoriaFormSub").val('').trigger('change.select2');
+        var errorList = document.getElementById("errorListSubcategoria");
+        errorList.innerHTML = '';
     });
 
     //Submit Modal Categoría
@@ -108,6 +160,9 @@ $(function () {
                 var newOption = new Option(data.nombre, data.id, false, true);
                 $('#selectCategoria').append(newOption).trigger('change');
                 $('#modalCategoria').modal('hide');
+            } else {
+                var errorList = document.getElementById("errorListCategoria");
+                message_error_categoria(errorList);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
@@ -118,6 +173,7 @@ $(function () {
     $('#formSubcategoria').on('submit', function (e) {
         e.preventDefault();
         var parameters = new FormData(this);
+        console.log(parameters);
         parameters.append('action', 'create_subcategoria');
         $.ajax({
             url: window.location.pathname,
@@ -131,11 +187,15 @@ $(function () {
             contentType: false,
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
-                console.log(data);
                 var newOption = new Option(data.nombre, data.id, false, true);
                 $('select[name="subcategoria"]').append(newOption).trigger('change');
                 $('#modalSubcategoria').modal('hide');
+
+            } else {
+                var errorList = document.getElementById("errorListSubcategoria");
+                message_error(data.error, errorList);
             }
+            // console.log(data.error);
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
         });
@@ -143,12 +203,10 @@ $(function () {
 
     //Submit Formulario Producto
     $('#ajaxForm').on('submit', function (e) {
-        console.log('x');
-        // $("#ajaxForm").submit(function (e) {
         // VALIDACION DE LOS CAMPOS
         $("#subcategoria").validate();
         $("#descripcion").validate();
-        $("#stockReal").validate();
+        //$("#stockReal").validate();
         $("#stockMinimo").validate();
         $("#reposicion").validate();
         $("#costo").validate();
@@ -167,8 +225,8 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
-                    //console.log(data.error)
-                    $("#ErrorDuplicado").removeAttr("hidden");
+                    var errorList = document.getElementById("errorList");
+                    message_error(data.error, errorList);
                 }
             }
         });
@@ -244,6 +302,36 @@ function calcularPrecio() {
     if (iva > 0) {
         var precio = (costo * utilidad * iva);
         $('input[name="precioVenta"]').val(precio);
+    }
+}
+
+//Funcion para calcular el precio entre COSTO IVA y TOTAL
+function calcularUtilidad() {
+    var id = $('select[name="iva"]').val();
+    var iva = 0;
+    var costo = $('input[name="costo"]').val();
+    var total = $('input[name="precioVenta"]').val();
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'search_iva',
+            'pk': id
+        },
+        dataType: 'json',
+        success: function (data) {
+            iva = (data.iva);
+            iva = (iva / 100) + 1;
+            if (iva > 0) {
+                var precio = (((total / iva) / costo) - 1) * 100;
+                $('input[name="utilidad"]').val(precio.toFixed(2));
+            }
+        }
+    });
+    if (iva > 0) {
+        var precio = (((total / iva) / costo) - 1) * 100;
+        $('input[name="utilidad"]').val(precio);
     }
 }
 

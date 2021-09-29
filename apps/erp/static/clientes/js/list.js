@@ -16,7 +16,7 @@ $(function () {
         columns: [
             {"data": "razonSocial"},
             {"data": "cuil"},
-            {"data": "localidad.full_name"},
+            {"data": "localidad.nombre"},
             {"data": "email"},
             {"data": "telefono"},
             {"data": "email"},

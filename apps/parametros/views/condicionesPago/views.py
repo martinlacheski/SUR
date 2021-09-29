@@ -62,7 +62,6 @@ class CondicionesPagoCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
-            print(str(e))
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -103,7 +102,7 @@ class CondicionesPagoUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Editar condición de Pago'
-        context['entity'] = 'Condición de Pago'
+        context['entity'] = 'Condiciones de Pago'
         context['list_url'] = reverse_lazy('parametros:condicionesPago_list')
         context['action'] = 'edit'
         return context
@@ -130,7 +129,7 @@ class CondicionesPagoDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMi
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
             except Exception as e:
-                data['check'] = str(e)
+                data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(**kwargs):

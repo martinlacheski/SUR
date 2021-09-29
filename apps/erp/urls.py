@@ -1,9 +1,12 @@
 from apps.erp.views.categorias.views import *
 from apps.erp.views.clientes.views import *
+from apps.erp.views.compras.views import *
 from apps.erp.views.proveedores.views import *
 from apps.erp.views.subcategorias.views import *
 from apps.erp.views.productos.views import *
 from apps.erp.views.servicios.views import *
+from apps.erp.views.ventas.views import *
+
 from django.urls import path
 
 app_name = 'erp'
@@ -39,4 +42,16 @@ urlpatterns = [
     path('proveedores/add/', ProveedoresCreateView.as_view(), name='proveedores_create'),
     path('proveedores/update/<int:pk>/', ProveedoresUpdateView.as_view(), name='proveedores_update'),
     path('proveedores/delete/<int:pk>/', ProveedoresDeleteView.as_view(), name='proveedores_delete'),
+    # Ventas
+    path('ventas/list/', VentasListView.as_view(), name='ventas_list'),
+    path('ventas/add/', VentasCreateView.as_view(), name='ventas_create'),
+    path('ventas/update/<int:pk>/', VentasUpdateView.as_view(), name='ventas_update'),
+    path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
+    path('ventas/pdf/<int:pk>/', VentasPdfView.as_view(), name='ventas_pdf'),
+    # Compras
+    path('compras/list/', ComprasListView.as_view(), name='compras_list'),
+    path('compras/add/', ComprasCreateView.as_view(), name='compras_create'),
+    path('compras/update/<int:pk>/', ComprasUpdateView.as_view(), name='compras_update'),
+    path('compras/delete/<int:pk>/', ComprasDeleteView.as_view(), name='compras_delete'),
+    path('compras/pdf/<int:pk>/', ComprasPdfView.as_view(), name='compras_pdf'),
 ]

@@ -60,7 +60,7 @@ class Localidades(models.Model):
         return self.get_full_name()
 
     def get_full_name(self):
-        return '{}/{}/{}'.format(self.nombre, self.provincia.nombre, self.pais.nombre)
+        return '{} - {} - {}'.format(self.nombre, self.provincia.nombre, self.pais.nombre)
 
     def toJSON(self):
         item = model_to_dict(self)

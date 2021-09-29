@@ -1,0 +1,178 @@
+{% extends 'body.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet"
+          href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- Moment -->
+    <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+    <!-- archivo JS -->
+    <script src="{% static 'ventas/js/list.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-search"></i>
+                {{ title }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <table class="table" id="data">
+                <thead>
+                <tr>
+                    <th scope="col" style="width: 5%;">ID</th>
+                    <th scope="col" style="width: 10%;">Estado</th>
+                    <th scope="col" style="width: 10%;">Fecha</th>
+                    <th scope="col" style="width: 23%;">Cliente</th>
+                    <th scope="col" style="width: 10%;">Subtotal</th>
+                    <th scope="col" style="width: 10%;">IVA</th>
+                    <th scope="col" style="width: 10%;">Perc.</th>
+                    <th scope="col" style="width: 10%;">Total</th>
+                    <th scope="col" style="width: 12%;">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% block rows %}
+
+                {% endblock %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                <i class="fas fa-plus"></i> Nuevo registro
+            </a>
+            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
+        </div>
+    </div>
+    <!-- Modal Cancelar Venta -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="msjErrorModal">¿Estás seguro de cancelar la venta?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btnDelete">Si</button>
+                    <button type="button" class="btn btn-danger btnNo" data-dismiss="modal">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Detalle Venta -->
+    <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Detalle de
+                        Venta</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="rowProductos">
+                        <div class="col-lg-12">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
+                                </div>
+                                <table class="table table-bordered" id="tablaProductos">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 70%;">Producto</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="rowServicios">
+                        <div class="col-lg-12">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de Servicios</h3>
+                                </div>
+                                <table class="table table-bordered" id="tablaServicios">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 70%;">Servicio</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="application/javascript">
+        //Llamamos a la funcion de Token
+        getToken(name);
+        //Funcion para Eliminar mediante AJAX
+        function btnEliminar(id, href) {
+            // Reactivación de botón y mensaje a default.
+            $('.btnDelete').attr('style', 'visibility: true');
+            $('.btnNo').text("No");
+            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar la venta?';
+            $('.btnDelete').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: href,
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'action': 'delete',
+                        'pk': id,
+                    },
+                    success: function (data) {
+                        // Control de eliminación de un registro que es dependencia de otros.
+                        if (data.check === 'ok') {
+                            location.replace(data.redirect);
+                        } else if (data.error === 'FOREIGN KEY constraint failed') {
+                            $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros asociados. <br><br>' +
+                                '<strong>No puede ser eliminado</strong>'
+                            $('.btnDelete').attr('style', 'visibility: hidden');
+                            $('.btnNo').text("Volver");
+                            // En caso de que la Exception sea por otra cosa
+                        } else {
+                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            $('.btnDelete').attr('style', 'visibility: hidden');
+                            $('.btnNo').text("Volver");
+                        }
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,6 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function () {
     var plazo = $("input[name='plazoCtaCte']").val();
-    if (plazo > 0){
+    if (plazo > 0) {
         document.getElementById("ctaCte").checked = true;
         $('input[name="plazoCtaCte"]').attr('disabled', false);
     }
@@ -25,8 +25,8 @@ $(function () {
 
     //Inicializamos error Duplicado en oculto
     $('#cuit').on('focus', function () {
-            $('#ErrorDuplicado').attr("hidden", "");
-        });
+        $('#ErrorDuplicado').attr("hidden", "");
+    });
 
     $('#cuit').on('change', function () {
         $('#ErrorDuplicado').attr("hidden", "");
@@ -47,6 +47,28 @@ $(function () {
         }
     });
 
+    //Funcion Mostrar Errores del Formulario
+    function message_error(obj) {
+        var errorList = document.getElementById("errorList");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
 
     //Llamamos a la funcion de Token
     getToken(name);
@@ -64,7 +86,7 @@ $(function () {
                 if (!data.hasOwnProperty('error')) {
                     location.replace(data.redirect);
                 } else {
-                    $("#ErrorDuplicado").removeAttr("hidden");
+                    message_error(data.error);
                 }
             }
         });

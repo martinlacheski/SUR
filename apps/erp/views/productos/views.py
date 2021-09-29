@@ -59,7 +59,11 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
-            if action == 'search_subcategorias':
+            elif action == 'search_categorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Categorias.objects.all():
+                    data.append({'id': i.id, 'text': i.nombre})
+            elif action == 'search_subcategorias':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
@@ -72,7 +76,6 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
                     formCategoria = CategoriasForm(request.POST)
                     data = formCategoria.save()
             elif action == 'add':
-                print("llega al action")
                 form = self.get_form()
                 data = form.save()
                 data['redirect'] = self.url_redirect
@@ -113,6 +116,10 @@ class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
             if action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            if action == 'search_categorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Categorias.objects.all():
+                    data.append({'id': i.id, 'text': i.nombre})
             if action == 'search_subcategorias':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
@@ -166,7 +173,7 @@ class ProductosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, D
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
             except Exception as e:
-                data['check'] = str(e)
+                data['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(**kwargs):
