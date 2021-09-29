@@ -1,6 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.mixins import ValidatePermissionRequiredMixin
@@ -35,6 +36,7 @@ class EstadosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
         context['title'] = 'Listado de Estados de Trabajo'
         context['create_url'] = reverse_lazy('parametros:estados_create')
         context['list_url'] = reverse_lazy('parametros:estados_list')
+        context['order_url'] = reverse_lazy('parametros:estados_order')
         context['entity'] = 'Estados de Trabajo'
         return context
 
@@ -105,6 +107,45 @@ class EstadosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
         context['entity'] = 'Estados de Trabajo'
         context['list_url'] = reverse_lazy('parametros:estados_list')
         context['action'] = 'edit'
+        return context
+
+
+class EstadosOrderView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = Estados
+    form_class = EstadosForm
+    template_name = 'estados/order.html'
+    success_url = reverse_lazy('parametros:estados_list')
+    permission_required = 'parametros.change_estados'
+    url_redirect = success_url
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Estados.objects.all():
+                    data.append(i.toJSON())
+            elif action == 'order':
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+            else:
+                data['error'] = 'No ha ingresado ninguna opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Orden de Estados de Trabajo'
+        context['entity'] = 'Estados de Trabajo'
+        context['list_url'] = reverse_lazy('parametros:estados_list')
+        context['estados'] = Estados.objects.all()
+        context['action'] = 'order'
         return context
 
 

@@ -143,7 +143,6 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     compra.save()
                     for i in formCompraRequest['productos']:
                         det = DetalleProductosCompra()
-                        print(i['costo'])
                         det.compra_id = compra.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])

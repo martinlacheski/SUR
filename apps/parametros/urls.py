@@ -63,6 +63,7 @@ urlpatterns = [
     #Estados de Trabajos
     path('estados-trabajo/list/', EstadosListView.as_view(), name='estados_list'),
     path('estados-trabajo/add/', EstadosCreateView.as_view(), name='estados_create'),
+    path('estados-trabajo/order/', EstadosOrderView.as_view(), name='estados_order'),
     path('estados-trabajo/update/<int:pk>/', EstadosUpdateView.as_view(), name='estados_update'),
     path('estados-trabajo/delete/<int:pk>/', EstadosDeleteView.as_view(), name='estados_delete'),
     #Prioridades de Trabajos

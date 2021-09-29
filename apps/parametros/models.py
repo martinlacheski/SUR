@@ -193,6 +193,7 @@ class Modelos(models.Model):
 #Estados de TRABAJOS
 class Estados(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    orden = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.nombre
