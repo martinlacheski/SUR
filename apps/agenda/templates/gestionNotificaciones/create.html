@@ -1,7 +1,7 @@
 {% extends 'form.html' %}
 {% load static %}
 {% block head %}
-    <!-- daterange picker -->
+
     <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
     <!-- Tempus Dominus -->
     <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
@@ -10,13 +10,17 @@
     <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
           rel="stylesheet"/>
+
+    <!-- Bootstrap Touchspin -->
+        <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
 {% endblock %}
 
 {%  block form_content %}
     <form id="ajaxForm" method="post" action=".">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Agregar tipo de Evento</h3>
+                <h3 class="card-title">Configuración de Notificaciones</h3>
             </div>
             <div class="card-body">
                 {% csrf_token %}
@@ -35,54 +39,77 @@
                 {% endif %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="col-4">
-                        <label>Tipo de evento:</label>
-                        {{ form.nombre }}
+                    <div class="col-12">
+                        <label>Dias de antelacion</label>
+                        <div class="col-2" class="input-group-text" id="diasAntelacion">
+                             {{ form.diasAntelacion }}
+                        </div>
                     </div>
-                    <div class="col-4">
-                        <label>Horario de Recordatorio:</label>
-                        <div class="input-group date" id="timepicker" data-target-input="nearest">
-                            {{ form.horarioRecordatorio }}
-                            <div class="input-group-append" data-target="#timepicker" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                </div>
+                <hr class="style1">
+                <div class="row mt-4">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.lunes }}
+                                <label class="custom-control-label" for="id_lunes">Lunes</label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        <label>Usuario a notificar:</label>
-                        <div class="input-group">
-                            {{ form.usuarioNotif }}
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.martes }}
+                                <label class="custom-control-label" for="id_martes">Martes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.miercoles }}
+                                <label class="custom-control-label" for="id_miercoles">Miercoles</label>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row mt-4">
-                    <div class="col-4">
+                    <div class="col-3">
                         <div class="form-group">
                             <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                                {{ form.recordarSistema }}
-                                <label class="custom-control-label" for="id_recordarSistema">Notificación en Sistema</label>
+                                {{ form.jueves }}
+                                <label class="custom-control-label" for="id_jueves">Jueves</label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-3">
                         <div class="form-group">
                             <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                                {{ form.recordarTelegram }}
-                                <label class="custom-control-label" for="id_recordarTelegram">Notificación en Télegram</label>
+                                {{ form.viernes }}
+                                <label class="custom-control-label" for="id_viernes">Viernes</label>
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
-{#                        <div class="form-group">#}
-{#                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">#}
-{#                                {{ form.recordarEmail }}#}
-{#                                <label class="custom-control-label" for="id_recordarEmail">Notificación en Email</label>#}
-{#                            </div>#}
-{#                        </div>#}
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.sabado }}
+                                <label class="custom-control-label" for="id_sabado">Sábado</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.domingo }}
+                                <label class="custom-control-label" for="id_domingo">Domingo</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- /.card-body -->
+        </div>
+        <!-- /.card-body -->
         </div>
         <!-- Modal -->
         <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
@@ -127,9 +154,9 @@
             </div>
         </div>
         <div class="card-footer">
-            {#Mensaje de error#}
+            {#            Mensaje de error#}
             <ul id="errorList"  class="alert-danger"></ul>
-            {#Botones#}
+            {#            Botones#}
             <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
@@ -161,5 +188,13 @@
             theme: "bootstrap4",
             language: 'es'
         });
+    </script>
+
+    <script>
+        $("input[name='diasAntelacion']").TouchSpin({
+        min: 0,
+        max: 7,
+        step: 1,
+    });
     </script>
 {% endblock %}

@@ -32,9 +32,8 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Eventos'
+        context['entity'] = 'Tipos de Eventos'
         context['create_url'] = reverse_lazy('agenda:tiposEventoCreate')
-       # context['list_url'] = reverse_lazy('geografico:paises_list')
-       # context['entity'] = 'Paises'
         return context
 
 class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
@@ -52,9 +51,8 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         data = {}
         try:
             form = self.get_form()
-            #data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
-            form.save()
-            data['redirect'] = self.success_url
+            data = form.save()
+            data['redirect'] = self.url_redirect
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -84,7 +82,6 @@ class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         data = {}
         try:
             form = self.get_form()
-            #data = form.checkAndSave(form, self.url_redirect, request.POST['action'])
             form.save()
             data['redirect'] = self.success_url
         except Exception as e:
@@ -110,10 +107,10 @@ class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
+        data = {}
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            data = {}
             try:
                 self.object.delete()
                 data['redirect'] = self.url_redirect

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     #Librerias
     'widget_tweaks',
     #Aplicaciones
@@ -90,7 +91,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-CRONJOBS = [('* * * * *', 'apps.agenda.cron.cron_prueba')]
 
 DATABASES = {
     'default': {
@@ -121,6 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
+
 
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'
@@ -169,4 +170,18 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Probablemente innecesarios. Si joden, chau
+#DATE_FORMAT = '%d-%m-%y'
+# DATE_INPUT_FORMATS = '%d-%m-%Y'
+# DATETIME_INPUT_FORMATS = ['%d/%m/%Y %H:%M:%S']
 
+# Necesarios
+APSCHEDULER_DATETIME_FORMAT = "%d-%m-%Y %H:%M:%S"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+DJANGO_SETTINGS_MODULE = 'config.settings'
+
+
+CRONJOBS = [
+    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
+]

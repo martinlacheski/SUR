@@ -1,22 +1,10 @@
-{% extends 'body.html' %}
+{% extends 'list.html' %}
 {% load static %}
-{% block head %}
-    <link rel="stylesheet"
-          href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
-    <link rel="stylesheet"
-          href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-    {% block head_list %}
-
-    {% endblock %}
-
+{% block head_list %}
+    <script src="{% static 'gestionNotificaciones/js/list3.js' %}"></script> <!-- si lo renombro a list.js NO ANDA (??????) -->
 {% endblock %}
 
 {% block content %}
-
     <div class="card card-default">
         <div class="card-header">
             <h3 class="card-title">
@@ -28,7 +16,17 @@
             <table class="table" id="data">
                 <thead>
                 {% block columns %}
-
+                    <tr>
+                        <th scope="col" style="width: 15%;">Días de Antelación</th>
+                        <th scope="col" style="width: 10%;">Lunes</th>
+                        <th scope="col" style="width: 10%;">Martes</th>
+                        <th scope="col" style="width: 10%;">Miercoles</th>
+                        <th scope="col" style="width: 10%;">Jueves</th>
+                        <th scope="col" style="width: 10%;">Viernes</th>
+                        <th scope="col" style="width: 10%;">Sábado</th>
+                        <th scope="col" style="width: 10%;">Domingo</th>
+                        <th scope="col" style="width: 10%;">Opciones</th>
+                    </tr>
                 {% endblock %}
                 </thead>
                 <tbody>
@@ -39,12 +37,16 @@
             </table>
         </div>
         <div class="card-footer">
+            {% if notifCreada == 'verdadero' %}
+
+            {% elif notifCreada == 'falso' %}
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat">
                     <i class="fas fa-plus"></i> Nuevo registro
                 </a>
-             <a href="{{ list_url }}" class="btn btn-success btn-flat">
-                    <i class="fas fa-sync"></i> Actualizar
-                </a>
+            {% endif %}
+            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
         </div>
     </div>
     <!-- Modal -->
@@ -96,16 +98,17 @@
                         // Control de eliminación de un registro que es dependencia de otros.
                         if (data.check === 'ok'){
                             location.replace(data.redirect);
-                        }else if(data.error === 'FOREIGN KEY constraint failed'){
-                            $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros asociados. <br><br>' +
+                        }else if(data.check === 'FOREIGN KEY constraint failed'){
+                            $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros que dependen de él. <br><br>' +
                                 '<strong>No puede ser eliminado</strong>'
                             $('.btnDelete').attr('style', 'visibility: hidden');
                             $('.btnNo').text("Volver");
                             // En caso de que la Exception sea por otra cosa
                         }else{
-                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
-                            $('.btnDelete').attr('style', 'visibility: hidden');
-                            $('.btnNo').text("Volver");
+                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador';
+
+                            $('.btnDelete').attr('disabled', '');
+                            //$('.btnDelete').style.display = 'none';
                         }
                     }
                 });
@@ -114,6 +117,9 @@
     </script>
 {% endblock %}
 
+
 {% block javascript %}
 
-{% endblock %}
+{%  endblock %}
+
+

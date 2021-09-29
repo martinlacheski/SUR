@@ -1,3 +1,15 @@
+/*  Traduce los valores por defecto. Utilizada debido a la implementación de BooleanFields
+    los cuales son más sencillos de implementar con elemento toggle */
+function simple_traduc(data){
+    var mod_data = '';
+    if(data === true){
+        mod_data = 'Sí';
+    }else{
+        mod_data = 'No';
+    }
+    return mod_data;
+}
+
 $(function () {
     $('#data').DataTable({
         responsive: true,
@@ -14,19 +26,17 @@ $(function () {
             dataSrc: ""
         },
         columns: [
-            //{"data": "id"},
             {"data": "nombre"},
             {"data": "horarioRecordatorio"},
             {"data": "recordarSistema"},
             {"data": "recordarTelegram"},
-            {"data": "recordarEmail"},
-            {"data": "usuarioNotif"},
+            {"data": "usuarioNotif.username"},
             {"data": "nombre"}, //va duplicado algun campo por la botonera
 
         ],
         columnDefs: [
             {
-                targets: [-1],
+                targets: [5],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -35,9 +45,22 @@ $(function () {
                     return buttons;
                 }
             },
+            {
+                targets: [2],
+                render: function (data, type, row){
+                    return simple_traduc(data);
+                }
+            },
+            {
+                targets: [3],
+                render: function (data, type, row){
+                    return simple_traduc(data);
+                }
+            },
         ],
         initComplete: function (settings, json) {
 
         }
     });
 });
+
