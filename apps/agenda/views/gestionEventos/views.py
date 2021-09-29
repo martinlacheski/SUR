@@ -76,9 +76,10 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
                                 if evento.fechaNotificacion == dia_hoy:
                                     # Consultar si hay que seguir molestando al usuario o no
                                     eventos[evento.id] = ['notificar_heavy', str(evento.tipoEvento)]
+
                                 else:
                                     eventos[evento.id] = ['no_notificar', str(evento.tipoEvento)]
-                                # print("entra acá1")
+                                # print("entra acá1")CC
                             else:
                                 print("entro acá1")
                                 if evento.fechaNotificacion == dia_hoy:

@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -179,12 +180,6 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25
 DJANGO_SETTINGS_MODULE = 'config.settings'
 
 
-# La idea con el job es reiniciar el aps sheduler (que está en un archivo separado)
-# cada vez que se guarda un evento.
-# Ese scheduler lo que va a hacer es POR CADA EVENTO (ciclo for), le va a restar 3 días hábiles
-# luego si el resultado es el día de hoy, el va a programar un job a la hora que se le diga
-# a su vez ese job va a enviar mensajes de telegram.
-
-# El aps scheduler se debería iniciar cuando se inicia el sistema.
-# El aps se dbeería reiniciar solo (por las dudas), todos los días a las 7am. Este último parámetro capaz
-# no sea necesario dejarselo al usuario que lo haga.s
+CRONJOBS = [
+    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
+]

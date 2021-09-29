@@ -59,6 +59,7 @@ def eventosNotificadosHoy(eventosQuery):
     return eventos
 
 
+# Resta días hábiles tomando en cuenta la fecha de notificación y los días de antelación
 def restarDiasHabiles(Fnotif, diasAntelacion):
     fecha_resultado = Fnotif
     dias_hab_restados = 0
@@ -68,4 +69,20 @@ def restarDiasHabiles(Fnotif, diasAntelacion):
             dias_hab_restados = dias_hab_restados + 1
 
     return fecha_resultado
+
+
+
+#   Se usa para notificar una hora antes del vencimiento del evento.
+#   Si devuelve True significa que la hora de notificación del evento - 1h
+#   es igual a la hora actual, por ende, notificamos.
+
+def restarHora(horaEvento):
+    horaInt = horaEvento.hour
+    horaInt = horaInt - 1
+    resultado = horaEvento.replace(hour=horaInt)
+    if resultado.hour == datetime.today().time().hour and resultado.minute == datetime.today().time().minute:
+        return True
+    else:
+        return False
+
 
