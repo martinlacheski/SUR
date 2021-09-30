@@ -48,7 +48,14 @@ def vencido(evento):
 def eventosNotificadosHoy(eventosQuery):
     eventos = {}
     for evento in eventosQuery:
-        eventos[evento.id] = 'no_notificar'
+        if not evento.resuelto:
+            if evento.ultimaVistaNotifiSist == date.today():
+                eventos[evento.id] = ['no_notificar', str(evento.tipoEvento)]
+            elif evento.ultimaVistaNotifiSist != date.today():
+                if evento.vencido:
+                    eventos[evento.id] = ['notificar_heavy', str(evento.tipoEvento)]
+                else:
+                    eventos[evento.id] = ['no_notificar_pendiente', str(evento.tipoEvento)]
     return eventos
 
 
