@@ -1,7 +1,9 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.mixins import ValidatePermissionRequiredMixin
@@ -130,8 +132,16 @@ class EstadosOrderView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 for i in Estados.objects.all():
                     data.append(i.toJSON())
             elif action == 'order':
-                form = self.get_form()
-                data = form.save()
+                # Asignamos a una Variable el orden de los estados que viene del Formulario
+                ordenEstadosTrabajo = json.loads(request.POST['orderEstados'])
+                pos = 1
+                for i in ordenEstadosTrabajo:
+                    # Buscamos el Estado de Trabajo para actualizar la posicion
+                    with transaction.atomic():
+                        estado = Estados.objects.get(id=i)
+                        estado.orden = pos
+                        estado.save()
+                    pos+=1
                 data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado ninguna opción'

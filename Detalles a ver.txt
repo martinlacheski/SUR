@@ -1,4 +1,6 @@
-*VOLVER A ASOCIAR estadoTrabajo con trabajos, pero incorporar una manera de ordenar los pasos en el PROCESO de los ESTADOS
+*incorporar una manera de ordenar los pasos en el PROCESO de los ESTADOS
+
+*VOLVER A ASOCIAR estadoTrabajo con trabajos
 
 *HACER MODAL OBSERVACIONES DETALLE DE TRABAJO - Y REGISTRAR USUARIO Y DIA DE REALIZACION
 

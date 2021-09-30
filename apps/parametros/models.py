@@ -206,7 +206,7 @@ class Estados(models.Model):
         verbose_name = 'Estado Trabajo'
         verbose_name_plural = 'Estados Trabajos'
         db_table = 'parametros_estados_trabajos'
-        ordering = ['nombre']
+        ordering = ['orden']
 
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):

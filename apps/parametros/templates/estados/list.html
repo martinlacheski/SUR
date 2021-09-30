@@ -26,7 +26,8 @@
                 <thead>
                 {% block columns %}
                     <tr>
-                        <th scope="col" style="width: 80%;">Estado de Trabajo</th>
+                        <th scope="col" style="width: 10%;">Orden</th>
+                        <th scope="col" style="width: 70%;">Estado de Trabajo</th>
                         <th scope="col" style="width: 20%;">Opciones</th>
                     </tr>
                 {% endblock %}
@@ -46,7 +47,7 @@
                 <i class="fas fa-sync"></i> Actualizar
             </a>
             <a href="{{ order_url }}" class="btn btn-warning btn-flat">
-                <i class="fas fa-edit"></i> Orden de los Estados
+                <i class="fas fa-edit"></i> Orden Estados
             </a>
         </div>
     </div>

@@ -11,14 +11,17 @@
             padding: 0;
             width: 100%;
         }
+
         #sortable li {
-            margin: 3px 3px 3px 0;
-            padding: 1px;
-            float: left;
-            width: 120px;
-            height: 90px;
-            font-size: 15px;
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
             text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
         }
     </style>
 {% endblock %}
@@ -36,10 +39,9 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <ul id="sortable">
                     {% for e in estados %}
-                        <li class="ui-state-default ui-sortable-handle">{{ e.nombre }}</li>
+                        <li class="ui-state-default ui-sortable-handle" id={{ e.id }}>{{ e.nombre }}</li>
                     {% endfor %}
                 </ul>
-
             </div>
         </div>
         <div class="card-footer">
@@ -47,7 +49,7 @@
             <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
             <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                <i class="fas fa-save"></i> Guardar registro
+                <i class="fas fa-save"></i> Guardar orden
             </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
