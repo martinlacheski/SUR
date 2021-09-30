@@ -627,7 +627,9 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
-                    trabajo.estadoTrabajo = "FINALIZADO"
+                    # Obtenemos el nombre del estado en el ORDEN INICIAL
+                    estado = Estados.objects.get(orden=4)
+                    trabajo.estadoTrabajo_id = estado.id
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleproductostrabajo_set.all().delete()
@@ -697,7 +699,9 @@ class TrabajosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     trabajo = self.get_object()
                     # Cancelamos el TRABAJO
                     trabajo.fechaSalida = date.today()
-                    trabajo.estadoTrabajo = "CANCELADO"
+                    # Obtenemos el nombre del estado en el ORDEN INICIAL
+                    estado = Estados.objects.get(orden=6)
+                    trabajo.estadoTrabajo_id = estado.id
                     trabajo.save()
                     data['redirect'] = self.url_redirect
                     data['check'] = 'ok'

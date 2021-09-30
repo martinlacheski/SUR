@@ -15,7 +15,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, Estados
 from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
@@ -633,6 +633,9 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                     trabajo.percepcion = float(formPresupuestoRequest['percepcion'])
                     trabajo.total = float(formPresupuestoRequest['total'])
                     trabajo.observaciones = formPresupuestoRequest['observaciones']
+                    # Obtenemos el nombre del estado en el ORDEN INICIAL
+                    estado = Estados.objects.get(orden=1)
+                    trabajo.estadoTrabajo_id = estado.id
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     presupuesto.detalleproductospresupuesto_set.all().delete()

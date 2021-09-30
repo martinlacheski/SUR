@@ -21,15 +21,7 @@ class Trabajos(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     prioridad = models.ForeignKey(Prioridades, models.DO_NOTHING, verbose_name='Prioridad', blank=True, null=True)
-    estados = (
-        ('PENDIENTE', 'PENDIENTE'),
-        ('PLANIFICADO', 'PLANIFICADO'),
-        ('PROCESO', 'EN PROCESO'),
-        ('FINALIZADO', 'FINALIZADO'),
-        ('ENTREGADO', 'ENTREGADO'),
-        ('CANCELADO', 'CANCELADO'),
-    )
-    estadoTrabajo = models.CharField(max_length=11, choices=estados, default='PENDIENTE')
+    estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado Trabajo', blank=True, null=True)
     fichaTrabajo = models.CharField(max_length=20, verbose_name='Ficha de Trabajo Asociada', blank=True, null=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
 
@@ -45,6 +37,10 @@ class Trabajos(models.Model):
         item['usuario'] = self.usuario.toJSON()
         try:
             item['usuarioAsignado'] = self.usuarioAsignado.toJSON()
+        except:
+            pass
+        try:
+            item['estadoTrabajo'] = self.estadoTrabajo.toJSON()
         except:
             pass
         item['cliente'] = self.cliente.toJSON()

@@ -1,4 +1,4 @@
-*incorporar una manera de ordenar los pasos en el PROCESO de los ESTADOS
+*incorporar una manera de ordenar los pasos en el PROCESO de los ESTADOS --REALIZADO
 
 *VOLVER A ASOCIAR estadoTrabajo con trabajos
 
