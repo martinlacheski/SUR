@@ -15,7 +15,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, Estados
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros
 from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
@@ -628,8 +628,11 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
                     # Obtenemos el nombre del estado en el ORDEN INICIAL
-                    estado = Estados.objects.get(orden=4)
-                    trabajo.estadoTrabajo_id = estado.id
+                    try:
+                        estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        trabajo.estadoTrabajo_id = estado.estadoFinalizado_id
+                    except Exception as e:
+                        pass
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleproductostrabajo_set.all().delete()
@@ -699,9 +702,12 @@ class TrabajosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     trabajo = self.get_object()
                     # Cancelamos el TRABAJO
                     trabajo.fechaSalida = date.today()
-                    # Obtenemos el nombre del estado en el ORDEN INICIAL
-                    estado = Estados.objects.get(orden=6)
-                    trabajo.estadoTrabajo_id = estado.id
+                    # Obtenemos el nombre del estado en el ORDEN CANCELADO
+                    try:
+                        estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        trabajo.estadoTrabajo_id = estado.estadoCancelado_id
+                    except Exception as e:
+                        pass
                     trabajo.save()
                     data['redirect'] = self.url_redirect
                     data['check'] = 'ok'
@@ -726,7 +732,7 @@ class TrabajosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View)
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
-            empresa = Empresa.objects.get(id=1)
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('trabajos/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template

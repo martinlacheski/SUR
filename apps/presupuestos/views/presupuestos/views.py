@@ -15,7 +15,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, Estados
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros
 from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
@@ -634,8 +634,11 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                     trabajo.total = float(formPresupuestoRequest['total'])
                     trabajo.observaciones = formPresupuestoRequest['observaciones']
                     # Obtenemos el nombre del estado en el ORDEN INICIAL
-                    estado = Estados.objects.get(orden=1)
-                    trabajo.estadoTrabajo_id = estado.id
+                    try:
+                        estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        trabajo.estadoTrabajo_id = estado.estadoInicial_id
+                    except Exception as e:
+                        pass
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     presupuesto.detalleproductospresupuesto_set.all().delete()
@@ -746,7 +749,7 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
-            empresa = Empresa.objects.get(id=1)
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestos/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template

@@ -402,7 +402,7 @@ class PresupuestosPlantillaPdfView(LoginRequiredMixin, ValidatePermissionRequire
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
-            empresa = Empresa.objects.get(id=1)
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestosPlantilla/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template

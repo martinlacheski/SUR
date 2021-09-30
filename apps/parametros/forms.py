@@ -1,7 +1,7 @@
 from django.forms import ModelForm, TextInput, Select, EmailInput, PasswordInput
 
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, Marcas, Modelos, \
-    Prioridades, Estados, TiposPercepciones, MediosPago, Empresa
+    Prioridades, Estados, TiposPercepciones, MediosPago, Empresa, EstadoParametros
 
 
 class TiposIVAForm(ModelForm):
@@ -300,6 +300,46 @@ class EstadosForm(ModelForm):
         return data
 
 
+class EstadoParametrosForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['estadoInicial'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = EstadoParametros
+        fields = '__all__'
+        widgets = {
+            'estadoInicial': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+            'estadoEspecial': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+            'estadoFinalizado': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+            'estadoCancelado': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
 class PrioridadesForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -388,12 +428,12 @@ class EmpresaForm(ModelForm):
                 }
             ),
             'passwordEmail': PasswordInput(render_value=True,
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Ingrese la contraseña del Correo',
-                    'style': 'width: 100%'
-                }
-            ),
+                                           attrs={
+                                               'class': 'form-control',
+                                               'placeholder': 'Ingrese la contraseña del Correo',
+                                               'style': 'width: 100%'
+                                           }
+                                           ),
             'botTelegram': TextInput(
                 attrs={
                     'class': 'form-control',

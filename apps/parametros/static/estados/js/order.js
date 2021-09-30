@@ -27,7 +27,6 @@ $(function () {
             var li = document.createElement("li");
             li.innerText = obj;
             errorList.appendChild(li);
-
         }
     }
 
@@ -36,23 +35,26 @@ $(function () {
     //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
         e.preventDefault();
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'action': 'order',
-                'orderEstados': JSON.stringify(ordenElementos),
-            },
-            dataType: 'json',
-            success: function (data) {
-                if (!data.hasOwnProperty('error')) {
-                    location.replace(data.redirect);
-                } else {
-                    message_error(data.error);
+        if (ordenElementos !== undefined) {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'order',
+                    'orderEstados': JSON.stringify(ordenElementos),
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        location.replace(data.redirect);
+                    } else {
+                        message_error(data.error);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            message_error('Debe modificar algún orden');
+        }
     });
-
 });

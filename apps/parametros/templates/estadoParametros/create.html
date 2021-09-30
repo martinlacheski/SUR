@@ -1,0 +1,66 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+        <!-- Select2 -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+              rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+        <!-- archivo JS -->
+        <script src="{% static 'estadoParametros/js/form.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit"></i>
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="input-group">
+                        <div class="form-group col-3" class="form-control">
+                            <label>Estado Inicial:</label>
+                            <br>
+                            {{ form.estadoInicial|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                        <div class="form-group col-3" class="form-control">
+                            <label>Estado Especial:</label>
+                            <br>
+                            {{ form.estadoEspecial|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                        <div class="form-group col-3" class="form-control">
+                            <label>Estado Finalizado:</label>
+                            <br>
+                            {{ form.estadoFinalizado|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                        <div class="form-group col-3" class="form-control">
+                            <label>Estado Cancelado:</label>
+                            <br>
+                            {{ form.estadoCancelado|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            {#Mensaje de error#}
+            <ul id="errorList" class="alert-danger"></ul>
+            {#Botones#}
+            <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
+            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+{% endblock %}

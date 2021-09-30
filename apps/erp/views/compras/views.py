@@ -371,7 +371,7 @@ class ComprasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
-            empresa = Empresa.objects.get(id=1)
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('compras/pdf.html')
 

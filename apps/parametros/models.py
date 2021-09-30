@@ -190,7 +190,8 @@ class Modelos(models.Model):
             pass
         super(Modelos, self).save(force_insert, force_update)
 
-#Estados de TRABAJOS
+
+# Estados de TRABAJOS
 class Estados(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     orden = models.PositiveIntegerField(default=0)
@@ -213,7 +214,46 @@ class Estados(models.Model):
         self.nombre = self.nombre.upper()
         super(Estados, self).save(force_insert, force_update)
 
-#Prioridad de TRABAJOS
+
+# Estados de TRABAJOS que no se planifican
+class EstadoParametros(models.Model):
+    estadoInicial = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Normal',
+                                      related_name='estadoInicial')
+    estadoEspecial = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Especial',
+                                       related_name='estadoEspecial')
+    estadoFinalizado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Especial',
+                                         related_name='estadoFinalizado')
+    estadoCancelado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Cancelado',
+                                        related_name='estadoCancelado')
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        try:
+            item['estadoInicial'] = self.estadoInicial.toJSON()
+        except:
+            pass
+        try:
+            item['estadoEspecial'] = self.estadoEspecial.toJSON()
+        except:
+            pass
+        try:
+            item['estadoFinalizado'] = self.estadoFinalizado.toJSON()
+        except:
+            pass
+        try:
+            item['estadoCancelado'] = self.estadoCancelado.toJSON()
+        except:
+            pass
+        return item
+
+
+    class Meta:
+        verbose_name = 'Estado de Trabajo Parámetros'
+        verbose_name_plural = 'Estado de Trabajos Parámetros'
+        db_table = 'parametros_estado_trabajo_parametros'
+
+
+# Prioridad de TRABAJOS
 class Prioridades(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     plazoPrioridad = models.PositiveIntegerField(default=0, verbose_name='Días de PLazo')
