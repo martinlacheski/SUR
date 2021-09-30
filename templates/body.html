@@ -137,8 +137,9 @@
                     'action': 'get_news'
                 },
                 success: function (data) {
-                    limpiarNotif();
-                    limpiarIcon();
+                    console.log("RESPUESTA" + data)
+                    //limpiarNotif();
+                    //limpiarIcon();
 
                     // Vemos si hay nuevos ev para notificar
                     listaNotif.innerHTML = '';
@@ -146,6 +147,8 @@
                         console.log(data)
                         // Notificaciones que, valga al redundancia, van a ser notificadas
                         if (data[prop][0] === 'notificar') {
+                            console.log("hola");
+                            console.log(data[prop][0]);
                             toastr.info('¡Tiene nuevas notificaciónes!');
                             agregarNotifPendiente(prop, data[prop][1]);
                             mostrarIcon();
@@ -160,6 +163,7 @@
                             mostrarIcon();
                         }
                         else if (data[prop][0] === 'notificar_heavy') {
+                            console.log("hola");
                             toastr.error('¡Tiene una nueva notificación URGENTE!');
                             agregarNotifUrgente(prop, data[prop][1]);
                             mostrarIcon();
@@ -209,7 +213,7 @@
             iconNotif.insertAdjacentHTML('afterbegin', iconElement);
         }
 
-        var actualizador = setInterval(nuevasNotif, 20000);
+        var actualizador = setInterval(nuevasNotif, 10000);
     </script>
 
     <script>

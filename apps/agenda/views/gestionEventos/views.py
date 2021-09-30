@@ -71,14 +71,20 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
                     # print("vamos al for")
                     for evento in data:
                         if evento.ultimaNotificacionSist == dia_hoy and (not evento.resuelto):
-                            # print("entra acá")
                             if evento.ultimaVistaNotifiSist == dia_hoy:
                                 print("entro acá")
-                                eventos[evento.id] = ['no_notificar', str(evento.tipoEvento)]
+                                if evento.fechaNotificacion == dia_hoy:
+                                    # Consultar si hay que seguir molestando al usuario o no
+                                    eventos[evento.id] = ['notificar_heavy', str(evento.tipoEvento)]
+                                else:
+                                    eventos[evento.id] = ['no_notificar', str(evento.tipoEvento)]
                                 # print("entra acá1")
                             else:
                                 print("entro acá1")
-                                eventos[evento.id] = ['no_notificar_pendiente', str(evento.tipoEvento)]
+                                if evento.fechaNotificacion == dia_hoy:
+                                    eventos[evento.id] = ['notificar_heavy', str(evento.tipoEvento)]
+                                else:
+                                    eventos[evento.id] = ['no_notificar_pendiente', str(evento.tipoEvento)]
                                 # print("entra acá2")
                         else:
                             if evento.vencido or evento.resuelto:

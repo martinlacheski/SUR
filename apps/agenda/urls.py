@@ -13,11 +13,9 @@ urlpatterns = [
     path('agenda/tiposEventos/', TiposEventosListView.as_view(), name='tiposEventoList'),
     path('agenda/tiposEventos/add/', TiposEventosCreateView.as_view(), name='tiposEventoCreate'),
     path('agenda/tiposEventos/edit/<int:pk>/', TiposEventosEditView.as_view(), name='tiposEventoEdit'),
+    path('agenda/tiposEventos/delete/<int:pk>/', TiposEventosDeleteView.as_view(), name='tiposEventoDelete'),
 
     path('agenda/gestionNotif/', NotificacionesListView.as_view(), name='notifEventosList'),
     path('agenda/gestionNotif/edit/<int:pk>/', NotificacionesEditView.as_view(), name='notifEventosEdit'),
     path('agenda/gestionNotif/add/', NotificacionesCreateView.as_view(), name='notifEventosCreate'),
-   # path('paises/add/', PaisesCreateView.as_view(), name='paises_create'),
-   # path('paises/update/<int:pk>/', PaisesUpdateView.as_view(), name='paises_update'),
-   # path('paises/delete/<int:pk>/', PaisesDeleteView.as_view(), name='paises_delete'),
 ]
