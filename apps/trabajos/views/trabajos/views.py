@@ -15,7 +15,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, Estados
 from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
