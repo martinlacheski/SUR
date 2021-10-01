@@ -1129,6 +1129,19 @@ $(function () {
                     postfix: '$'
                 });
             $('#modalPrecioProducto').modal('show');
+        })
+        //Evento Ingresar Observaciones del Producto del detalle
+        .on('click', 'a[rel="observaciones"]', function () {
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            renglon = tr.row;
+            //Asignamos a una variable el producto en base al renglon
+            var prod = tablaProductos.row(tr.row).data();
+            //Cargamos los valores del Producto en el modal
+            $('input[name="idObservacionProductoUpdate"]').val(prod.id);   //INPUT HIDDEN ID PRODUCTO
+            $('input[name="observacionDescripcionProducto"]').val(prod.descripcion);
+            $('input[name="observacionProducto"]').val(trabajo.items.productos[tr.row].observaciones);
+            $('#modalObservacionesProducto').modal('show');
         });
 
     //------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
@@ -1215,6 +1228,48 @@ $(function () {
     //Funcion Mostrar Errores del Formulario Producto
     function message_error_precio_producto(obj) {
         var errorList = document.getElementById("errorListformPrecioProducto");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
+
+//------------------------------------MODAL Ingresar Observacion Producto----------------------------------------//
+    //Ingresamos una observacion del PRODUCTO desde el Modal
+    $('#formObservacionesProducto').on('submit', function (e) {
+        e.preventDefault();
+        //Asignamos a una variable la observacion del Producto
+        var observacion = $('input[name="observacionProducto"]').val();
+        //Asignamos a una variable el producto en base al renglon
+        var prod = trabajo.items.productos[renglon];
+        //ingresamos la observacion
+        prod.observaciones = observacion;
+        $('#modalObservacionesProducto').modal('hide');
+    });
+    //Al cerrar el Modal de Productos reseteamos los valores del formulario
+    $('#modalObservacionesProducto').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formObservacionesProducto').trigger('reset');
+        var errorList = document.getElementById("errorListformObservacionesProducto");
+        errorList.innerHTML = '';
+    });
+    //Funcion Mostrar Errores del Formulario Producto
+    function message_error_observaciones_producto(obj) {
+        var errorList = document.getElementById("errorListformObservacionesProducto");
         errorList.innerHTML = '';
         if (typeof (obj) === 'object') {
             var li = document.createElement("h5");
@@ -1566,6 +1621,20 @@ $(function () {
                     postfix: '$'
                 });
             $('#modalPrecioServicio').modal('show');
+        })
+        //Evento Ingresar Observaciones del Servicio del detalle
+        .on('click', 'a[rel="observaciones"]', function () {
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaServicios.cell($(this).closest('td, li')).index();
+            renglon = tr.row;
+            //Asignamos a una variable el Servicio en base al renglon
+            var serv = tablaServicios.row(tr.row).data();
+
+            //Cargamos los valores del Producto en el modal
+            $('input[name="idObservacionServicioUpdate"]').val(serv.id);   //INPUT HIDDEN ID SERVICIO
+            $('input[name="observacionDescripcionServicio"]').val(serv.descripcion);
+            $('input[name="observacionServicio"]').val(serv.observaciones);
+            $('#modalObservacionesServicio').modal('show');
         });
     //------------------------------------MODAL ACTUALIZAR PRECIO SERVICIOS----------------------------------------//
     //EN MODAL ACTUALIZAR PRECIO SERVICIO
@@ -1631,6 +1700,48 @@ $(function () {
     //Funcion Mostrar Errores del Formulario Servicio
     function message_error_precio_servicio(obj) {
         var errorList = document.getElementById("errorListformPrecioServicio");
+        errorList.innerHTML = '';
+        if (typeof (obj) === 'object') {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            $.each(obj, function (key, value) {
+                var li = document.createElement("li");
+                li.innerText = key + ': ' + value;
+                errorList.appendChild(li);
+            });
+        } else {
+            var li = document.createElement("h5");
+            li.textContent = "Error:";
+            errorList.appendChild(li);
+            var li = document.createElement("li");
+            li.innerText = obj;
+            errorList.appendChild(li);
+        }
+    }
+
+//------------------------------------MODAL Ingresar Observacion Servicio----------------------------------------//
+    //Ingresamos una observacion del SERVICIO desde el Modal
+    $('#formObservacionesServicio').on('submit', function (e) {
+        e.preventDefault();
+        //Asignamos a una variable la observacion del Servicio
+        var observacion = $('input[name="observacionServicio"]').val();
+        //Asignamos a una variable el Servicio en base al renglon
+        var serv = trabajo.items.servicios[renglon];
+        //ingresamos la observacion
+        serv.observaciones = observacion;
+        $('#modalObservacionesServicio').modal('hide');
+    });
+    //Al cerrar el Modal de Servicios reseteamos los valores del formulario
+    $('#modalObservacionesServicio').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formObservacionesServicio').trigger('reset');
+        var errorList = document.getElementById("errorListformObservacionesServicio");
+        errorList.innerHTML = '';
+    });
+    //Funcion Mostrar Errores del Formulario Producto
+    function message_error_observaciones_servicio(obj) {
+        var errorList = document.getElementById("errorListformObservacionesServicio");
         errorList.innerHTML = '';
         if (typeof (obj) === 'object') {
             var li = document.createElement("h5");

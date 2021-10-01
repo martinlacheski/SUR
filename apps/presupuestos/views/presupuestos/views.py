@@ -15,7 +15,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, Prioridades
 from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
@@ -633,6 +633,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                     trabajo.percepcion = float(formPresupuestoRequest['percepcion'])
                     trabajo.total = float(formPresupuestoRequest['total'])
                     trabajo.observaciones = formPresupuestoRequest['observaciones']
+                    trabajo.prioridad_id = request.POST['prioridad']
                     # Obtenemos el nombre del estado en el ORDEN INICIAL
                     try:
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
@@ -700,6 +701,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
         context['marcas'] = Marcas.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
+        context['prioridades'] = Prioridades.objects.all()
         return context
 
 

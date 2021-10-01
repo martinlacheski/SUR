@@ -2,8 +2,33 @@ var tablaProductos;
 var tablaServicios;
 var cantProductos = 0;
 var cantServicios = 0;
-$(function () {
+var estadoInicial = 0;
+var estadoEspecial = 0;
+var estadoFinalizado = 0;
+var estadoCancelado = 0;
+//Funcion para buscar los parametros de estado
+function searchParametros() {
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'get_parametros_estados',
+        },
+        dataType: 'json',
+        success: function (data) {
+            estadoInicial = data[0].estadoInicial.id;
+            estadoEspecial = data[0].estadoEspecial.id;
+            estadoFinalizado = data[0].estadoFinalizado.id;
+            estadoCancelado = data[0].estadoCancelado.id;
+        }
+    });
+};
 
+$(function () {
+    //Buscamos los parametros de estado
+    searchParametros();
+    //Eventos del Listado
     var tablaTrabajo = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
@@ -23,7 +48,6 @@ $(function () {
             {"data": "estadoTrabajo.nombre"},
             {"data": "fechaEntrada"},
             {"data": "fechaSalida"},
-            {"data": "modelo.marca.nombre"},
             {"data": "modelo.nombre"},
             {"data": "cliente.razonSocial"},
             {"data": "total"},
@@ -38,15 +62,21 @@ $(function () {
                 targets: [1],
                 class: 'text-center',
                 render: function (data, type, row) {
-                    if ( row.estadoTrabajo !== null) {
+                    if ( row.estadoTrabajo.id == estadoInicial) {
+                        return '<span class="badge badge-warning">' + row.estadoTrabajo.nombre + '</span>'
+                    } else if ( row.estadoTrabajo.id == estadoEspecial) {
                         return '<span class="badge badge-info">' +  row.estadoTrabajo.nombre + '</span>'
+                    } else if ( row.estadoTrabajo.id == estadoFinalizado) {
+                        return '<span class="badge badge-success">' +  row.estadoTrabajo.nombre + '</span>'
+                    } else if ( row.estadoTrabajo.id == estadoCancelado) {
+                        return '<span class="badge badge-danger">' +  row.estadoTrabajo.nombre + '</span>'
                     } else {
-                        return '<span class="badge badge-danger">' + ' Sin Asignar' + '</span>'
+                        return '<span class="badge badge-info">' +  row.estadoTrabajo.nombre + '</span>'
                     }
                 }
             },
             {
-                targets: [-7],
+                targets: [-6],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -54,7 +84,7 @@ $(function () {
                 }
             },
             {
-                targets: [-6],
+                targets: [-5],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -66,7 +96,7 @@ $(function () {
                 }
             },
             {
-                targets: [-3, -4, -5],
+                targets: [-3, -4],
                 class: 'text-center',
                 orderable: false,
             },
@@ -85,7 +115,7 @@ $(function () {
                 render: function (data, type, row) {
                     var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    if (!row.fechaSalida && row.estadoTrabajo.nombre !== 'FINALIZADO') {
+                    if (!row.fechaSalida && row.estadoTrabajo.id !== estadoFinalizado) {
                         buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
                         buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';

@@ -930,4 +930,42 @@
             </div>
         </form>
     </div>
+    <!-- Modal Confirmar Presupuesto-->
+    <div class="modal fade" id="confirmarPresupuestoModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+         aria-hidden="true">
+        <form id="confirmarPresupuestoModal" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmarPresupuestoModal">Confirmación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-12">
+                                <label>Prioridad: </label>
+                                <div class="input-group">
+                                    <select class="form-select form-control select2 selectPrioridad"
+                                            id="selectPrioridad" name="selectPrioridad"
+                                            aria-label="selectPrioridad" required>
+                                        <option value="">---------</option>
+                                        {% for p in prioridades %}
+                                            <option value={{ p.id }}>{{ p.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-center" id="msjErrorModal">¿Estás seguro de realizar la siguiente acción?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Si</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock %}

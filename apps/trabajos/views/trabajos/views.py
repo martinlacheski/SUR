@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import date
+from datetime import date, datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -41,6 +41,10 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 data = []
                 for i in Trabajos.objects.all()[0:15]:
                     data.append(i.toJSON())
+            elif action == 'get_parametros_estados':
+                data = []
+                parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
+                data.append(parametros.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
                 for i in DetalleProductosTrabajo.objects.filter(trabajo_id=request.POST['id']):
@@ -224,6 +228,7 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
+                    trabajo.estadoTrabajo_id = formTrabajoRequest['estadoTrabajo']
                     trabajo.save()
                     for i in formTrabajoRequest['productos']:
                         det = DetalleProductosTrabajo()
@@ -232,6 +237,11 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
+                        observacion = i['observaciones']
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            det.fechaDetalle = datetime.now()
                         det.save()
                     for i in formTrabajoRequest['servicios']:
                         det = DetalleServiciosTrabajo()
@@ -240,6 +250,11 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
+                        observacion = i['observaciones']
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            det.fechaDetalle = datetime.now()
                         det.save()
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
@@ -300,6 +315,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.precio
+                        item['observaciones'] = i.observaciones
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
@@ -310,6 +326,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.precio
+                        item['observaciones'] = i.observaciones
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
@@ -435,6 +452,11 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
+                        observacion = i['observaciones']
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            det.fechaDetalle = datetime.now()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -446,6 +468,11 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
+                        oobservacion = i['observaciones']
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            det.fechaDetalle = datetime.now()
                         det.save()
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
@@ -502,6 +529,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.precio
+                        item['observaciones'] = i.observaciones
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
@@ -512,6 +540,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.precio
+                        item['observaciones'] = i.observaciones
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
@@ -644,6 +673,11 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
+                        observacion = i['observaciones']
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            det.fechaDetalle = datetime.now()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -655,6 +689,11 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
+                        observacion = i['observaciones']
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            det.fechaDetalle = datetime.now()
                         det.save()
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
