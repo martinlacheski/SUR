@@ -1,3 +1,5 @@
+*al confirmar un presupuesto, que se seleccione la prioridad
+
 *incorporar una manera de ordenar los pasos en el PROCESO de los ESTADOS --REALIZADO
 
 *VOLVER A ASOCIAR estadoTrabajo con trabajos --REALIZADO (resta automatizar como vincular en los eventos)
