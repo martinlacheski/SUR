@@ -92,7 +92,7 @@ class GestionTiposEventosForm(ModelForm):
 
     class Meta:
         model = tiposEvento
-        fields = ['nombre', 'horarioRecordatorio', 'usuarioNotif', 'recordarSistema', 'recordarTelegram']
+        fields = ['nombre', 'horarioRecordatorio', 'recordarSistema', 'recordarTelegram']
 
         widgets = {
             'nombre': TextInput(
@@ -122,12 +122,6 @@ class GestionTiposEventosForm(ModelForm):
                     'class': 'custom-control-input',
                 }
             ),
-            'usuarioNotif': Select(
-                attrs={
-                    'class' : 'form-select form-control select2',
-                    'required': '',
-                }
-            ),
         }
 
     def save(self, commit=True):
@@ -135,7 +129,8 @@ class GestionTiposEventosForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                objCreado = form.save()
+                data['objCreado'] = objCreado # Obtenemos id de objeto creado
             else:
                 data['error'] = form.errors
         except Exception as e:

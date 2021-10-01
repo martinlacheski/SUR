@@ -10,9 +10,13 @@
     <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
     <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
           rel="stylesheet"/>
+
+    <!-- select2 -->
+    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
 {% endblock %}
 
-{%  block form_content %}
+{%  block content %}
     <form id="ajaxForm" method="post" action=".">
         <div class="card">
             <div class="card-header">
@@ -20,19 +24,6 @@
             </div>
             <div class="card-body">
                 {% csrf_token %}
-                {% if form.errors %}
-                    <div class="alert alert-danger alert-dismissible errorForm">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
-                        <ul>
-                            {% for field in form %}
-                                {% for error in field.errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                {% endif %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="col-4">
@@ -49,9 +40,13 @@
                         </div>
                     </div>
                     <div class="col-4">
-                        <label>Usuario a notificar:</label>
+                        <label>Usuarios a notificar:</label>
                         <div class="input-group">
-                            {{ form.usuarioNotif }}
+                             <select class="js-example-basic-multiple" name="usuarios" multiple="multiple">
+                                 {%  for usuario in usuarios %}
+                                    <option value="{{ usuario.id }}">{{ usuario }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -73,12 +68,12 @@
                         </div>
                     </div>
                     <div class="col-4">
-{#                        <div class="form-group">#}
-{#                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">#}
-{#                                {{ form.recordarEmail }}#}
-{#                                <label class="custom-control-label" for="id_recordarEmail">Notificación en Email</label>#}
-{#                            </div>#}
-{#                        </div>#}
+                        {#                        <div class="form-group">#}
+                        {#                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">#}
+                        {#                                {{ form.recordarEmail }}#}
+                        {#                                <label class="custom-control-label" for="id_recordarEmail">Notificación en Email</label>#}
+                        {#                            </div>#}
+                        {#                        </div>#}
                     </div>
                 </div>
             </div>
@@ -148,6 +143,10 @@
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
 
+    <!-- select2 -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+
     <!-- Inicialización de timepicker -->
     <script>
         //Timepicker
@@ -160,6 +159,63 @@
         $('.form-select').select2({
             theme: "bootstrap4",
             language: 'es'
+        });
+    </script>
+
+    <!-- Select2 Multiple -->
+    <script>
+        $(document).ready(function() {
+            //Initialize Select2 Elements
+            $('.js-example-basic-multiple').select2({
+                theme: 'bootstrap4'
+            });
+        });
+    </script>
+
+    <script>
+        //Funcion Mostrar Errores del Formulario
+        function message_error(obj) {
+            var errorList = document.getElementById("errorList");
+            errorList.innerHTML = '';
+            if (typeof (obj) === 'object') {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                $.each(obj, function (key, value) {
+                    var li = document.createElement("li");
+
+                    li.innerText = key + ': ' + value;
+                    errorList.appendChild(li);
+                });
+            } else {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                var li = document.createElement("li");
+                li.innerText = obj;
+                errorList.appendChild(li);
+            }
+        }
+        //Llamamos a la funcion de Token
+        getToken(name);
+        //Hacemos el envio del Formulario mediante AJAX
+        $("#ajaxForm").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: window.location.href,
+                type: 'POST',
+                data: new FormData(this),
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        location.replace(data.redirect);
+                    } else {
+                        message_error(data.error);
+                    }
+                }
+            });
         });
     </script>
 {% endblock %}

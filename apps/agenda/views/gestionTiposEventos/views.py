@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-
+from django.db import transaction
 from apps.agenda.forms import *
 from apps.agenda.models import tiposEvento
 from apps.mixins import ValidatePermissionRequiredMixin
@@ -53,8 +53,19 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             form = self.get_form()
             data = form.save()
             data['redirect'] = self.url_redirect
+
+            # Populamos tabla intermedia
+            for user in request.POST.getlist('usuarios'):
+                notifUsersObj = notificacionUsuarios()
+                notifUsersObj.tipoEvento = data['objCreado']
+                notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
+                notifUsersObj.save()
+
         except Exception as e:
             data['error'] = str(e)
+
+        # Borramos instancia creada
+        del data['objCreado']
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -63,6 +74,7 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['entity'] = 'Tipos de evento'
         context['list_url'] = reverse_lazy('agenda:tiposEventoList')
         context['action'] = 'add'
+        context['usuarios'] = Usuarios.objects.all()
         return context
 
 
