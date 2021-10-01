@@ -23,10 +23,8 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 data = []
                 for i in tiposEvento.objects.all():
                     data.append(i.toJSON())
-                for j in data:
-                    users = notificacionUsuarios.objects.filter(tipoEvento=j['id'])
-
-                # print(data[1]['id'])
+                for tipoEvento in data:
+                    tipoEvento['usuariosAsoc'] = self.get_users(tipoEvento['id'])
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -39,6 +37,14 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         context['entity'] = 'Tipos de Eventos'
         context['create_url'] = reverse_lazy('agenda:tiposEventoCreate')
         return context
+
+    def get_users (self, idEvento):
+        usuarios = []
+        userObj = notificacionUsuarios.objects.filter(tipoEvento=idEvento)
+        for users in userObj:
+            usuarios.append(" " + users.usuarioNotif.username)
+        return usuarios
+
 
 class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
     model = tiposEvento
