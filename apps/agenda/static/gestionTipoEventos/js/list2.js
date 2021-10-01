@@ -30,7 +30,7 @@ $(function () {
             {"data": "horarioRecordatorio"},
             {"data": "recordarSistema"},
             {"data": "recordarTelegram"},
-            {"data": "usuarioNotif.username"},
+            {"data": "usuarioNotif"},
             {"data": "nombre"}, //va duplicado algun campo por la botonera
 
         ],
@@ -57,6 +57,7 @@ $(function () {
                     return simple_traduc(data);
                 }
             },
+
         ],
         initComplete: function (settings, json) {
 

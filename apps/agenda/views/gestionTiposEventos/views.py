@@ -23,6 +23,10 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 data = []
                 for i in tiposEvento.objects.all():
                     data.append(i.toJSON())
+                for j in data:
+                    users = notificacionUsuarios.objects.filter(tipoEvento=j['id'])
+
+                # print(data[1]['id'])
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
