@@ -20,12 +20,13 @@ $(function () {
             {"data": "estadoInicial.nombre"},
             {"data": "estadoEspecial.nombre"},
             {"data": "estadoFinalizado.nombre"},
+            {"data": "estadoEntregado.nombre"},
             {"data": "estadoCancelado.nombre"},
             {"data": "id"},
         ],
         columnDefs: [
             {
-                targets: [-5],
+                targets: [-6],
                 class: 'text-center',
                 render: function (data, type, row) {
                     if ( row.estadoInicial !== null) {
@@ -36,7 +37,7 @@ $(function () {
                 }
             },
             {
-                targets: [-4],
+                targets: [-5],
                 class: 'text-center',
                 render: function (data, type, row) {
                     if ( row.estadoEspecial !== null) {
@@ -47,11 +48,22 @@ $(function () {
                 }
             },
             {
-                targets: [-3],
+                targets: [-4],
                 class: 'text-center',
                 render: function (data, type, row) {
                     if ( row.estadoFinalizado !== null) {
                         return row.estadoFinalizado.nombre
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            {
+                targets: [-3],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    if ( row.estadoEntregado !== null) {
+                        return row.estadoEntregado.nombre
                     } else {
                         return ''
                     }

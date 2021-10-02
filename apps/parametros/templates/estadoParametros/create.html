@@ -27,22 +27,27 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-3" class="form-control">
+                        <div class="form-group col-2" class="form-control">
                             <label>Estado Inicial:</label>
                             <br>
                             {{ form.estadoInicial|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
-                        <div class="form-group col-3" class="form-control">
+                        <div class="form-group col-2" class="form-control">
                             <label>Estado Especial:</label>
                             <br>
                             {{ form.estadoEspecial|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
-                        <div class="form-group col-3" class="form-control">
+                        <div class="form-group col-2" class="form-control">
                             <label>Estado Finalizado:</label>
                             <br>
                             {{ form.estadoFinalizado|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
-                        <div class="form-group col-3" class="form-control">
+                        <div class="form-group col-2" class="form-control">
+                            <label>Estado Entregado:</label>
+                            <br>
+                            {{ form.estadoEntregado|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                        <div class="form-group col-2" class="form-control">
                             <label>Estado Cancelado:</label>
                             <br>
                             {{ form.estadoCancelado|add_class:'form-control'|attr:'autocomplete:off' }}

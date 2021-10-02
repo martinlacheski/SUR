@@ -5,7 +5,9 @@ var cantServicios = 0;
 var estadoInicial = 0;
 var estadoEspecial = 0;
 var estadoFinalizado = 0;
+var estadoEntregado = 0;
 var estadoCancelado = 0;
+
 //Funcion para buscar los parametros de estado
 function searchParametros() {
     $.ajax({
@@ -20,6 +22,7 @@ function searchParametros() {
             estadoInicial = data[0].estadoInicial.id;
             estadoEspecial = data[0].estadoEspecial.id;
             estadoFinalizado = data[0].estadoFinalizado.id;
+            estadoEntregado = data[0].estadoEntregado.id;
             estadoCancelado = data[0].estadoCancelado.id;
         }
     });
@@ -62,16 +65,18 @@ $(function () {
                 targets: [1],
                 class: 'text-center',
                 render: function (data, type, row) {
-                    if ( row.estadoTrabajo.id == estadoInicial) {
+                    if (row.estadoTrabajo.id == estadoInicial) {
                         return '<span class="badge badge-warning">' + row.estadoTrabajo.nombre + '</span>'
-                    } else if ( row.estadoTrabajo.id == estadoEspecial) {
-                        return '<span class="badge badge-info">' +  row.estadoTrabajo.nombre + '</span>'
-                    } else if ( row.estadoTrabajo.id == estadoFinalizado) {
-                        return '<span class="badge badge-success">' +  row.estadoTrabajo.nombre + '</span>'
-                    } else if ( row.estadoTrabajo.id == estadoCancelado) {
-                        return '<span class="badge badge-danger">' +  row.estadoTrabajo.nombre + '</span>'
+                    } else if (row.estadoTrabajo.id == estadoEspecial) {
+                        return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
+                    } else if (row.estadoTrabajo.id == estadoFinalizado) {
+                        return '<span class="badge badge-success">' + row.estadoTrabajo.nombre + '</span>'
+                    } else if (row.estadoTrabajo.id == estadoCancelado) {
+                        return '<span class="badge badge-danger">' + row.estadoTrabajo.nombre + '</span>'
+                    } else if (row.estadoTrabajo.id == estadoEntregado) {
+                        return '<span class="badge badge-primary">' + row.estadoTrabajo.nombre + '</span>'
                     } else {
-                        return '<span class="badge badge-info">' +  row.estadoTrabajo.nombre + '</span>'
+                        return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
                     }
                 }
             },
@@ -113,11 +118,29 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                    buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     if (!row.fechaSalida && row.estadoTrabajo.id !== estadoFinalizado) {
+                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                         buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
+                        buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
+                        buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                    } else if (row.estadoTrabajo.id == estadoFinalizado) {
+                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
+                    } else if (row.estadoTrabajo.id == estadoCancelado) {
+                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                    } else if (row.estadoTrabajo.id == estadoEntregado) {
+                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                    } else {
+                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                        buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
+                        buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
                         buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }
                     return buttons;
@@ -158,11 +181,24 @@ $(function () {
                 columns: [
                     {"data": "producto.descripcion"},
                     {"data": "observaciones"},
+                    {"data": "estado"},
                     {"data": "precio"},
                     {"data": "cantidad"},
                     {"data": "subtotal"},
                 ],
                 columnDefs: [
+                    {
+                        targets: [-4],
+                        class: 'text-center',
+                        className: 'dt-body-center',
+                        render: function (data, type, row) {
+                            if (row.estado) {
+                                return '<span class="badge badge-success">' + ' REALIZADO' + '</span>'
+                            } else {
+                                return '<span class="badge badge-danger">' + ' PENDIENTE' + '</span>'
+                            }
+                        }
+                    },
                     {
                         targets: [-2],
                         class: 'text-center',
@@ -209,11 +245,24 @@ $(function () {
                 columns: [
                     {"data": "servicio.descripcion"},
                     {"data": "observaciones"},
+                    {"data": "estado"},
                     {"data": "precio"},
                     {"data": "cantidad"},
                     {"data": "subtotal"},
                 ],
                 columnDefs: [
+                    {
+                        targets: [-4],
+                        class: 'text-center',
+                        className: 'dt-body-center',
+                        render: function (data, type, row) {
+                            if (row.estado) {
+                                return '<span class="badge badge-success">' + ' REALIZADO' + '</span>'
+                            } else {
+                                return '<span class="badge badge-danger">' + ' PENDIENTE' + '</span>'
+                            }
+                        }
+                    },
                     {
                         targets: [-2],
                         class: 'text-center',

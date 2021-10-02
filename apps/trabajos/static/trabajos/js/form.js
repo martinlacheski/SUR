@@ -57,6 +57,7 @@ var trabajo = {
                 {"data": "subtotal"},
                 {"data": "id"}, //Para el boton actualizar
                 {"data": "id"}, //Para el boton Observaciones
+                {"data": "estado"},
             ],
             columnDefs: [
                 {
@@ -68,7 +69,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-5],
+                    targets: [-6],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -76,7 +77,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-4],
+                    targets: [-5],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -84,7 +85,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-3],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -92,7 +93,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-2],
+                    targets: [-3],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -100,11 +101,24 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-1],
+                    targets: [-2],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         return '<a rel="observaciones" class="btn btn-info btn-xs btn-flat" style="color: black;" ><i class="fas fa-search"></i></a>';
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    className: 'dt-body-center',
+                    render: function (data, type, row) {
+                        if (row.estado) {
+                            return '<input type="checkbox" name="realizado" class="form-control-sm input-sm" checked>';
+                        } else {
+                            return '<input type="checkbox" name="realizado" class="form-control-sm input-sm">';
+                        }
                     }
                 },
             ],
@@ -148,6 +162,7 @@ var trabajo = {
                 {"data": "subtotal"},
                 {"data": "id"}, //Para el boton actualizar
                 {"data": "id"}, //Para el boton observaciones
+                {"data": "estado"},
             ],
             columnDefs: [
                 {
@@ -159,7 +174,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-5],
+                    targets: [-6],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -167,7 +182,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-4],
+                    targets: [-5],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -175,7 +190,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-3],
+                    targets: [-4],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -183,7 +198,7 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-2],
+                    targets: [-3],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
@@ -191,11 +206,23 @@ var trabajo = {
                     }
                 },
                 {
-                    targets: [-1],
+                    targets: [-2],
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
                         return '<a rel="observaciones" class="btn btn-info btn-xs btn-flat" style="color: black;" ><i class="fas fa-search"></i></a>';
+                    }
+                },
+                {
+                    targets: [-1],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        if (row.estado) {
+                            return '<input type="checkbox" name="realizado" class="form-control-sm input-sm" checked>';
+                        } else {
+                            return '<input type="checkbox" name="realizado" class="form-control-sm input-sm">';
+                        }
                     }
                 },
             ],
@@ -757,6 +784,8 @@ $(function () {
             var producto = tablaSearchProductos.row(tr.row).data();
             producto.cantidad = 1;
             producto.subtotal = 0.00;
+            producto.estado = false;
+            producto.observaciones = "";
             trabajo.addProducto(producto);
             //Una vez cargado el producto, sacamos del listado del Datatables
             tablaSearchProductos.row($(this).parents('tr')).remove().draw();
@@ -997,6 +1026,8 @@ $(function () {
                 event.preventDefault();
                 ui.item.cantidad = 1;
                 ui.item.subtotal = 0.00;
+                ui.item.estado = false;
+                ui.item.observaciones = "";
                 trabajo.addProducto(ui.item);
                 $(this).val('');
             },
@@ -1019,6 +1050,8 @@ $(function () {
                     var item = (data.producto);
                     item.cantidad = 1;
                     item.subtotal = 0.00;
+                    item.estado = false;
+                    item.observaciones = "";
                     trabajo.addProducto(item);
                     $('input[name="searchProductos"]').val('');
                     $('input[name="searchProductos"]').focus();
@@ -1142,6 +1175,18 @@ $(function () {
             $('input[name="observacionDescripcionProducto"]').val(prod.descripcion);
             $('input[name="observacionProducto"]').val(trabajo.items.productos[tr.row].observaciones);
             $('#modalObservacionesProducto').modal('show');
+        })
+        //evento cambiar renglon (cantidad) del detalle
+        .on('change', 'input[name="realizado"]', function () {
+            //asignamos a una variable el Estado de Realizado, en la posicion actual
+            if (!this.checked) {
+                var estado = false;
+            } else {
+                var estado = true;
+            }
+            //Obtenemos la posicion del elemento a modificar dentro del Datatables
+            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            trabajo.items.productos[tr.row].estado = estado;
         });
 
     //------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
@@ -1267,28 +1312,6 @@ $(function () {
         var errorList = document.getElementById("errorListformObservacionesProducto");
         errorList.innerHTML = '';
     });
-    //Funcion Mostrar Errores del Formulario Producto
-    function message_error_observaciones_producto(obj) {
-        var errorList = document.getElementById("errorListformObservacionesProducto");
-        errorList.innerHTML = '';
-        if (typeof (obj) === 'object') {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            $.each(obj, function (key, value) {
-                var li = document.createElement("li");
-                li.innerText = key + ': ' + value;
-                errorList.appendChild(li);
-            });
-        } else {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            var li = document.createElement("li");
-            li.innerText = obj;
-            errorList.appendChild(li);
-        }
-    }
 
 //------------------------------------MODAL Buscar SERVICIOS----------------------------------------//
     //Boton Buscar Servicios Mostrar Modal
@@ -1350,6 +1373,8 @@ $(function () {
             var servicio = tablaSearchServicios.row(tr.row).data();
             servicio.cantidad = 1;
             servicio.subtotal = 0.00;
+            servicio.observaciones = "";
+            servicio.estado = false;
             trabajo.addServicio(servicio);
             //Una vez cargado el producto, sacamos del listado del Datatables
             tablaSearchServicios.row($(this).parents('tr')).remove().draw();
@@ -1501,6 +1526,8 @@ $(function () {
             event.preventDefault();
             ui.item.cantidad = 1;
             ui.item.subtotal = 0.00;
+            ui.item.observaciones = "";
+            ui.item.estado = false;
             trabajo.addServicio(ui.item);
             $(this).val('');
         },
@@ -1523,6 +1550,8 @@ $(function () {
                     var item = (data.servicio);
                     item.cantidad = 1;
                     item.subtotal = 0.00;
+                    item.estado = false;
+                    item.observaciones = "";
                     trabajo.addServicio(item);
                     $('input[name="searchServicios"]').val('');
                     $('input[name="searchServicios"]').focus();
@@ -1629,12 +1658,23 @@ $(function () {
             renglon = tr.row;
             //Asignamos a una variable el Servicio en base al renglon
             var serv = tablaServicios.row(tr.row).data();
-
-            //Cargamos los valores del Producto en el modal
+            //Cargamos los valores del Servicio en el modal
             $('input[name="idObservacionServicioUpdate"]').val(serv.id);   //INPUT HIDDEN ID SERVICIO
             $('input[name="observacionDescripcionServicio"]').val(serv.descripcion);
-            $('input[name="observacionServicio"]').val(serv.observaciones);
+            $('input[name="observacionServicio"]').val(trabajo.items.servicios[tr.row].observaciones);
             $('#modalObservacionesServicio').modal('show');
+        })
+        //evento cambiar renglon (cantidad) del detalle
+        .on('change', 'input[name="realizado"]', function () {
+            //asignamos a una variable el Estado de Realizado, en la posicion actual
+            if (!this.checked) {
+                var estado = false;
+            } else {
+                var estado = true;
+            }
+            //Obtenemos la posicion del elemento a modificar dentro del Datatables
+            var tr = tablaServicios.cell($(this).closest('td, li')).index();
+            trabajo.items.servicios[tr.row].estado = estado;
         });
     //------------------------------------MODAL ACTUALIZAR PRECIO SERVICIOS----------------------------------------//
     //EN MODAL ACTUALIZAR PRECIO SERVICIO
@@ -1739,35 +1779,56 @@ $(function () {
         var errorList = document.getElementById("errorListformObservacionesServicio");
         errorList.innerHTML = '';
     });
-    //Funcion Mostrar Errores del Formulario Producto
-    function message_error_observaciones_servicio(obj) {
-        var errorList = document.getElementById("errorListformObservacionesServicio");
-        errorList.innerHTML = '';
-        if (typeof (obj) === 'object') {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            $.each(obj, function (key, value) {
-                var li = document.createElement("li");
-                li.innerText = key + ': ' + value;
-                errorList.appendChild(li);
-            });
-        } else {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            var li = document.createElement("li");
-            li.innerText = obj;
-            errorList.appendChild(li);
-        }
-    }
-
 //------------------------------------SUBMIT TRABAJO----------------------------------------//
     // Submit TRABAJO
     $('#trabajoForm').on('submit', function (e) {
         e.preventDefault();
+        var estadoServicio = true;
+        var estadoProducto = true;
+        var accion = $('input[name="action"]').val();
+        //Recorremos los servicios para comprobar que ya se realizaron
+        for (var i = 0; i < trabajo.items.servicios.length; i++) {
+            if (trabajo.items.servicios[i].estado == false) {
+                estadoServicio = false;
+            }
+        }
+        //Recorremos los productos para comprobar que ya se realizaron
+        for (var i = 0; i < trabajo.items.productos.length; i++) {
+            if (trabajo.items.productos[i].estado == false) {
+                estadoProducto = false;
+            }
+        }
+        //Comprobamos que exista al menos un producto o un servicio
         if (trabajo.items.productos.length === 0 && trabajo.items.servicios.length === 0) {
             error_action('Error', 'Debe al menos tener un producto o servicio en sus detalles', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        //Chequeamos que Si es la accion de Finalizar el trabajo, todos los servicios en el registro se hayan realizado
+        } else if ((estadoServicio == false) && (accion == 'confirm')) {
+            error_action('Error', 'Posee servicios sin realizarse, no se puede finalizar el trabajo', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        //Chequeamos que Si es la accion de ENTREGAR el trabajo, todos los servicios y productos en el registro se hayan realizado
+        } else if ((estadoProducto == false) && (estadoServicio == false) && (accion == 'deliver')) {
+            error_action('Error', 'Posee productos y servicios  sin realizarse, no se puede entregar el trabajo', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        //Chequeamos que Si es la accion de ENTREGAR el trabajo, todos los servicios y productos en el registro se hayan realizado
+        } else if ((estadoProducto == false) && (accion == 'deliver')) {
+            error_action('Error', 'Posee productos  sin realizarse, no se puede entregar el trabajo', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        //Chequeamos que Si es la accion de ENTREGAR el trabajo, todos los servicios y productos en el registro se hayan realizado
+        } else if ((estadoServicio == false) && (accion == 'deliver')) {
+            error_action('Error', 'Posee servicios  sin realizarse, no se puede entregar el trabajo', function () {
                 //pass
             }, function () {
                 //pass
@@ -1787,10 +1848,18 @@ $(function () {
                     trabajo.items.prioridad = $('select[name="prioridad"]').val();
                     trabajo.items.estadoTrabajo = $('select[name="estadoTrabajo"]').val();
                     var parameters = new FormData();
-                    //Pasamos la accion ADD
+                    //Pasamos la accion
                     parameters.append('action', $('input[name="action"]').val());
                     //Agregamos la estructura de Trabajo con los detalles correspondientes
                     parameters.append('trabajo', JSON.stringify(trabajo.items));
+                    if (accion == 'deliver') {
+                        var condicion = $('select[name="selectCondicionPago"]').val();
+                        parameters.append('condicionVenta', condicion);
+                        var medio = $('select[name="selectMedioPago"]').val();
+                        parameters.append('medioPago', medio);
+                        console.log(condicion);
+                        console.log(medio);
+                    }
                     //Bloque AJAX Trabajo
                     $.ajax({
                         url: window.location.href,
@@ -1820,17 +1889,13 @@ $(function () {
                             }
                         }
                     });
-                }
-                ,
-
+                },
                 function () {
                     //pass
                 }
             );
         }
         ;
-    })
-    ;
-})
-;
+    });
+});
 

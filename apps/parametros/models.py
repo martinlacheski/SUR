@@ -221,8 +221,10 @@ class EstadoParametros(models.Model):
                                       related_name='estadoInicial')
     estadoEspecial = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Especial',
                                        related_name='estadoEspecial')
-    estadoFinalizado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Especial',
+    estadoFinalizado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Finalizado',
                                          related_name='estadoFinalizado')
+    estadoEntregado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Entregado',
+                                         related_name='estadoEntregado')
     estadoCancelado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Cancelado',
                                         related_name='estadoCancelado')
 
@@ -238,6 +240,10 @@ class EstadoParametros(models.Model):
             pass
         try:
             item['estadoFinalizado'] = self.estadoFinalizado.toJSON()
+        except:
+            pass
+        try:
+            item['estadoEntregado'] = self.estadoEntregado.toJSON()
         except:
             pass
         try:

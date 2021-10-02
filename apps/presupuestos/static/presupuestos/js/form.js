@@ -1706,6 +1706,9 @@ $(function () {
                                 }
                             }
                         });
+                    },
+                    function () {
+                        //pass
                     }
                 );
             }

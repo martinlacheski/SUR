@@ -26,11 +26,12 @@
                 <thead>
                 {% block columns %}
                     <tr>
-                        <th scope="col" style="width: 22%;">Estado Inicial</th>
-                        <th scope="col" style="width: 22%;">Estado Especial</th>
-                        <th scope="col" style="width: 22%;">Estado Finalizado</th>
-                        <th scope="col" style="width: 22%;">Estado Cancelado</th>
-                        <th scope="col" style="width: 12%;">Opciones</th>
+                        <th scope="col" style="width: 18%;">Estado Inicial</th>
+                        <th scope="col" style="width: 18%;">Estado Especial</th>
+                        <th scope="col" style="width: 18%;">Estado Finalizado</th>
+                        <th scope="col" style="width: 18%;">Estado Entregado</th>
+                        <th scope="col" style="width: 18%;">Estado Cancelado</th>
+                        <th scope="col" style="width: 10%;">Opciones</th>
                     </tr>
                 {% endblock %}
                 </thead>
@@ -42,7 +43,7 @@
             </table>
         </div>
         <div class="card-footer">
-            {% if cantEmpresa == 0 %}
+            {% if cantParametros == 0 %}
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat">
                     <i class="fas fa-plus"></i> Nuevo registro
                 </a>

@@ -1,17 +1,14 @@
-*REVISAR ERROR EN EL INGRESO DE OBSERVACIONES, DATETIME
-
-*CONTROLAR EL ESTADO DE PRODUCTOS Y SERVICIOS HAYAN SIDO REALIZADOS PARA PODER FINALIZAR EL TRABAJO
-
-*INCORPORAR APARTADO PARA QUE SE REGISTRE EL TRABAJO COMO "ENTREGADO"
-
 *INCORPORAR APARTADO PARA QUE SE REGISTRE UN TRABAJO QUE NO REQUIERA PLANIFICACION
+    - podria hacerse desde seleccionar "EN PROCESO"
 
 *GENERAR UNA VISTA DE TIPO DE USUARIO RECTIFICADOR
 
-*TRABAJAR CON MODULO PLANIFICACION
+----------------------------------------------------------------------------------------------------------------------
 
-*TRABAJAR CON MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
-    estan pendientes. Incorporar un campo de estado al PedidosSolicitud
+*GENERAR MODULO PLANIFICACION SEMANAL
+
+*GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
+    estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud
 
 *AUDITORIA
 
@@ -20,3 +17,5 @@
 *ESTADISTICA
 
 *GRUPO DE USUARIO
+
+*ROLES Y PERMISOS
