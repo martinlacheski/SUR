@@ -82,7 +82,7 @@
                             </i>
                         </div>
                         <div class="col-6">
-                            <strong>USUARIO ASOCIADO </strong>
+                            <strong>USUARIOS ASOCIADOS </strong>
                             <i>
                                 <p id="modal_user_asoc_notif"></p>
                             </i>
@@ -119,6 +119,24 @@
         </div>
     </div>
 
+    <!-- funcion de pruebas. Solamente usada para enviar request cada rato. SE DEBE BORRAR -->
+    <script>
+        function requestPrueba (){
+            $.ajax({
+                url: '/agenda/list/',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'prueba2',
+                    'user': "{{ request.user.id }}",
+                },
+            });
+
+        }
+        // var actualizador = setInterval(requestPrueba, 10000);
+
+    </script>
 
     <script src="{% static 'lib/adminlte-3.1.0/plugins/toastr/toastr.min.js' %}"> </script>
     <script>
@@ -132,7 +150,8 @@
                 dataType: 'json',
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
-                    'action': 'get_news'
+                    'action': 'prueba2',
+                    'user': "{{ request.user.id }}",
                 },
                 success: function (data) {
                     console.log("RESPUESTA" + data)
@@ -151,7 +170,7 @@
                             agregarNotifPendiente(prop, data[prop][1]);
                             mostrarIcon();
                         }
-                        // Notificaciones que solo van a ser agregadas a la lista
+                        // Notificaciones que solo van a ser agregadas a la lista porque ya se vieron
                         else if (data[prop][0] === 'no_notificar'){
                             agregarNotif(prop, data[prop][1]);
                         }
@@ -211,7 +230,7 @@
             iconNotif.insertAdjacentHTML('afterbegin', iconElement);
         }
 
-        //var actualizador = setInterval(nuevasNotif, 10000);
+        var actualizador = setInterval(nuevasNotif, 10000);
     </script>
 
     <script>
@@ -233,20 +252,30 @@
         function detalleNotif (elemento){
             elemento.setAttribute("class", "elementoNotificacion dropdown-item"); // sacamos su color (rojo o azul)
             $.ajax({
-                url: '/agenda/list/',
+                url: '/agenda/list/', // Es mejor hardcodear esto que pasarle A TOOODOS los templates un contextdata
                 type: 'POST',
                 dataType: 'json',
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'detail_evento',
-                    'pk': elemento.getAttribute("eventoref")
+                    'pk': elemento.getAttribute("eventoref"),
+                    'user': "{{ request.user.id }}",
                 },
                 success : function (data){
-                    /* Ubicamos todos los datos correspondientes en el modal */
+
+                    var usuariosAsoc = "";
                     document.getElementById('modal_tipo_evento_notif').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción_notif').innerHTML = data.descripcion;
-                    document.getElementById('modal_user_asoc_notif').innerHTML = data.userAsoc;
+
+                    // Procesamos usuarios asociados para convertir en string agradable
+                    for (let i = 0; i <= data.userAsoc.length-1; i++){
+                        usuariosAsoc += data.userAsoc[i] + ",";
+                    }
+
+                    document.getElementById('modal_user_asoc_notif').innerHTML = usuariosAsoc.slice(0, -1); //slice para borrar ultima coma
                     document.getElementById('modal_fecha_notif_notif').innerHTML = data.fechaNotif;
+
+                    // Procesamos repetición para string agradable en español
                     switch(data.repeticion) {
                         case 'daily':
                             data.repeticion = 'Diaria';
@@ -259,15 +288,8 @@
                             break;
                         default:
                             data.repeticion = 'Única';
-                    }
-                    document.getElementById('modal_repeticion_notif').innerHTML = data.repeticion;
-                    let notifMsj = "";
-                    for (let i = 0; i <= 1; i++){
-                        if(data.notifMediante[i][1] === true){
-                            notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
-                        }
-                    }
-                    document.getElementById('modal_mediante_notif').innerHTML = notifMsj.slice(0, -2);
+                     }
+                    document.getElementById('modal_mediante_notif').innerHTML = data.repeticion;
 
                     /* Mostramos modal */
                     $('#modal-lg-eventos-notif').modal('show');

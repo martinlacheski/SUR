@@ -5,7 +5,6 @@ from apps.agenda.views.gestionNotificaciones.views import *
 app_name = 'agenda'
 
 urlpatterns = [
-    # PAISES
     path('agenda/list/', DashboardAgenda.as_view(), name='dashboard'),
     path('agenda/updateEvento/<int:pk>/', UpdateEventosAgenda.as_view(), name='eventosUpdate'),
     path('agenda/deleteEvento/<int:pk>/', DeleteEventosAgenda.as_view(), name='eventosDelete'),

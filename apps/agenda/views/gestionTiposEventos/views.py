@@ -38,9 +38,9 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         context['create_url'] = reverse_lazy('agenda:tiposEventoCreate')
         return context
 
-    def get_users (self, idEvento):
+    def get_users (self, idTipoEvento):
         usuarios = []
-        userObj = notificacionUsuarios.objects.filter(tipoEvento=idEvento)
+        userObj = notificacionUsuarios.objects.filter(tipoEvento=idTipoEvento)
         for users in userObj:
             usuarios.append(" " + users.usuarioNotif.username)
         return usuarios
