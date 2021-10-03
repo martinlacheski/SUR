@@ -262,34 +262,42 @@
                     'user': "{{ request.user.id }}",
                 },
                 success : function (data){
-
-                    var usuariosAsoc = "";
+                    console.log("hola");
                     document.getElementById('modal_tipo_evento_notif').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción_notif').innerHTML = data.descripcion;
 
-                    // Procesamos usuarios asociados para convertir en string agradable
-                    for (let i = 0; i <= data.userAsoc.length-1; i++){
-                        usuariosAsoc += data.userAsoc[i] + ",";
-                    }
+                    // var usuariosAsoc = "";
+                    {#// Procesamos usuarios asociados para convertir en string agradable#}
+                    {#for (let i = 0; i <= data.userAsoc.length-1; i++){#}
+                    {#    usuariosAsoc += data.userAsoc[i] + ",";#}
+                    {# } #}
 
-                    document.getElementById('modal_user_asoc_notif').innerHTML = usuariosAsoc.slice(0, -1); //slice para borrar ultima coma
+
                     document.getElementById('modal_fecha_notif_notif').innerHTML = data.fechaNotif;
 
-                    // Procesamos repetición para string agradable en español
-                    switch(data.repeticion) {
-                        case 'daily':
-                            data.repeticion = 'Diaria';
-                            break;
-                        case 'weekly':
-                            data.repeticion = 'Semanal';
-                            break;
-                        case 'monthly':
-                            data.repeticion = 'Mensual';
-                            break;
-                        default:
-                            data.repeticion = 'Única';
+                    {#// Procesamos repetición para string agradable en español#}
+                    {#switch(data.repeticion) {#}
+                    {#    case 'daily':#}
+                    {#        data.repeticion = 'Diaria';#}
+                    {#        break;#}
+                    {#    case 'weekly':#}
+                    {#        data.repeticion = 'Semanal';#}
+                    {#        break;#}
+                    {#    case 'monthly':#}
+                    {#        data.repeticion = 'Mensual';#}
+                    {#        break;#}
+                    {#    default:#}
+                    {#        data.repeticion = 'Única';#}
+                    {# }#}
+
+                    // Procesamos canales de notificacion para convertir en string agradable
+                    let notifMsj = "";
+                    for (let i = 0; i <= 1; i++){
+                        if(data.notifMediante[i][1] === true){
+                            notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
+                        }
                      }
-                    document.getElementById('modal_mediante_notif').innerHTML = data.repeticion;
+                    document.getElementById('modal_mediante_notif').innerHTML = notifMsj.slice(0, -2);
 
                     /* Mostramos modal */
                     $('#modal-lg-eventos-notif').modal('show');

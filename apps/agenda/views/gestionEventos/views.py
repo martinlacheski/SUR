@@ -135,7 +135,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             for n in notifs_evento:
                 n.ultVistaUserSist = date.today()
                 n.save()
-
+            print(request.POST['pk'])
             data_evento = datos_evento(request.POST['pk'])
             return JsonResponse(data_evento)
 
@@ -394,39 +394,24 @@ class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                 n.save()
 
 
-def datos_evento(evento_id):
+def datos_evento(notif_id):
     data = {}
+    notif = notificaciones.objects.get(pk=notif_id)
+    evento_id = notif.eventoAsoc.id
+    print(evento_id)
     evento = eventosAgenda.objects.get(pk=evento_id)
     data['tipoEvento'] = str(evento.tipoEvento)
     data['fechaNotif'] = str(evento.fechaNotificacion.day) + \
                          "/" + str(evento.fechaNotificacion.month) + \
                          "/" + str(evento.fechaNotificacion.year)
-    data['fechaFinal'] = str(evento.fechaNotificacion.day) + \
-                         "/" + str(evento.fechaNotificacion.month) + \
-                         "/" + str(evento.fechaNotificacion.year)
+    # data['fechaFinal'] = str(evento.fechaNotificacion.day) + \
+    #                      "/" + str(evento.fechaNotificacion.month) + \
+    #                      "/" + str(evento.fechaNotificacion.year)
     data['descripcion'] = str(evento.descripcion)
-    data['repeticion'] = str(evento.repeticion)
-    data['userAsoc'] = get_users(evento.tipoEvento.id)
+    # data['repeticion'] = str(evento.repeticion)
     data['notifMediante'] = (['Sistema', evento.tipoEvento.recordarSistema],
                              ['Telegram', evento.tipoEvento.recordarTelegram])
     return data
 
 
-def get_users(idTipoEvento):
-    usuarios = []
-    userObj = notificacionUsuarios.objects.filter(tipoEvento=idTipoEvento)
-    for users in userObj:
-        usuarios.append(" " + users.usuarioNotif.username)
-    return usuarios
 
-
-def save_ultima_notif(idevento):
-    event = eventosAgenda.objects.get(pk=idevento)
-    event.ultimaNotificacionSist = datetime.date.today()
-    event.save()
-
-
-def save_ultima_vista(idevento):
-    event = eventosAgenda.objects.get(pk=idevento)
-    event.ultimaVistaNotifiSist = datetime.date.today()
-    event.save()

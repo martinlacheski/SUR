@@ -310,24 +310,24 @@
                         usuariosAsoc += data.userAsoc[i] + ",";
                     }
 
-                    document.getElementById('modal_user_asoc').innerHTML = usuariosAsoc.slice(0, -1); //slice para borrar ultima coma
+                    {#document.getElementById('modal_user_asoc').innerHTML = usuariosAsoc.slice(0, -1); //slice para borrar ultima coma#}
                     document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
 
                     // Procesamos repetición para string agradable en español
-                    switch(data.repeticion) {
-                        case 'daily':
-                            data.repeticion = 'Diaria';
-                            break;
-                        case 'weekly':
-                            data.repeticion = 'Semanal';
-                            break;
-                        case 'monthly':
-                            data.repeticion = 'Mensual';
-                            break;
-                        default:
-                            data.repeticion = 'Única';
-                     }
-                    document.getElementById('modal_repeticion').innerHTML = data.repeticion;
+                    {#switch(data.repeticion) {#}
+                    {#    case 'daily':#}
+                    {#        data.repeticion = 'Diaria';#}
+                    {#        break;#}
+                    {#    case 'weekly':#}
+                    {#        data.repeticion = 'Semanal';#}
+                    {#        break;#}
+                    {#    case 'monthly':#}
+                    {#        data.repeticion = 'Mensual';#}
+                    {#        break;#}
+                    {#    default:#}
+                    {#        data.repeticion = 'Única';#}
+                    {# }#}
+                    {# document.getElementById('modal_repeticion').innerHTML = data.repeticion; #}
 
                     // Procesamos canales de notificacion para convertir en string agradable
                     let notifMsj = "";
