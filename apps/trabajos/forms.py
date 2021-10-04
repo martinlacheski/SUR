@@ -65,6 +65,7 @@ class TrabajosForm(ModelForm):
             ),
             'estadoTrabajo': Select(
                 attrs={
+                    'readonly': True,
                     'class': 'form-control select2',
                 }
             ),

@@ -778,6 +778,6 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
             pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
             return HttpResponse(pdf, content_type='application/pdf')
         except Exception as e:
-            print(str(e))
+            pass
 
         return HttpResponseRedirect(reverse_lazy('presupuestos:presupuestos_list'))

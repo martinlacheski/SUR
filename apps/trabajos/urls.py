@@ -8,6 +8,7 @@ urlpatterns = [
     # Trabajos
     path('trabajos/list/', TrabajosListView.as_view(), name='trabajos_list'),
     path('trabajos/add/', TrabajosCreateView.as_view(), name='trabajos_create'),
+    path('trabajos/express/', TrabajosExpressCreateView.as_view(), name='trabajos_create_express'),
     path('trabajos/update/<int:pk>/', TrabajosUpdateView.as_view(), name='trabajos_update'),
     path('trabajos/confirm/<int:pk>/', TrabajosConfirmView.as_view(), name='trabajos_confirm'),
     path('trabajos/deliver/<int:pk>/', TrabajosDeliverView.as_view(), name='trabajos_deliver'),

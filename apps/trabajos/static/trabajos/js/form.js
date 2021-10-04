@@ -356,7 +356,7 @@ $(document).ready(function () {
         language: 'es'
     });
     var accion = $('input[name="action"]').val();
-    if (accion === 'add') {
+    if (accion === 'add' || accion === 'express' ) {
         $('input[name="subtotalProductos"]').val('0.00');
         $('input[name="subtotalServicios"]').val('0.00');
         $('input[name="iva"]').val('0.00');
@@ -567,6 +567,10 @@ $(function () {
                 success: function (data) {
                     //asignamos el detalle a la estructura
                     trabajo.items.productos = data;
+                    //Agregamos el estado a FALSE por cada Producto
+                    for (var i = 0; i < trabajo.items.productos.length; i++) {
+                        trabajo.items.productos[i].estado = false
+                    }
                     //actualizamos el listado de productos
                     trabajo.listProductos();
                 }
@@ -584,6 +588,10 @@ $(function () {
                 success: function (data) {
                     //asignamos el detalle a la estructura
                     trabajo.items.servicios = data;
+                    //Agregamos el estado a FALSE por cada Servicio
+                    for (var i = 0; i < trabajo.items.servicios.length; i++) {
+                        trabajo.items.servicios[i].estado = false
+                    }
                     //actualizamos el listado de productos
                     trabajo.listServicios();
                 }
@@ -1903,8 +1911,6 @@ $(function () {
                         parameters.append('condicionVenta', condicion);
                         var medio = $('select[name="selectMedioPago"]').val();
                         parameters.append('medioPago', medio);
-                        console.log(condicion);
-                        console.log(medio);
                     }
                     //Bloque AJAX Trabajo
                     $.ajax({

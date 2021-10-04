@@ -42,7 +42,7 @@
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
-                    {% if action == 'add' %}
+                    {% if action == 'add' or action == 'express' %}
                         <i class="fas fa-plus"></i>
                     {% else %}
                         <i class="fas fa-edit"></i>
@@ -57,7 +57,7 @@
                     <div class="form-group col-6">
                         <label>Cliente:</label>
                         <div class="input-group">
-                            {% if action == 'add' %}
+                            {% if action == 'add' or action == 'express' %}
                                 {{ form.cliente }}
                                 <div class="input-group-append">
                                     <button class="btn btn-success btn-flat btnAddCliente" type="button">
@@ -74,7 +74,7 @@
                     <div class="form-group col-2">
                         <label>Fecha de Entrada:</label>
                         <div class="col-12" id="fechaEntrada" data-target-input="nearest">
-                            {% if action == 'add' %}
+                            {% if action == 'add' or action == 'express' %}
                                 {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                             {% else %}
                                 {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled:true' }}
@@ -93,7 +93,7 @@
                         <label>Marca:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectMarca" id="selectMarca"
-                                    {% if action == 'add' %}
+                                    {% if action == 'add' or action == 'express' %}
                                     aria-label="selectMarca">
                                             <option value="">---------</option>
                                             {% for m in marcas %}
@@ -109,7 +109,7 @@
                     <div class="form-group col-3">
                         <label>Modelo:</label>
                         <div class="input-group">
-                            {% if action == 'add' %}
+                            {% if action == 'add' or action == 'express' %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
                             {% else %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
@@ -120,7 +120,7 @@
                         <label>Plantilla:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
-                                    {% if action == 'add' %}
+                                    {% if action == 'add' or action == 'express' %}
                                     name="selectPlantilla" aria-label="selectPlantilla">
                                             <option value="">---------</option>
                                         </select>
@@ -142,9 +142,9 @@
                     </div>
                     <div class="form-group col-3">
                         <div class="form-group">
-                            <label>Estado del Trabajo:</label>
-                            <br>
-                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                <label>Estado del Trabajo:</label>
+                                <br>
+                                {{ form.estadoTrabajo|add_class:'form-control'|attr:'disabled' }}
                         </div>
                     </div>
                 </div>
@@ -158,16 +158,20 @@
                     </div>
                     <div class="col-4">
                         <div class="form-group">
-                            <label>Usuario Asignado:</label>
-                            <br>
-                            {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% if action != 'express' %}
+                                <label>Usuario Asignado:</label>
+                                <br>
+                                {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
-                            <label>Ficha de Trabajo:</label>
-                            <br>
-                            {{ form.fichaTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {% if action != 'express' %}
+                                <label>Ficha de Trabajo:</label>
+                                <br>
+                                {{ form.fichaTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -345,7 +349,7 @@
                         </div>
                     {% endif %}
                     <button type="submit" class="btn btn-primary btn-flat">
-                        {% if action == 'add' %}
+                        {% if action == 'add' or action == 'express' %}
                             <i class="fas fa-save"></i> Guardar registro
                         {% elif action == 'edit' %}
                             <i class="fas fa-save"></i> Guardar registro
