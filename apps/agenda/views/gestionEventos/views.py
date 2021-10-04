@@ -182,7 +182,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
                                 n.save()
                             print("descartamos todas sus notificaciones")
                         else:
-                            print("el evento no está vencido")
+                            print("el evento no está vencido, veamos si vence hoy")
                             # Si el evento vence hoy, entonces sus notificaciones son urgentes
                             if evento.fechaNotificacion == dia_hoy:
                                 evento.vencido = True

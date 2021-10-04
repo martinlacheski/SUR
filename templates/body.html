@@ -129,13 +129,13 @@
                 dataType: 'json',
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
-                    'action': 'prueba2',
+                    'action': 'prueba',
                     'user': "{{ request.user.id }}",
                 },
             });
 
         }
-        // var actualizador = setInterval(requestPrueba, 10000);
+        var actualizador = setInterval(requestPrueba, 20000);
 
     </script>
 
@@ -231,7 +231,7 @@
             iconNotif.insertAdjacentHTML('afterbegin', iconElement);
         }
 
-        var actualizador = setInterval(nuevasNotif, 10000);
+        // var actualizador = setInterval(nuevasNotif, 10000);
 
         // Ejecutamos la funcion cada vez que le página se actualiza
         $(document).ready(function() {
