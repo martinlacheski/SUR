@@ -76,22 +76,23 @@
                             <i>
                                 <p id="modal_fecha_notif_notif"></p>
                             </i>
-                            <strong>REPETICIÓN</strong>
-                            <i>
-                                <p id="modal_repeticion_notif"></p>
-                            </i>
-                        </div>
-                        <div class="col-6">
-                            <strong>USUARIOS ASOCIADOS </strong>
-                            <i>
-                                <p id="modal_user_asoc_notif"></p>
-                            </i>
-                        </div>
-                        <div class="col-6">
-                            <strong>NOTIFICADO MEDIANTE </strong>
+                              <strong>NOTIFICADO MEDIANTE </strong>
                             <i>
                                 <p id="modal_mediante_notif"></p>
                             </i>
+{#                            <strong>REPETICIÓN</strong>#}
+{#                            <i>#}
+{#                                <p id="modal_repeticion_notif"></p>#}
+{#                            </i>#}
+                        </div>
+                        <div class="col-6">
+{#                            <strong>USUARIOS ASOCIADOS </strong>#}
+{#                            <i>#}
+{#                                <p id="modal_user_asoc_notif"></p>#}
+{#                            </i>#}
+                        </div>
+                        <div class="col-6">
+
                         </div>
                     </div>
                     <div class="row">
@@ -231,6 +232,11 @@
         }
 
         var actualizador = setInterval(nuevasNotif, 10000);
+
+        // Ejecutamos la funcion cada vez que le página se actualiza
+        $(document).ready(function() {
+            nuevasNotif();
+        })
     </script>
 
     <script>
@@ -322,12 +328,15 @@
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'evento_cumplido',
-                    'pk':this.getAttribute("evento_id")
+                    'pk':this.getAttribute("evento_id"),
+                    'user': "{{ request.user.id }}",
                 },
             });
 
             // Escondemos modal
             $('#modal-lg-eventos-notif').modal('hide');
+            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-light');
+
 
         });
     </script>

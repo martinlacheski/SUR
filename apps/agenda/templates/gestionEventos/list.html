@@ -154,9 +154,9 @@
                                 <i>
                                     <p id="modal_fecha_notif"></p>
                                 </i>
-                                <strong>REPETICIÓN</strong>
+                                 <strong>NOTIFICADO MEDIANTE </strong>
                                 <i>
-                                    <p id="modal_repeticion"></p>
+                                    <p id="modal_tipo_notif"></p>
                                 </i>
                             </div>
                             <div class="col-6">
@@ -166,10 +166,10 @@
                                 </i>
                             </div>
                             <div class="col-6">
-                                <strong>NOTIFICADO MEDIANTE </strong>
-                                <i>
-                                    <p id="modal_tipo_notif"></p>
-                                </i>
+                                {#                                <strong>REPETICIÓN</strong>#}
+{#                                <i>#}
+{#                                    <p id="modal_repeticion"></p>#}
+{#                                </i>#}
                             </div>
                         </div>
                         <div class="row">
@@ -301,16 +301,10 @@
                     'pk' : id_evento
                 },
                 success : function (data){
-                    var usuariosAsoc = "";
+
                     document.getElementById('modal_tipo_evento').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción').innerHTML = data.descripcion;
-
-                    // Procesamos usuarios asociados para convertir en string agradable
-                    for (let i = 0; i <= data.userAsoc.length-1; i++){
-                        usuariosAsoc += data.userAsoc[i] + ",";
-                    }
-
-                    {#document.getElementById('modal_user_asoc').innerHTML = usuariosAsoc.slice(0, -1); //slice para borrar ultima coma#}
+                    document.getElementById('modal_user_asoc').innerHTML = data.usuariosAsoc.slice(0, -2); //slice para borrar ultima coma
                     document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
 
                     // Procesamos repetición para string agradable en español
@@ -392,26 +386,28 @@
         });
 
 
-        $('#customCheckbox1').on('click', function (){
-            if (this.checked) {
-                $('#selectRepeticion').prop('disabled', false);
-                $('#fechaFinalizacionField').prop('hidden', false);
-
-
-            } else {
-                $('#selectRepeticion').prop('disabled', true);
-                $('#fechaFinalizacionField').prop('hidden', true);
-                $('#id_fechaFinalizacion').val('');
-            }
-        });
-
-        $('#customCheckbox1').ready(function(){
-                if($('#customCheckbox1').prop('checked')){
-                    $('#fechaFinalizacionField').prop('hidden', false);
-                }else{
-                    $('#fechaFinalizacionField').prop('hidden', true);
-                }
-            });
+        // Uasa para esconder o no el campo de fecha de finalización en caso de que la notificación se repita semanal, diaria o mensual
+        // No está en funcionamiento pero será utilizada en el futuro
+        {#$('#customCheckbox1').on('click', function (){#}
+        {#    if (this.checked) {#}
+        {#        $('#selectRepeticion').prop('disabled', false);#}
+        {#        $('#fechaFinalizacionField').prop('hidden', false);#}
+        {##}
+        {##}
+        {#    } else {#}
+        {#        $('#selectRepeticion').prop('disabled', true);#}
+        {#        $('#fechaFinalizacionField').prop('hidden', true);#}
+        {#        $('#id_fechaFinalizacion').val('');#}
+        {#    }#}
+        {#});#}
+        {##}
+        {#$('#customCheckbox1').ready(function(){#}
+        {#        if($('#customCheckbox1').prop('checked')){#}
+        {#            $('#fechaFinalizacionField').prop('hidden', false);#}
+        {#        }else{#}
+        {#            $('#fechaFinalizacionField').prop('hidden', true);#}
+        {#        }#}
+        {#    });#}
 
 
 

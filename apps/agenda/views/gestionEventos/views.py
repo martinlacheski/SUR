@@ -42,7 +42,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
 
         # Busca datos de un evento en específico para modal en calendar
         if action == 'search_data':
-            data = datos_evento(request.POST['pk'])
+            data = datos_evento_evID(request.POST['pk'])
             return JsonResponse(data)
 
         # Obtenemos eventos que se muesten en Sistema y su horario de notif sea cercano al actual (margen de 10 min)
@@ -126,23 +126,24 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
         # Marca que el user ya vió el evento y manda datos para mostrar su detalle  # action descar
 
         if action == 'detail_evento':
-            # ev = eventosAgenda.objects.get(pk=request.POST['pk'])
-            # ev.ultimaVistaNotifiSist = date.today()
-            # ev.save()
 
-            notifs_evento = notificaciones.objects.filter(eventoAsoc=request.POST['pk'],
-                                                          usuarioNotif=request.POST['user'])
-            for n in notifs_evento:
-                n.ultVistaUserSist = date.today()
-                n.save()
-            print(request.POST['pk'])
+            # Le indicamos al sistema que el usuario ya vió la notif. Cuándo la vió y quién la vió
+            n_evento = notificaciones.objects.get(pk=request.POST['pk'])
+            n_evento.ultVistaUserSist = date.today()
+            n_evento.vistaPorUserSist = Usuarios.objects.get(pk=request.POST['user'])
+            n_evento.notificacion = 'passive'
+            n_evento.save()
             data_evento = datos_evento(request.POST['pk'])
             return JsonResponse(data_evento)
 
-        # Marca qeu el evento ya fué resuelto. Los eventos resueltos no generan notificaciones
+        # Marca que el evento ya fué resuelto. Los eventos resueltos no generan notificaciones
+        # Se almacena quien y cuando resolvió el evento
         if action == 'evento_cumplido':
             data = {}
-            ev = eventosAgenda.objects.get(pk=request.POST['pk'])
+            notif = notificaciones.objects.get(pk=request.POST['pk'])
+            user = Usuarios.objects.get(pk=request.POST['user'])
+            ev = eventosAgenda.objects.get(pk=notif.eventoAsoc.id)
+            self.descartarNotificaciones(notif.eventoAsoc, user)
             ev.resuelto = True
             ev.save()
             return JsonResponse(data)
@@ -282,11 +283,22 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             newNotif = apps.agenda.models.notificaciones()
             newNotif.notificarSist = EV.tipoEvento.recordarSistema
             newNotif.notificarTel = EV.tipoEvento.recordarTelegram
-            newNotif.notificacion = 'yes'
+            if EV.fechaNotificacion == date.today():
+                newNotif.notificacion = 'urgent'
+            else:
+                newNotif.notificacion = 'yes'
             newNotif.eventoAsoc = EV
             newNotif.usuarioNotif = user.usuarioNotif
             newNotif.save()
 
+    def descartarNotificaciones(self, EV, usuario):
+        notif = notificaciones.objects.filter(eventoAsoc=EV.id)
+        if notif:
+            for n in notif:
+                n.notificacion = 'no'
+                n.resolDateSist = date.today()
+                n.resueltaPorUserSist = usuario
+                n.save()
 
 class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
     model = eventosAgenda
@@ -311,7 +323,7 @@ class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     data = form.save()
                     # Descartamos notificaciones viejas
                     print("descartamos notificaciones viejas por las dudas")
-                    self.descartarNotificaciones(data['eventoObj'])
+                    self.descartarNotificacionesEDIT(data['eventoObj'])
 
                     # Añadimos nuevas notificaciones en caso de cumplir la condición
                     if restarDiasHabiles(data['eventoObj'].fechaNotificacion, dias_aviso_edit.diasAntelacion) <= dia_hoy_edit:
@@ -346,7 +358,7 @@ class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
             newNotif.usuarioNotif = user.usuarioNotif
             newNotif.save()
 
-    def descartarNotificaciones(self, EV):
+    def descartarNotificacionesEDIT(self, EV):
         notif = notificaciones.objects.filter(eventoAsoc=EV.id)
         if notif:
             for n in notif:
@@ -375,7 +387,7 @@ class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                 evento = eventosAgenda.objects.get(pk=self.object.id)
                 # descartamos notificaciones de ese evento
                 if evento:
-                    self.descartarNotificaciones(evento)
+                    self.descartarNotificacionesDEL(evento)
 
                 # Damos de baja el evento
                 self.object.estado = False
@@ -386,7 +398,7 @@ class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                 data['check'] = str(e)
         return JsonResponse(data)
 
-    def descartarNotificaciones(self, EV):
+    def descartarNotificacionesDEL(self, EV):
         notif = notificaciones.objects.filter(eventoAsoc=EV.id)
         if notif:
             for n in notif:
@@ -396,9 +408,9 @@ class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
 
 def datos_evento(notif_id):
     data = {}
+    print("en datos_evento()" + str(notif_id))
     notif = notificaciones.objects.get(pk=notif_id)
     evento_id = notif.eventoAsoc.id
-    print(evento_id)
     evento = eventosAgenda.objects.get(pk=evento_id)
     data['tipoEvento'] = str(evento.tipoEvento)
     data['fechaNotif'] = str(evento.fechaNotificacion.day) + \
@@ -413,5 +425,26 @@ def datos_evento(notif_id):
                              ['Telegram', evento.tipoEvento.recordarTelegram])
     return data
 
+
+def datos_evento_evID (ev_id):
+    data = {}
+    U = ""
+    evento = eventosAgenda.objects.get(pk=ev_id)
+    data['tipoEvento'] = str(evento.tipoEvento)
+    data['fechaNotif'] = str(evento.fechaNotificacion.day) + \
+                         "/" + str(evento.fechaNotificacion.month) + \
+                         "/" + str(evento.fechaNotificacion.year)
+    usuariosAsoc = notificacionUsuarios.objects.filter(tipoEvento=evento.tipoEvento)
+    for user in usuariosAsoc:
+        U = U + str(user.usuarioNotif.username) + ', '
+    data['usuariosAsoc'] = U
+    # data['fechaFinal'] = str(evento.fechaNotificacion.day) + \
+    #                      "/" + str(evento.fechaNotificacion.month) + \
+    #                      "/" + str(evento.fechaNotificacion.year)
+    data['descripcion'] = str(evento.descripcion)
+    # data['repeticion'] = str(evento.repeticion)
+    data['notifMediante'] = (['Sistema', evento.tipoEvento.recordarSistema],
+                             ['Telegram', evento.tipoEvento.recordarTelegram])
+    return data
 
 
