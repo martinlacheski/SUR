@@ -15,10 +15,10 @@ $(function () {
         },
         columns: [
             {"data": "razonSocial"},
+            {"data": "telefono"},
+            {"data": "email"},
             {"data": "cuit"},
             {"data": "localidad.full_name"},
-            {"data": "email"},
-            {"data": "telefono"},
             {"data": "email"},
         ],
         columnDefs: [

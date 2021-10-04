@@ -56,10 +56,10 @@
 
                         <div class="form-group col-6">
                             <label>Cuil - Cuit:</label>
-
                             <div class="col-12" class="form-control" id="cuil" name="cuil"
                                  onkeypress="return isNumberKey(event)">
                                 {{ form.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                <span hidden id="errorCuit" style="color: red;">CUIL no válido </span>
                             </div>
                         </div>
                     </div>

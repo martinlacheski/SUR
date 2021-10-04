@@ -224,6 +224,7 @@
                                     <div class="col-12" class="form-control" id="cuit" name="cuit"
                                          onkeypress="return isNumberKey(event)">
                                         {{ formProveedor.cuit|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        <span hidden id="errorCuit" style="color: red;">CUIT no válido </span>
                                     </div>
                                 </div>
                             </div>

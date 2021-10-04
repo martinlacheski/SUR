@@ -213,6 +213,31 @@ function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 };
 
+//Funcion para validar que el CUIT sea válido
+function isValidCuit(cuit) {
+    //si el largo del cuit es incorrecto salir de la funcion
+    if (cuit.length != 11) return 0;
+    var rv = false;
+    var resultado = 0;
+    var cuit_nro = cuit.replace("-", "");
+    var codes = "6789456789";
+    var cuit_long = parseInt(cuit_nro);
+    var verificador = parseInt(cuit_nro[cuit_nro.length - 1]);
+    var x = 0;
+    while (x < 10) {
+        var digitoValidador = parseInt(codes.substring(x, x + 1));
+        if (isNaN(digitoValidador)) digitoValidador = 0;
+        var digito = parseInt(cuit_nro.substring(x, x + 1));
+        if (isNaN(digito)) digito = 0;
+        var digitoValidacion = digitoValidador * digito;
+        resultado += digitoValidacion;
+        x++;
+    }
+    resultado = resultado % 11;
+    rv = (resultado == verificador);
+    return rv;
+}
+
 //Funcion para Calcular los importes
 function calcular_importes() {
     //Inicializamos variables para calcular importes
@@ -619,6 +644,27 @@ $(function () {
                 $("#email").focus();
             } else {
                 $('#errorEmail').attr("hidden", "");
+                btn.disabled = false;
+            }
+        }
+    });
+
+    //Validamos CUIT CORRECTO
+    $("#cuil").on('focusout', function (e) {
+        var btn = document.getElementById('btnAddCliente');
+        if ($('input[name="cuil"]').val().lenght == 0 || !$('input[name="cuil"]').val()) {
+            //cuit vacio
+            $('#errorCuit').attr("hidden", "");
+            btn.disabled = false;
+        } else {
+            var check = isValidCuit($('input[name="cuil"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorCuit").removeAttr("hidden");
+                btn.disabled = true;
+                $("#cuil").focus();
+            } else {
+                $('#errorCuit').attr("hidden", "");
                 btn.disabled = false;
             }
         }

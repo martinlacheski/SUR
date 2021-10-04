@@ -4,14 +4,13 @@ from django.forms import model_to_dict
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.parametros.models import Modelos
 
-
-#   Clase PresupuestoBase
 from apps.usuarios.models import Usuarios
 
 
+#   Clase Plantilla de Presupuestos
 class PlantillaPresupuestos(models.Model):
     modelo = models.ForeignKey(Modelos, models.DO_NOTHING, verbose_name='Modelo')
-    descripcion = models.CharField(max_length=100, verbose_name='Descripción', unique=True)
+    descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     estado = models.BooleanField(default=True)
 
     def __str__(self):
@@ -34,6 +33,7 @@ class PlantillaPresupuestos(models.Model):
         ordering = ['id']
 
         # Para convertir a MAYUSCULA
+
     def save(self, force_insert=False, force_update=False):
         try:
             self.descripcion = self.descripcion.upper()
@@ -88,7 +88,7 @@ class DetalleServiciosPlantillaPresupuesto(models.Model):
 class Presupuestos(models.Model):
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
     fecha = models.DateField(verbose_name='Fecha')
-    validez = models.PositiveIntegerField(default=1,verbose_name='Validez del Presupuesto')
+    validez = models.PositiveIntegerField(default=1, verbose_name='Validez del Presupuesto')
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
     modelo = models.ForeignKey(Modelos, models.DO_NOTHING, verbose_name='Modelo')
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -102,7 +102,8 @@ class Presupuestos(models.Model):
         return self.get_full_name()
 
     def get_full_name(self):
-        return '{} - {} - {} - {}'.format(self.fecha, self.modelo.marca.nombre, self.modelo.nombre, self.cliente.razonSocial)
+        return '{} - {} - {} - {}'.format(self.fecha, self.modelo.marca.nombre, self.modelo.nombre,
+                                          self.cliente.razonSocial)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -118,6 +119,7 @@ class Presupuestos(models.Model):
         ordering = ['id']
 
         # Para convertir a MAYUSCULA
+
     def save(self, force_insert=False, force_update=False):
         try:
             self.observaciones = self.observaciones.upper()

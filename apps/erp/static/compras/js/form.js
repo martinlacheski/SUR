@@ -117,13 +117,38 @@ function isNumberKey(evt) {
     if (charCode < 48 || charCode > 57)
         return false;
     return true;
-}
-;
+};
 
 //Funcion para validar que el email tenga el formato correcto
 function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 };
+
+//Funcion para validar que el CUIT sea válido
+function isValidCuit(cuit) {
+    //si el largo del cuit es incorrecto salir de la funcion
+    if (cuit.length != 11) return 0;
+    var rv = false;
+    var resultado = 0;
+    var cuit_nro = cuit.replace("-", "");
+    var codes = "6789456789";
+    var cuit_long = parseInt(cuit_nro);
+    var verificador = parseInt(cuit_nro[cuit_nro.length - 1]);
+    var x = 0;
+    while (x < 10) {
+        var digitoValidador = parseInt(codes.substring(x, x + 1));
+        if (isNaN(digitoValidador)) digitoValidador = 0;
+        var digito = parseInt(cuit_nro.substring(x, x + 1));
+        if (isNaN(digito)) digito = 0;
+        var digitoValidacion = digitoValidador * digito;
+        resultado += digitoValidacion;
+        x++;
+    }
+    resultado = resultado % 11;
+    rv = (resultado == verificador);
+    return rv;
+};
+
 
 //Funcion para Calcular los importes
 function calcular_importes() {
@@ -350,6 +375,27 @@ $(function () {
         } else {
             $('#errorEmail').attr("hidden", "");
             btn.disabled = false;
+        }
+    });
+
+    //Validamos CUIT CORRECTO
+    $("#cuit").on('focusout', function (e) {
+        var btn = document.getElementById('btnAddProveedor');
+        if ($('input[name="cuit"]').val().lenght == 0 || !$('input[name="cuit"]').val()) {
+            //cuit vacio
+            $('#errorCuit').attr("hidden", "");
+            btn.disabled = false;
+        } else {
+            var check = isValidCuit($('input[name="cuit"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorCuit").removeAttr("hidden");
+                btn.disabled = true;
+                $("#cuit").focus();
+            } else {
+                $('#errorCuit').attr("hidden", "");
+                btn.disabled = false;
+            }
         }
     });
 

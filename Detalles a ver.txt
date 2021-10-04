@@ -1,6 +1,5 @@
-*Validar cuit ingresado
-
 *INCORPORAR APARTADO PARA QUE SE REGISTRE UN TRABAJO QUE NO REQUIERA PLANIFICACION
+    -Incorporando un ITEM Trabajo Express
     - podria hacerse desde seleccionar "EN PROCESO"
 
 *GENERAR UNA VISTA DE TIPO DE USUARIO RECTIFICADOR
