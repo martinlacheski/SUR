@@ -321,6 +321,10 @@ class EstadoParametrosForm(ModelForm):
                 'class': 'form-control select2',
                 'style': 'width: 100%'
             }),
+            'estadoEntregado': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
             'estadoCancelado': Select(attrs={
                 'class': 'form-control select2',
                 'style': 'width: 100%'

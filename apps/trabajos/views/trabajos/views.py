@@ -686,7 +686,8 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.today()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -703,7 +704,8 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.today()
                         det.save()
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect

@@ -28,8 +28,8 @@ class PlantillaPresupuestos(models.Model):
 
     class Meta:
         unique_together = ['modelo', 'descripcion']
-        verbose_name = 'Presupuesto Base'
-        verbose_name_plural = 'Presupuestos Base'
+        verbose_name = 'Plantilla de Presupuesto'
+        verbose_name_plural = 'Plantillas de Presupuestos'
         db_table = 'presupuestos_plantilla'
         ordering = ['id']
 
