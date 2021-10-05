@@ -35,13 +35,7 @@ class eventosAgenda(models.Model):
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
     fechaNotificacion = models.DateField()
     fechaFinalizacion = models.DateField(blank=True, null=True)
-    ultimaNotificacionSist = models.DateField(blank=True, null=True)            # última vez que el usuario confirmó que vió la notif (sist)
-    ultimaNotificacionTel = models.DateField(blank=True, null=True)             # última vez que el usuario confirmó que vió la notif (tel)
-    ultimaVistaNotifiSist = models.DateField(blank=True, null=True)             # utlima vez avisada por el sist
-    ultimaVistaNotifiTel = models.DateField(blank=True, null=True)              # ultima vez avisada por tel
     descripcion = models.TextField()
-    cantNotifTelegram = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas', blank=True)
-    cantNotifSistema = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas')
     vencido = models.BooleanField(default=False)
     resuelto = models.BooleanField(default=False)
     REPETICION = (
@@ -50,9 +44,7 @@ class eventosAgenda(models.Model):
         ('monthly', 'Mensualmente'),
     )
     repeticion = models.CharField(max_length=7, choices=REPETICION, blank=True)
-
-#Para save en campo repeticion, se guarda así (es solo un ejemplo):
-    # p = eventosAgenda(name="Fred Flintstone", repeticion="DIA")
+    estado = models.BooleanField(default=True)
 
     def __str__(self):
         return self.descripcion
@@ -88,7 +80,7 @@ class diasAvisoEvento(models.Model):
     def toJSON(self):
         item = model_to_dict(self)
         return item
-    
+
     class Meta:
         verbose_name = 'Dias a recordar'
         verbose_name_plural = 'Dias a recordar'
@@ -112,3 +104,49 @@ class notificacionUsuarios (models.Model):
         verbose_name_plural = 'Notificacion Usuarios'
         db_table = 'agenda_notificacionUsuarios'
         ordering = ['tipoEvento']
+
+
+class notificaciones (models.Model):
+    eventoAsoc = models.ForeignKey(eventosAgenda, models.DO_NOTHING, verbose_name="Evento Asociado")
+    usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario a Notificar")
+    notificarSist = models.BooleanField(default=True, null=False)
+    notificarTel = models.BooleanField(default=True, null=False)
+    NOTIFICAR = (
+        ('yes', 'Si'),
+        ('no', 'No'),
+        ('passive', 'add pero no notif'),
+        ('pending', 'Pendiente'),
+        ('urgent', 'Urgente'),
+    )
+    notificacion = models.CharField(max_length=7, choices=NOTIFICAR, blank=True)
+
+# ***************** CAMPOS DE AUDITORÍA Y DE TOMA DE DECISIONES *****************
+    # Ultima vez notificadas
+    ultNotifSist = models.DateField(blank=True, null=True)
+    ultNotifTel = models.DateField(blank=True, null=True)
+
+    # Cantidad de veces notificadas
+    cantNotifTel = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas', blank=True)
+    cantNotifSist = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas', blank=True)
+
+    # Cuando y quien dió como resuelta la notif (TELEGRAM)
+    resueltaPorUserTel = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario resolucion Tel",
+                                           related_name='resUserTel', null=True, blank=True)
+    resolDateTel = models.DateField(blank=True, null=True)
+
+    # Cuando y quien dió como resuelta la notif (SISTEMA)
+    resueltaPorUserSist = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario resolucion Sist",
+                                            related_name='resUserSist', null=True, blank=True)
+    resolDateSist = models.DateField(blank=True, null=True)
+
+    # Cuando y quién vió la notificacion (SISTEMA)
+    vistaPorUserSist = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario vista Sist",
+                                         null=True, blank=True, related_name='vistaUserSist')
+    ultVistaUserSist = models.DateField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Notificacion fuente'
+        verbose_name_plural = 'Notificaciones fuente'
+        db_table = 'agenda_notificaciones'
+        ordering = ['eventoAsoc']
+

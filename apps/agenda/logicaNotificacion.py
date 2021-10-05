@@ -1,4 +1,5 @@
 from datetime import date, timedelta, datetime
+from apps.agenda.models import *
 
 def diaDeNotificacion(diaSemana, diaNotificacion):
     if diaSemana == 0 :

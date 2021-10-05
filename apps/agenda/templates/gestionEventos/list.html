@@ -154,22 +154,22 @@
                                 <i>
                                     <p id="modal_fecha_notif"></p>
                                 </i>
-                                <strong>REPETICIÓN</strong>
+                                 <strong>NOTIFICADO MEDIANTE </strong>
                                 <i>
-                                    <p id="modal_repeticion"></p>
+                                    <p id="modal_tipo_notif"></p>
                                 </i>
                             </div>
                             <div class="col-6">
-                                <strong>USUARIO ASOCIADO </strong>
+                                <strong>USUARIOS ASOCIADOS </strong>
                                 <i>
                                     <p id="modal_user_asoc"></p>
                                 </i>
                             </div>
                             <div class="col-6">
-                                <strong>NOTIFICADO MEDIANTE </strong>
-                                <i>
-                                    <p id="modal_tipo_notif"></p>
-                                </i>
+                                {#                                <strong>REPETICIÓN</strong>#}
+{#                                <i>#}
+{#                                    <p id="modal_repeticion"></p>#}
+{#                                </i>#}
                             </div>
                         </div>
                         <div class="row">
@@ -228,35 +228,40 @@
     <!-- Inicialización de fullCalendar, no se puede mover por cuestones de contexto de template -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            {% for evento in eventos %}
+                console.log("{{ evento.estado }}");
+            {% endfor %}
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 events: [
                     {% for evento in eventos %}
-                        {
-                            id: "{{ evento.id }}",
-                            title: "{{ evento.tipoEvento }}" ,
-                            {% if evento.repeticion %}
-                                rrule: {
-                                    freq: "{{ evento.repeticion }}",
-                                    dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
-                                    until: "{{ evento.fechaFinalizacion|date:"Y-m-d" }}",
-                                },
-                            {% else %}
-                                start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
-                            {%  endif %}
+                        {%  if evento.estado %}
+                            {
+                                id: "{{ evento.id }}",
+                                title: "{{ evento.tipoEvento }}" ,
+                                {% if evento.repeticion %}
+                                    rrule: {
+                                        freq: "{{ evento.repeticion }}",
+                                        dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                                        until: "{{ evento.fechaFinalizacion|date:"Y-m-d" }}",
+                                    },
+                                {% else %}
+                                    start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                                {%  endif %}
 
 
-                            // Color de eventos
-                            {% if evento.repeticion == '' %}
-                                color: '#3d9970',
-                            {% elif evento.repeticion == 'daily' %}
-                                color: '#001f3f',
-                            {% elif evento.repeticion == 'weekly' %}
-                                color: '#007bff',
-                            {% elif evento.repeticion == 'monthly' %}
-                                color: '#605ca8',
-                            {% endif %}
-                        },
+                                // Color de eventos
+                                {% if evento.repeticion == '' %}
+                                    color: '#3d9970',
+                                {% elif evento.repeticion == 'daily' %}
+                                    color: '#001f3f',
+                                {% elif evento.repeticion == 'weekly' %}
+                                    color: '#007bff',
+                                {% elif evento.repeticion == 'monthly' %}
+                                    color: '#605ca8',
+                                {% endif %}
+                            },
+                        {%  endif %}
                     {% endfor %}
                 ],
                 // Opciones  básicas
@@ -296,34 +301,36 @@
                     'pk' : id_evento
                 },
                 success : function (data){
+
                     document.getElementById('modal_tipo_evento').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción').innerHTML = data.descripcion;
-                    document.getElementById('modal_user_asoc').innerHTML = data.userAsoc;
+                    document.getElementById('modal_user_asoc').innerHTML = data.usuariosAsoc.slice(0, -2); //slice para borrar ultima coma
                     document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
 
-                    switch(data.repeticion) {
-                        case 'daily':
-                            data.repeticion = 'Diaria';
-                            break;
-                        case 'weekly':
-                            data.repeticion = 'Semanal';
-                            break;
-                        case 'monthly':
-                            data.repeticion = 'Mensual';
-                            break;
-                        default:
-                            data.repeticion = 'Única';
-                    }
-                    document.getElementById('modal_repeticion').innerHTML = data.repeticion;
+                    // Procesamos repetición para string agradable en español
+                    {#switch(data.repeticion) {#}
+                    {#    case 'daily':#}
+                    {#        data.repeticion = 'Diaria';#}
+                    {#        break;#}
+                    {#    case 'weekly':#}
+                    {#        data.repeticion = 'Semanal';#}
+                    {#        break;#}
+                    {#    case 'monthly':#}
+                    {#        data.repeticion = 'Mensual';#}
+                    {#        break;#}
+                    {#    default:#}
+                    {#        data.repeticion = 'Única';#}
+                    {# }#}
+                    {# document.getElementById('modal_repeticion').innerHTML = data.repeticion; #}
 
+                    // Procesamos canales de notificacion para convertir en string agradable
                     let notifMsj = "";
                     for (let i = 0; i <= 1; i++){
                         if(data.notifMediante[i][1] === true){
                             notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
                         }
-                    }
+                     }
                     document.getElementById('modal_tipo_notif').innerHTML = notifMsj.slice(0, -2);
-
                 }
             });
         }
@@ -358,6 +365,7 @@
                         location.replace(data.redirect);
                     }else {
                         console.log('algo salió mal');
+                        console.log(data.check);
                     }
                 }
             });
@@ -378,26 +386,28 @@
         });
 
 
-        $('#customCheckbox1').on('click', function (){
-            if (this.checked) {
-                $('#selectRepeticion').prop('disabled', false);
-                $('#fechaFinalizacionField').prop('hidden', false);
-
-
-            } else {
-                $('#selectRepeticion').prop('disabled', true);
-                $('#fechaFinalizacionField').prop('hidden', true);
-                $('#id_fechaFinalizacion').val('');
-            }
-        });
-
-        $('#customCheckbox1').ready(function(){
-                if($('#customCheckbox1').prop('checked')){
-                    $('#fechaFinalizacionField').prop('hidden', false);
-                }else{
-                    $('#fechaFinalizacionField').prop('hidden', true);
-                }
-            });
+        // Uasa para esconder o no el campo de fecha de finalización en caso de que la notificación se repita semanal, diaria o mensual
+        // No está en funcionamiento pero será utilizada en el futuro
+        {#$('#customCheckbox1').on('click', function (){#}
+        {#    if (this.checked) {#}
+        {#        $('#selectRepeticion').prop('disabled', false);#}
+        {#        $('#fechaFinalizacionField').prop('hidden', false);#}
+        {##}
+        {##}
+        {#    } else {#}
+        {#        $('#selectRepeticion').prop('disabled', true);#}
+        {#        $('#fechaFinalizacionField').prop('hidden', true);#}
+        {#        $('#id_fechaFinalizacion').val('');#}
+        {#    }#}
+        {#});#}
+        {##}
+        {#$('#customCheckbox1').ready(function(){#}
+        {#        if($('#customCheckbox1').prop('checked')){#}
+        {#            $('#fechaFinalizacionField').prop('hidden', false);#}
+        {#        }else{#}
+        {#            $('#fechaFinalizacionField').prop('hidden', true);#}
+        {#        }#}
+        {#    });#}
 
 
 
