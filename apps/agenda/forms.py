@@ -128,14 +128,14 @@ class GestionTiposEventosForm(ModelForm):
     def save(self, commit=True):
         data = {}
         form = super()
-        try:
-            if form.is_valid():
-                objCreado = form.save()
-                data['objCreado'] = objCreado # Obtenemos id de objeto creado
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
+        if form.is_valid():
+            try:
+                data['obj'] = form.save()
+            except Exception as e:
+                data['error'] = str(e)
+        else:
+            data['error'] = form.errors
+        print("esto es data " + str(data))
         return data
 
 class GestionNotifEventosForm(ModelForm):

@@ -42,10 +42,14 @@
                     <div class="col-4">
                         <label>Usuarios a notificar:</label>
                         <div class="input-group">
-                             <select class="js-example-basic-multiple" name="usuarios" multiple="multiple">
-                                 {%  for usuario in usuarios %}
-                                    <option value="{{ usuario.id }}">{{ usuario }}</option>
-                                {% endfor %}
+
+                            <select class="js-example-basic-multiple" name="usuarios" multiple="multiple">
+                                <!-- Solamente cargamos opciones de usuarios si vamos a cargar un tipoEvento -->
+                                {%  if action == 'add' %}
+                                    {%  for usuario in usuarios %}
+                                        <option value="{{ usuario.id }}">{{ usuario }}</option>
+                                    {% endfor %}
+                                {%  endif %}
                             </select>
                         </div>
                     </div>
@@ -156,10 +160,49 @@
     </script>
 
     <script>
-        $('.form-select').select2({
-            theme: "bootstrap4",
-            language: 'es'
-        });
+    // Ejecutado unicamente si estamos en 'edit'
+        {%  if action == 'edit' %}
+            // Obtenemos TODOS los usuarios
+            users_all = [
+            {% for usuario in usuarios %}
+                {
+                    id: {{ usuario.id }},
+                    text: "{{ usuario.username }}",
+                },
+            {% endfor %}
+            ]
+
+            // Configuramos el select2 cosa de que pueda listar TODOS los users disponibles en el sistema
+            var select2 = $('.js-example-basic-multiple').select2({
+                theme: "bootstrap4",
+                language: 'es',
+                data: users_all,
+                multiple: true
+            })
+
+            // Metemos en un array los id de usuarios de ESTE tipoEvento
+            ids = [];
+            i = 0;
+            {% for users in usuariosNotif %}
+                ids[i] = parseInt("{{ users.usuarioNotif.id }}");
+                i++;
+            {%  endfor %}
+
+
+            // Prepopulamos el select con los users de este tipoEvento
+            select2.val(ids);
+            select2.trigger("change");
+
+        {%  endif %}
+
+    // ejecutado unicamente si estamos en 'add'
+        {% if action == 'add' %}
+            $('.js-example-basic-multiple').select2({
+                theme: "bootstrap4",
+                language: 'es',
+            });
+        {% endif %}
+
     </script>
 
     <!-- Select2 Multiple -->

@@ -21,7 +21,7 @@ class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in tiposEvento.objects.all():
+                for i in tiposEvento.objects.filter(estado=True):
                     data.append(i.toJSON())
                 for tipoEvento in data:
                     tipoEvento['usuariosAsoc'] = self.get_users(tipoEvento['id'])
@@ -59,25 +59,22 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
 
     def post(self, request, *args, **kwargs):
         data = {}
+        datos = {}
         try:
             form = self.get_form()
+            print(form.declared_fields)
             data = form.save()
             data['redirect'] = self.url_redirect
 
-            # Populamos tabla intermedia
             for user in request.POST.getlist('usuarios'):
                 notifUsersObj = notificacionUsuarios()
-                notifUsersObj.tipoEvento = data['objCreado']
+                notifUsersObj.tipoEvento = data['obj']
                 notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
                 notifUsersObj.save()
-
+            del data['obj']
         except Exception as e:
-            data['error'] = str(e)
-
-        # Borramos instancia creada
-        del data['objCreado']
+            datos['error'] = str(e)
         return JsonResponse(data)
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear un Tipo de Evento'
@@ -86,6 +83,7 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['action'] = 'add'
         context['usuarios'] = Usuarios.objects.all()
         return context
+
 
 
 class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
@@ -116,6 +114,8 @@ class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         context['entity'] = 'Tipos de evento'
         context['list_url'] = reverse_lazy('agenda:tiposEventoList')
         context['action'] = 'edit'
+        context['usuariosNotif'] = notificacionUsuarios.objects.filter(tipoEvento=self.get_object().id)
+        context['usuarios'] = Usuarios.objects.all()
         return context
 
 class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
@@ -134,7 +134,12 @@ class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         action = request.POST['action']
         if action == 'delete':
             try:
-                self.object.delete()
+                N_users = notificacionUsuarios.objects.filter(tipoEvento=self.object.id)
+                for n in N_users:
+                    print(n)
+                tipoEV = tiposEvento.objects.get(pk=self.object.id)
+                tipoEV.estado = False
+                tipoEV.save()
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
             except Exception as e:

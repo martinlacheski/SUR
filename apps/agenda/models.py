@@ -8,7 +8,7 @@ class tiposEvento(models.Model):
     horarioRecordatorio = models.TimeField() # Avisar a esta hora
     recordarSistema = models.BooleanField(default=True) # Si le va a aparecer alguna notificacion
     recordarTelegram = models.BooleanField() # Si se le va a enviar un msj al telegram
-
+    estado = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nombre

@@ -23,7 +23,7 @@ class Clientes(models.Model):
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
-
+    chatIdCliente = models.IntegerField(blank=True, null=True)
     def __str__(self):
         return self.razonSocial
 
