@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'apps.erp',
     'apps.presupuestos',
     'apps.trabajos',
-    'apps.agenda'
+    'apps.agenda',
+    'apps.bot_telegram'
 ]
 
 MIDDLEWARE = [
