@@ -46,10 +46,10 @@ class Command(BaseCommand):
             print(str(update.message.from_user.username))
             if len(context.args) == 0:
                 update.message.reply_text(text="Hola\! 👋 Este es el registro de clientes de SUR EXPRESS\.\n\n"
-                                               "Para registrarse y recibir notificaciones ingrese el comando */registroCliente* "
-                                               "y a continuación su CUIL/CUIT sin guiones o comas\. Por ejemplo: \n\n"
+                                               "Para registrarte y recibir notificaciones ingresá el comando */registroCliente* "
+                                               "y a continuación tu CUIL/CUIT sin guiones o comas\.\nPor ejemplo: \n\n"
                                                "``` /registroCliente 20346735739 ``` \n\n"
-                                               "Luego envíe el mensaje\."
+                                               "Luego enviá el mensaje\."
                                                ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
             elif len(context.args) == 1:
                 cuil_cuit = context.args[0]
@@ -79,9 +79,9 @@ class Command(BaseCommand):
                 else:
                     update.message.reply_text("CUIL/CUIT ingresado contiene letras o no tiene una"
                                               " longitud de 11 caracteres")
-            elif len(context.args) != 0 and len(context.args)  != 1:
+            elif len(context.args) != 0 and len(context.args) != 1:
                     update.message.reply_text(text="No ingresaste bien el comando 😅\nRecordá que tiene que ser similar "
-                                                   "a\n\n ``` /registroCliente 20346735739 ``` \"
+                                                   "a\n\n ``` /registroCliente 20346735739 ``` "
                                                ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
             #if len(context.args) == 2:
