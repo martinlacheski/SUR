@@ -12,7 +12,7 @@ from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
-from apps.erp.models import Productos, Servicios, Clientes
+from apps.erp.models import Productos, Servicios, Clientes, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
 from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, Prioridades
@@ -121,7 +121,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -133,7 +133,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -173,6 +173,11 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -261,6 +266,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
         context['presupuestosPlantilla'] = PlantillaPresupuestos.objects.all()
+        context['categorias'] = Categorias.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
@@ -317,7 +323,7 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -329,7 +335,7 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -369,6 +375,11 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -462,6 +473,7 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['formMarca'] = MarcasForm()
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
+        context['categorias'] = Categorias.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
@@ -518,7 +530,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -530,7 +542,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -570,6 +582,11 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -699,6 +716,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
         context['formMarca'] = MarcasForm()
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
+        context['categorias'] = Categorias.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         context['prioridades'] = Prioridades.objects.all()

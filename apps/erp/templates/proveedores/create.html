@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="input-group">
                         <div class="form-group col-12">
-                            <label>Razón Social:</label>
+                            <label>(*) Razón Social:</label>
                             <br>
                             {{ form.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
@@ -46,13 +46,13 @@
                 <div class="row">
                     <div class="input-group">
                         <div class="form-group col-6">
-                            <label>Condición frente al IVA:</label>
+                            <label>(*) Condición frente al IVA:</label>
                             <br>
                             {{ form.condicionIVA|add_class:'form-control'|attr:'required:true' }}
                         </div>
 
                         <div class="form-group col-6">
-                            <label>Cuit:</label>
+                            <label>(*) Cuit:</label>
                             <br>
                             <div class="col-12" class="form-control" id="cuit" name="cuit"
                                  onkeypress="return isNumberKey(event)">
@@ -65,12 +65,12 @@
 
                 <div class="row">
                     <div class="form-group col-6">
-                        <label>Localidad:</label>
+                        <label>(*) Localidad:</label>
                         <br>
                         {{ form.localidad|add_class:'form-control'|attr:'required:true' }}
                     </div>
                     <div class="form-group col-6">
-                        <label>Dirección:</label>
+                        <label>(*) Dirección:</label>
                         <div class="col-12" class="form-control" id="direccion" name="direccion">
                             {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
@@ -79,7 +79,7 @@
 
                 <div class="row">
                     <div class="form-group col-6">
-                        <label>Dirección de email:</label>
+                        <label>(*) Dirección de email:</label>
                         <br>
                         <div class="input-group" type="email" class="form-control" id="email" name="email">
                             {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     <div class="form-group col-4">
-                        <label>Teléfono:</label>
+                        <label>(*) Teléfono:</label>
                         <div class="col-12" class="form-control" id="telefono" name="telefono"
                              onkeypress="return isNumberKey(event)"
                              autocomplete="off" required>
@@ -116,14 +116,14 @@
                 <div class="row">
                     <div class="input-group">
                         <div class="form-group col-6 class="form-control">
-                            <label>Condición de Pago:</label>
+                            <label>(*) Condición de Pago:</label>
                             <br>
                             {{ form.condicionPago|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                         <div class="form-group col-6 class="form-control">
-                            <label>Tipo de Percepción:</label>
+                            <label>(*) Tipo de Percepción:</label>
                             <br>
-                            {{ form.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>

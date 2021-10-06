@@ -1,0 +1,116 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+        <!-- Datatables -->
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+        <!-- Moment -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+        <!-- Tempus Dominus -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"
+              rel="stylesheet"/>
+        <!-- Bootstrap Touchspin -->
+        <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+        <!-- archivo JS -->
+        <script src="{% static 'planificaciones/js/form.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <form id="planificacionesForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label>(*) Nombre:</label>
+                        <div class="input-group">
+                            {{ form.nombre|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        <label>(*) Inicio:</label>
+                        <div class="col-12" id="fechaInicio" data-target-input="nearest">
+                            {{ form.fechaInicio|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        <label>(*) Fin:</label>
+                        <div class="col-12" id="fechaFin" data-target-input="nearest">
+                            {{ form.fechaFin|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-8">
+                        <p><b>Trabajos Pendientes de Finalizar:</b></p>
+                        <table class="table table table-bordered" id="data">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 5%;">ID</th>
+                                <th scope="col" style="width: 10%;">Estado</th>
+                                <th scope="col" style="width: 25%;">Modelo</th>
+                                <th scope="col" style="width: 55%;">Cliente</th>
+                                <th scope="col" style="width: 5%;">Agregar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% block rows %}
+
+                            {% endblock %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-4">
+                        <p><b>Planificación:</b></p>
+                        <table class="table table table-bordered" id="dataPlanificacion">
+                            <thead>
+                            <tr>
+                                <th scope="col" style="width: 5%;">ID</th>
+                                <th scope="col" style="width: 30%;">Modelo</th>
+                                <th scope="col" style="width: 65%;">Cliente</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="btn btn-primary btn-flat">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
+            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+        </div>
+        </div>
+
+    </form>
+{% endblock %}

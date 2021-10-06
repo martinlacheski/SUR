@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ComprasForm, ProveedoresForm, ProductosForm
-from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores
+from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import Empresa, TiposIVA
 from config import settings
@@ -82,7 +82,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -94,7 +94,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term)| Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -108,6 +108,11 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -171,6 +176,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
         context['entity'] = 'Compras'
         context['list_url'] = self.success_url
         context['action'] = 'add'
+        context['categorias'] = Categorias.objects.all()
         context['formProveedor'] = ProveedoresForm()
         context['formProducto'] = ProductosForm()
         context['productos'] = Productos.objects.all()
@@ -207,7 +213,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -243,6 +249,11 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -315,6 +326,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
         context['entity'] = 'Compras'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
+        context['categorias'] = Categorias.objects.all()
         context['formProveedor'] = ProveedoresForm()
         context['formProducto'] = ProductosForm()
         return context

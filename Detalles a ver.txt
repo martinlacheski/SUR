@@ -1,10 +1,10 @@
-*agregar control nro de comprobante y proveedor en COMPRA
-*agregar en campos obligatorios en los FORMULARIOS
-*modal producto cargar categoria (No tiene Categoria)
-*quitar segundo codigo de barras
+*agregar control nro de comprobante y proveedor en COMPRA       OK
+*agregar en campos obligatorios en los FORMULARIOS              OK
+*modal producto cargar categoria (No tiene Categoria)           OK
+*quitar segundo codigo de barras                                OK
 
-
-*ERROR AL CONFIRMAR NO CONTROLA PRODUCTOS SIN REALIZARSE
+*ERROR AL CONFIRMAR NO CONTROLA PRODUCTOS SIN REALIZARSE        OK,
+            en el CONFIRM se puede NO entregar PRODUCTOS, el control se realiza al momento de ENTREGAR EL trabajo
 
 *GENERAR MODULO PLANIFICACION SEMANAL
 

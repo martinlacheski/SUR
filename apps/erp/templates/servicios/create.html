@@ -39,12 +39,12 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="col-9 mb-9">
-                        <label>Descripción:</label>
+                        <label>(*) Descripción:</label>
                         <br>
                         {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="col-3 mb-3">
-                        <label>Código:</label>
+                        <label>(*) Código:</label>
                         <br>
                         {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
@@ -59,7 +59,7 @@
                         </div>
                     </div>
                     <div class="col-4 mb-4">
-                        <label>Tipo de IVA:</label>
+                        <label>(*) Tipo de IVA:</label>
                         <br>
                         {{ form.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>

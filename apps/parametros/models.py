@@ -224,7 +224,7 @@ class EstadoParametros(models.Model):
     estadoFinalizado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Finalizado',
                                          related_name='estadoFinalizado')
     estadoEntregado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Entregado',
-                                         related_name='estadoEntregado')
+                                        related_name='estadoEntregado')
     estadoCancelado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Cancelado',
                                         related_name='estadoCancelado')
 
@@ -251,7 +251,6 @@ class EstadoParametros(models.Model):
         except:
             pass
         return item
-
 
     class Meta:
         verbose_name = 'Estado de Trabajo Parámetros'
