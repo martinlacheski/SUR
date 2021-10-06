@@ -1,3 +1,11 @@
+*agregar control nro de comprobante y proveedor en COMPRA
+*agregar en campos obligatorios en los FORMULARIOS
+*modal producto cargar categoria (No tiene Categoria)
+*quitar segundo codigo de barras
+
+
+*ERROR AL CONFIRMAR NO CONTROLA PRODUCTOS SIN REALIZARSE
+
 *GENERAR MODULO PLANIFICACION SEMANAL
 
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
