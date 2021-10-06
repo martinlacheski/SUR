@@ -41,9 +41,48 @@ class Command(BaseCommand):
         #         update.message.reply_text("Comando erroneo. Cantidad de argumentos incorrecta. "\
         #                                   "\n\nIntente nuevamente escribiendo únicamente su usuario y su contraseña.")
 
+        def registroUsuario(update, context):
+            if len(context.args) == 0:
+                update.message.reply_text(text="Hola\! 👋 Este es el registro de usuarios de SUR EXPRESS\.\n\n"
+                                               "Para registrarte, interactuar conmigo y recibir notificaciones"
+                                               " ingresá el comando  */registroUsuario* "
+                                               "y a continuación tu nombre de usuario seguido de tu contraseña\.\nPor ejemplo: \n\n"
+                                               "``` /registroUsuario juan miContraseña ``` \n\n"
+                                               "Luego enviá el mensaje\."
+                                          ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
+
+            elif len(context.args) == 2:
+                usuario = context.args[0]
+                password = context.args[1]
+                try:
+                    user = Usuarios.objects.get(username=usuario)
+                    if user.check_password(password):
+                        update.message.reply_text("👌 ¡Todo correcto! Ya podes interactuar conmigo\n\n"
+                                                  "⚠ Por una cuestión de seguridad, me tomé el "
+                                                  "trabajo de borrar el msj en donde pones tu contraseña. No queremos "
+                                                  "comprometernos si alguien lee el chat... ¿no?\n\n"
+                                                  "🧠 Esta es mi lista de comandos y lo que soy capaz de hacer: ")
+                        bot.delete_message(update.message.chat.id, update.message.message_id)
+                        user.chatIdUsuario = int(update.message.from_user.id)
+                        user.save()
+                    else:
+                        update.message.reply_text("🚫 Encontré tu usuario registrado pero la contraseña es incorrecta.\n\n"
+                                                  "👍 Volvé a ingresar el comando y asegurate que tu contraseña esté escrita "
+                                                  "correctamente.")
+                except:
+                    update.message.reply_text("Mmm, esto es raro 🤔 \n\n"
+                                              "No te encontramos registrado/a en el sistema.\n"
+                                              "Comprobá si escribiste bien tu nombre de usuario. Si el error persiste,"
+                                              " comunicate con los administradores.")
+
+            elif len(context.args) != 0 and len(context.args) != 2:
+                update.message.reply_text(text="No ingresaste bien el comando 😅\nRecordá que tiene que ser similar "
+                                                   "a\n\n ``` /registroUsuario juan miContraseña ``` "
+                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
+
+
+
         def registroCliente(update, context):
-            print(len(context.args))
-            print(str(update.message.from_user.username))
             if len(context.args) == 0:
                 update.message.reply_text(text="Hola\! 👋 Este es el registro de clientes de SUR EXPRESS\.\n\n"
                                                "Para registrarte y recibir notificaciones ingresá el comando */registroCliente* "
@@ -74,7 +113,7 @@ class Command(BaseCommand):
                                               "CUIL/CUIT: " + cuil_cuit + "\n"
                                               "Usuario en Telegram: " + str(update.message.from_user.username) + "\n" +
                                               "Nombre en Telegram: " + str(update.message.from_user.first_name),
-                                         chat_id=630659758)
+                                         chat_id=1241934509)
 
                 else:
                     update.message.reply_text("CUIL/CUIT ingresado contiene letras o no tiene una"
@@ -104,8 +143,9 @@ class Command(BaseCommand):
 
         # ** COMANDOS **
         start_handler = CommandHandler('registroCliente', registroCliente)
-        # start_handler = CommandHandler('registroUsuario', registroUsuario)
+        start_handler2 = CommandHandler('registroUsuario', registroUsuario)
         dispatcher.add_handler(start_handler)
+        dispatcher.add_handler(start_handler2)
         updater.start_polling()
 
 
