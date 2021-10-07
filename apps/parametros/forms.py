@@ -313,6 +313,10 @@ class EstadoParametrosForm(ModelForm):
                 'class': 'form-control select2',
                 'style': 'width: 100%'
             }),
+            'estadoPlanificado': Select(attrs={
+                'class': 'form-control select2',
+                'style': 'width: 100%'
+            }),
             'estadoEspecial': Select(attrs={
                 'class': 'form-control select2',
                 'style': 'width: 100%'

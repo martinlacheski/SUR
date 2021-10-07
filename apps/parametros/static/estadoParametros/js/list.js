@@ -18,6 +18,7 @@ $(function () {
         },
         columns: [
             {"data": "estadoInicial.nombre"},
+            {"data": "estadoPlanificado.nombre"},
             {"data": "estadoEspecial.nombre"},
             {"data": "estadoFinalizado.nombre"},
             {"data": "estadoEntregado.nombre"},
@@ -26,11 +27,22 @@ $(function () {
         ],
         columnDefs: [
             {
-                targets: [-6],
+                targets: [-7],
                 class: 'text-center',
                 render: function (data, type, row) {
                     if ( row.estadoInicial !== null) {
                         return row.estadoInicial.nombre
+                    } else {
+                        return ''
+                    }
+                }
+            },
+            {
+                targets: [-6],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    if ( row.estadoPlanificado !== null) {
+                        return row.estadoPlanificado.nombre
                     } else {
                         return ''
                     }

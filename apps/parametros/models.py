@@ -219,6 +219,8 @@ class Estados(models.Model):
 class EstadoParametros(models.Model):
     estadoInicial = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Normal',
                                       related_name='estadoInicial')
+    estadoPlanificado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Planificado',
+                                       related_name='estadoPlanificado',null=True, blank=True)
     estadoEspecial = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Especial',
                                        related_name='estadoEspecial')
     estadoFinalizado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Finalizado',
@@ -232,6 +234,10 @@ class EstadoParametros(models.Model):
         item = model_to_dict(self)
         try:
             item['estadoInicial'] = self.estadoInicial.toJSON()
+        except:
+            pass
+        try:
+            item['estadoPlanificado'] = self.estadoPlanificado.toJSON()
         except:
             pass
         try:
