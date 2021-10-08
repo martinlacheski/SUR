@@ -71,7 +71,7 @@ $(function () {
                     if (row.estadoTrabajo.id == estadoInicial) {
                         return '<span class="badge badge-warning">' + row.estadoTrabajo.nombre + '</span>'
                     } else if (row.estadoTrabajo.id == estadoPlanificado) {
-                        return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
+                        return '<span class="badge badge-dark">' + row.estadoTrabajo.nombre + '</span>'
                     } else if (row.estadoTrabajo.id == estadoEspecial) {
                         return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
                     } else if (row.estadoTrabajo.id == estadoFinalizado) {

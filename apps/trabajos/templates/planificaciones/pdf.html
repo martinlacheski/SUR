@@ -49,7 +49,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h1 class="name-company text-center">Planificación de Trabajos desde {{ inicio }} hasta {{ fin }}</h1>
+            <h1 class="name-company text-center">Planificación Semanal de Trabajos</h1>
         </div>
     </div>
     <div class="row">
@@ -67,39 +67,31 @@
         </div>
         <div class="col-6">
             <p class="text-right">
-                <b>Número:</b> {{ trabajo.id }}<br>
-                <b>Cliente:</b> {{ trabajo.cliente.razonSocial }}<br>
-                <b>Marca:</b> {{ trabajo.modelo.marca.nombre }}<br>
-                <b>Modelo:</b> {{ trabajo.modelo.nombre }}<br>
-                <b>Ficha de Trabajo:</b>
-                {% if trabajo.fichaTrabajo %}
-                    {{ trabajo.fichaTrabajo }}<br>
-                {% else %}
-                    <br>
-                {% endif %}
-                <b>Observaciones:</b> {{ trabajo.observaciones }}<br>
+                <b>Número:</b> {{ planificacion.id }}<br>
+                <b>Desde:</b> {{ inicio|date:'d-m-Y' }}<br>
+                <b>Hasta:</b> {{ fin|date:'d-m-Y' }}<br>
             </p>
         </div>
     </div>
     <p class="text-uppercase font-weight-bold text-center">
-        Detalle de Planificación de Trabajos <br>
+        Detalle <br>
     </p>
     <table class="table" style="width: 100%;">
         <thead>
         <tr style="border: 1px solid black;">
             <th class="text-center" style="width: 10%;">Orden</th>
-            <th class="text-center" style="width: 10%;">Trabajo</th>
             <th class="text-center" style="width: 40%;">Modelo</th>
             <th class="text-center" style="width: 40%;">Cliente</th>
+            <th class="text-center" style="width: 10%;">Estado</th>
         </tr>
         </thead>
         <tbody>
-        {% for det in planificacion.detalleplanificaciones_set.all %}
+        {% for det in planificacion.detalleplanificacionessemanales_set.all %}
             <tr>
-                <td class="text-center">{{ det.id }}</td>
-                <td class="text-center">{{ det.trabajo.id }}</td>
-                <td class="text-center">{{ det.modelo.nombre }}</td>
-                <td class="text-right">{{ det.cliente.razonSocial }}</td>
+                <td class="text-center">{{ det.orden }}</td>
+                <td class="text-center">{{ det.trabajo.modelo.nombre }}</td>
+                <td class="text-center">{{ det.trabajo.cliente.razonSocial }}</td>
+                <td class="text-center">{{ det.trabajo.estadoTrabajo }}</td>
             </tr>
         {% endfor %}
         </tbody>

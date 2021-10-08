@@ -240,7 +240,7 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                         trabajo.estadoTrabajo_id = estado.estadoInicial_id
                     except Exception as e:
-                        pass
+                        data['error'] = str(e)
                     trabajo.save()
                     for i in formTrabajoRequest['productos']:
                         det = DetalleProductosTrabajo()
@@ -252,8 +252,8 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
@@ -269,13 +269,14 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
                             det.fechaDetalle = timezone.localtime(timezone.now())
                         det.save()
+                    # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
             else:
@@ -476,7 +477,7 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                         trabajo.estadoTrabajo_id = estado.estadoEspecial_id
                     except Exception as e:
-                        pass
+                        data['error'] = str(e)
                     trabajo.save()
                     for i in formTrabajoRequest['productos']:
                         det = DetalleProductosTrabajo()
@@ -488,8 +489,8 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
@@ -505,13 +506,14 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
                             det.fechaDetalle = timezone.localtime(timezone.now())
                         det.save()
+                    # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
             else:
@@ -718,8 +720,8 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
@@ -738,13 +740,14 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
                             det.fechaDetalle = timezone.localtime(timezone.now())
                         det.save()
+                    # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
             else:
@@ -940,7 +943,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                         trabajo.estadoTrabajo_id = estado.estadoFinalizado_id
                     except Exception as e:
-                        pass
+                        data['error'] = str(e)
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleproductostrabajo_set.all().delete()
@@ -955,8 +958,8 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
@@ -976,14 +979,15 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
                             # det.fechaDetalle = timezone.localtime(timezone.now())
                             det.fechaDetalle = datetime.today()
                         det.save()
+                    # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
             else:
@@ -1179,7 +1183,7 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                         trabajo.estadoTrabajo_id = estado.estadoEntregado_id
                     except Exception as e:
-                        pass
+                        data['error'] = str(e)
                     trabajo.save()
                     # Creamos una instancia de venta
                     venta = Ventas()
@@ -1208,8 +1212,8 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
@@ -1231,13 +1235,14 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.estado = i['estado']
                         try:
                             observacion = i['observaciones']
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            data['error'] = str(e)
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
                             det.fechaDetalle = timezone.localtime(timezone.now())
                         det.save()
+                    # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
             else:
@@ -1292,7 +1297,7 @@ class TrabajosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                         trabajo.estadoTrabajo_id = estado.estadoCancelado_id
                     except Exception as e:
-                        pass
+                        data['error'] = str(e)
                     trabajo.save()
                     data['redirect'] = self.url_redirect
                     data['check'] = 'ok'

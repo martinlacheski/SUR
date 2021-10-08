@@ -145,15 +145,20 @@ class DetalleServiciosTrabajo(models.Model):
 
 # Clase Planificacion de trabajos
 class PlanificacionesSemanales(models.Model):
-    nombre = models.CharField(max_length=100, verbose_name='Nombre', blank=True, null=True)
     fechaInicio = models.DateField(verbose_name='Fecha de Inicio')
     fechaFin = models.DateField(verbose_name='Fecha de Fin')
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
 
     def __str__(self):
-        return self.nombre
+        return self.get_full_name
+
+    def get_full_name(self):
+        return '{} - {}'.format(self.fechaInicio, self.fechaFin)
+
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['usuario'] = self.usuario.toJSON()
         return item
 
     class Meta:
@@ -162,20 +167,12 @@ class PlanificacionesSemanales(models.Model):
         db_table = 'trabajos_planificaciones_semanales'
         ordering = ['id']
 
-    def save(self, force_insert=False, force_update=False):
-        try:
-            self.nombre = self.nombre.upper()
-        except:
-            pass
-        super(PlanificacionesSemanales, self).save(force_insert, force_update)
-
 
 # Clase Detalle Planificacion de trabajos
 class DetallePlanificacionesSemanales(models.Model):
     planificacion = models.ForeignKey(PlanificacionesSemanales, models.DO_NOTHING)
     trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING)
     orden = models.PositiveIntegerField(default=0)
-    dia = models.PositiveIntegerField(default=1)
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['planificacion'])

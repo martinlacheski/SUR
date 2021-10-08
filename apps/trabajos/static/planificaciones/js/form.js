@@ -9,6 +9,8 @@ var tablaPlanificacion;
 var ordenTrabajos;
 var planificacion = {
     items: {
+        fechaInicio: '',
+        fechaFin: '',
         //detalle de trabajos
         trabajos: [],
     },
@@ -28,6 +30,7 @@ var planificacion = {
             destroy: true,
             deferRender: true,
             paging: false,
+            rowReorder: true,
             data: planificacion.items.trabajos,
             columns: [
                 {"data": "id"},
@@ -77,19 +80,56 @@ function searchParametros() {
         }
     });
 };
+
+$(document).ready(function () {
+    var accion = $('input[name="action"]').val();
+    if (accion === 'add') {
+        //Inicialización de datetimepicker
+        $('#fechaInicio').datetimepicker({
+            format: 'DD-MM-YYYY',
+            date: moment(),
+            locale: 'es',
+            minDate: moment(),
+        });
+        //Inicialización de datetimepicker
+        $('#fechaFin').datetimepicker({
+            format: 'DD-MM-YYYY',
+            date: moment(),
+            locale: 'es',
+            minDate: moment(),
+        });
+    } else {
+        //Inicialización de datetimepicker
+        $('#fechaInicio').datetimepicker({
+            format: 'DD-MM-YYYY',
+            locale: 'es',
+        });
+        //Inicialización de datetimepicker
+        $('#fechaFin').datetimepicker({
+            format: 'DD-MM-YYYY',
+            locale: 'es',
+        });
+        //Buscamos el detalle de trabajos de la planificacion por ajax
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_detalle_planificacion',
+            },
+            dataType: 'json',
+            success: function (data) {
+                //asignamos el detalle a la estructura
+                planificacion.items.trabajos = data;
+                //actualizamos el listado de productos
+                planificacion.listTrabajos();
+            }
+        });
+    }
+});
+
 $(function () {
-    //Inicialización de datetimepicker
-    $('#fechaInicio').datetimepicker({
-        format: 'DD-MM-YYYY',
-        date: moment(),
-        locale: 'es',
-    });
-    //Inicialización de datetimepicker
-    $('#fechaFin').datetimepicker({
-        format: 'DD-MM-YYYY',
-        date: moment(),
-        locale: 'es',
-    });
+
     //Buscamos los parametros de estado
     searchParametros();
     tablaTrabajos = $('#data').DataTable({
@@ -190,7 +230,9 @@ $(function () {
             opacity: 0.6,
             update: function () {
                 //Pasamos a una variable el orden de los trabajos
-                ordenTrabajos = $(this).sortable("toArray");
+                var trabajos = $(this).sortable(data);
+                // var trabajos = tablaPlanificacion.data().sortable("toArray");
+                console.log(trabajos);
             }
         }
     );
@@ -241,11 +283,19 @@ $(function () {
     $("#planificacionesForm").submit(function (e) {
         e.preventDefault();
         confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+                //realizamos la creacion de la PLanificacion mediante Ajax
+                planificacion.items.fechaInicio = moment(moment($('input[name="fechaInicio"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                planificacion.items.fechaFin = moment(moment($('input[name="fechaFin"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
                 var parameters = new FormData();
+                //Pasamos la Accion
                 parameters.append('action', $('input[name="action"]').val());
-                if (ordenTrabajos !== undefined) {
-                    parameters.append('ordenTrabajos', JSON.stringify(ordenTrabajos));
-                }
+                parameters.append('planificacion', JSON.stringify(planificacion.items));
+                // if (ordenTrabajos !== undefined) {
+                //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
+                //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
+                // } else {
+                //
+                // }
                 //Bloque AJAX PLANIFICACION
                 $.ajax({
                     url: window.location.href,

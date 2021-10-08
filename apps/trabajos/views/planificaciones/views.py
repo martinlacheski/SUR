@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import date, datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -8,20 +7,13 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
-from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
-from apps.erp.models import Productos, Servicios, Clientes, Ventas, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, CondicionesPago, MediosPago, \
-    Estados
-from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
-    DetalleServiciosPlantillaPresupuesto, Presupuestos
-from apps.trabajos.forms import TrabajosForm, PlanificacionesSemanalesForm
-from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo, PlanificacionesSemanales
+from apps.parametros.models import Empresa, EstadoParametros
+from apps.trabajos.forms import PlanificacionesSemanalesForm
+from apps.trabajos.models import Trabajos, PlanificacionesSemanales, DetallePlanificacionesSemanales
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -43,6 +35,14 @@ class PlanificacionesSemanalesListView(LoginRequiredMixin, ValidatePermissionReq
                 data = []
                 for i in PlanificacionesSemanales.objects.all():
                     data.append(i.toJSON())
+            elif action == 'search_detalle_trabajos':
+                data = []
+                for i in DetallePlanificacionesSemanales.objects.filter(planificacion_id=request.POST['id']):
+                    data.append(i.toJSON())
+            elif action == 'get_parametros_estados':
+                data = []
+                parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
+                data.append(parametros.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -79,15 +79,41 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
                     for i in Trabajos.objects.exclude(estadoTrabajo__orden__gte=estado.estadoFinalizado.orden):
                         data.append(i.toJSON())
                 except Exception as e:
-                    print(str(e))
+                    data['error'] = str(e)
             elif action == 'get_parametros_estados':
                 data = []
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 data.append(parametros.toJSON())
             elif action == 'add':
-                form = self.get_form()
-                data = form.save()
-                data['redirect'] = self.url_redirect
+                with transaction.atomic():
+                    formPlanificacionRequest = json.loads(request.POST['planificacion'])
+                    planificacion = PlanificacionesSemanales()
+                    planificacion.fechaInicio = formPlanificacionRequest['fechaInicio']
+                    planificacion.fechaFin = formPlanificacionRequest['fechaFin']
+                    # obtenemos el Usuario actual
+                    planificacion.usuario = request.user
+                    planificacion.save()
+                    # Inicializamos el orden de los trabajos
+                    pos = 1
+                    for i in formPlanificacionRequest['trabajos']:
+                        det = DetallePlanificacionesSemanales()
+                        det.planificacion_id = planificacion.id
+                        det.trabajo_id = i['id']
+                        # Buscamos el estado inicial del Proceso
+                        try:
+                            estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                            trabajoActual = Trabajos.objects.get(id=det.trabajo.id)
+                            # Cambiamos el estado del trabajo a Planificado
+                            trabajoActual.estadoTrabajo_id = estado.estadoPlanificado_id
+                            trabajoActual.save()
+                            det.orden = pos
+                            det.save()
+                            pos += 1
+                        except Exception as e:
+                            data['error'] = str(e)
+                    # Devolvemos en Data la ID de la nueva Planificacion para poder generar la Boleta
+                    data = {'id': planificacion.id}
+                    data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -113,18 +139,81 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
 
     def get_form(self, form_class=None):
         instance = self.get_object()
-        form = TrabajosForm(instance=instance)
-        # Obtenemos unicamente el MODELO y CLIENTE en el que se CREO el TRABAJO, para poder modificar el mismo
-        form.fields['modelo'].queryset = Modelos.objects.filter(id=instance.modelo.id)
-        form.fields['cliente'].queryset = Clientes.objects.filter(id=instance.cliente.id)
+        form = PlanificacionesSemanalesForm(instance=instance)
         return form
 
     def post(self, request, *args, **kwargs):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'edit':
-                pass
+            if action == 'searchdata':
+                try:
+                    data = []
+                    # Asigno a una variable los parametros de estados
+                    estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                    # Obtengo los trabajos que no se encuentran en la planificacion
+                    trabajos = []
+                    for i in DetallePlanificacionesSemanales.objects.filter(planificacion_id=self.get_object().id):
+                        trabajos.append(i.trabajo.id)
+                    # Obtengo los trabajos que estan pendientes de finalizarse y que no estan en la planificacion
+                    for i in Trabajos.objects.exclude(estadoTrabajo__orden__gte=estado.estadoFinalizado.orden).filter(
+                            ~Q(id__in=trabajos)):
+                        data.append(i.toJSON())
+                except Exception as e:
+                    data['error'] = str(e)
+            elif action == 'get_parametros_estados':
+                data = []
+                parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
+                data.append(parametros.toJSON())
+            # Metodo para obtener el detalle de los trabajos en la planificacion para mostrar en el template
+            elif action == 'get_detalle_planificacion':
+                data = []
+                try:
+                    for i in DetallePlanificacionesSemanales.objects.filter(planificacion_id=self.get_object().id):
+                        item = i.trabajo.toJSON()
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
+            elif action == 'edit':
+                with transaction.atomic():
+                    formPlanificacionRequest = json.loads(request.POST['planificacion'])
+                    planificacion = self.get_object()
+                    planificacion.fechaInicio = formPlanificacionRequest['fechaInicio']
+                    planificacion.fechaFin = formPlanificacionRequest['fechaFin']
+                    # obtenemos el Usuario actual
+                    planificacion.usuario = request.user
+                    planificacion.save()
+                    # Eliminamos todos los Trabajos del Detalle
+                    for i in formPlanificacionRequest['trabajos']:
+                        # Buscamos el estado inicial del Proceso
+                        try:
+                            estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                            i.trabajo.estadoTrabajo_id = estado.estadoInicial_id
+                        except Exception as e:
+                            data['error'] = str(e)
+                    planificacion.detalleplanificacionessemanales_set.all().delete()
+                    # Inicializamos el orden de los trabajos
+                    pos = 1
+                    # Volvemos a cargar los Trabajos al Detalle
+                    for i in formPlanificacionRequest['trabajos']:
+                        det = DetallePlanificacionesSemanales()
+                        det.planificacion_id = planificacion.id
+                        det.trabajo_id = i['id']
+                        # Buscamos el estado inicial del Proceso
+                        try:
+                            estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                            trabajoActual = Trabajos.objects.get(id=det.trabajo.id)
+                            # Cambiamos el estado del trabajo a Planificado
+                            trabajoActual.estadoTrabajo_id = estado.estadoPlanificado_id
+                            trabajoActual.save()
+                            det.orden = pos
+                            det.save()
+                            pos += 1
+                        except Exception as e:
+                            data['error'] = str(e)
+                    # Devolvemos en Data la ID de la nueva Planificacion para poder generar la Boleta
+                    data = {'id': planificacion.id}
+                    data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:

@@ -1,4 +1,31 @@
 var tablaTrabajos;
+var estadoInicial = 0;
+var estadoPlanificado = 0;
+var estadoEspecial = 0;
+var estadoFinalizado = 0;
+var estadoEntregado = 0;
+var estadoCancelado = 0;
+
+//Funcion para buscar los parametros de estado
+function searchParametros() {
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'get_parametros_estados',
+        },
+        dataType: 'json',
+        success: function (data) {
+            estadoInicial = data[0].estadoInicial.id;
+            estadoPlanificado = data[0].estadoPlanificado.id;
+            estadoEspecial = data[0].estadoEspecial.id;
+            estadoFinalizado = data[0].estadoFinalizado.id;
+            estadoEntregado = data[0].estadoEntregado.id;
+            estadoCancelado = data[0].estadoCancelado.id;
+        }
+    });
+};
 
 $(function () {
     //Eventos del Listado
@@ -19,7 +46,6 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "nombre"},
             {"data": "fechaInicio"},
             {"data": "fechaFin"},
             {"data": "id"},
@@ -27,10 +53,6 @@ $(function () {
         columnDefs: [
             {
                 targets: [0],
-                class: 'text-center',
-            },
-            {
-                targets: [1],
                 class: 'text-center',
             },
             {
@@ -46,10 +68,10 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    var buttons = '<a rel="detallePlanifacion" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                    buttons += '<a href="/planifaciones/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    buttons += '<a href="/planifaciones/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
-                    buttons += '<a href="/planifaciones/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                    var buttons = '<a rel="detallePlanificacion" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    buttons += '<a href="/planificaciones/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                    buttons += '<a href="/planificaciones/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                    buttons += '<a href="/planificaciones/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     return buttons;
                 }
             },
@@ -60,7 +82,9 @@ $(function () {
     });
 
     $('#data tbody')
-        .on('click', 'a[rel="detallePlanifacion"]', function () {
+        .on('click', 'a[rel="detallePlanificacion"]', function () {
+            //Buscamos los parametros de estado
+            searchParametros();
             //Seleccionamos el Presupuesto sobre la cual queremos traer el detalle
             var tr = tablaPlanificacion.cell($(this).closest('td, li')).index();
             var data = tablaPlanificacion.row(tr.row).data();
@@ -80,53 +104,46 @@ $(function () {
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': csrftoken,
-                        'action': 'search_detalle_productos',
+                        'action': 'search_detalle_trabajos',
                         'id': data.id
                     },
                     dataSrc: ""
                 },
                 columns: [
-                    {"data": "producto.descripcion"},
-                    {"data": "observaciones"},
-                    {"data": "estado"},
-                    {"data": "precio"},
-                    {"data": "cantidad"},
-                    {"data": "subtotal"},
+                    {"data": "orden"},
+                    {"data": "trabajo.modelo.nombre"},
+                    {"data": "trabajo.cliente.razonSocial"},
+                    {"data": "trabajo.estadoTrabajo"},
                 ],
                 columnDefs: [
                     {
-                        targets: [-4],
+                        targets: [-4, -3, -2],
                         class: 'text-center',
-                        className: 'dt-body-center',
+                    },
+                    {
+                        targets: [-1],
+                        class: 'text-center',
                         render: function (data, type, row) {
-                            if (row.estado) {
-                                return '<span class="badge badge-success">' + ' REALIZADO' + '</span>'
+                            if (row.trabajo.estadoTrabajo.id == estadoInicial) {
+                                return '<span class="badge badge-warning">' + row.trabajo.estadoTrabajo.nombre + '</span>'
+                            } else if (row.trabajo.estadoTrabajo.id == estadoPlanificado) {
+                                return '<span class="badge badge-dark">' + row.trabajo.estadoTrabajo.nombre + '</span>'
+                            } else if (row.trabajo.estadoTrabajo.id == estadoEspecial) {
+                                return '<span class="badge badge-info">' + row.trabajo.estadoTrabajo.nombre + '</span>'
+                            } else if (row.trabajo.estadoTrabajo.id == estadoFinalizado) {
+                                return '<span class="badge badge-success">' + row.trabajo.estadoTrabajo.nombre + '</span>'
+                            } else if (row.trabajo.estadoTrabajo.id == estadoCancelado) {
+                                return '<span class="badge badge-danger">' + row.trabajo.estadoTrabajo.nombre + '</span>'
+                            } else if (row.trabajo.estadoTrabajo.id == estadoEntregado) {
+                                return '<span class="badge badge-primary">' + row.trabajo.estadoTrabajo.nombre + '</span>'
                             } else {
-                                return '<span class="badge badge-danger">' + ' PENDIENTE' + '</span>'
+                                return '<span class="badge badge-info">' + row.trabajo.estadoTrabajo.nombre + '</span>'
                             }
-                        }
-                    },
-                    {
-                        targets: [-2],
-                        class: 'text-center',
-                    },
-                    {
-                        targets: [-1, -3],
-                        class: 'text-center',
-                        render: function (data, type, row) {
-                            return '$' + parseFloat(data).toFixed(2);
                         }
                     },
                 ],
                 initComplete: function (settings, json) {
-                    //Obtenemos la cantidad de ROWS en el datatables
-                    cantProductos = json.length;
-                    //Si no existen productos no mostramos en el modal la tabla
-                    if (cantProductos < 1) {
-                        document.getElementById("rowProductos").style.visibility = "collapse";
-                    } else {
-                        document.getElementById("rowProductos").style.visibility = "visible";
-                    }
+
                 }
             });
             $('#modalDetalle').modal('show');
