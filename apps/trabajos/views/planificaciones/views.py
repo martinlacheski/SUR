@@ -40,13 +40,9 @@ class PlanificacionesSemanalesListView(LoginRequiredMixin, ValidatePermissionReq
         try:
             action = request.POST['action']
             if action == 'searchdata':
-                try:
-                    estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                    for i in Trabajos.objects.filter(estadoTrabajo_id=estado.estadoInicial_id):
-                        data.append(i.toJSON())
-                except Exception as e:
-                    pass
                 data = []
+                for i in PlanificacionesSemanales.objects.all():
+                    data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -89,7 +85,9 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 data.append(parametros.toJSON())
             elif action == 'add':
-                pass
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -185,18 +183,11 @@ class PlanificacionesSemanalesPdfView(LoginRequiredMixin, ValidatePermissionRequ
             # Utilizamos el template para generar el PDF
             template = get_template('planificaciones/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
-            subtotalProductos = DetalleProductosTrabajo.objects.filter(trabajo_id=self.kwargs['pk'])
-            subtotalServicios = DetalleServiciosTrabajo.objects.filter(trabajo_id=self.kwargs['pk'])
-            productos = 0
-            for i in subtotalProductos:
-                productos += i.subtotal
-            servicios = 0
-            for i in subtotalServicios:
-                servicios += i.subtotal
+            planificacion = PlanificacionesSemanales.objects.get(id=self.kwargs['pk'])
             context = {
-                'trabajo': Trabajos.objects.get(pk=self.kwargs['pk']),
-                'subtotalProductos': productos,
-                'subtotalServicios': servicios,
+                'planificacion': PlanificacionesSemanales.objects.get(pk=self.kwargs['pk']),
+                'inicio': planificacion.fechaInicio,
+                'fin': planificacion.fechaFin,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
             }

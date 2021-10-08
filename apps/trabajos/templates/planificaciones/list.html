@@ -13,7 +13,7 @@
     <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
     <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
     <!-- archivo JS -->
-    <script src="{% static 'trabajos/js/list.js' %}"></script>
+    <script src="{% static 'planificaciones/js/list.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -28,14 +28,11 @@
             <table class="table" id="data">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 4%;">ID</th>
-                    <th scope="col" style="width: 4%;">Estado</th>
-                    <th scope="col" style="width: 12%;">Entrada</th>
-                    <th scope="col" style="width: 12%;">Salida</th>
-                    <th scope="col" style="width: 12%;">Modelo</th>
-                    <th scope="col" style="width: 25%;">Cliente</th>
-                    <th scope="col" style="width: 5%;">Total</th>
-                    <th scope="col" style="width: 23%;">Opciones</th>
+                    <th scope="col" style="width: 5%;">ID</th>
+                    <th scope="col" style="width: 30%;">Nombre</th>
+                    <th scope="col" style="width: 25%;">Inicio</th>
+                    <th scope="col" style="width: 25%;">Fin</th>
+                    <th scope="col" style="width: 15%;">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,7 +51,7 @@
             </a>
         </div>
     </div>
-    <!-- Modal Cancelar Trabajo -->
+    <!-- Modal Eliminar Planificacion -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -66,7 +63,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="msjErrorModal">¿Estás seguro de cancelar el Trabajo?</p>
+                    <p id="msjErrorModal">¿Estás seguro de eliminar la Planificación?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary btnDelete">Si</button>
@@ -75,14 +72,14 @@
             </div>
         </div>
     </div>
-    <!-- Modal Detalle Trabajo -->
+    <!-- Modal Detalle Planificacion -->
     <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-tasks"></i> Detalle de
-                        Trabajo</b></h5>
+                        Planificación</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

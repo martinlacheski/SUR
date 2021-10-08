@@ -3,6 +3,7 @@ var tablaServicios;
 var cantProductos = 0;
 var cantServicios = 0;
 var estadoInicial = 0;
+var estadoPlanificado = 0;
 var estadoEspecial = 0;
 var estadoFinalizado = 0;
 var estadoEntregado = 0;
@@ -20,6 +21,7 @@ function searchParametros() {
         dataType: 'json',
         success: function (data) {
             estadoInicial = data[0].estadoInicial.id;
+            estadoPlanificado = data[0].estadoPlanificado.id;
             estadoEspecial = data[0].estadoEspecial.id;
             estadoFinalizado = data[0].estadoFinalizado.id;
             estadoEntregado = data[0].estadoEntregado.id;
@@ -68,6 +70,8 @@ $(function () {
                 render: function (data, type, row) {
                     if (row.estadoTrabajo.id == estadoInicial) {
                         return '<span class="badge badge-warning">' + row.estadoTrabajo.nombre + '</span>'
+                    } else if (row.estadoTrabajo.id == estadoPlanificado) {
+                        return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
                     } else if (row.estadoTrabajo.id == estadoEspecial) {
                         return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
                     } else if (row.estadoTrabajo.id == estadoFinalizado) {

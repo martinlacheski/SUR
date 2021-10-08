@@ -58,13 +58,13 @@
                     <div class="form-group col-3">
                         <label>(*) Fin:</label>
                         <div class="col-12" id="fechaFin" data-target-input="nearest">
-                            {{ form.fechaFin|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {{ form.fechaFin|add_class:'form-control fechaFin'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-7">
                         <p><b>Trabajos Pendientes de Finalizar:</b></p>
                         <table class="table table table-bordered" id="data">
                             <thead>
@@ -83,14 +83,15 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="col-4">
+                    <div class="col-5">
                         <p><b>Planificación:</b></p>
                         <table class="table table table-bordered" id="dataPlanificacion">
                             <thead>
                             <tr>
                                 <th scope="col" style="width: 5%;">ID</th>
                                 <th scope="col" style="width: 30%;">Modelo</th>
-                                <th scope="col" style="width: 65%;">Cliente</th>
+                                <th scope="col" style="width: 60%;">Cliente</th>
+                                <th scope="col" style="width: 5%;">Quitar</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -102,7 +103,7 @@
             </div>
         </div>
         <div class="card-footer">
-            <button type="submit" class="btn btn-primary btn-flat">
+            <button type="submit" id="btnGuardar" class="btn btn-primary btn-flat">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">

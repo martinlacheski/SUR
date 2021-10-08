@@ -49,7 +49,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h1 class="name-company text-center">Detalle de Trabajo {{ trabajo.estadoTrabajo }}</h1>
+            <h1 class="name-company text-center">Planificación de Trabajos desde {{ inicio }} hasta {{ fin }}</h1>
         </div>
     </div>
     <div class="row">
@@ -82,74 +82,28 @@
         </div>
     </div>
     <p class="text-uppercase font-weight-bold text-center">
-        Detalle de Productos <br>
+        Detalle de Planificación de Trabajos <br>
     </p>
     <table class="table" style="width: 100%;">
         <thead>
         <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 10%;">Cantidad</th>
-            <th class="text-center" style="width: 70%;">Producto</th>
-            <th class="text-center" style="width: 10%;">Importe</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
+            <th class="text-center" style="width: 10%;">Orden</th>
+            <th class="text-center" style="width: 10%;">Trabajo</th>
+            <th class="text-center" style="width: 40%;">Modelo</th>
+            <th class="text-center" style="width: 40%;">Cliente</th>
         </tr>
         </thead>
         <tbody>
-        {% for det in trabajo.detalleproductostrabajo_set.all %}
+        {% for det in planificacion.detalleplanificaciones_set.all %}
             <tr>
-                <td class="text-center">{{ det.cantidad }}</td>
-                <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-center">{{ det.id }}</td>
+                <td class="text-center">{{ det.trabajo.id }}</td>
+                <td class="text-center">{{ det.modelo.nombre }}</td>
+                <td class="text-right">{{ det.cliente.razonSocial }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="text-uppercase font-weight-bold">
-        <b>Observaciones Productos:</b></p>
-    {% for det in trabajo.detalleproductostrabajo_set.all %}
-        {% if det.observaciones %}
-            <b>{{ det.producto.descripcion }}: </b> {{ det.observaciones }}<br>
-        {% endif %}
-    {% endfor %}
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
-    </p>
-    <p class="text-uppercase font-weight-bold text-center">
-        detalle de Servicios <br>
-    </p>
-    <table class="table" style="width: 100%;">
-        <thead>
-        <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 10%;">Cantidad</th>
-            <th class="text-center" style="width: 70%;">Servicio</th>
-            <th class="text-center" style="width: 10%;">Importe</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for det in trabajo.detalleserviciostrabajo_set.all %}
-            <tr>
-                <td class="text-center">{{ det.cantidad }}</td>
-                <td class="text-center">{{ det.servicio.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <p class="text-uppercase font-weight-bold">
-        <b>Observaciones Servicios:</b></p>
-    {% for det in trabajo.detalleserviciostrabajo_set.all %}
-        {% if det.observaciones %}
-            <b>{{ det.servicio.descripcion }}: </b> {{ det.observaciones }}<br>
-        {% endif %}
-    {% endfor %}
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
-    </p>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Total a pagar: $</b> {{ trabajo.total|floatformat:2 }}<br>
-    </p>
 </div>
 </body>
 </html>
