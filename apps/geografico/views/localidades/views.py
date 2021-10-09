@@ -131,8 +131,7 @@ class LocalidadesDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        # Captamos el ID y la Accion que viene del Template y realizamos la eliminacion logica
-        id = request.POST['pk']
+        # Captamos la Accion que viene del Template y realizamos la eliminacion logica
         action = request.POST['action']
         if action == 'delete':
             data = {}

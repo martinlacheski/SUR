@@ -129,7 +129,6 @@ $(document).ready(function () {
 });
 
 $(function () {
-
     //Buscamos los parametros de estado
     searchParametros();
     tablaTrabajos = $('#data').DataTable({
@@ -230,9 +229,12 @@ $(function () {
             opacity: 0.6,
             update: function () {
                 //Pasamos a una variable el orden de los trabajos
-                var trabajos = $(this).sortable(data);
-                // var trabajos = tablaPlanificacion.data().sortable("toArray");
-                console.log(trabajos);
+                var trabajos = $('#dataPlanificacion').DataTable().rows().data();
+                var ord = new Array();
+                for (var i = 0, ien = trabajos.length; i < ien; i++) {
+                    ord[i] = trabajos[i].id;
+                    console.log(ord[i]);
+                }
             }
         }
     );

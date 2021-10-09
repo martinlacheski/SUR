@@ -34,7 +34,11 @@ class PlanificacionesSemanalesListView(LoginRequiredMixin, ValidatePermissionReq
             if action == 'searchdata':
                 data = []
                 for i in PlanificacionesSemanales.objects.all():
-                    data.append(i.toJSON())
+                    item = i.toJSON()
+                    # Incorporamos una variabla para poder obtener la cantidad de trabajos de la planificacion
+                    cant = PlanificacionesSemanales.objects.get(id=i.id)
+                    item['cantidad'] = cant.detalleplanificacionessemanales_set.count()
+                    data.append(item)
             elif action == 'search_detalle_trabajos':
                 data = []
                 for i in DetallePlanificacionesSemanales.objects.filter(planificacion_id=request.POST['id']):
@@ -242,16 +246,35 @@ class PlanificacionesSemanalesDeleteView(LoginRequiredMixin, ValidatePermissionR
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            action = request.POST['action']
-            if action == 'delete':
-                pass
-            else:
-                data['error'] = 'No ha ingresado a ninguna opción'
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
+        # Captamos la Accion que viene del Template y realizamos la eliminacion logica
+        action = request.POST['action']
+        if action == 'delete':
+            data = {}
+            try:
+                id = self.object.id
+                # Asignamos a una variable el detalle de trabajos de una planificacion
+                trabajos = DetallePlanificacionesSemanales.objects.filter(planificacion_id=id)
+                # Recorremos el detalle para cambiar el estado de los trabajos
+                for i in trabajos:
+                    # Buscamos el estado inicial del Proceso
+                    try:
+                        estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        # Actualizamos el estado a PENDIENTE en los Estados de Planificado
+                        if i.trabajo.estadoTrabajo_id == estado.estadoPlanificado_id:
+                            i.trabajo.estadoTrabajo_id = estado.estadoInicial_id
+                            i.trabajo.save()
+                    except Exception as e:
+                        data['error'] = str(e)
+                # Eliminamos todos los Trabajos del Detalle
+                DetallePlanificacionesSemanales.objects.all().filter(planificacion_id=id).delete()
+                # Eliminamos la planificacion
+                self.object.delete()
+                data['redirect'] = self.url_redirect
+                data['check'] = 'ok'
+            except Exception as e:
+                print(str(e))
+                data['error'] = str(e)
+        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -2,7 +2,7 @@
 
     *   Falta Guardar el Orden personalizado (no toma todavia)
     *   Controlar que no haya planificaciones por fechas Repetido
-    *   Eliminar Planificacion
+    *   Eliminar Planificacion y actualizar estado                      -- OK
 
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
     estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud

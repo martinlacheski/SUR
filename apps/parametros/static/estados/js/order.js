@@ -4,6 +4,7 @@ $(function () {
     $("#sortable").sortable({
         update: function () {
             ordenElementos = $(this).sortable("toArray");
+            console.log(ordenElementos);
         }
     }).disableSelection();
 

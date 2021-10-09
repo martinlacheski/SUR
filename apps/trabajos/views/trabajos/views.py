@@ -706,6 +706,13 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
+                    # Buscamos el estado Especial para iniciar el Proceso
+                    try:
+                        estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        if trabajo.estadoTrabajo_id == estado.estadoPlanificado_id:
+                            trabajo.estadoTrabajo_id = estado.estadoEspecial_id
+                    except Exception as e:
+                        data['error'] = str(e)
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleproductostrabajo_set.all().delete()

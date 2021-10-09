@@ -5,6 +5,7 @@ var estadoEspecial = 0;
 var estadoFinalizado = 0;
 var estadoEntregado = 0;
 var estadoCancelado = 0;
+var countTrabajos = 0;
 
 //Funcion para buscar los parametros de estado
 function searchParametros() {
@@ -48,6 +49,7 @@ $(function () {
             {"data": "id"},
             {"data": "fechaInicio"},
             {"data": "fechaFin"},
+            {"data": "cantidad"},
             {"data": "id"},
         ],
         columnDefs: [
@@ -56,11 +58,18 @@ $(function () {
                 class: 'text-center',
             },
             {
-                targets: [-3, -2],
+                targets: [-4, -3],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
                     return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+                }
+            },
+            {
+                targets: [-2],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    return '<span class="badge badge-success">' + row.cantidad + '</span>'
                 }
             },
             {
@@ -120,6 +129,7 @@ $(function () {
                         targets: [-4, -3, -2],
                         class: 'text-center',
                     },
+
                     {
                         targets: [-1],
                         class: 'text-center',
