@@ -67,8 +67,7 @@ class Proveedores(models.Model):
     email = models.EmailField(max_length=254, verbose_name='Dirección de correo electrónico')
     cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
-    tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción',
-                                       null=True, blank=True)
+    tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
@@ -165,10 +164,9 @@ class Productos(models.Model):
     subcategoria = models.ForeignKey(Subcategorias, models.DO_NOTHING, verbose_name='Subcategoría')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     abreviatura = models.CharField(max_length=30, null=True, blank=True, verbose_name='Abreviatura')
-    codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo')
-    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor')
-    codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1')
-    codigoBarras2 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 2')
+    codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo', unique=True)
+    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor', unique=True)
+    codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1', unique=True)
     stockReal = models.IntegerField(default=0, verbose_name='Stock Real')
     stockMinimo = models.PositiveIntegerField(default=0, verbose_name='Stock Mínimo')
     reposicion = models.PositiveIntegerField(default=0, verbose_name='Pedido Reposición')
@@ -180,8 +178,6 @@ class Productos(models.Model):
     ubicacion = models.CharField(max_length=100, null=True, blank=True, verbose_name='Ubicacion Física')
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
-    # proveedorPrincipal = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor Principal', null=True, blank=True)
-    # proveedorSecundario = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor Secundario', null=True, blank=True)
 
     def __str__(self):
         return self.get_full_name()
@@ -221,10 +217,6 @@ class Productos(models.Model):
             pass
         try:
             self.codigoBarras1 = self.codigoBarras1.upper()
-        except:
-            pass
-        try:
-            self.codigoBarras2 = self.codigoBarras2.upper()
         except:
             pass
         try:
@@ -373,7 +365,7 @@ class Compras(models.Model):
     proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
     condicionPagoCompra = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de pago')
     tipoComprobante = models.ForeignKey(TiposComprobantes, models.DO_NOTHING, verbose_name='Tipo de Comprobante')
-    nroComprobante = models.CharField(max_length=100, verbose_name='Número de Comprobante', blank=True, null=True)
+    nroComprobante = models.CharField(max_length=100, verbose_name='Número de Comprobante')
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -395,6 +387,7 @@ class Compras(models.Model):
         return item
 
     class Meta:
+        unique_together = ['proveedor', 'nroComprobante']
         verbose_name = 'Compra'
         verbose_name_plural = 'Compras'
         db_table = 'erp_compras'

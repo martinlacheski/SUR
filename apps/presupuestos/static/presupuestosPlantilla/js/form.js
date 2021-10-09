@@ -524,6 +524,37 @@ $(function () {
         postfix: '$'
     });
 
+    //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS de dicha CATEGORIA
+    var select_subcategorias = $('select[name="subcategoria"]');
+    $('.selectCategoria').on('change', function () {
+        var id = $(this).val();
+        var options = '<option value="">---------</option>';
+        if (id === '') {
+            select_subcategorias.html(options);
+            return false;
+        }
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_subcategorias',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                    select_subcategorias.html('').select2({
+                        theme: "bootstrap4",
+                        language: 'es',
+                        data: data
+                    });
+                }
+            }
+        });
+    });
+
     //Al cerrar el Modal de Productos reseteamos los valores del formulario
     $('#modalProducto').on('hidden.bs.modal', function (e) {
         //Reseteamos los input del Modal

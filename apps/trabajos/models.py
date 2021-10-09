@@ -21,18 +21,8 @@ class Trabajos(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     prioridad = models.ForeignKey(Prioridades, models.DO_NOTHING, verbose_name='Prioridad', blank=True, null=True)
-    estados = (
-        ('PENDIENTE', 'PENDIENTE'),
-        ('PLANIFICADO', 'PLANIFICADO'),
-        ('PROCESO', 'EN PROCESO'),
-        ('FINALIZADO', 'FINALIZADO'),
-        ('ENTREGADO', 'ENTREGADO'),
-        ('CANCELADO', 'CANCELADO'),
-    )
-    estadoTrabajo = models.CharField(max_length=11, choices=estados, default='PENDIENTE')
-    # estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado de Trabajo', blank=True, null=True)
+    estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado Trabajo', blank=True, null=True)
     fichaTrabajo = models.CharField(max_length=20, verbose_name='Ficha de Trabajo Asociada', blank=True, null=True)
-    # estado = models.BooleanField(default=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
 
     def __str__(self):
@@ -47,6 +37,10 @@ class Trabajos(models.Model):
         item['usuario'] = self.usuario.toJSON()
         try:
             item['usuarioAsignado'] = self.usuarioAsignado.toJSON()
+        except:
+            pass
+        try:
+            item['estadoTrabajo'] = self.estadoTrabajo.toJSON()
         except:
             pass
         item['cliente'] = self.cliente.toJSON()
@@ -86,6 +80,8 @@ class DetalleProductosTrabajo(models.Model):
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
     estado = models.BooleanField(default=False)
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
+    fechaDetalle = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.producto.descripcion
@@ -120,6 +116,8 @@ class DetalleServiciosTrabajo(models.Model):
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
     estado = models.BooleanField(default=False)
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
+    fechaDetalle = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.servicio.descripcion
@@ -143,3 +141,46 @@ class DetalleServiciosTrabajo(models.Model):
         except:
             pass
         super(DetalleServiciosTrabajo, self).save(force_insert, force_update)
+
+
+# Clase Planificacion de trabajos
+class PlanificacionesSemanales(models.Model):
+    fechaInicio = models.DateField(verbose_name='Fecha de Inicio')
+    fechaFin = models.DateField(verbose_name='Fecha de Fin')
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
+
+    def __str__(self):
+        return self.get_full_name
+
+    def get_full_name(self):
+        return '{} - {}'.format(self.fechaInicio, self.fechaFin)
+
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['usuario'] = self.usuario.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Planificación Semanal de Trabajos'
+        verbose_name_plural = 'Planificaciones Semanales de Trabajos'
+        db_table = 'trabajos_planificaciones_semanales'
+        ordering = ['id']
+
+
+# Clase Detalle Planificacion de trabajos
+class DetallePlanificacionesSemanales(models.Model):
+    planificacion = models.ForeignKey(PlanificacionesSemanales, models.DO_NOTHING)
+    trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING)
+    orden = models.PositiveIntegerField(default=0)
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['planificacion'])
+        item['trabajo'] = self.trabajo.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle Planificación Semanal de Trabajos'
+        verbose_name_plural = 'Detalles de Planificaciones Semanales de Trabajos'
+        db_table = 'trabajos_detalle_planificaciones_semanales'
+        ordering = ['id']

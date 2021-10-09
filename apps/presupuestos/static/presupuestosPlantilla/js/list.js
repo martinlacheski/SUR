@@ -7,6 +7,7 @@ $(function () {
     var tablaPresupuesto = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
+        order: [[ 1, 'asc' ], [ 2, 'asc' ]],
         destroy: true,
         deferRender: true,
         ajax: {

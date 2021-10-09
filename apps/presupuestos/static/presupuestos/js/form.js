@@ -213,6 +213,31 @@ function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 };
 
+//Funcion para validar que el CUIT sea válido
+function isValidCuit(cuit) {
+    //si el largo del cuit es incorrecto salir de la funcion
+    if (cuit.length != 11) return 0;
+    var rv = false;
+    var resultado = 0;
+    var cuit_nro = cuit.replace("-", "");
+    var codes = "6789456789";
+    var cuit_long = parseInt(cuit_nro);
+    var verificador = parseInt(cuit_nro[cuit_nro.length - 1]);
+    var x = 0;
+    while (x < 10) {
+        var digitoValidador = parseInt(codes.substring(x, x + 1));
+        if (isNaN(digitoValidador)) digitoValidador = 0;
+        var digito = parseInt(cuit_nro.substring(x, x + 1));
+        if (isNaN(digito)) digito = 0;
+        var digitoValidacion = digitoValidador * digito;
+        resultado += digitoValidacion;
+        x++;
+    }
+    resultado = resultado % 11;
+    rv = (resultado == verificador);
+    return rv;
+}
+
 //Funcion para Calcular los importes
 function calcular_importes() {
     //Inicializamos variables para calcular importes
@@ -624,6 +649,27 @@ $(function () {
         }
     });
 
+    //Validamos CUIT CORRECTO
+    $("#cuil").on('focusout', function (e) {
+        var btn = document.getElementById('btnAddCliente');
+        if ($('input[name="cuil"]').val().lenght == 0 || !$('input[name="cuil"]').val()) {
+            //cuit vacio
+            $('#errorCuit').attr("hidden", "");
+            btn.disabled = false;
+        } else {
+            var check = isValidCuit($('input[name="cuil"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorCuit").removeAttr("hidden");
+                btn.disabled = true;
+                $("#cuil").focus();
+            } else {
+                $('#errorCuit').attr("hidden", "");
+                btn.disabled = false;
+            }
+        }
+    });
+
     // VALIDAMOS LOS CAMPOS
     $("#razonSocial").validate();
     $("#condicionIVA").validate();
@@ -821,6 +867,37 @@ $(function () {
         boostat: 5,
         maxboostedstep: 10,
         postfix: '$'
+    });
+
+    //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS de dicha CATEGORIA
+    var select_subcategorias = $('select[name="subcategoria"]');
+    $('.selectCategoria').on('change', function () {
+        var id = $(this).val();
+        var options = '<option value="">---------</option>';
+        if (id === '') {
+            select_subcategorias.html(options);
+            return false;
+        }
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_subcategorias',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                    select_subcategorias.html('').select2({
+                        theme: "bootstrap4",
+                        language: 'es',
+                        data: data
+                    });
+                }
+            }
+        });
     });
 
     //Al cerrar el Modal de Productos reseteamos los valores del formulario
@@ -1210,6 +1287,7 @@ $(function () {
             //pass
         });
     });
+
     //Funcion Mostrar Errores del Formulario Producto
     function message_error_precio_producto(obj) {
         var errorList = document.getElementById("errorListformPrecioProducto");
@@ -1232,6 +1310,7 @@ $(function () {
             errorList.appendChild(li);
         }
     }
+
 //------------------------------------MODAL Buscar SERVICIOS----------------------------------------//
     //Boton Buscar Servicios Mostrar Modal
     $('.btnSearchServicios').on('click', function () {
@@ -1332,6 +1411,7 @@ $(function () {
     $('.ivaServicio').on('change', function () {
         calcularPrecioServicio();
     });
+
     //Funcion para calcular el precio entre COSTO e IVA
     function calcularPrecioServicio() {
         var id = $('.ivaServicio').val();
@@ -1360,6 +1440,7 @@ $(function () {
             $('.precioVentaServicio').val(precio.toFixed(2));
         }
     }
+
     //Funcion Mostrar Errores del Formulario
     function message_error_servicio(obj) {
         var errorList = document.getElementById("errorListFormServicio");
@@ -1383,6 +1464,7 @@ $(function () {
 
         }
     }
+
     //Hacemos el envio del Formulario mediante AJAX
     $("#formServicio").submit(function (e) {
         // VALIDACION DE LOS CAMPOS
@@ -1568,6 +1650,7 @@ $(function () {
     $('input[name="actualizarCostoServicio"]').on('change', function () {
         calcularPrecioActualizacionServicio();
     });
+
     //Funcion para calcular el precio entre COSTO e IVA
     function calcularPrecioActualizacionServicio() {
         var iva = $('input[name="actualizarIvaServicio"]').val();
@@ -1576,6 +1659,7 @@ $(function () {
         var precio = (costo * iva);
         $('input[name="actualizarPrecioVentaServicio"]').val(precio.toFixed(2));
     }
+
     //Actualizamos el precio del Servicio desde el Modal
     $('#formPrecioServicio').on('submit', function (e) {
         e.preventDefault();
@@ -1620,6 +1704,7 @@ $(function () {
             //pass
         });
     });
+
     //Funcion Mostrar Errores del Formulario Servicio
     function message_error_precio_servicio(obj) {
         var errorList = document.getElementById("errorListformPrecioServicio");
@@ -1642,6 +1727,7 @@ $(function () {
             errorList.appendChild(li);
         }
     }
+
 //------------------------------------SUBMIT PRESUPUESTO----------------------------------------//
     // Submit PRESUPUESTO
     $('#presupuestoForm').on('submit', function (e) {
@@ -1653,61 +1739,113 @@ $(function () {
                 //pass
             });
         } else {
-            confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
-                    //realizamos la creacion del Presupuesto mediante Ajax
-                    presupuesto.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                    presupuesto.items.validez = $('input[name="validez"]').val();
-                    presupuesto.items.cliente = $('select[name="cliente"]').val();
-                    presupuesto.items.modelo = $('select[name="modelo"]').val();
-                    presupuesto.items.observaciones = $('input[name="observaciones"]').val();
-                    // presupuesto.items.iva = $('input[name="iva"]').val();
-                    // presupuesto.items.percepcion = $('input[name="percepcion"]').val();
-                    // presupuesto.items.total = $('input[name="total"]').val();
-                    var parameters = new FormData();
-                    //Pasamos la accion ADD
-                    parameters.append('action', $('input[name="action"]').val());
-                    //Agregamos la estructura de Presupuesto con los detalles correspondientes
-                    parameters.append('presupuesto', JSON.stringify(presupuesto.items));
-                    //Bloque AJAX Presupuesto
-                    $.ajax({
-                        url: window.location.href,
-                        type: 'POST',
-                        data: parameters,
-                        dataType: 'json',
-                        headers: {
-                            'X-CSRFToken': csrftoken
-                        },
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                            if (!data.hasOwnProperty('error')) {
-                                confirm_action('Notificación', '¿Desea imprimir el Presupuesto?', function () {
-                                    window.open('/presupuestos/pdf/' + data.id + '/', '_blank');
-                                    location.replace(data.redirect);
-                                }, function () {
-                                    location.replace(data.redirect);
-                                });
-                                //location.replace(data.redirect);
-                            } else {
-                                error_action('Error', data.error, function () {
-                                    //pass
-                                }, function () {
-                                    //pass
-                                });
+            if ($('input[name="action"]').val() == 'confirm') {
+                $('#confirmarPresupuestoModal').modal('show');
+            } else {
+                confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+                        // realizamos la creacion del Presupuesto mediante Ajax
+                        presupuesto.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                        presupuesto.items.validez = $('input[name="validez"]').val();
+                        presupuesto.items.cliente = $('select[name="cliente"]').val();
+                        presupuesto.items.modelo = $('select[name="modelo"]').val();
+                        presupuesto.items.observaciones = $('input[name="observaciones"]').val();
+                        var parameters = new FormData();
+                        //Pasamos la accion
+                        parameters.append('action', $('input[name="action"]').val());
+                        //Agregamos la estructura de Presupuesto con los detalles correspondientes
+                        parameters.append('presupuesto', JSON.stringify(presupuesto.items));
+                        //Bloque AJAX Presupuesto
+                        $.ajax({
+                            url: window.location.href,
+                            type: 'POST',
+                            data: parameters,
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRFToken': csrftoken
+                            },
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (!data.hasOwnProperty('error')) {
+                                    confirm_action('Notificación', '¿Desea imprimir el Presupuesto?', function () {
+                                        window.open('/presupuestos/pdf/' + data.id + '/', '_blank');
+                                        location.replace(data.redirect);
+                                    }, function () {
+                                        location.replace(data.redirect);
+                                    });
+                                    //location.replace(data.redirect);
+                                } else {
+                                    error_action('Error', data.error, function () {
+                                        //pass
+                                    }, function () {
+                                        //pass
+                                    });
+                                }
                             }
-                        }
-                    });
-                }
-                ,
-
-                function () {
-                    //pass
-                }
-            );
+                        });
+                    },
+                    function () {
+                        //pass
+                    }
+                );
+            }
         }
         ;
-    })
-    ;
-})
-;
+    });
+    //Submit Confirmacion de Presupuesto
+    $('#confirmarPresupuestoModal').on('submit', function (e) {
+        e.preventDefault();
+        if (presupuesto.items.productos.length === 0 && presupuesto.items.servicios.length === 0) {
+            error_action('Error', 'Debe al menos tener un producto o servicio en sus detalles', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        } else {
+            // realizamos la creacion del Presupuesto mediante Ajax
+            presupuesto.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+            presupuesto.items.validez = $('input[name="validez"]').val();
+            presupuesto.items.cliente = $('select[name="cliente"]').val();
+            presupuesto.items.modelo = $('select[name="modelo"]').val();
+            presupuesto.items.observaciones = $('input[name="observaciones"]').val();
+            var parameters = new FormData();
+            //Pasamos la accion
+            parameters.append('action', $('input[name="action"]').val());
+            //Pasamos la prioridad del Trabajo
+            parameters.append('prioridad', $('select[name="selectPrioridad"]').val());
+            //parameters.append('csrfmiddlewaretoken', csrftoken);
+            //Agregamos la estructura de Presupuesto con los detalles correspondientes
+            parameters.append('presupuesto', JSON.stringify(presupuesto.items));
+            //Bloque AJAX Presupuesto
+            $.ajax({
+                url: window.location.href,
+                type: 'POST',
+                data: parameters,
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        confirm_action('Notificación', '¿Desea imprimir el Presupuesto?', function () {
+                            window.open('/presupuestos/pdf/' + data.id + '/', '_blank');
+                            location.replace(data.redirect);
+                        }, function () {
+                            location.replace(data.redirect);
+                        });
+                        //location.replace(data.redirect);
+                    } else {
+                        error_action('Error', data.error, function () {
+                            //pass
+                        }, function () {
+                            //pass
+                        });
+                    }
+                }
+            });
+        }
+    });
+});
 

@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{% url 'home:home' %}" class="brand-link">
-        <img src="{% static 'img/logo.JPG' %}"
+        <img src="{% static 'img/logo.png' %}"
              alt="SUR Logo"
              class="brand-image img-lg elevation-3"
              style="opacity: .8">
@@ -129,14 +129,51 @@
                     </a>
                 </li>
 
-                <!-- Planificacion -->
+                <!-- Trabajos Express -->
                 <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon far fa-calendar-check"></i>
+                    <a href="{% url 'trabajos:trabajos_create_express' %}" class="nav-link">
+                        <i class="nav-icon fas fa-clipboard-check"></i>
                         <p>
-                            Planificación
+                            Trabajo Express
                         </p>
                     </a>
+                </li>
+
+                <!-- Planificacion -->
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'trabajos:planificaciones_list' %}" class="nav-link">
+                        <i class="nav-icon far fa-calendar-check"></i>
+                        <p>
+                            Planificaciones
+                        </p>
+                    </a>
+                </li>
+
+                <!-- Pedidos -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-clipboard-list"></i>
+                        <p>
+                            Pedidos
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>
+                                    Pedidos
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>Solicitud de Pedidos</p>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Parametros -->
@@ -321,6 +358,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{% url 'parametros:estadosParametros_list' %}" class="nav-link">
+                                        <i class="far fa-dot-circle nav-icon"></i>
+                                        <p>Estados - Parámetros</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{% url 'parametros:prioridades_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
                                         <p>Prioridades</p>
@@ -367,6 +410,7 @@
                                 <li class="nav-item">
                                     <a href="{% url 'usuarios:tipos_usuarios_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
+
                                       <p>Tipos</p>
                                     </a>
                                 </li><li class="nav-item">

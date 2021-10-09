@@ -213,6 +213,31 @@ function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 };
 
+//Funcion para validar que el CUIT sea válido
+function isValidCuit(cuit) {
+    //si el largo del cuit es incorrecto salir de la funcion
+    if (cuit.length != 11) return 0;
+    var rv = false;
+    var resultado = 0;
+    var cuit_nro = cuit.replace("-", "");
+    var codes = "6789456789";
+    var cuit_long = parseInt(cuit_nro);
+    var verificador = parseInt(cuit_nro[cuit_nro.length - 1]);
+    var x = 0;
+    while (x < 10) {
+        var digitoValidador = parseInt(codes.substring(x, x + 1));
+        if (isNaN(digitoValidador)) digitoValidador = 0;
+        var digito = parseInt(cuit_nro.substring(x, x + 1));
+        if (isNaN(digito)) digito = 0;
+        var digitoValidacion = digitoValidador * digito;
+        resultado += digitoValidacion;
+        x++;
+    }
+    resultado = resultado % 11;
+    rv = (resultado == verificador);
+    return rv;
+}
+
 //Funcion para Calcular los importes
 function calcular_importes() {
     //Inicializamos variables para calcular importes
@@ -514,6 +539,27 @@ $(function () {
         }
     });
 
+    //Validamos CUIT CORRECTO
+    $("#cuil").on('focusout', function (e) {
+        var btn = document.getElementById('btnAddCliente');
+        if ($('input[name="cuil"]').val().lenght == 0 || !$('input[name="cuil"]').val()) {
+            //cuit vacio
+            $('#errorCuit').attr("hidden", "");
+            btn.disabled = false;
+        } else {
+            var check = isValidCuit($('input[name="cuil"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorCuit").removeAttr("hidden");
+                btn.disabled = true;
+                $("#cuil").focus();
+            } else {
+                $('#errorCuit').attr("hidden", "");
+                btn.disabled = false;
+            }
+        }
+    });
+
     // VALIDAMOS LOS CAMPOS
     $("#razonSocial").validate();
     $("#condicionIVA").validate();
@@ -711,6 +757,37 @@ $(function () {
         boostat: 5,
         maxboostedstep: 10,
         postfix: '$'
+    });
+
+    //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS de dicha CATEGORIA
+    var select_subcategorias = $('select[name="subcategoria"]');
+    $('.selectCategoria').on('change', function () {
+        var id = $(this).val();
+        var options = '<option value="">---------</option>';
+        if (id === '') {
+            select_subcategorias.html(options);
+            return false;
+        }
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_subcategorias',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                    select_subcategorias.html('').select2({
+                        theme: "bootstrap4",
+                        language: 'es',
+                        data: data
+                    });
+                }
+            }
+        });
     });
 
     //Al cerrar el Modal de Productos reseteamos los valores del formulario
@@ -1226,6 +1303,7 @@ $(function () {
     $('.ivaServicio').on('change', function () {
         calcularPrecioServicio();
     });
+
     //Funcion para calcular el precio entre COSTO e IVA
     function calcularPrecioServicio() {
         var id = $('.ivaServicio').val();
@@ -1254,6 +1332,7 @@ $(function () {
             $('.precioVentaServicio').val(precio.toFixed(2));
         }
     }
+
     //Funcion Mostrar Errores del Formulario
     function message_error_servicio(obj) {
         var errorList = document.getElementById("errorListFormServicio");
@@ -1276,6 +1355,7 @@ $(function () {
             errorList.appendChild(li);
         }
     }
+
     //Hacemos el envio del Formulario mediante AJAX
     $("#formServicio").submit(function (e) {
         // VALIDACION DE LOS CAMPOS
@@ -1463,6 +1543,7 @@ $(function () {
     $('input[name="actualizarCostoServicio"]').on('change', function () {
         calcularPrecioActualizacionServicio();
     });
+
     //Funcion para calcular el precio entre COSTO e IVA
     function calcularPrecioActualizacionServicio() {
         var iva = $('input[name="actualizarIvaServicio"]').val();
@@ -1471,6 +1552,7 @@ $(function () {
         var precio = (costo * iva);
         $('input[name="actualizarPrecioVentaServicio"]').val(precio.toFixed(2));
     }
+
     //Actualizamos el precio del Servicio desde el Modal
     $('#formPrecioServicio').on('submit', function (e) {
         e.preventDefault();
@@ -1515,6 +1597,7 @@ $(function () {
             //pass
         });
     });
+
     //Funcion Mostrar Errores del Formulario Servicio
     function message_error_precio_servicio(obj) {
         var errorList = document.getElementById("errorListformPrecioServicio");
@@ -1537,6 +1620,7 @@ $(function () {
             errorList.appendChild(li);
         }
     }
+
 //------------------------------------SUBMIT VENTA----------------------------------------//
 // Submit VENTA
     $('#ventaForm').on('submit', function (e) {

@@ -1,8 +1,20 @@
-*HACER MODAL OBSERVACIONES DETALLE DE TRABAJO
+*GENERAR MODULO PLANIFICACION SEMANAL
 
-*TRABAJAR CON MODULO PLANIFICACION
+    *   Falta Guardar el Orden personalizado (no toma todavia)
+    *   Controlar que no haya planificaciones por fechas Repetido
+    *   Eliminar Planificacion y actualizar estado                      -- OK
 
-*INCORPORAR APARTADO PARA QUE SE REGISTRE EL TRABAJO COMO RETIRADO
+*GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
+    estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud
 
 
+*AUDITORIA
+
+*REPORTES
+
+*ESTADISTICAS
+
+*GRUPOS DE USUARIOS
+
+*ROLES Y PERMISOS
 

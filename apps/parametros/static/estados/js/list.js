@@ -14,7 +14,7 @@ $(function () {
             dataSrc: ""
         },
         columns: [
-            //{"data": "id"},
+            {"data": "orden"},
             {"data": "nombre"},
             {"data": "nombre"}, //va duplicado algun campo por la botonera
         ],
