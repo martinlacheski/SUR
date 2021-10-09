@@ -29,12 +29,15 @@ SECRET_KEY = 'django-insecure-gkq$j64h%z-0uoq35u+)5oow6khuw1*f96i_88=d^go6)v$tp+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-ALLOWED_HOSTS = ["*"]
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ASGI_APPLICATION = 'config.asgi.application'
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     #Librerias
     'widget_tweaks',
     #Aplicaciones
@@ -53,7 +57,9 @@ INSTALLED_APPS = [
     'apps.erp',
     'apps.presupuestos',
     'apps.trabajos',
-    'apps.agenda'
+    'apps.agenda',
+    'apps.bot_telegram',
+    'apps.test_channel',
 ]
 
 MIDDLEWARE = [
@@ -91,7 +97,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-CRONJOBS = [('* * * * *', 'apps.agenda.cron.cron_prueba')]
 
 DATABASES = {
     'default': {
@@ -122,6 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
+
 
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'
@@ -170,4 +176,18 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Probablemente innecesarios. Si joden, chau
+#DATE_FORMAT = '%d-%m-%y'
+# DATE_INPUT_FORMATS = '%d-%m-%Y'
+# DATETIME_INPUT_FORMATS = ['%d/%m/%Y %H:%M:%S']
 
+# Necesarios
+APSCHEDULER_DATETIME_FORMAT = "%d-%m-%Y %H:%M:%S"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+DJANGO_SETTINGS_MODULE = 'config.settings'
+
+
+CRONJOBS = [
+    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
+]

@@ -7,6 +7,7 @@
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
     estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud
 
+
 *AUDITORIA
 
 *REPORTES
@@ -16,3 +17,4 @@
 *GRUPOS DE USUARIOS
 
 *ROLES Y PERMISOS
+
