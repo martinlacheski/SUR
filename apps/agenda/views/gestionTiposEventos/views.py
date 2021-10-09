@@ -2,7 +2,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-from django.db import transaction
 from apps.agenda.forms import *
 from apps.agenda.models import tiposEvento
 from apps.mixins import ValidatePermissionRequiredMixin

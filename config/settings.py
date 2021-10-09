@@ -30,10 +30,12 @@ SECRET_KEY = 'django-insecure-gkq$j64h%z-0uoq35u+)5oow6khuw1*f96i_88=d^go6)v$tp+
 DEBUG = True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ASGI_APPLICATION = 'config.asgi.application'
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -54,7 +56,8 @@ INSTALLED_APPS = [
     'apps.presupuestos',
     'apps.trabajos',
     'apps.agenda',
-    'apps.bot_telegram'
+    'apps.bot_telegram',
+    'apps.test_channel',
 ]
 
 MIDDLEWARE = [

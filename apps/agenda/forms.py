@@ -135,7 +135,6 @@ class GestionTiposEventosForm(ModelForm):
                 data['error'] = str(e)
         else:
             data['error'] = form.errors
-        print("esto es data " + str(data))
         return data
 
 class GestionNotifEventosForm(ModelForm):
