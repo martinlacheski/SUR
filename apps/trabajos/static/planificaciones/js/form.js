@@ -6,7 +6,7 @@ var estadoEntregado = 0;
 var estadoCancelado = 0;
 var tablaTrabajos;
 var tablaPlanificacion;
-var ordenTrabajos;
+var ordenTrabajos = 0;
 var planificacion = {
     items: {
         fechaInicio: '',
@@ -34,6 +34,7 @@ var planificacion = {
             data: planificacion.items.trabajos,
             columns: [
                 {"data": "id"},
+                {"data": "orden"},
                 {"data": "modelo.nombre"},
                 {"data": "cliente.razonSocial"},
                 {"data": "id"}, //Para el boton eliminar
@@ -48,7 +49,7 @@ var planificacion = {
                     }
                 },
                 {
-                    targets: [-4, -3, -2],
+                    targets: [-5, -4, -3, -2],
                     class: 'text-center',
                     orderable: false,
                 },
@@ -203,6 +204,8 @@ $(function () {
             //Asignamos a una variable el trabajo en base al renglon
             var trabajo = tablaTrabajos.row(tr.row).data();
             //Agregamos el Trabajo al Array de Planificacion
+            ordenTrabajos = ordenTrabajos + 1;
+            trabajo.orden = ordenTrabajos;
             planificacion.addTrabajo(trabajo);
             //Una vez cargado el trabajo, sacamos del listado del Datatables
             tablaTrabajos.row($(this).parents('tr')).remove().draw();
@@ -223,21 +226,24 @@ $(function () {
             //Ordenamos la tabla
             tablaTrabajos.order([0, 'asc']).draw();
             // Permitimos al Datatables que los elementos sean de tipo SORTABLE
-        }).sortable({
-            items: "tr",
-            cursor: 'move',
-            opacity: 0.6,
-            update: function () {
-                //Pasamos a una variable el orden de los trabajos
-                var trabajos = $('#dataPlanificacion').DataTable().rows().data();
-                var ord = new Array();
-                for (var i = 0, ien = trabajos.length; i < ien; i++) {
-                    ord[i] = trabajos[i].id;
-                    console.log(ord[i]);
-                }
-            }
+        });
+
+    $("#dataPlanificacion tbody").sortable({
+        items: "tr",
+        cursor: 'move',
+        opacity: 0.6,
+        update: function (event, ui) {
+            var array = []
+            $(this).children().each(function (index) {
+                $(this).attr('data-position', (index + 1));
+                planificacion.items.trabajos[index].orden = index + 1;
+                // console.log($(this).attr('data-position'));
+                // tablaPlanificacion.draw();
+                array.push(planificacion.items.trabajos[index]);
+            });
+            console.log(array);
         }
-    );
+    });
 
     //Chequeamos que la fecha de FIN sea mayor que la de INICIO
     $('input[name="fechaFin"]').on('blur', function () {
@@ -281,55 +287,100 @@ $(function () {
 
     //Llamamos a la funcion de Token
     getToken(name);
+    var chequear = false;
     //Hacemos el envio del Formulario mediante AJAX
     $("#planificacionesForm").submit(function (e) {
         e.preventDefault();
-        confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
-                //realizamos la creacion de la PLanificacion mediante Ajax
-                planificacion.items.fechaInicio = moment(moment($('input[name="fechaInicio"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                planificacion.items.fechaFin = moment(moment($('input[name="fechaFin"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                var parameters = new FormData();
-                //Pasamos la Accion
-                parameters.append('action', $('input[name="action"]').val());
-                parameters.append('planificacion', JSON.stringify(planificacion.items));
-                // if (ordenTrabajos !== undefined) {
-                //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
-                //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
-                // } else {
-                //
-                // }
-                //Bloque AJAX PLANIFICACION
-                $.ajax({
-                    url: window.location.href,
-                    type: 'POST',
-                    data: parameters,
-                    dataType: 'json',
-                    headers: {
-                        'X-CSRFToken': csrftoken
-                    },
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        if (!data.hasOwnProperty('error')) {
-                            confirm_action('Notificación', '¿Desea imprimir la planificacion?', function () {
-                                window.open('/planificaciones/pdf/' + data.id + '/', '_blank');
-                                location.replace(data.redirect);
-                            }, function () {
-                                location.replace(data.redirect);
-                            });
-                            //location.replace(data.redirect);
-                        } else {
-                            error_action('Error', data.error, function () {
-                                //pass
-                            }, function () {
-                                //pass
-                            });
-                        }
-                    }
-                });
+        var inicio = moment(moment($('input[name="fechaInicio"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+        var fin = moment(moment($('input[name="fechaFin"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+        if (planificacion.items.trabajos.length === 0) {
+            error_action('Error', 'No hay trabajos planificados', function () {
+                //pass
             }, function () {
                 //pass
-            }
-        );
+            });
+        } else if (inicio >= fin) {
+            error_action('Error', 'La fecha de Fin debe ser mayor que la de inicio', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        } else {
+            //Buscamos si no hay otra planificacion en el rango de fechas ingresado
+
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'check_fechas_planificacion',
+                    'inicio': inicio,
+                    'fin': fin,
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                chequear = data.check;
+                if (chequear == true) {
+                    confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+                            //realizamos la creacion de la PLanificacion mediante Ajax
+                            planificacion.items.fechaInicio = moment(moment($('input[name="fechaInicio"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                            planificacion.items.fechaFin = moment(moment($('input[name="fechaFin"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                            var parameters = new FormData();
+                            //Pasamos la Accion
+                            parameters.append('action', $('input[name="action"]').val());
+                            parameters.append('planificacion', JSON.stringify(planificacion.items));
+                            // if (ordenTrabajos !== undefined) {
+                            //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
+                            //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
+                            // } else {
+                            //
+                            // }
+                            //Bloque AJAX PLANIFICACION
+                            $.ajax({
+                                url: window.location.href,
+                                type: 'POST',
+                                data: parameters,
+                                dataType: 'json',
+                                headers: {
+                                    'X-CSRFToken': csrftoken
+                                },
+                                processData: false,
+                                contentType: false,
+                                success: function (data) {
+                                    if (!data.hasOwnProperty('error')) {
+                                        confirm_action('Notificación', '¿Desea imprimir la planificacion?', function () {
+                                            window.open('/planificaciones/pdf/' + data.id + '/', '_blank');
+                                            location.replace(data.redirect);
+                                        }, function () {
+                                            location.replace(data.redirect);
+                                        });
+                                        //location.replace(data.redirect);
+                                    } else {
+                                        error_action('Error', data.error, function () {
+                                            //pass
+                                        }, function () {
+                                            //pass
+                                        });
+                                    }
+                                }
+                            });
+                        }, function () {
+                            //pass
+                        }
+                    );
+                } else {
+                    error_action('Error', 'Ya existe una planificación en ese rango de fechas', function () {
+                        //pass
+                    }, function () {
+                        //pass
+                    });
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+
+            });
+        }
     });
 });

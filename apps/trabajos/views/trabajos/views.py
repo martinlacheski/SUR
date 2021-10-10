@@ -690,6 +690,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 data['costo'] = servicio.costo
                 data['precioVenta'] = servicio.precioVenta
             elif action == 'edit':
+                confirm = request.POST['confirm']
                 with transaction.atomic():
                     formTrabajoRequest = json.loads(request.POST['trabajo'])
                     # Obtenemos el Trabajo que se esta editando
@@ -709,7 +710,9 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     # Buscamos el estado Especial para iniciar el Proceso
                     try:
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                        if trabajo.estadoTrabajo_id == estado.estadoPlanificado_id:
+                        if confirm == 'si':
+                            trabajo.estadoTrabajo_id = estado.estadoFinalizado_id
+                        elif trabajo.estadoTrabajo_id == estado.estadoPlanificado_id:
                             trabajo.estadoTrabajo_id = estado.estadoEspecial_id
                     except Exception as e:
                         data['error'] = str(e)

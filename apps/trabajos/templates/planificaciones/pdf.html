@@ -80,8 +80,9 @@
         <thead>
         <tr style="border: 1px solid black;">
             <th class="text-center" style="width: 10%;">Orden</th>
-            <th class="text-center" style="width: 40%;">Modelo</th>
-            <th class="text-center" style="width: 40%;">Cliente</th>
+            <th class="text-center" style="width: 10%;">Nº Trabajo</th>
+            <th class="text-center" style="width: 35%;">Modelo</th>
+            <th class="text-center" style="width: 35%;">Cliente</th>
             <th class="text-center" style="width: 10%;">Estado</th>
         </tr>
         </thead>
@@ -89,6 +90,7 @@
         {% for det in planificacion.detalleplanificacionessemanales_set.all %}
             <tr>
                 <td class="text-center">{{ det.orden }}</td>
+                <td class="text-center">{{ det.trabajo.id }}</td>
                 <td class="text-center">{{ det.trabajo.modelo.nombre }}</td>
                 <td class="text-center">{{ det.trabajo.cliente.razonSocial }}</td>
                 <td class="text-center">{{ det.trabajo.estadoTrabajo }}</td>

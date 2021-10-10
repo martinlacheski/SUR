@@ -1937,6 +1937,14 @@ $(function () {
                     var parameters = new FormData();
                     //Pasamos la accion
                     parameters.append('action', $('input[name="action"]').val());
+                    //Verificamos si todos los servicios estan realizados, convertimos la accion a CONFIRM Trabajo
+                    if ((estadoServicio == true) && (accion == 'edit')) {
+                        var confirm = 'si';
+                         parameters.append('confirm', confirm);
+                    } else {
+                        var confirm = 'no';
+                        parameters.append('confirm', confirm);
+                    }
                     //Agregamos la estructura de Trabajo con los detalles correspondientes
                     parameters.append('trabajo', JSON.stringify(trabajo.items));
                     if (accion == 'deliver') {

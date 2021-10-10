@@ -88,6 +88,24 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
                 data = []
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 data.append(parametros.toJSON())
+            elif action == 'check_fechas_planificacion':
+                inicio = request.POST['inicio']
+                fin = request.POST['fin']
+                # Buscamos si existen Planificaciones en ese rango de fechas
+                try:
+                    # planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__gte=inicio, fechaFin__lte=fin)
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin])
+                    for i in planificaciones:
+                        print(i.toJSON)
+                    check = True
+                    # planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__gte=inicio, fechaFin__lte=fin)
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin])
+                    for i in planificaciones:
+                        print(i.toJSON)
+                    check = True
+                except Exception as e:
+                    check = False
+                data['check'] = check
             elif action == 'add':
                 with transaction.atomic():
                     formPlanificacionRequest = json.loads(request.POST['planificacion'])
@@ -110,7 +128,7 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
                             # Cambiamos el estado del trabajo a Planificado
                             trabajoActual.estadoTrabajo_id = estado.estadoPlanificado_id
                             trabajoActual.save()
-                            det.orden = pos
+                            det.orden = formPlanificacionRequest['fechaFin']
                             det.save()
                             pos += 1
                         except Exception as e:
@@ -178,6 +196,27 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
+            elif action == 'check_fechas_planificacion':
+                inicio = request.POST['inicio']
+                fin = request.POST['fin']
+                # asignamos a una variable el ID de la planificacion actual
+                planificacionID = self.kwargs['pk']
+                # Buscamos si existen Planificaciones en ese rango de fechas
+                # Filtramos por rango de fecha y excluimos el ID de la planificacion actual
+                try:
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin]).exclude(id=planificacionID)
+                    for i in planificaciones:
+                        print(i.id)
+                    check = True
+                    print(planificaciones)
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin]).exclude(id=planificacionID)
+                    for i in planificaciones:
+                        print(i.id)
+                    check = True
+                    print(planificaciones)
+                except Exception as e:
+                    check = False
+                data['check'] = check
             elif action == 'edit':
                 with transaction.atomic():
                     formPlanificacionRequest = json.loads(request.POST['planificacion'])
