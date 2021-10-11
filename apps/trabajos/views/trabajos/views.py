@@ -41,7 +41,7 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Trabajos.objects.all()[0:15]:
+                for i in Trabajos.objects.all():
                     data.append(i.toJSON())
             elif action == 'get_parametros_estados':
                 data = []
