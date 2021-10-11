@@ -4,7 +4,7 @@ from apps.erp.models import Clientes
 from apps.usuarios.models import Usuarios
 from django.forms import model_to_dict
 
-class registroNoExitosoCliente (models.Model):
+class registroBotIncidencias (models.Model):
     fechaSuceso = models.DateTimeField(default=datetime.datetime.today())
     observacion = models.TextField(blank=True, null=True)
     revisadoPor = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario que revisó el inconveniente',
@@ -14,7 +14,7 @@ class registroNoExitosoCliente (models.Model):
     class Meta:
         verbose_name = 'Registro no Exitoso de Cliente'
         verbose_name_plural = 'Registros no Exitosos de Clientes'
-        db_table = 'bot_log_registroNoExitosoCliente'
+        db_table = 'bot_log_incidencias'
         ordering = ['fechaSuceso']
 
 
@@ -22,7 +22,7 @@ class registroNoExitosoCliente (models.Model):
 # Usuarios a los cuales se les notificó el incidente. (capaz no haga falta)
 class notificacionUsuarios_Tel(models.Model):
     usuario_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario notificado')
-    registro_id = models.ForeignKey(registroNoExitosoCliente, models.DO_NOTHING, verbose_name='registro log asociado')
+    registro_id = models.ForeignKey(registroBotIncidencias, models.DO_NOTHING, verbose_name='registro log asociado')
 
 class notifIncidentesUsuarios(models.Model):
     usuario_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario a notificar')

@@ -1,16 +1,27 @@
-import datetime
-from typing import Union, List
+# Django
 from django.core.management.base import BaseCommand, CommandError
+from django.core.exceptions import *
+
+# Telegram
+from typing import Union, List
 import logging
 from telegram.ext import Updater
 import telegram
-from telegram.ext import CommandHandler, CallbackQueryHandler
+from telegram.ext import CommandHandler, MessageHandler, CallbackQueryHandler, Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from telegram import CallbackQuery
+
+# Models
 from apps.usuarios.models import Usuarios
 from apps.erp.models import Clientes
 from apps.bot_telegram.models import *
 from apps.bot_telegram.logicaBot import *
+from apps.trabajos.models import Trabajos
+
+# Otros
+import datetime
+
+
 
 class Command(BaseCommand):
 
@@ -44,8 +55,7 @@ class Command(BaseCommand):
                         if user.check_password(password):
                             update.message.reply_text("👌 ¡Todo correcto! Ya podes interactuar conmigo\n\n"
                                                       "⚠ Por una cuestión de seguridad, me tomé el "
-                                                      "trabajo de borrar el msj en donde pones tu contraseña. No queremos "
-                                                      "comprometernos si alguien lee el chat... ¿no?\n\n"
+                                                      "trabajo de borrar el msj en donde pones tu contraseña.\n\n"
                                                       "🧠 Esta es mi lista de comandos y lo que soy capaz de hacer: ")
                             bot.delete_message(update.message.chat.id, update.message.message_id)
                             user.chatIdUsuario = int(update.message.from_user.id)
@@ -65,6 +75,7 @@ class Command(BaseCommand):
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
         def registroCliente(update, context):
+            # Comprobamos si el cliente trata de registrarse como un usuario.
             if check_chatid_user(update.message.from_user.id):
                 update.message.reply_text("🛑 No podes registrar tu cuenta de esta manera. Ya estas registrado.")
             else:
@@ -80,6 +91,7 @@ class Command(BaseCommand):
                     cuil_cuit = context.args[0]
 
                     # Chequeamos que el cuil/cuit esté correcto
+                    # TO-DO acá debe ir comprobación de CUIL con calculadora
                     if cuil_cuit.isdigit() and len(cuil_cuit) == 11:
                         try:
                             cliente = Clientes.objects.get(cuil=cuil_cuit)
@@ -87,12 +99,18 @@ class Command(BaseCommand):
                             cliente.save()
                             update.message.reply_text("¡Todo correcto! 👌\n\nVas a recibir una notificación cuando alguno "
                                                       "de tus trabajos esté listo.")
-                        except:
-                            # Le respondemos al cliente
+
+                            # Si el cliente ya tiene trabajos, ni bien se registra se los mandamos
+                            trabajosCliente = Trabajos.objects.filter(cliente=cliente)
+                            if trabajosCliente:
+                                update.message.reply_text(mandarTrabajos(trabajosCliente))
+                        except ObjectDoesNotExist:
+                            # El cliente no estaba registrado.
                             update.message.reply_text("Mmm, esto es raro 🤔 \n\n"
-                                                      "No te encontramos registrado "
-                                                      "como cliente. Este inconveniente será reportado!\n")
-                            registrarSuceso(cuil_cuit)  # Registramos el incidente
+                                                      "No te encontramos registrado como cliente."
+                                                      " Este inconveniente será reportado!\n")
+                            clienteNoRegistrado(cuil_cuit, update.message.from_user.username,
+                                                update.message.from_user.first_name)  # Registramos el incidente
 
                             # Se lo notificamos a todos los usuarios seteados que tengan chatID
                             usersToNotif = notifIncidentesUsuarios.objects.all()
@@ -104,7 +122,6 @@ class Command(BaseCommand):
                                                            str(update.message.from_user.username) + "\nNombre en Telegram: " +
                                                            str(update.message.from_user.first_name),
                                                            chat_id=user.usuario_id.chatIdUsuario)
-
                     else:
                         update.message.reply_text("CUIL/CUIT ingresado contiene letras o no tiene una"
                                                   " longitud de 11 caracteres")
@@ -113,8 +130,8 @@ class Command(BaseCommand):
                                                    "a\n\n ``` /registroCliente 20346735739 ``` "
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
-            #if len(context.args) == 2:
 
+        # Funcionaes de ejemplo que muestran botones y hacen algo con la respuesta
         def test(update, context):
             """Sends a message with three inline buttons attached."""
             keyboard = [
@@ -128,7 +145,6 @@ class Command(BaseCommand):
             reply_markup = InlineKeyboardMarkup(keyboard)
 
             update.message.reply_text('Please choose:', reply_markup=reply_markup)
-
         def button(update, context):
             """Parses the CallbackQuery and updates the message text."""
             query = update.callback_query
@@ -139,10 +155,36 @@ class Command(BaseCommand):
 
             query.edit_message_text(text=f"Selected option: {query.data}")
 
+        def respuestaDefault(update, context):
+            try:
+                cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
+                msjRecibido = str(update.message.text).upper()
+                print(msjRecibido)
+                if msjRecibido == 'TRABAJOS':
+                    trabajosCliente = Trabajos.objects.filter(cliente=cliente)
+                    if trabajosCliente:
+                        update.message.reply_text(mandarTrabajos(trabajosCliente))
+                    else:
+                        update.message.reply_text("Hola " + str(cliente.razonSocial) + "👋!\n"
+                                                  "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
+                else:
+                    update.message.reply_text(text=str(cliente.razonSocial) + " no entendí lo que dijiste 🤨\n"
+                                                   "Recordá que únicamente respondo a la palabra:\n\n ```trabajos``` \n\n"
+                                                   " la cual tenes que enviar en un único mensaje\."
+                                              ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
+            except ObjectDoesNotExist:
+                try:
+                    usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
+                    update.message.reply_text("Hola " + str(usuario.username) + "!")
+                except ObjectDoesNotExist:
+                    update.message.reply_text("🚫 No estás registrado en el Sistema. Este inconveniente será reportado")
+                    personaNoRegistrada(update.message.from_user.username, update.message.from_user.first_name)
+
+
+
         # Token
         updater = Updater(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM', use_context=True)
         dispatcher = updater.dispatcher
-
 
         # Debugger
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -155,9 +197,11 @@ class Command(BaseCommand):
         start_handler = CommandHandler('registroCliente', registroCliente)
         start_handler2 = CommandHandler('registroUsuario', registroUsuario)
         start_handler3 = CommandHandler('test', test)
+        start_handler4 = MessageHandler(Filters.text & (~Filters.command), respuestaDefault)
         dispatcher.add_handler(start_handler)
         dispatcher.add_handler(start_handler2)
         dispatcher.add_handler(start_handler3)
+        dispatcher.add_handler(start_handler4)
         dispatcher.add_handler(CallbackQueryHandler(button))
         updater.start_polling()
 
