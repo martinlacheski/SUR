@@ -128,7 +128,7 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
                             # Cambiamos el estado del trabajo a Planificado
                             trabajoActual.estadoTrabajo_id = estado.estadoPlanificado_id
                             trabajoActual.save()
-                            det.orden = formPlanificacionRequest['fechaFin']
+                            det.orden = pos
                             det.save()
                             pos += 1
                         except Exception as e:

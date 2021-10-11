@@ -34,7 +34,6 @@ var planificacion = {
             data: planificacion.items.trabajos,
             columns: [
                 {"data": "id"},
-                {"data": "orden"},
                 {"data": "modelo.nombre"},
                 {"data": "cliente.razonSocial"},
                 {"data": "id"}, //Para el boton eliminar
@@ -49,7 +48,7 @@ var planificacion = {
                     }
                 },
                 {
-                    targets: [-5, -4, -3, -2],
+                    targets: [-4, -3, -2],
                     class: 'text-center',
                     orderable: false,
                 },
@@ -228,23 +227,6 @@ $(function () {
             // Permitimos al Datatables que los elementos sean de tipo SORTABLE
         });
 
-    $("#dataPlanificacion tbody").sortable({
-        items: "tr",
-        cursor: 'move',
-        opacity: 0.6,
-        update: function (event, ui) {
-            var array = []
-            $(this).children().each(function (index) {
-                $(this).attr('data-position', (index + 1));
-                planificacion.items.trabajos[index].orden = index + 1;
-                // console.log($(this).attr('data-position'));
-                // tablaPlanificacion.draw();
-                array.push(planificacion.items.trabajos[index]);
-            });
-            console.log(array);
-        }
-    });
-
     //Chequeamos que la fecha de FIN sea mayor que la de INICIO
     $('input[name="fechaFin"]').on('blur', function () {
         var btn = document.getElementById('btnGuardar');
@@ -331,12 +313,6 @@ $(function () {
                             //Pasamos la Accion
                             parameters.append('action', $('input[name="action"]').val());
                             parameters.append('planificacion', JSON.stringify(planificacion.items));
-                            // if (ordenTrabajos !== undefined) {
-                            //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
-                            //     parameters.append('trabajos', JSON.stringify(ordenTrabajos));
-                            // } else {
-                            //
-                            // }
                             //Bloque AJAX PLANIFICACION
                             $.ajax({
                                 url: window.location.href,
