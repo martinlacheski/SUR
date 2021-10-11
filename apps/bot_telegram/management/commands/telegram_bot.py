@@ -22,6 +22,26 @@ from apps.trabajos.models import Trabajos
 import datetime
 
 
+#       *** NOTIFICAR TRABAJO FINALIZADO ***
+def notificarCliente(trabajo):
+    bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
+    cliente = Clientes.objects.get(pk=trabajo.cliente_id)
+    mensaje = "Hola! 👋 Te informo que tu trabajo con Nro° " + str(trabajo.id) + " se encuentra FINALIZADO.\n\n"
+    if trabajo.observaciones:
+        mensaje += "📝 Algunas observaciones son: " + str(trabajo.observaciones) + "\n\n"
+    mensaje += "💰 El importe a abonar es: $" + str(trabajo.total) + " pesos\n\n"
+    mensaje += "Te pido que indiques cuándo lo vas a pasar a buscar presionando cualquiera de los siguiente botones."
+    bot.send_message(chat_id=cliente.chatIdCliente, text=mensaje)
+
+    keyboard = [
+        [InlineKeyboardButton("Hoy", callback_data='1')],
+        [InlineKeyboardButton("Mañana (fecha_mañana)", callback_data='2')], #TO-DO el siguiente día hábil. Que el msj sea personalizado
+        [InlineKeyboardButton("Me comunico luego", callback_data='3')],
+    ]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    bot.send_message(chat_id=cliente.chatIdCliente, text="Opciones:\n", reply_markup=reply_markup)
 
 class Command(BaseCommand):
 
@@ -29,8 +49,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
-
-        print("hola")
 
         #       *** REGISTRO USUARIO ***
         def registroUsuario(update, context):
@@ -74,6 +92,7 @@ class Command(BaseCommand):
                                                    "a\n\n ``` /registroUsuario juan miContraseña ``` "
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
+        #       *** REGISTRO CLIENTE ***
         def registroCliente(update, context):
             # Comprobamos si el cliente trata de registrarse como un usuario.
             if check_chatid_user(update.message.from_user.id):
@@ -191,7 +210,6 @@ class Command(BaseCommand):
                             level=logging.INFO)
 
 
-        # Start del bot
 
         # ** COMANDOS **
         start_handler = CommandHandler('registroCliente', registroCliente)
