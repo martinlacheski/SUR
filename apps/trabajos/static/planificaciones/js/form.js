@@ -44,7 +44,10 @@ var planificacion = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;" ><i class="fas fa-trash-alt"></i></a>';
+                        var buttons = '<a rel="subir" class="btn btn-primary btn-xs btn-flat" style="color: white;" ><i class="fas fa-arrow-up"></i></a> ';
+                        buttons += '<a rel="bajar" class="btn btn-secondary btn-xs btn-flat" style="color: white;" ><i class="fas fa-arrow-down"></i></a> ';
+                        buttons += '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;" ><i class="fas fa-trash-alt"></i></a> ';
+                        return buttons
                     }
                 },
                 {
@@ -226,6 +229,48 @@ $(function () {
             tablaTrabajos.row($(this).parents('tr')).remove().draw();
         });
     $('#dataPlanificacion tbody')
+        //Evento subir trabajo de posicion
+        .on('click', 'a[rel="subir"]', function () {
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaPlanificacion.cell($(this).closest('td, li')).index();
+            var pos = tr.row;
+            if (pos > 0) {
+                //Asignamos a una variable el trabajo temporal a mover de posicion
+                var trabajoTemp = planificacion.items.trabajos[tr.row - 1];
+                //subimos de posicion el trabajo
+                planificacion.items.trabajos.splice(tr.row - 1, 0, planificacion.items.trabajos[tr.row]);
+                //Borramos el trabajo que movimos de posicion
+                planificacion.items.trabajos.splice(tr.row + 1, 1);
+                //Insertamos el trabajo temporal
+                planificacion.items.trabajos.splice(tr.row, 0, trabajoTemp);
+                //Una vez insertado, eliminamos el trabajo original
+                planificacion.items.trabajos.splice(tr.row, 1);
+                //Volvemos a listar los trabajos
+                planificacion.listTrabajos();
+            }
+        })
+        //Evento bajar trabajo de posicion
+        .on('click', 'a[rel="bajar"]', function () {
+            var lenght = planificacion.items.trabajos.length;
+            //Asignamos a una variable el renglon que necesitamos
+            var tr = tablaPlanificacion.cell($(this).closest('td, li')).index();
+            var pos = tr.row;
+            if (pos < lenght - 1) {
+                //Asignamos a una variable el trabajo temporal a mover de posicion
+                var trabajoTemp = planificacion.items.trabajos[tr.row + 1];
+                //bajamos de posicion el trabajo
+                planificacion.items.trabajos.splice(tr.row + 1, 0, planificacion.items.trabajos[tr.row]);
+                //Borramos el trabajo que movimos de posicion
+                planificacion.items.trabajos.splice(tr.row, 1);
+                //Insertamos el trabajo temporal
+                planificacion.items.trabajos.splice(tr.row, 0, trabajoTemp);
+                //Una vez insertado, eliminamos el trabajo original
+                planificacion.items.trabajos.splice(tr.row + 2, 1);
+                //Volvemos a listar los trabajos
+                planificacion.listTrabajos();
+            }
+
+        })
         //Evento quitar trabajo de la planificacion
         .on('click', 'a[rel="remove"]', function () {
             //Asignamos a una variable el renglon que necesitamos
