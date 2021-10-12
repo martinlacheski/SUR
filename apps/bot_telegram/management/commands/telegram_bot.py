@@ -29,18 +29,38 @@ def notificarCliente(trabajo):
     mensaje = "Hola! 👋 Te informo que tu trabajo con Nro° " + str(trabajo.id) + " se encuentra FINALIZADO.\n\n"
     if trabajo.observaciones:
         mensaje += "📝 Algunas observaciones son: " + str(trabajo.observaciones) + "\n\n"
-    mensaje += "💰 El importe a abonar es: $" + str(trabajo.total) + " pesos\n\n"
+    mensaje += "💰 El importe a abonar es: $" + str(trabajo.total) + " pesos.\n\n"
     mensaje += "Te pido que indiques cuándo lo vas a pasar a buscar presionando cualquiera de los siguiente botones."
     bot.send_message(chat_id=cliente.chatIdCliente, text=mensaje)
 
+    # Button display data
+    hoy = datetime.date.today().strftime('%d-%m-%Y')
+    hoy_str = "Hoy (" + str(hoy) + ")"
+    dia_siguiente = "Siguiente día hábil (" + str(dia_habil_siguiente(datetime.date.today()).strftime('%d-%m-%Y')) + ")"
+
+    # Callback data
+    data_hoy = {
+        'hoy': str(datetime.date.today()),
+        'cliente': str(cliente.id),
+        'trabajo': str(trabajo.id),
+
+    }
+    sig_habil = {
+        'sig_dia_habil': str(dia_habil_siguiente(datetime.date.today())),
+        'cliente': str(cliente.id),
+        'trabajo': str(trabajo.id),
+
+    }
+
+    se_comunica = {
+        'se_secomunica': 'Se comunicará luego.'
+    }
     keyboard = [
-        [InlineKeyboardButton("Hoy", callback_data='1')],
-        [InlineKeyboardButton("Mañana (fecha_mañana)", callback_data='2')], #TO-DO el siguiente día hábil. Que el msj sea personalizado
-        [InlineKeyboardButton("Me comunico luego", callback_data='3')],
+        [InlineKeyboardButton(hoy_str, callback_data=str(data_hoy))],
+        [InlineKeyboardButton(dia_siguiente, callback_data=str(sig_habil))],
+        [InlineKeyboardButton("Me comunico luego", callback_data=str(se_comunica))],
     ]
-
     reply_markup = InlineKeyboardMarkup(keyboard)
-
     bot.send_message(chat_id=cliente.chatIdCliente, text="Opciones:\n", reply_markup=reply_markup)
 
 class Command(BaseCommand):
@@ -164,14 +184,24 @@ class Command(BaseCommand):
             reply_markup = InlineKeyboardMarkup(keyboard)
 
             update.message.reply_text('Please choose:', reply_markup=reply_markup)
+
         def button(update, context):
-            """Parses the CallbackQuery and updates the message text."""
             query = update.callback_query
 
-            # CallbackQueries need to be answered, even if no notification to the user is needed
-            # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
-            query.answer()
+            # Vemos quién nos respondió y acorde a ello hacemos cosas
+            try:
+                cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
+                eleccion_retiro = query.data
+                # TO - DO. Notificar a los users seteados que un cliente respondió
+                registrarRetiro(eleccion_retiro)
+            except ObjectDoesNotExist:
+                try:
+                    usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
+                    print("aún no están definidas las acciones de los usuarios")
+                except ObjectDoesNotExist:
+                    print("no está registrado")
 
+            query.answer()
             query.edit_message_text(text=f"Selected option: {query.data}")
 
         def respuestaDefault(update, context):

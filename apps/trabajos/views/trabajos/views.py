@@ -26,6 +26,8 @@ from config import settings
 
 from weasyprint import HTML, CSS
 
+# Telegram notificacion
+from apps.bot_telegram.management.commands.telegram_bot import notificarCliente
 
 class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
     model = Trabajos
@@ -41,7 +43,7 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Trabajos.objects.all()[0:15]:
+                for i in Trabajos.objects.all():
                     data.append(i.toJSON())
             elif action == 'get_parametros_estados':
                 data = []
@@ -949,9 +951,11 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     try:
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                         trabajo.estadoTrabajo_id = estado.estadoFinalizado_id
+
                     except Exception as e:
                         data['error'] = str(e)
                     trabajo.save()
+                    notificarCliente(trabajo)
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleproductostrabajo_set.all().delete()
                     # Volvemos a cargar los productos al Detalle

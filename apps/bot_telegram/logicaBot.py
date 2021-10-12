@@ -4,6 +4,7 @@ from apps.erp.models import Clientes
 from apps.trabajos.models import *
 from apps.bot_telegram.models import *
 from apps.parametros.models import EstadoParametros
+import ast
 
 # ***   CLIENTES ***
 
@@ -57,6 +58,45 @@ def checkEstado(trabajo):
         else:
             return False
 
+def dia_habil_siguiente(hoy):
+    fecha_resultado = hoy
+    if hoy.weekday() in range(4):
+        fecha_resultado += datetime.timedelta(days=1)
+    else:
+        if hoy.weekday() == 4:
+            fecha_resultado += datetime.timedelta(days=3)
+        elif hoy.weekday() == 5:
+            fecha_resultado += datetime.timedelta(days=2)
+        elif hoy.weekday() == 6:
+            fecha_resultado += datetime.timedelta(days=1)
+    return fecha_resultado
+
+# Registra la respuesta del cliente respecto a cuándo va a buscar el trabajo finalizado.
+def registrarRetiro(respuesta):
+    resp_to_dict = ast.literal_eval(respuesta)
+    log_respuesta = respuestaTrabajoFinalizado()
+    print(resp_to_dict['trabajo'])
+    log_respuesta.trabajo = Trabajos.objects.get(pk=int(resp_to_dict['trabajo']))
+    log_respuesta.cliente = Clientes.objects.get(pk=int(resp_to_dict['cliente']))
+    log_respuesta.fechaRespuesta = datetime.datetime.today()
+
+    if 'hoy' in resp_to_dict:
+        log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date()
+        log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día de hoy (" +\
+                                            str(datetime.datetime.strptime(resp_to_dict['hoy'],
+                                                                           '%Y-%m-%d').date().strftime('%d-%m-%Y')) +\
+                                            ")."
+    elif 'sig_dia_habil' in resp_to_dict:
+        log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date()
+        log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día " + \
+                                           str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'],
+                                                                          '%Y-%m-%d').date().strftime('%d-%m-%Y')) + \
+                                           ")."
+    elif 'se_secomunica' in resp_to_dict:
+        log_respuesta.respuesta_generica = "El cliente se comunicará personalmente."
+
+    log_respuesta.save()
+    return True
 
 
 # ***   USUARIOS ***
