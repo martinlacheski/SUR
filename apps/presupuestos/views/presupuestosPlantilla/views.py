@@ -16,7 +16,8 @@ from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
 from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA
 from apps.presupuestos.forms import PresupuestosPlantillaForm
-from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
+from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
+    DetalleServiciosPlantillaPresupuesto
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -40,11 +41,13 @@ class PresupuestosPlantillaListView(LoginRequiredMixin, ValidatePermissionRequir
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
-                for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['id']):
+                for i in DetalleProductosPlantillaPresupuesto.objects.filter(
+                        presupuestoPlantilla_id=request.POST['id']):
                     data.append(i.toJSON())
             elif action == 'search_detalle_servicios':
                 data = []
-                for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['id']):
+                for i in DetalleServiciosPlantillaPresupuesto.objects.filter(
+                        presupuestoPlantilla_id=request.POST['id']):
                     data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -227,7 +230,8 @@ class PresupuestosPlantillaUpdateView(LoginRequiredMixin, ValidatePermissionRequ
             if action == 'get_detalle_productos':
                 data = []
                 try:
-                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=self.get_object().id):
+                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(
+                            presupuestoPlantilla_id=self.get_object().id):
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         data.append(item)
@@ -236,7 +240,8 @@ class PresupuestosPlantillaUpdateView(LoginRequiredMixin, ValidatePermissionRequ
             elif action == 'get_detalle_servicios':
                 data = []
                 try:
-                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=self.get_object().id):
+                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(
+                            presupuestoPlantilla_id=self.get_object().id):
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         data.append(item)

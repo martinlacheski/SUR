@@ -85,6 +85,16 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 with transaction.atomic():
                     formCliente = ClientesForm(request.POST)
                     data = formCliente.save()
+            # si no existe la marca la creamos
+            elif action == 'create_marca':
+                with transaction.atomic():
+                    formMarca = MarcasForm(request.POST)
+                    data = formMarca.save()
+            # si no existe el modelo lo creamos
+            elif action == 'create_modelo':
+                with transaction.atomic():
+                    formModelo = ModelosForm(request.POST)
+                    data = formModelo.save()
             elif action == 'search_modelos':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Modelos.objects.filter(marca_id=request.POST['pk']):

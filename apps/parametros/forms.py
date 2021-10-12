@@ -219,7 +219,9 @@ class MarcasForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                # Obtenemos la INSTANCIA AL GUARDAR PARA OBTENER EL OBJETO Y PASAR AL SELECT2
+                instance = form.save()
+                data = instance.toJSON()
             else:
                 data['error'] = form.errors
         except Exception as e:
@@ -261,7 +263,9 @@ class ModelosForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
-                form.save()
+                # Obtenemos la INSTANCIA AL GUARDAR PARA OBTENER EL OBJETO Y PASAR AL SELECT2
+                instance = form.save()
+                data = instance.toJSON()
             else:
                 data['error'] = form.errors
         except Exception as e:

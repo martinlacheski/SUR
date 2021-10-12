@@ -158,6 +158,7 @@ $(document).ready(function () {
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
         $('input[name="descripcion"]').val('');
+        $('.selectMarca').val(null).trigger('change');
         $('select[name="marca"]').val(null).trigger('change');
         $('select[name="modelo"]').val(null).trigger('change');
         $('input[name="searchProductos"]').attr('disabled', true);
@@ -305,7 +306,6 @@ $(function () {
     //Boton Marca Modal Ocultar y Resetear
     $('#modalMarca').on('hidden.bs.modal', function (e) {
         $('#formMarca').trigger('reset');
-
         errorList = document.getElementById("errorListMarca");
         errorList.innerHTML = '';
         location.reload();
@@ -329,7 +329,9 @@ $(function () {
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
                 var newOption = new Option(data.nombre, data.id, false, true);
-                $('#selectMarca').append(newOption).trigger('change');
+                $('select[name="marca"]').append(newOption).trigger('change');
+                $('.selectMarca').append(newOption).trigger('change');
+                $('.MarcaFormSub').append(newOption).trigger('change');
                 $('#modalMarca').modal('hide');
             } else {
                 var errorList = document.getElementById("errorListMarca");
@@ -349,11 +351,9 @@ $(function () {
     //Boton Modelo Modal Ocultar y Resetear
     $('#modalModelo').on('hidden.bs.modal', function (e) {
         $('#formModelo').trigger('reset');
-
         errorList = document.getElementById("errorListModelo");
         errorList.innerHTML = '';
-        location.reload();
-    });
+     });
 
     //Submit Modal Modelo
     $('#formModelo').on('submit', function (e) {
@@ -373,7 +373,7 @@ $(function () {
         }).done(function (data) {
             if (!data.hasOwnProperty('error')) {
                 var newOption = new Option(data.nombre, data.id, false, true);
-                $('#selectModelo').append(newOption).trigger('change');
+                $('select[name="modelo"]').append(newOption).trigger('change');
                 $('#modalModelo').modal('hide');
             } else {
                 var errorList = document.getElementById("errorListModelo");

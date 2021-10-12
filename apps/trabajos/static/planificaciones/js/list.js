@@ -120,13 +120,14 @@ $(function () {
                 },
                 columns: [
                     {"data": "orden"},
+                    {"data": "trabajo.id"},
                     {"data": "trabajo.modelo.nombre"},
                     {"data": "trabajo.cliente.razonSocial"},
                     {"data": "trabajo.estadoTrabajo"},
                 ],
                 columnDefs: [
                     {
-                        targets: [-4, -3, -2],
+                        targets: [-5, -4, -3, -2],
                         class: 'text-center',
                     },
 

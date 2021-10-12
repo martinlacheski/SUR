@@ -82,6 +82,13 @@ function searchParametros() {
 };
 
 $(document).ready(function () {
+    //Inicialización de datetimepicker
+    $('#fechaInicio').datetimepicker({
+        format: 'DD-MM-YYYY',
+        date: moment(),
+        locale: 'es',
+        minDate: moment(),
+    });
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
         //Inicialización de datetimepicker
@@ -103,11 +110,13 @@ $(document).ready(function () {
         $('#fechaInicio').datetimepicker({
             format: 'DD-MM-YYYY',
             locale: 'es',
+
         });
         //Inicialización de datetimepicker
         $('#fechaFin').datetimepicker({
             format: 'DD-MM-YYYY',
             locale: 'es',
+
         });
         //Buscamos el detalle de trabajos de la planificacion por ajax
         $.ajax({
@@ -149,13 +158,20 @@ $(function () {
             dataSrc: ""
         },
         columns: [
-            {"data": "id"},
+            {"data": "fechaEntrada"},
             {"data": "estadoTrabajo.nombre"},
             {"data": "modelo.nombre"},
             {"data": "cliente.razonSocial"},
             {"data": "id"}, //va duplicado algun campo por la botonera
         ],
         columnDefs: [
+            {
+                targets: [0],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+                }
+            },
             {
                 targets: [1],
                 class: 'text-center',

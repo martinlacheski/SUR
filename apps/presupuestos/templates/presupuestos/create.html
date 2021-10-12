@@ -73,7 +73,7 @@
 
                     </div>
                     <div class="form-group col-2">
-                        <label>Validez Presupuesto:</label>
+                        <label>Validez en días:</label>
                         <br>
                         {% if action == 'add' %}
                             {{ form.validez }}
@@ -107,17 +107,27 @@
                                                 <option value={{ m.id }}>{{ m.nombre }}</option>
                                             {% endfor %}
                                         </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success btn-flat btnAddMarca" type="button">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
                                     {% else %}
                                         aria-label="selectMarca" disabled>
                                         disabled </select>
                                     {% endif %}
                         </div>
                     </div>
-                    <div class="form-group col-3">
+                    <div class="form-group col-6">
                         <label>(*) Modelo:</label>
                         <div class="input-group">
                             {% if action == 'add' %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                                <div class="input-group-append">
+                                <button class="btn btn-success btn-flat btnAddModelo" type="button">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
                             {% else %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
                             {% endif %}

@@ -323,22 +323,24 @@ $(document).ready(function () {
         $('input[name="total"]').val('0.00');
         $('input[name="descripcion"]').val('');
         $('select[name="cliente"]').val(null).trigger('change');
+        $('.selectMarca').val(null).trigger('change');
         $('select[name="marca"]').val(null).trigger('change');
         $('select[name="modelo"]').val(null).trigger('change');
         $('select[name="selectPlantilla"]').val(null).trigger('change');
         $('input[name="searchProductos"]').attr('disabled', true);
         $('input[name="searchServicios"]').attr('disabled', true);
-        //Inicialización de datetimepicker
+        //Inicializamos datetimepicker
         $('#fecha').datetimepicker({
             format: 'DD-MM-YYYY',
-            date: moment(),
             locale: 'es',
-            maxDate: moment(),
+            date: moment(),
+            readonly: true,
         });
     } else {
         $('#fecha').datetimepicker({
             format: 'DD-MM-YYYY',
             locale: 'es',
+            readonly: true,
         });
         //Buscamos si el cliente tiene percepcion
         searchPercepcion();
@@ -446,7 +448,96 @@ $(function () {
         }
     }
 
+    //------------------------------------MODAL MARCAS----------------------------------------//
+    //Boton Marca Modal Mostrar
+    $('.btnAddMarca').on('click', function () {
+        $('#modalMarca').modal('show');
+    });
+
+    //Boton Marca Modal Ocultar y Resetear
+    $('#modalMarca').on('hidden.bs.modal', function (e) {
+        $('#formMarca').trigger('reset');
+        errorList = document.getElementById("errorListMarca");
+        errorList.innerHTML = '';
+        // location.reload();
+    });
+
+    //Submit Modal Marca
+    $('#formMarca').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_marca');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('select[name="marca"]').append(newOption).trigger('change');
+                $('.selectMarca').append(newOption).trigger('change');
+                $('.MarcaFormSub').append(newOption).trigger('change');
+                $('#modalMarca').modal('hide');
+            } else {
+                var errorList = document.getElementById("errorListMarca");
+                message_error(data.error, errorList);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
+//------------------------------------MODAL MODELOS----------------------------------------//
+
+    //Boton Modelo Modal Mostrar
+    $('.btnAddModelo').on('click', function () {
+        $('#modalModelo').modal('show');
+    });
+
+    //Boton Modelo Modal Ocultar y Resetear
+    $('#modalModelo').on('hidden.bs.modal', function (e) {
+        $('#formModelo').trigger('reset');
+        errorList = document.getElementById("errorListModelo");
+        errorList.innerHTML = '';
+     });
+
+    //Submit Modal Modelo
+    $('#formModelo').on('submit', function (e) {
+        e.preventDefault();
+        var parameters = new FormData(this);
+        parameters.append('action', 'create_modelo');
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            processData: false,
+            contentType: false,
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                var newOption = new Option(data.nombre, data.id, false, true);
+                $('select[name="modelo"]').append(newOption).trigger('change');
+                $('#modalModelo').modal('hide');
+            } else {
+                var errorList = document.getElementById("errorListModelo");
+                message_error(data.error, errorList);
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
+    });
+
 //----------------------Seleccionamos un MODELO-----------------------------//
+
     $('select[name="modelo"]').on('change', function () {
         var id = $('select[name="modelo"]').val();
         if (id !== null && id !== '' && id !== undefined) {

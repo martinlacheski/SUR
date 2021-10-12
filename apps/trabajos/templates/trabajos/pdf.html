@@ -108,7 +108,7 @@
         <b>Observaciones Productos:</b></p>
     {% for det in trabajo.detalleproductostrabajo_set.all %}
         {% if det.observaciones %}
-            <b>{{ det.producto.descripcion }}: </b> {{ det.observaciones }}<br>
+            <b style="margin-left: 40px">{{ det.producto.descripcion }}: </b> {{ det.observaciones }}<br>
         {% endif %}
     {% endfor %}
     <p class="text-uppercase font-weight-bold text-right">
@@ -141,7 +141,7 @@
         <b>Observaciones Servicios:</b></p>
     {% for det in trabajo.detalleserviciostrabajo_set.all %}
         {% if det.observaciones %}
-            <b>{{ det.servicio.descripcion }}: </b> {{ det.observaciones }}<br>
+            <b style="margin-left: 40px">{{ det.servicio.descripcion }}: </b> {{ det.observaciones }}<br>
         {% endif %}
     {% endfor %}
     <p class="text-uppercase font-weight-bold text-right">
