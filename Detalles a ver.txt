@@ -1,7 +1,6 @@
 * PRESUPUESTOS:
     validez de presupuesto agregar DIA                              --OK
     Fecha solo el del dia.                                          --OK
-
     Modelo y Marcas, agregar MODAL                                  --OK
 
 * TRABAJOS:
