@@ -1,4 +1,4 @@
-*Agregar PARAMETRO usuario rectificador
+*Agregar PARAMETRO usuario rectificador -- INCORPORADO Campo Estado al tipo de USUARIO
 
 *TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
 

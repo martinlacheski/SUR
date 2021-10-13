@@ -10,7 +10,7 @@ class TiposUsuariosForm(ModelForm):
 
     class Meta:
         model = TiposUsuarios
-        fields = ['nombre']
+        fields = ['nombre', 'realizaTrabajos']
         widgets = {
             'nombre': TextInput(
                 attrs={

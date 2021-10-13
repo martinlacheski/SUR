@@ -1,1 +1,100 @@
-{% extends 'form.html' %}
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="form-group col-10">
+                        <label>(*) Nombre:</label>
+
+                            {{ form.nombre|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+
+                    </div>
+                    <div class="form-group col-2">
+                        <label>¿Realiza Trabajos?:</label>
+
+                            {{ form.realizaTrabajos|add_class:'form-control' }}
+
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                {#Mensaje de error#}
+                <ul id="errorList" class="alert-danger"></ul>
+                {#Botones#}
+                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                    <i class="fas fa-save"></i> Guardar registro
+                </button>
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+
+            </div>
+        </div>
+    </form>
+    <script>
+        //Funcion Mostrar Errores del Formulario
+        function message_error(obj) {
+            var errorList = document.getElementById("errorList");
+            errorList.innerHTML = '';
+            if (typeof (obj) === 'object') {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                $.each(obj, function (key, value) {
+                    var li = document.createElement("li");
+                    li.innerText = key + ': ' + value;
+                    errorList.appendChild(li);
+                });
+            } else {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                var li = document.createElement("li");
+                li.innerText = obj;
+                errorList.appendChild(li);
+            }
+        }
+
+        //Llamamos a la funcion de Token
+        getToken(name);
+        //Hacemos el envio del Formulario mediante AJAX
+        $("#ajaxForm").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: window.location.href,
+                type: 'POST',
+                data: new FormData(this),
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        location.replace(data.redirect);
+                    } else {
+                        message_error(data.error);
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}
