@@ -33,6 +33,7 @@ var planificacion = {
             rowReorder: true,
             data: planificacion.items.trabajos,
             columns: [
+                {"data": "orden"},
                 {"data": "id"},
                 {"data": "modelo.nombre"},
                 {"data": "cliente.razonSocial"},
@@ -51,7 +52,7 @@ var planificacion = {
                     }
                 },
                 {
-                    targets: [-4, -3, -2],
+                    targets: [-5, -4, -3, -2],
                     class: 'text-center',
                     orderable: false,
                 },
@@ -237,6 +238,10 @@ $(function () {
             if (pos > 0) {
                 //Asignamos a una variable el trabajo temporal a mover de posicion
                 var trabajoTemp = planificacion.items.trabajos[tr.row - 1];
+                //Cambiamos el orden del trabajo temporal
+                trabajoTemp.orden = trabajoTemp.orden + 1;
+                //Asignamos el nuevo orden al que subimos
+                planificacion.items.trabajos[tr.row].orden = planificacion.items.trabajos[tr.row].orden - 1;
                 //subimos de posicion el trabajo
                 planificacion.items.trabajos.splice(tr.row - 1, 0, planificacion.items.trabajos[tr.row]);
                 //Borramos el trabajo que movimos de posicion
@@ -258,6 +263,10 @@ $(function () {
             if (pos < lenght - 1) {
                 //Asignamos a una variable el trabajo temporal a mover de posicion
                 var trabajoTemp = planificacion.items.trabajos[tr.row + 1];
+                //Cambiamos el orden del trabajo temporal
+                trabajoTemp.orden = trabajoTemp.orden - 1;
+                //Asignamos el nuevo orden al que subimos
+                planificacion.items.trabajos[tr.row].orden = planificacion.items.trabajos[tr.row].orden + 1;
                 //bajamos de posicion el trabajo
                 planificacion.items.trabajos.splice(tr.row + 1, 0, planificacion.items.trabajos[tr.row]);
                 //Borramos el trabajo que movimos de posicion

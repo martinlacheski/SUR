@@ -115,12 +115,12 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6 class="form-control">
+                        <div class="form-group col-6">
                             <label>(*) Condición de Pago:</label>
                             <br>
                             {{ form.condicionPago|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
-                        <div class="form-group col-6 class="form-control">
+                        <div class="form-group col-6">
                             <label>(*) Tipo de Percepción:</label>
                             <br>
                             {{ form.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -140,10 +140,7 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
-
         </div>
         <div class="card-footer">
             {#Mensaje de error#}
@@ -161,7 +158,6 @@
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
             </a>
-
         </div>
         <!-- Modal -->
         <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
@@ -206,5 +202,4 @@
             </div>
         </div>
     </form>
-
 {% endblock %}
