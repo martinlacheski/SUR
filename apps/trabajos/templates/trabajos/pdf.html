@@ -43,6 +43,12 @@
             margin-bottom: 10px;
         }
 
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -53,17 +59,16 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
+        <div class="col-6">
             <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
         </div>
-        <div class="col-4">
+        <div class="col-1">
 
-            {#            <h1 class="name-company">{{ empresa.nombre }}</h1>#}
-            {#            <p class="text-center">#}
-            {#                <b>CUIT: </b>{{ empresa.cuit }}<br>#}
-            {#                {{ empresa.direccion }}<br>#}
-            {#                {{ empresa.localidad }}<br>#}
-            {#            </p>#}
         </div>
         <div class="col-6">
             <p class="text-right">
@@ -71,13 +76,16 @@
                 <b>Cliente:</b> {{ trabajo.cliente.razonSocial }}<br>
                 <b>Marca:</b> {{ trabajo.modelo.marca.nombre }}<br>
                 <b>Modelo:</b> {{ trabajo.modelo.nombre }}<br>
-                <b>Ficha de Trabajo:</b>
                 {% if trabajo.fichaTrabajo %}
+                    <b>Ficha de Trabajo:</b>
                     {{ trabajo.fichaTrabajo }}<br>
-                {% else %}
-                    <br>
                 {% endif %}
-                <b>Observaciones:</b> {{ trabajo.observaciones }}<br>
+                {% if trabajo.observaciones %}
+                    <b>Observaciones:</b> {{ trabajo.observaciones }}<br>
+                {% endif %}
+                <b>Usuario:</b> {{ trabajo.usuario }}<br>
+
+
             </p>
         </div>
     </div>

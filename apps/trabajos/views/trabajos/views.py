@@ -485,6 +485,7 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                     trabajo.percepcion = float(formTrabajoRequest['percepcion'])
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
+                    trabajo.fichaTrabajo = formTrabajoRequest['fichaTrabajo']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
                     # Buscamos el estado Especial para iniciar el Proceso
                     try:
@@ -720,6 +721,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     trabajo.percepcion = float(formTrabajoRequest['percepcion'])
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
+                    trabajo.fichaTrabajo = formTrabajoRequest['fichaTrabajo']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
                     # Buscamos el estado Especial para iniciar el Proceso
                     try:
@@ -961,6 +963,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     trabajo.percepcion = float(formTrabajoRequest['percepcion'])
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
+                    trabajo.fichaTrabajo = formTrabajoRequest['fichaTrabajo']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
                     # Obtenemos el nombre del estado en el ORDEN FINALIZADO
                     try:
@@ -1201,6 +1204,7 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     trabajo.percepcion = float(formTrabajoRequest['percepcion'])
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
+                    trabajo.fichaTrabajo = formTrabajoRequest['fichaTrabajo']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
                     # Obtenemos el nombre del estado en el ORDEN ENTREGADO
                     try:

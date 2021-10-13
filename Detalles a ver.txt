@@ -1,7 +1,6 @@
-* Detalles a VER
-    En reportes agregar la cabecera con los datos de la empresa
-    Agregar campo usuario que realizo la impresion
-    Agregar pagina desde - hasta
+*Agregar PARAMETRO usuario rectificador
+
+*TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
 
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
     estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud

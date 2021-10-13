@@ -43,6 +43,16 @@
             margin-bottom: 10px;
         }
 
+        {#meta[author] { string-set: author attr(author); }#}
+        meta[author] {
+            string-set: {{ venta.usuario }};
+        }
+
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
     </style>
 </head>
 <body>
@@ -53,17 +63,16 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
+        <div class="col-6">
             <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
         </div>
-        <div class="col-4">
-
-            {#            <h1 class="name-company">{{ empresa.nombre }}</h1>#}
-            {#            <p class="text-center">#}
-            {#                <b>CUIT: </b>{{ empresa.cuit }}<br>#}
-            {#                {{ empresa.direccion }}<br>#}
-            {#                {{ empresa.localidad }}<br>#}
-            {#            </p>#}
+        <div class="col-1">
+            {#<h1 class="name-company">{{ empresa.nombre }}</h1>#}
         </div>
         <div class="col-6">
             <p class="text-right">
@@ -71,6 +80,7 @@
                 <b>Fecha:</b> {{ venta.fecha|date:'d-m-Y' }}<br>
                 <b>Cliente:</b> {{ venta.cliente.razonSocial }}<br>
                 <b>Cuil:</b> {{ venta.cliente.cuil }}<br>
+                <b>Usuario:</b> {{ venta.usuario }}<br>
             </p>
         </div>
     </div>
