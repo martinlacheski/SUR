@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
+from apps import presupuestos
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
@@ -102,7 +103,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             # Buscamos las plantillas de Presupuestos creadas
             elif action == 'search_plantillas':
                 data = [{'id': '', 'text': '---------'}]
-                for i in PlantillaPresupuestos.objects.filter(modelo_id=request.POST['pk']):
+                for i in PlantillaPresupuestos.objects.filter(modelo_id=request.POST['pk']).exclude(estado=False):
                     data.append({'id': i.id, 'text': i.get_full_name()})
             elif action == 'get_detalle_productos':
                 data = []

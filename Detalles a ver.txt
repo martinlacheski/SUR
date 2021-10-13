@@ -1,17 +1,7 @@
-* PRESUPUESTOS:
-    validez de presupuesto agregar DIA                              --OK
-    Fecha solo el del dia.                                          --OK
-    Modelo y Marcas, agregar MODAL                                  --OK
-
-* TRABAJOS:
-    PDF agregar la identacion                                       --OK
-
-* PLANIFICACION
-    ADD - Agregar campo, fecha de trabajo en vez de ID              --OK
-    list modal detalle - Agregar ID trabajo                         --OK
-
-* MODULO PLANIFICACION SEMANAL
-    *   Falta Guardar el Orden personalizado (no toma todavia)      --OK
+* Detalles a VER
+    En reportes agregar la cabecera con los datos de la empresa
+    Agregar campo usuario que realizo la impresion
+    Agregar pagina desde - hasta
 
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
     estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud
@@ -19,6 +9,7 @@
 *AUDITORIA
 
 *REPORTES
+    Agregar la cabecera cuando se imprime con filtros
 
 *ESTADISTICAS
 
