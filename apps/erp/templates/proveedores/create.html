@@ -146,15 +146,9 @@
             {#Mensaje de error#}
             <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
-            {% if action == 'add' %}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% else %}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% endif %}
+            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
             </a>

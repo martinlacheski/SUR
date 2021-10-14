@@ -1,10 +1,11 @@
 import json
 import os
 from datetime import date, datetime
+from random import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -22,7 +23,7 @@ from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlan
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
-from apps.usuarios.models import Usuarios
+from apps.usuarios.models import Usuarios, TiposUsuarios
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -224,15 +225,37 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 data['precioVenta'] = servicio.precioVenta
             # Asignamos automaticamente
             elif action == 'get_mas_desocupado':
-                cant_trabajos = []
-                # Asigno a una variable los parametros de estados
+                data = []
+                # Asigno a una variable los parametros de estados y de tipos de usuarios
                 estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                # Obtenemos los usuarios
-                usuarios = Usuarios.objects.all()
-                for user in usuarios:
-                    trabajos = Trabajos.objects.filter(usuarioAsignado_id=user.id).exclude(
-                        estadoTrabajo__orden__gte=estado.estadoFinalizado.orden).count()
-                    print(trabajos)
+                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
+                # Obtenemos los usuarios von esos filtros
+                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                try:
+                    # asignamos a una variable una cantidad alta de trabajos pendientes
+                    cant = 1000000
+                    # creamos una variable de usuarios de tipo array
+                    # usuarios = []
+                    # recorremos por cada usuario dentro del filtro anterior excluyendo trabajos finalizados en adelante
+                    for user in usuarios:
+                        trabajos = Trabajos.objects.filter(usuarioAsignado_id=user.id).exclude(
+                            estadoTrabajo__orden__gte=estado.estadoFinalizado.orden).count()
+                        if cant > trabajos:
+                            usuario = user
+                            cant = trabajos
+                    #     elif cant == trabajos:
+                        #         usuario = user
+                        #         usuarios.append(usuario)
+                        # if len(usuarios) > 0:
+                        #     usuarioAsignado = random(usuarios)
+                        #     # devolvemos el usuario al template
+                        #     data.append({'id': usuarioAsignado.id, 'text': usuarioAsignado.username})
+                        # else:
+                    # devolvemos el usuario al template
+                    data.append({'id': usuario.id, 'text': usuario.username})
+                except Exception as e:
+                    data['error'] = str(e)
+                    print(str(e))
             elif action == 'add':
                 with transaction.atomic():
                     formTrabajoRequest = json.loads(request.POST['trabajo'])

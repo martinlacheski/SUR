@@ -1,6 +1,8 @@
 *Agregar PARAMETRO usuario rectificador -- INCORPORADO Campo Estado al tipo de USUARIO
 
 *TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
+    asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
+    ejecutar un random
 
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
     estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud

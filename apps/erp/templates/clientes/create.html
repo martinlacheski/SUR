@@ -53,8 +53,7 @@
 
                         <div class="form-group col-6">
                             <label>(*) Cuil - Cuit:</label>
-                            <div class="col-12" class="form-control" id="cuil" name="cuil"
-                                 onkeypress="return isNumberKey(event)">
+                            <div class="col-12" class="form-control" id="cuil" onkeypress="return isNumberKey(event)">
                                 {{ form.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 <span hidden id="errorCuit" style="color: red;">CUIL no válido </span>
                             </div>
@@ -151,15 +150,9 @@
             {#Mensaje de error#}
             <ul id="errorList" name="errorList" class="alert-danger"></ul>
             {#Botones#}
-            {% if action == 'add' %}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% else %}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% endif %}
+            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
             </a>

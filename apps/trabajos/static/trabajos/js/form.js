@@ -374,6 +374,7 @@ $(document).ready(function () {
             format: 'DD-MM-YYYY',
             date: moment(),
             locale: 'es',
+            // minDate: moment(),
             maxDate: moment(),
         });
         // Buscamos el usuario mas desocupado
@@ -386,8 +387,12 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                // percepcionPorcentaje = parseFloat(data.percepcion);
-                console.log(data);
+                // Colocamos en el select el usuario mas desocupado
+                $('select[name="usuarioAsignado"]').html('').select2({
+                    theme: "bootstrap4",
+                    language: 'es',
+                    data: data
+                });
             }
         });
     } else if (accion === 'express') {
