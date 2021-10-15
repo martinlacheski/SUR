@@ -223,7 +223,7 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 servicio = Servicios.objects.get(id=request.POST['pk'])
                 data['costo'] = servicio.costo
                 data['precioVenta'] = servicio.precioVenta
-            # Asignamos automaticamente
+            # Asignamos automaticamente el trabajo al usuario mas desocupado
             elif action == 'get_mas_desocupado':
                 data = []
                 # Asigno a una variable los parametros de estados y de tipos de usuarios

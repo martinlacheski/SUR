@@ -21,6 +21,7 @@ from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
+from apps.usuarios.models import TiposUsuarios, Usuarios
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -634,6 +635,27 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 data['costo'] = servicio.costo
                 data['precioVenta'] = servicio.precioVenta
             elif action == 'confirm':
+                usuarioAsignado = Usuarios.objects.all().last()
+                # data = []
+                # Asigno a una variable los parametros de estados y de tipos de usuarios
+                estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
+                # Obtenemos los usuarios con esos filtros
+                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                try:
+                    # asignamos a una variable una cantidad alta de trabajos pendientes
+                    cant = 1000000
+                    # recorremos por cada usuario dentro del filtro anterior excluyendo trabajos finalizados en adelante
+                    for user in usuarios:
+                        trabajos = Trabajos.objects.filter(usuarioAsignado_id=user.id).exclude(
+                            estadoTrabajo__orden__gte=estado.estadoFinalizado.orden).count()
+                        if cant > trabajos:
+                            usuarioAsignado = user
+                            cant = trabajos
+                    # data.append({'id': usuario.id, 'text': usuario.username})
+                except Exception as e:
+                    data['error'] = str(e)
+                #     Comenzamos el proceso de Crear Trabajo
                 with transaction.atomic():
                     formPresupuestoRequest = json.loads(request.POST['presupuesto'])
                     # Obtenemos el Presupuesto Base que se esta editando
@@ -660,6 +682,8 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                     trabajo.iva = float(formPresupuestoRequest['iva'])
                     trabajo.percepcion = float(formPresupuestoRequest['percepcion'])
                     trabajo.total = float(formPresupuestoRequest['total'])
+                    # Asignamos el usuario que filtramos anteriormente
+                    trabajo.usuarioAsignado = usuarioAsignado
                     trabajo.observaciones = formPresupuestoRequest['observaciones']
                     trabajo.prioridad_id = request.POST['prioridad']
                     # Obtenemos el nombre del estado en el ORDEN INICIAL
