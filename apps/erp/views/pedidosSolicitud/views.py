@@ -79,30 +79,39 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
             elif action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
-                data.append({'id': term, 'text': term})
-                productos = Productos.objects.filter(
-                    Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term))[0:10]
-                for i in productos[0:10]:
-                    item = i.toJSON()
-                    # Creamos un item VALUE para que reconozca el input de Busqueda
-                    item['value'] = i.descripcion
-                    data.append(item)
+                ids_exclude = json.loads(request.POST['excluir'])
+                try:
+                    data.append({'id': term, 'text': term})
+                    productos = Productos.objects.filter(
+                        Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
+                        | Q(codigoBarras1__icontains=term)).exclude(id__in=ids_exclude)[0:10]
+                    for i in productos[0:10]:
+                        item = i.toJSON()
+                        # Creamos un item VALUE para que reconozca el input de Busqueda
+                        item['value'] = i.descripcion
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
             # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
             elif action == 'get_producto':
+                ids_exclude = json.loads(request.POST['excluir'])
                 term = request.POST['term'].strip()
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
                         | Q(codigoBarras1__icontains=term))
-                    item = producto.toJSON()
-                    data['producto'] = item
+                    if producto.id not in ids_exclude:
+                        item = producto.toJSON()
+                        data['producto'] = item
+                    else:
+                        data['error'] = 'El Producto ya se encuentra en el listado'
                 except Exception as e:
                     data['error'] = str(e)
             # Buscamos todos los productos
             elif action == 'search_all_productos':
                 data = []
-                for i in Productos.objects.all():
+                ids_exclude = json.loads(request.POST['excluir'])
+                for i in Productos.objects.all().exclude(id__in=ids_exclude):
                     data.append(i.toJSON())
             # Buscamos el IVA para el MODAL de Productos
             elif action == 'search_iva':
@@ -192,30 +201,39 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
             if action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
-                data.append({'id': term, 'text': term})
-                productos = Productos.objects.filter(
-                    Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term))[0:10]
-                for i in productos[0:10]:
-                    item = i.toJSON()
-                    # Creamos un item VALUE para que reconozca el input de Busqueda
-                    item['value'] = i.descripcion
-                    data.append(item)
+                ids_exclude = json.loads(request.POST['excluir'])
+                try:
+                    data.append({'id': term, 'text': term})
+                    productos = Productos.objects.filter(
+                        Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
+                        | Q(codigoBarras1__icontains=term)).exclude(id__in=ids_exclude)[0:10]
+                    for i in productos[0:10]:
+                        item = i.toJSON()
+                        # Creamos un item VALUE para que reconozca el input de Busqueda
+                        item['value'] = i.descripcion
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
             # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
             elif action == 'get_producto':
+                ids_exclude = json.loads(request.POST['excluir'])
                 term = request.POST['term'].strip()
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
                         | Q(codigoBarras1__icontains=term))
-                    item = producto.toJSON()
-                    data['producto'] = item
+                    if producto.id not in ids_exclude:
+                        item = producto.toJSON()
+                        data['producto'] = item
+                    else:
+                        data['error'] = 'El Producto ya se encuentra en el listado'
                 except Exception as e:
                     data['error'] = str(e)
             # Buscamos todos los productos
             elif action == 'search_all_productos':
                 data = []
-                for i in Productos.objects.all():
+                ids_exclude = json.loads(request.POST['excluir'])
+                for i in Productos.objects.all().exclude(id__in=ids_exclude):
                     data.append(i.toJSON())
             elif action == 'get_detalle_productos':
                 data = []
@@ -319,30 +337,39 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
             if action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
-                data.append({'id': term, 'text': term})
-                productos = Productos.objects.filter(
-                    Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term))[0:10]
-                for i in productos[0:10]:
-                    item = i.toJSON()
-                    # Creamos un item VALUE para que reconozca el input de Busqueda
-                    item['value'] = i.descripcion
-                    data.append(item)
+                ids_exclude = json.loads(request.POST['excluir'])
+                try:
+                    data.append({'id': term, 'text': term})
+                    productos = Productos.objects.filter(
+                        Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
+                        | Q(codigoBarras1__icontains=term)).exclude(id__in=ids_exclude)[0:10]
+                    for i in productos[0:10]:
+                        item = i.toJSON()
+                        # Creamos un item VALUE para que reconozca el input de Busqueda
+                        item['value'] = i.descripcion
+                        data.append(item)
+                except Exception as e:
+                    data['error'] = str(e)
             # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
             elif action == 'get_producto':
+                ids_exclude = json.loads(request.POST['excluir'])
                 term = request.POST['term'].strip()
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
                         | Q(codigoBarras1__icontains=term))
-                    item = producto.toJSON()
-                    data['producto'] = item
+                    if producto.id not in ids_exclude:
+                        item = producto.toJSON()
+                        data['producto'] = item
+                    else:
+                        data['error'] = 'El Producto ya se encuentra en el listado'
                 except Exception as e:
                     data['error'] = str(e)
             # Buscamos todos los productos
             elif action == 'search_all_productos':
                 data = []
-                for i in Productos.objects.all():
+                ids_exclude = json.loads(request.POST['excluir'])
+                for i in Productos.objects.all().exclude(id__in=ids_exclude):
                     data.append(i.toJSON())
             elif action == 'get_detalle_productos':
                 data = []
@@ -476,7 +503,6 @@ class PedidosSolicitudPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('pedidosSolicitud/pdf.html')
-
             context = {
                 'pedido': PedidosSolicitud.objects.get(pk=self.kwargs['pk']),
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,

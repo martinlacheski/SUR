@@ -14,6 +14,14 @@
     <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
     <!-- archivo JS -->
     <script src="{% static 'pedidosSolicitud/js/list.js' %}"></script>
+    <!-- Estilo para el Detalle -->
+    <style>
+        tr.group,
+        tr.group:hover {
+            background-color: #ddd !important;
+        }
+    </style>
+
 {% endblock %}
 
 {% block content %}
@@ -97,6 +105,7 @@
                                     <thead>
                                     <tr>
                                         <th scope="col" style="width: 70%;">Producto</th>
+                                        <th scope="col" style="width: 70%;">Producto/Proveedor</th>
                                         <th scope="col" style="width: 10%;">Importe</th>
                                         <th scope="col" style="width: 10%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
@@ -116,6 +125,7 @@
     <script type="application/javascript">
         //Llamamos a la funcion de Token
         getToken(name);
+
         //Funcion para Eliminar mediante AJAX
         function btnEliminar(id, href) {
             // Reactivación de botón y mensaje a default.

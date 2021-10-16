@@ -10,7 +10,14 @@ var pedido = {
         //detalle de productos
         productos: [],
     },
-
+    //Obtenemos los ID de los Productos en el listado para Excluir en las busquedas
+    getProductosListado: function () {
+        var ids = [];
+        $.each(this.items.productos, function (key, value) {
+            ids.push(value.id);
+        });
+        return ids;
+    },
     //Funcion Agregar Producto al Array
     addProducto: function (item) {
         this.items.productos.push(item);
@@ -176,7 +183,6 @@ $(document).ready(function () {
                 pedido.listProductos();
             }
         });
-
     } else {
         $('#fecha').datetimepicker({
             format: 'DD-MM-YYYY',
@@ -232,7 +238,6 @@ $(function () {
             }, function () {
                 $('input[name="fecha"]').val(moment().format('DD-MM-YYYY'));
             });
-
         }
     });
 
@@ -250,6 +255,7 @@ $(function () {
                 type: 'POST',
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
+                    'excluir': JSON.stringify(pedido.getProductosListado()),
                     'action': 'search_all_productos',
                 },
                 dataSrc: ""
@@ -568,6 +574,7 @@ $(function () {
                     type: 'POST',
                     data: {
                         'action': 'search_productos',
+                        'excluir': JSON.stringify(pedido.getProductosListado()),
                         'term': request.term
                     },
                     dataType: 'json',
@@ -597,6 +604,7 @@ $(function () {
                 type: 'POST',
                 data: {
                     'action': 'get_producto',
+                    'excluir': JSON.stringify(pedido.getProductosListado()),
                     'term': $(this).val()
                 },
                 dataType: 'json',
@@ -612,15 +620,26 @@ $(function () {
                     $('input[name="searchProductos"]').val('');
                     $('input[name="searchProductos"]').focus();
                 } else {
-                    // error_action('Error', 'No existe el producto con el código ingresado', function () {
-                    confirm_action('Error', 'No existe el producto, ¿Desea registrarlo?', function () {
-                        $('#modalProducto').modal('show');
-                        $('input[name="searchProductos"]').val('');
-                        $('input[name="searchProductos"]').focus();
-                    }, function () {
-                        $('input[name="searchProductos"]').val('');
-                        $('input[name="searchProductos"]').focus();
-                    });
+                    if (data.error == "El Producto ya se encuentra en el listado") {
+                        error_action('Error', 'El Producto ya se encuentra en el listado', function () {
+                            $('input[name="searchProductos"]').val('');
+                            $('input[name="searchProductos"]').focus();
+                        }, function () {
+                            $('input[name="searchProductos"]').val('');
+                            $('input[name="searchProductos"]').focus();
+                        });
+                    } else {
+                        // error_action('Error', 'No existe el producto con el código ingresado', function () {
+                        confirm_action('Error', 'No existe el producto, ¿Desea registrarlo?', function () {
+                            $('#modalProducto').modal('show');
+                            $('input[name="searchProductos"]').val('');
+                            $('input[name="searchProductos"]').focus();
+                        }, function () {
+                            $('input[name="searchProductos"]').val('');
+                            $('input[name="searchProductos"]').focus();
+                        });
+                    }
+
                 }
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function (data) {
