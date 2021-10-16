@@ -43,7 +43,7 @@
             margin-bottom: 10px;
         }
 
-         @page {
+        @page {
             @bottom-center {
                 content: "Página " counter(page) " de " counter(pages);
             }
@@ -73,7 +73,13 @@
             <p class="text-right">
                 <b>Número:</b> {{ pedido.id }}<br>
                 <b>Fecha:</b> {{ pedido.fecha|date:'d-m-Y' }}<br>
-                <b>Estado:</b> {{ pedido.estado }}<br>
+                {% if pedido.estado %}
+                    <b>Estado:</b> Confirmado <br>
+                {% elif pedido.estado == None %}
+                    <b>Estado:</b> No Confirmado <br>
+                {% else  %}
+                    <b>Estado:</b> Cancelado <br>
+                {% endif %}
             </p>
         </div>
     </div>
