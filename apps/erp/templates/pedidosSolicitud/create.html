@@ -1,0 +1,424 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+        <!-- Datatables -->
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+        <!-- Jquery UI -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+        <!-- Select2 -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+              rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+        <!-- Moment -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+        <!-- Tempus Dominus -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"
+              rel="stylesheet"/>
+        <!-- JQuery-Validation -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
+        <!-- Bootstrap Touchspin -->
+        <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+        <!-- archivo JS -->
+        <script src="{% static 'pedidosSolicitud/js/form.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <form id="pedidoForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-secondary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-10">
+
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label>(*) Fecha:</label>
+                                        <div class="col-12" id="fecha" data-target-input="nearest">
+                                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <hr>
+                                        <div class="card card-secondary">
+                                            <div class="card-header">
+                                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos
+                                                </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-group">
+                                                    <label>Buscador de productos:</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="searchProductos"
+                                                               placeholder="Ingrese una descripción de producto"
+                                                               autocomplete="off">
+                                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
+                                                    </div>
+                                                </div>
+                                                <hr>
+                                                <button type="button"
+                                                        class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
+                                                        class="fas fa-search"></i> Buscar todos
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-success btn-xs btn-flat btnAddProducto"><i
+                                                        class="fas fa-plus"></i> Agregar Producto
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                                    <i class="fas fa-trash"></i> Eliminar todos
+                                                </button>
+                                                <hr>
+                                                <table class="table table-bordered tablaCompraProducto"
+                                                       id="tablaProductos">
+                                                    <thead>
+                                                    <tr>
+                                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                                        <th scope="col" style="width: 48%;">Producto</th>
+                                                        <th scope="col" style="width: 10%;">Costo</th>
+                                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="card card-secondary">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="form-group col-4 mb-3">
+                                                        <label>Subtotal:</label>
+                                                        {{ form.subtotal }}
+                                                    </div>
+                                                    <div class="form-group col-4 mb-3">
+                                                        <label>IVA:</label>
+                                                        {{ form.iva }}
+                                                    </div>
+
+                                                    <div class="form-group col-4 mb-3">
+                                                        <label>Total a pagar:</label>
+                                                        {{ form.total }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary btn-flat">
+                                        {% if action == 'add' %}
+                                            <i class="fas fa-save"></i> Guardar registro
+                                        {% elif action == 'edit' %}
+                                            <i class="fas fa-save"></i> Guardar registro
+                                        {% else %}
+                                            <i class="fas fa-save"></i> Confirmar presupuesto
+                                        {% endif %}
+                                    </button>
+                                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                                        <i class="fas fa-times"></i> Cancelar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Modal PRODUCTO -->
+    <div class="modal fade" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-plus"></i> Crear un Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label>Categoría:</label>
+                                <div class="input-group">
+                                    <select class="form-select form-control select2 selectCategoria"
+                                            id="selectCategoria"
+                                            aria-label="selectCategorias">
+                                        <option value="">---------</option>
+                                        {% for c in categorias %}
+                                            <option value={{ c.id }}>{{ c.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-6">
+                                <label>(*) Subcategoría:</label>
+                                <br>
+                                {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6 mb-6">
+                                    <label>(*) Descripción:</label>
+                                    <br>
+                                    {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                                <div class="form-group col-3 mb-3">
+                                    <label>Abreviatura:</label>
+                                    <br>
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Código:</label>
+                                <br>
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código Proveedor:</label>
+                                {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código de Barras 1: </label>
+                                <br>
+                                {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockReal|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock Mínimo:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockMinimo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Pedido Reposición:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.reposicion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="costo" name="costo">
+                                    {{ formProducto.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Margen de Utilidad:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="utilidad" name="utilidad">
+                                    {{ formProducto.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>(*) Tipo de IVA:</label>
+                                <br>
+                                {{ formProducto.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
+                                    {{ formProducto.precioVenta|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Ubicacion Física:</label>
+                                <br>
+                                {{ formProducto.ubicacion|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Observaciones:</label>
+                                <br>
+                                {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-1 mb-1">
+                                <label> </label>
+                                <br>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>¿Es Insumo?: </label>
+                                <br>
+                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
+                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-6">
+                                <label>Imagen: </label>
+                                {{ formProducto.imagen }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormProducto" name="errorListFormProducto" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" id="btnAddProducto"
+                                class="btn btn-primary btn-block btnAddProducto btn-flat">
+                            <i class="fas fa-save"></i> Guardar Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Buscar PRODUCTOS -->
+    <div class="modal fade" id="modalSearchProductos" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <b><i class="fas fa-search"></i> Búsqueda de Productos</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover" id="tablaSearchProductos">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 30%;">Subcategoría</th>
+                            <th scope="col" style="width: 40%;">Producto</th>
+                            <th scope="col" style="width: 10%;">Stock</th>
+                            <th scope="col" style="width: 10%;">Precio</th>
+                            <th scope="col" style="width: 10%;">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Actualizar PRECIO PRODUCTO -->
+    <div class="modal fade" id="modalPrecioProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formPrecioProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Actualizar Precio Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idProductoUpdate" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6">
+                                    <label>Subcategoría:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="actualizarSubcategoria" readonly>
+                                </div>
+                                <div class="form-group col-6 mb-6">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="actualizarDescripcion" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarCosto" autocomplete="off">
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Margen de Utilidad:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarUtilidad" autocomplete="off">
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Tipo de IVA:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarIva" readonly>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarPrecioVenta" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformPrecioProducto" name="errorListformPrecioProducto"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnAddProducto"
+                                    class="btn btn-primary btn-block btnEditProducto btn-flat">
+                                <i class="fas fa-edit"></i> Actualizar Precio Producto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

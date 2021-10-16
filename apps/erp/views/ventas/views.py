@@ -34,7 +34,7 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Ventas.objects.all()[0:15]:
+                for i in Ventas.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []

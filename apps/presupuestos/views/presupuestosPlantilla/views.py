@@ -37,7 +37,7 @@ class PresupuestosPlantillaListView(LoginRequiredMixin, ValidatePermissionRequir
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in PlantillaPresupuestos.objects.all()[0:15]:
+                for i in PlantillaPresupuestos.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []

@@ -33,7 +33,7 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Compras.objects.all()[0:15]:
+                for i in Compras.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []

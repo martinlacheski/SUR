@@ -2,7 +2,8 @@ from datetime import datetime
 
 from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
 
-from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras, \
+    PedidosSolicitud
 
 
 class CategoriasForm(ModelForm):
@@ -525,3 +526,35 @@ class ComprasForm(ModelForm):
             }),
         }
         exclude = ['usuario']
+
+
+class PedidosSolicitudForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = PedidosSolicitud
+        fields = '__all__'
+        widgets = {
+            'fecha': DateInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
+        exclude = ['estado']

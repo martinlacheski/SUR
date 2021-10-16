@@ -11,7 +11,6 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from apps import presupuestos
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
@@ -41,7 +40,7 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Presupuestos.objects.all()[0:15]:
+                for i in Presupuestos.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []

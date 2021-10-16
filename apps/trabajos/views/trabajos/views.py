@@ -1,11 +1,10 @@
 import json
 import os
 from datetime import date, datetime
-from random import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Q, Count
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -17,8 +16,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Ventas, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, CondicionesPago, MediosPago, \
-    Estados
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, CondicionesPago, MediosPago
 from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
