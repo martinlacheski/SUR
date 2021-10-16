@@ -75,7 +75,7 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         item['cantidad'] = producto.reposicion
                         # item['costo'] = producto.costo
                         data.append(item)
-            # Buscamos los distintos productos ingresando por teclado
+            # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
             elif action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
@@ -92,7 +92,7 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
-            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
+            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER excluyendo ya cargados
             elif action == 'get_producto':
                 ids_exclude = json.loads(request.POST['excluir'])
                 term = request.POST['term'].strip()
@@ -107,7 +107,7 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         data['error'] = 'El Producto ya se encuentra en el listado'
                 except Exception as e:
                     data['error'] = str(e)
-            # Buscamos todos los productos
+            # Buscamos todos los productos excluyendo ya cargados
             elif action == 'search_all_productos':
                 data = []
                 ids_exclude = json.loads(request.POST['excluir'])
@@ -197,7 +197,7 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
         data = {}
         try:
             action = request.POST['action']
-            # Buscamos los distintos productos ingresando por teclado
+            # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
             if action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
@@ -214,7 +214,7 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
-            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
+            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER excluyendo ya cargados
             elif action == 'get_producto':
                 ids_exclude = json.loads(request.POST['excluir'])
                 term = request.POST['term'].strip()
@@ -229,7 +229,7 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                         data['error'] = 'El Producto ya se encuentra en el listado'
                 except Exception as e:
                     data['error'] = str(e)
-            # Buscamos todos los productos
+            # Buscamos todos los productos excluyendo ya cargados
             elif action == 'search_all_productos':
                 data = []
                 ids_exclude = json.loads(request.POST['excluir'])
@@ -333,7 +333,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
         data = {}
         try:
             action = request.POST['action']
-            # Buscamos los distintos productos ingresando por teclado
+            # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
             if action == 'search_productos':
                 data = []
                 term = request.POST['term'].strip()
@@ -350,7 +350,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
-            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER
+            # Metodo para obtener un producto por codigo + ENTER o lector de codigos de barras + ENTER excluyendo ya cargados
             elif action == 'get_producto':
                 ids_exclude = json.loads(request.POST['excluir'])
                 term = request.POST['term'].strip()
@@ -365,7 +365,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                         data['error'] = 'El Producto ya se encuentra en el listado'
                 except Exception as e:
                     data['error'] = str(e)
-            # Buscamos todos los productos
+            # Buscamos todos los productos excluyendo ya cargados
             elif action == 'search_all_productos':
                 data = []
                 ids_exclude = json.loads(request.POST['excluir'])
