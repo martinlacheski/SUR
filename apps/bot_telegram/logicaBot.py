@@ -1,6 +1,7 @@
 import datetime
 from apps.usuarios.models import Usuarios
 from apps.erp.models import Clientes
+from django.core.exceptions import *
 from apps.trabajos.models import *
 from apps.bot_telegram.models import *
 from apps.parametros.models import EstadoParametros
@@ -41,8 +42,7 @@ def porcentajeTrabajo(trabajo):
     porcentaje = cantTrabajosRealizados / cantTrabajos
     return str(porcentaje * 100)
 
-# Chequea que el estado del trabajo esté entre los instanciados en la función cosa de no mostrarle al cliente
-# trabajos que ya les fueron entregados o trabajos que se hayan cancelado.
+# Chequea estado del trabajo. No muestra los que fueron entregados o que se hayan cancelado.
 def checkEstado(trabajo):
     estado = trabajo.estadoTrabajo_id
     trabajosParametros = EstadoParametros.objects.all()
@@ -75,11 +75,12 @@ def dia_habil_siguiente(hoy):
 def registrarRetiro(respuesta):
     resp_to_dict = ast.literal_eval(respuesta)
     log_respuesta = respuestaTrabajoFinalizado()
-    print(resp_to_dict['trabajo'])
-    log_respuesta.trabajo = Trabajos.objects.get(pk=int(resp_to_dict['trabajo']))
-    log_respuesta.cliente = Clientes.objects.get(pk=int(resp_to_dict['cliente']))
+    try:  # Estará el trabajo y el cliente aún registrado?
+        log_respuesta.trabajo = Trabajos.objects.get(pk=int(resp_to_dict['trabajo']))
+        log_respuesta.cliente = Clientes.objects.get(pk=int(resp_to_dict['cliente']))
+    except ObjectDoesNotExist:
+        return False
     log_respuesta.fechaRespuesta = datetime.datetime.today()
-
     if 'hoy' in resp_to_dict:
         log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date()
         log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día de hoy (" +\
@@ -94,7 +95,6 @@ def registrarRetiro(respuesta):
                                            ")."
     elif 'se_secomunica' in resp_to_dict:
         log_respuesta.respuesta_generica = "El cliente se comunicará personalmente."
-
     log_respuesta.save()
     return True
 

@@ -51,7 +51,6 @@ def notificarCliente(trabajo):
         'trabajo': str(trabajo.id),
 
     }
-
     se_comunica = {
         'se_secomunica': 'Se comunicará luego.'
     }
@@ -95,6 +94,7 @@ class Command(BaseCommand):
                                                       "⚠ Por una cuestión de seguridad, me tomé el "
                                                       "trabajo de borrar el msj en donde pones tu contraseña.\n\n"
                                                       "🧠 Esta es mi lista de comandos y lo que soy capaz de hacer: ")
+                            # TO-do acá van las funcionalidades que hará el bot para los usuarios registrados
                             bot.delete_message(update.message.chat.id, update.message.message_id)
                             user.chatIdUsuario = int(update.message.from_user.id)
                             user.save()
@@ -169,31 +169,23 @@ class Command(BaseCommand):
                                                    "a\n\n ``` /registroCliente 20346735739 ``` "
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
-
-        # Funcionaes de ejemplo que muestran botones y hacen algo con la respuesta
-        def test(update, context):
-            """Sends a message with three inline buttons attached."""
-            keyboard = [
-                [
-                    InlineKeyboardButton("Option 1", callback_data='1'),
-                    InlineKeyboardButton("Option 2", callback_data='2'),
-                ],
-                [InlineKeyboardButton("Option 3", callback_data='3')],
-            ]
-
-            reply_markup = InlineKeyboardMarkup(keyboard)
-
-            update.message.reply_text('Please choose:', reply_markup=reply_markup)
-
         def button(update, context):
             query = update.callback_query
-
             # Vemos quién nos respondió y acorde a ello hacemos cosas
             try:
                 cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
                 eleccion_retiro = query.data
                 # TO - DO. Notificar a los users seteados que un cliente respondió
-                registrarRetiro(eleccion_retiro)
+                query.answer()
+                if registrarRetiro(eleccion_retiro):
+                    query.edit_message_text(text="👍 Tu respuesta ha sido registrada y notificada al personal"
+                                                 " de SUR EXPRESS")
+
+
+                else:
+                    query.edit_message_text(text="❌ Ha ocurrido un error en el registro de"
+                                                 " tu respuesta. Es probable que tu trabajo o"
+                                                 " vos hayan sido dado de baja en el sistema")
             except ObjectDoesNotExist:
                 try:
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
@@ -244,12 +236,10 @@ class Command(BaseCommand):
         # ** COMANDOS **
         start_handler = CommandHandler('registroCliente', registroCliente)
         start_handler2 = CommandHandler('registroUsuario', registroUsuario)
-        start_handler3 = CommandHandler('test', test)
         start_handler4 = MessageHandler(Filters.text & (~Filters.command), respuestaDefault)
         dispatcher.add_handler(start_handler)
         dispatcher.add_handler(start_handler2)
         dispatcher.add_handler(start_handler3)
-        dispatcher.add_handler(start_handler4)
         dispatcher.add_handler(CallbackQueryHandler(button))
         updater.start_polling()
 
