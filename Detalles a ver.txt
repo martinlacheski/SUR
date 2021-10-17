@@ -5,6 +5,10 @@
 *GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
     estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud
 
+*Productos en negativo segun stock minimo y no STOCK 0 CERO
+
+*En planificacion ver bien el tema de orden de fecha
+
 *AUDITORIA
 
 *REPORTES
