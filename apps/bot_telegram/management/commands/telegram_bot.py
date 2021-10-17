@@ -20,6 +20,7 @@ from apps.trabajos.models import Trabajos
 
 # Otros
 import datetime
+import ast
 
 
 #       *** NOTIFICAR TRABAJO FINALIZADO ***
@@ -175,26 +176,27 @@ class Command(BaseCommand):
             try:
                 cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
                 eleccion_retiro = query.data
-                # TO - DO. Notificar a los users seteados que un cliente respondió
                 query.answer()
-                if registrarRetiro(eleccion_retiro):
+                estado_retiro = registrarRetiro(eleccion_retiro)
+                if estado_retiro['proc']:
+                    # Le repondemos al cliente.
                     query.edit_message_text(text="👍 Tu respuesta ha sido registrada y notificada al personal"
                                                  " de SUR EXPRESS")
-
-
+                    # Avisamos a los administradores
+                    usersToNotif = notifIncidentesUsuarios.objects.all()
+                    mensaje = estado_retiro['respuesta']
+                    for user in usersToNotif:
+                        if user.usuario_id.chatIdUsuario:
+                            bot.send_message(text=str(mensaje), chat_id=user.usuario_id.chatIdUsuario)
                 else:
-                    query.edit_message_text(text="❌ Ha ocurrido un error en el registro de"
-                                                 " tu respuesta. Es probable que tu trabajo o"
-                                                 " vos hayan sido dado de baja en el sistema")
+                    mensaje = estado_retiro['respuesta']
+                    query.edit_message_text(text=mensaje)
             except ObjectDoesNotExist:
                 try:
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
                     print("aún no están definidas las acciones de los usuarios")
                 except ObjectDoesNotExist:
                     print("no está registrado")
-
-            query.answer()
-            query.edit_message_text(text=f"Selected option: {query.data}")
 
         def respuestaDefault(update, context):
             try:
@@ -239,7 +241,6 @@ class Command(BaseCommand):
         start_handler4 = MessageHandler(Filters.text & (~Filters.command), respuestaDefault)
         dispatcher.add_handler(start_handler)
         dispatcher.add_handler(start_handler2)
-        dispatcher.add_handler(start_handler3)
         dispatcher.add_handler(CallbackQueryHandler(button))
         updater.start_polling()
 

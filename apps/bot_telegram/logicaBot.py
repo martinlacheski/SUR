@@ -79,24 +79,33 @@ def registrarRetiro(respuesta):
         log_respuesta.trabajo = Trabajos.objects.get(pk=int(resp_to_dict['trabajo']))
         log_respuesta.cliente = Clientes.objects.get(pk=int(resp_to_dict['cliente']))
     except ObjectDoesNotExist:
-        return False
+        respuesta = "❌ Ha ocurrido un problema. Probablemnte tu trabajo o vos fueron dados de baja del sistema."
+        return {'proc': False, 'respuesta' : respuesta}
     log_respuesta.fechaRespuesta = datetime.datetime.today()
+    respuesta = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) +\
+                ", en respuesta a su trabajo finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que lo" \
+                " pasará a buscar el día ("
     if 'hoy' in resp_to_dict:
         log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date()
         log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día de hoy (" +\
                                             str(datetime.datetime.strptime(resp_to_dict['hoy'],
                                                                            '%Y-%m-%d').date().strftime('%d-%m-%Y')) +\
                                             ")."
+        respuesta += str(datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + ")"
     elif 'sig_dia_habil' in resp_to_dict:
         log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date()
         log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día " + \
                                            str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'],
                                                                           '%Y-%m-%d').date().strftime('%d-%m-%Y')) + \
                                            ")."
+        respuesta += str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + ")"
     elif 'se_secomunica' in resp_to_dict:
         log_respuesta.respuesta_generica = "El cliente se comunicará personalmente."
+        respuesta = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) + \
+                    ", en respuesta a su trabajo finalizado Nro° " + str(resp_to_dict['trabajo']) + ", " \
+                    "informó que se comunicará personalmente para retirar dicho trabajo"
     log_respuesta.save()
-    return True
+    return {'proc': True, 'respuesta': respuesta}
 
 
 # ***   USUARIOS ***
@@ -132,8 +141,7 @@ def personaNoRegistrada(username, nombre):
     logIncidente.save()
 
 
-
-
+# *** PROCESOS GENERALES ***
 
 
 
