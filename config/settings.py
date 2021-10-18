@@ -191,3 +191,12 @@ DJANGO_SETTINGS_MODULE = 'config.settings'
 CRONJOBS = [
     ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}

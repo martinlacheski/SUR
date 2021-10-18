@@ -21,7 +21,9 @@ from apps.trabajos.models import Trabajos
 # Otros
 import datetime
 import ast
-
+from apps.test_channel.consumers import ChatConsumer
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 #       *** NOTIFICAR TRABAJO FINALIZADO ***
 def notificarCliente(trabajo):
@@ -199,29 +201,37 @@ class Command(BaseCommand):
                     print("no está registrado")
 
         def respuestaDefault(update, context):
-            try:
-                cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
-                msjRecibido = str(update.message.text).upper()
-                print(msjRecibido)
-                if msjRecibido == 'TRABAJOS':
-                    trabajosCliente = Trabajos.objects.filter(cliente=cliente)
-                    if trabajosCliente:
-                        update.message.reply_text(mandarTrabajos(trabajosCliente))
-                    else:
-                        update.message.reply_text("Hola " + str(cliente.razonSocial) + "👋!\n"
-                                                  "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
-                else:
-                    update.message.reply_text(text=str(cliente.razonSocial) + " no entendí lo que dijiste 🤨\n"
-                                                   "Recordá que únicamente respondo a la palabra:\n\n ```trabajos``` \n\n"
-                                                   " la cual tenes que enviar en un único mensaje\."
-                                              ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
-            except ObjectDoesNotExist:
+            msjRecibido = str(update.message.text).upper()
+            if (msjRecibido == 'HOLA'):
+                channel_layer = get_channel_layer()
+                print(channel_layer)
+                async_to_sync(channel_layer.group_send)('telegram_group', {
+                    "type": "receive",
+                    "text": str(msjRecibido),
+                })
+            else:
                 try:
-                    usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
-                    update.message.reply_text("Hola " + str(usuario.username) + "!")
+                    cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
+                    msjRecibido = str(update.message.text).upper()
+                    if msjRecibido == 'TRABAJOS':
+                        trabajosCliente = Trabajos.objects.filter(cliente=cliente)
+                        if trabajosCliente:
+                            update.message.reply_text(mandarTrabajos(trabajosCliente))
+                        else:
+                            update.message.reply_text("Hola " + str(cliente.razonSocial) + "👋!\n"
+                                                                                           "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
+                    else:
+                        update.message.reply_text(text=str(cliente.razonSocial) + " no entendí lo que dijiste 🤨\n"
+                                                                                  "Recordá que únicamente respondo a la palabra:\n\n ```trabajos``` \n\n"
+                                                                                  " la cual tenes que enviar en un único mensaje\."
+                                                  ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
                 except ObjectDoesNotExist:
-                    update.message.reply_text("🚫 No estás registrado en el Sistema. Este inconveniente será reportado")
-                    personaNoRegistrada(update.message.from_user.username, update.message.from_user.first_name)
+                    try:
+                        usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
+                        update.message.reply_text("Hola " + str(usuario.username) + "!")
+                    except ObjectDoesNotExist:
+                        update.message.reply_text("🚫 No estás registrado en el Sistema. Este inconveniente será reportado")
+                        personaNoRegistrada(update.message.from_user.username, update.message.from_user.first_name)
 
 
 
@@ -241,6 +251,7 @@ class Command(BaseCommand):
         start_handler4 = MessageHandler(Filters.text & (~Filters.command), respuestaDefault)
         dispatcher.add_handler(start_handler)
         dispatcher.add_handler(start_handler2)
+        dispatcher.add_handler(start_handler4)
         dispatcher.add_handler(CallbackQueryHandler(button))
         updater.start_polling()
 
