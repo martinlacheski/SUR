@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'apps.trabajos',
     'apps.agenda',
     'apps.bot_telegram',
-    'apps.test_channel',
+    'apps.notif_channel',
 ]
 
 MIDDLEWARE = [

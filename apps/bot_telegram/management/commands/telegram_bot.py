@@ -21,7 +21,7 @@ from apps.trabajos.models import Trabajos
 # Otros
 import datetime
 import ast
-from apps.test_channel.consumers import ChatConsumer
+from apps.notif_channel.consumers import notificationConsumer
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
@@ -202,9 +202,9 @@ class Command(BaseCommand):
 
         def respuestaDefault(update, context):
             msjRecibido = str(update.message.text).upper()
+
             if (msjRecibido == 'HOLA'):
                 channel_layer = get_channel_layer()
-                print(channel_layer)
                 async_to_sync(channel_layer.group_send)('telegram_group', {
                     "type": "receive",
                     "text": str(msjRecibido),

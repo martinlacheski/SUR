@@ -341,5 +341,31 @@
         });
     </script>
 
+    <script>
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/notificaciones/'
+        );
+
+        console.log(chatSocket);
+
+        // recibe mensajes
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            toastr.info('¡Tiene nuevas notificaciónes!');
+            console.log(data);
+        };
+
+        // Me interesa pero para mantener el socket siempre abierto.
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        // no me interesa por el momento.
+        {#chatSocket.send(JSON.stringify({#}
+        {#    'message': message#}
+        {# };#}
+    </script>
     </body>
 {% endblock %}
