@@ -1,3 +1,9 @@
+*Ver en los templates y vistas ordenar Simbolo PESOS criterio UNIFICADO
+
+*en venta relacionar con trabajo! y diferenciar con color para saber cual esta relacionado a un trabajo o no
+
+*Agregar filtro para ver solo determinados estados
+
 *TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
     asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
     ejecutar un random
@@ -8,6 +14,8 @@
 *Productos en negativo segun stock minimo y no STOCK 0 CERO
 
 *En planificacion ver bien el tema de orden de fecha
+
+*En solicitud si el pedido de reposicion es 0 CERO no agregar al listado
 
 *AUDITORIA
 

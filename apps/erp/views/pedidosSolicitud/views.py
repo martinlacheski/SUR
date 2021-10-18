@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ProductosForm, PedidosSolicitudForm
-from apps.erp.models import Productos, DetalleProductosCompra, Categorias, Subcategorias, PedidosSolicitud, \
+from apps.erp.models import Productos, Categorias, Subcategorias, PedidosSolicitud, \
     DetallePedidoSolicitud
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import Empresa, TiposIVA
@@ -408,10 +408,12 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                 producto = Productos.objects.get(id=request.POST['pk'])
                 data = producto.costo
             elif action == 'confirm':
+
                 with transaction.atomic():
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     # Obtenemos la Solicitud de Pedido que se esta editando
                     pedido = self.get_object()
+                    # print(reverse_lazy('erp:pedidos_solicitudes_update') + '/' + str(pedido.id) + '/')
                     pedido.fecha = formPedidoRequest['fecha']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
                     pedido.iva = float(formPedidoRequest['iva'])
