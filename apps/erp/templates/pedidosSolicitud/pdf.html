@@ -100,8 +100,8 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">{{ det.costo|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.costo|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>

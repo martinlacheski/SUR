@@ -142,6 +142,20 @@ $(document).ready(function () {
 });
 
 $(function () {
+    //Para ordenar la fecha como corresponde
+    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+        "ddMmYyyy-pre": function (a) {
+            a = a.split('-');
+            if (a.length < 2) return 0;
+            return Date.parse(a[0] + '-' + a[1] + '-' + a[2]);
+        },
+        "ddMmYyyy-asc": function (a, b) {
+            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+        },
+        "ddMmYyyy-desc": function (a, b) {
+            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+        }
+    });
     //Buscamos los parametros de estado
     searchParametros();
     tablaTrabajos = $('#data').DataTable({
@@ -171,10 +185,12 @@ $(function () {
         columnDefs: [
             {
                 targets: [0],
+                // type: "ddMmYyyy",
                 class: 'text-center',
                 render: function (data, type, row) {
                     return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
                 }
+
             },
             {
                 targets: [1],
@@ -214,6 +230,7 @@ $(function () {
         initComplete: function (settings, json) {
 
         }
+
     });
     $('#data tbody')
         //Evento agregar trabajo a la planificacion

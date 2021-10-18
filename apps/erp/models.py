@@ -282,7 +282,7 @@ class Ventas(models.Model):
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
     condicionVenta = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de pago')
     medioPago = models.ForeignKey(MediosPago, models.DO_NOTHING, verbose_name='Medio de pago')
-    # trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo Asociado', null=True, blank=True)
+    trabajo = models.CharField(default="", max_length=20, verbose_name='ID Trabajo Asociado', null=True, blank=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -302,7 +302,6 @@ class Ventas(models.Model):
         item['cliente'] = self.cliente.toJSON()
         item['medioPago'] = self.medioPago.toJSON()
         item['condicionVenta'] = self.condicionVenta.toJSON()
-        #item['trabajo'] = self.trabajo.toJSON()
         return item
 
     class Meta:

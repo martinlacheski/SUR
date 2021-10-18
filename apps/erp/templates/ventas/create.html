@@ -104,8 +104,7 @@
                                                                autocomplete="off">
                                                         <span class="input-group-append">
                                         <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
-                                                class="fas fa-times"></i></button>
-                                      </span>
+                                                class="fas fa-times"></i></button></span>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -200,19 +199,51 @@
                                                 <div class="row">
                                                     <div class="form-group col-3 mb-3">
                                                         <label>Subtotal:</label>
-                                                        {{ form.subtotal }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.subtotal }}
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-3 mb-3">
                                                         <label>IVA:</label>
-                                                        {{ form.iva }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.iva }}
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-3 mb-3">
                                                         <label>Percepción:</label>
-                                                        {{ form.percepcion }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.percepcion }}
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-3 mb-3">
                                                         <label>Total a pagar:</label>
-                                                        {{ form.total }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.total }}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

@@ -97,7 +97,6 @@ $(function () {
             //Seleccionamos el Presupuesto sobre la cual queremos traer el detalle
             var tr = tablaPlanificacion.cell($(this).closest('td, li')).index();
             var data = tablaPlanificacion.row(tr.row).data();
-
             //Cargamos el detalle de productos
             $('#tablaTrabajos').DataTable({
                 responsive: true,

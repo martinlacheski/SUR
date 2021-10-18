@@ -101,8 +101,8 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.precio|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -127,8 +127,8 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.servicio.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.precio|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>

@@ -13,7 +13,8 @@ from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
-from apps.erp.models import Productos, Servicios, Clientes, Ventas, Categorias, Subcategorias
+from apps.erp.models import Productos, Servicios, Clientes, Ventas, Categorias, Subcategorias, DetalleProductosVenta, \
+    DetalleServiciosVenta
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.forms import MarcasForm, ModelosForm
 from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, CondicionesPago, MediosPago
@@ -1247,49 +1248,28 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     venta.iva = float(formTrabajoRequest['iva'])
                     venta.percepcion = float(formTrabajoRequest['percepcion'])
                     venta.total = float(formTrabajoRequest['total'])
+                    venta.trabajo = trabajo.id
                     venta.save()
-                    # Eliminamos todos los productos del Detalle
-                    trabajo.detalleproductostrabajo_set.all().delete()
-                    # Volvemos a cargar los productos al Detalle
+                    # Creamos el detalle de Productos
                     for i in formTrabajoRequest['productos']:
-                        det = DetalleProductosTrabajo()
-                        det.trabajo_id = trabajo.id
+                        det = DetalleProductosVenta()
+                        det.venta_id = venta.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
-                        det.estado = i['estado']
-                        try:
-                            observacion = i['observaciones']
-                        except Exception as e:
-                            data['error'] = str(e)
-                        if observacion != "":
-                            det.observaciones = observacion
-                            det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
                         det.save()
                         # Descontamos el Stock de los productos
                         det.producto.stockReal -= det.cantidad
                         det.producto.save()
-                    # Eliminamos todos los productos del Detalle
-                    trabajo.detalleserviciostrabajo_set.all().delete()
-                    # Volvemos a cargar los productos al Detalle
+                    # Creamos el detalle de Servicios
                     for i in formTrabajoRequest['servicios']:
-                        det = DetalleServiciosTrabajo()
-                        det.trabajo_id = trabajo.id
+                        det = DetalleServiciosVenta()
+                        det.venta_id = venta.id
                         det.servicio_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
-                        det.estado = i['estado']
-                        try:
-                            observacion = i['observaciones']
-                        except Exception as e:
-                            data['error'] = str(e)
-                        if observacion != "":
-                            det.observaciones = observacion
-                            det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}

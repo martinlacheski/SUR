@@ -7,7 +7,7 @@ $(function () {
     var tablaVenta = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
-        order: [ 0, 'desc' ],
+        order: [0, 'desc'],
         destroy: true,
         deferRender: true,
         ajax: {
@@ -23,6 +23,7 @@ $(function () {
             {"data": "id"},
             {"data": "estadoVenta"},
             {"data": "fecha"},
+            {"data": "trabajo"},
             {"data": "cliente.razonSocial"},
             {"data": "subtotal"},
             {"data": "iva"},
@@ -47,7 +48,7 @@ $(function () {
                 }
             },
             {
-                targets: [-7],
+                targets: [-8],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -55,7 +56,16 @@ $(function () {
                 }
             },
             {
+                targets: [-7],
+                class: 'text-center',
+                orderable: false,
+                render: function (data, type, row) {
+                    return '<span class="badge badge-primary">' + row.trabajo + '</span>'
+                }
+            },
+            {
                 targets: [-6],
+                class: 'text-center',
                 orderable: false,
             },
             {
@@ -91,7 +101,26 @@ $(function () {
             //Seleccionamos la Venta sobre la cual queremos traer el detalle
             var tr = tablaVenta.cell($(this).closest('td, li')).index();
             var data = tablaVenta.row(tr.row).data();
-
+            //Buscamos el ID del Trabajo si es que tiene
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_TrabajoID',
+                    'pk': data.id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var trabajo = data;
+                    var ver = document.getElementById("trabajoID");
+                    if (trabajo.trabajoID !== null && trabajo.trabajoID !== '' && trabajo.trabajoID !== undefined) {
+                        ver.innerHTML = 'Detalle de Venta - ID Trabajo: ' + trabajo.trabajoID;
+                    } else {
+                        ver.innerHTML = 'Detalle de Venta ';
+                    }
+                }
+            });
             //Cargamos el detalle de productos
             $('#tablaProductos').DataTable({
                 responsive: true,

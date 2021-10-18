@@ -44,6 +44,11 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                 data = []
                 for i in DetalleServiciosVenta.objects.filter(venta_id=request.POST['id']):
                     data.append(i.toJSON())
+            # Buscamos si la venta tiene TRABAJO
+            elif action == 'search_TrabajoID':
+                venta = Ventas.objects.get(id=request.POST['pk'])
+                data['trabajoID'] = venta.trabajo
+                print(venta.trabajo)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -315,6 +320,11 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los Servicios
+            elif action == 'search_all_servicios':
+                    data = []
+                    for i in Servicios.objects.all():
+                        data.append(i.toJSON())
             elif action == 'get_detalle_productos':
                 data = []
                 try:
