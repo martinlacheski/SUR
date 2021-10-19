@@ -1,4 +1,7 @@
+* En planificaciones ver al actualizar ERROR de ORDEN
+
 *En planificacion ver bien el tema de orden de fecha (toma el numero inicial y no el valor de la fecha)
+
 
 *TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
     asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,

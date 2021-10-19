@@ -132,6 +132,7 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
+                console.log(data);
                 //asignamos el detalle a la estructura
                 planificacion.items.trabajos = data;
                 //actualizamos el listado de productos
