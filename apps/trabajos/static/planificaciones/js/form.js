@@ -21,6 +21,10 @@ var planificacion = {
     },
     //Listar los productos en el Datatables
     listTrabajos: function () {
+        //Recorremos el ARRAY para asignar el orden como corresponde
+        for (var i = 0; i < planificacion.items.trabajos.length; i++) {
+            planificacion.items.trabajos[i].orden = i + 1;
+        }
         tablaPlanificacion = $('#dataPlanificacion').DataTable({
             responsive: true,
             autoWidth: false,
@@ -132,7 +136,6 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 //asignamos el detalle a la estructura
                 planificacion.items.trabajos = data;
                 //actualizamos el listado de productos
@@ -240,9 +243,24 @@ $(function () {
             var tr = tablaTrabajos.cell($(this).closest('td, li')).index();
             //Asignamos a una variable el trabajo en base al renglon
             var trabajo = tablaTrabajos.row(tr.row).data();
-            //Agregamos el Trabajo al Array de Planificacion
-            ordenTrabajos = ordenTrabajos + 1;
-            trabajo.orden = ordenTrabajos;
+            var accion = $('input[name="action"]').val();
+            if (accion === 'add') {
+                //Agregamos el Trabajo al Array de Planificacion
+                ordenTrabajos = ordenTrabajos + 1;
+                trabajo.orden = ordenTrabajos;
+            } else if (accion === 'edit') {
+                //Creamos una variable temporal del ultimo objeto de array
+                var ultimoTrabajo = planificacion.items.trabajos[planificacion.items.trabajos.length - 1];
+                //Si el Array tiene algun trabajo asignamos al orden siguiente
+                if (ultimoTrabajo !== null && ultimoTrabajo !== '' && ultimoTrabajo !== undefined) {
+                    //Agregamos el Trabajo al Array de Planificacion
+                    ordenTrabajos = ultimoTrabajo.orden + 1;
+                    trabajo.orden = ordenTrabajos;
+                //Asignamos el valor en 1
+                } else {
+                    trabajo.orden = 1;
+                }
+            }
             planificacion.addTrabajo(trabajo);
             //Una vez cargado el trabajo, sacamos del listado del Datatables
             tablaTrabajos.row($(this).parents('tr')).remove().draw();
@@ -306,6 +324,11 @@ $(function () {
             var trabajo = tablaPlanificacion.row(tr.row).data();
             //removemos la posicion del array con la cantidad de elementos a eliminar
             planificacion.items.trabajos.splice(tr.row, 1);
+            // console.log(tr.row);
+            // for (var i = tr.row; i < planificacion.items.trabajos.length; i++) {
+            //     planificacion.items.trabajos[i].orden = i + 1;
+            // }
+            planificacion.listTrabajos();
             //Una vez cargado el trabajo, sacamos del listado del Datatables
             tablaPlanificacion.row($(this).parents('tr')).remove().draw();
             //Incorporamos el trabajo a la tabla principal

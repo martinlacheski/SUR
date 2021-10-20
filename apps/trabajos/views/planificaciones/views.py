@@ -194,7 +194,7 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
                     for i in DetallePlanificacionesSemanales.objects.filter(planificacion_id=self.get_object().id):
                         item = i.trabajo.toJSON()
                         # item = i.toJSON()
-                        # item['trabajo'] = i.trabajo.toJSON()
+                        item['orden'] = i.orden
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
