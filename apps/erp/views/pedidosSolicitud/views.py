@@ -70,10 +70,9 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
             if action == 'get_productos_pedidos':
                 data = []
                 for producto in Productos.objects.all():
-                    if producto.stockReal < producto.stockMinimo:
+                    if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
                         item = producto.toJSON()
                         item['cantidad'] = producto.reposicion
-                        # item['costo'] = producto.costo
                         data.append(item)
             # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
             elif action == 'search_productos':

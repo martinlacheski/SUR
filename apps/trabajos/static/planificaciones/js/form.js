@@ -90,6 +90,9 @@ function searchParametros() {
 };
 
 $(document).ready(function () {
+    //Extendemos el Datatables para asignar el formato de fecha
+    $.fn.dataTable.moment( 'DD-MM-YYYY' );
+
     //Inicialización de datetimepicker
     $('#fechaInicio').datetimepicker({
         format: 'DD-MM-YYYY',
@@ -143,23 +146,10 @@ $(document).ready(function () {
             }
         });
     }
-});
+})
+;
 
 $(function () {
-    //Para ordenar la fecha como corresponde
-    jQuery.extend(jQuery.fn.dataTableExt.oSort, {
-        "ddMmYyyy-pre": function (a) {
-            a = a.split('-');
-            if (a.length < 2) return 0;
-            return Date.parse(a[0] + '-' + a[1] + '-' + a[2]);
-        },
-        "ddMmYyyy-asc": function (a, b) {
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        },
-        "ddMmYyyy-desc": function (a, b) {
-            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-        }
-    });
     //Buscamos los parametros de estado
     searchParametros();
     tablaTrabajos = $('#data').DataTable({
@@ -189,7 +179,6 @@ $(function () {
         columnDefs: [
             {
                 targets: [0],
-                // type: "ddMmYyyy",
                 class: 'text-center',
                 render: function (data, type, row) {
                     return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
@@ -256,7 +245,7 @@ $(function () {
                     //Agregamos el Trabajo al Array de Planificacion
                     ordenTrabajos = ultimoTrabajo.orden + 1;
                     trabajo.orden = ordenTrabajos;
-                //Asignamos el valor en 1
+                    //Asignamos el valor en 1
                 } else {
                     trabajo.orden = 1;
                 }

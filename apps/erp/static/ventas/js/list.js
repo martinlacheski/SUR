@@ -39,7 +39,7 @@ $(function () {
             {
                 targets: [1],
                 class: 'text-center',
-                orderable: false,
+                // orderable: false,
                 render: function (data, type, row) {
                     if (row.estadoVenta) {
                         return '<span class="badge badge-success">' + ' Realizada' + '</span>'
@@ -50,7 +50,7 @@ $(function () {
             {
                 targets: [-8],
                 class: 'text-center',
-                orderable: false,
+                // orderable: false,
                 render: function (data, type, row) {
                     return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
                 }
@@ -223,5 +223,8 @@ $(function () {
             });
             $('#modalDetalle').modal('show');
         });
-
+});
+$(document).ready(function () {
+    //Extendemos el Datatables para asignar el formato de fecha
+    $.fn.dataTable.moment('DD-MM-YYYY');
 });

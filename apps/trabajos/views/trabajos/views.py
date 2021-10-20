@@ -242,14 +242,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         if cant > trabajos:
                             usuario = user
                             cant = trabajos
-                    #     elif cant == trabajos:
-                        #         usuario = user
-                        #         usuarios.append(usuario)
-                        # if len(usuarios) > 0:
-                        #     usuarioAsignado = random(usuarios)
-                        #     # devolvemos el usuario al template
-                        #     data.append({'id': usuarioAsignado.id, 'text': usuarioAsignado.username})
-                        # else:
                     # devolvemos el usuario al template
                     data.append({'id': usuario.id, 'text': usuario.username})
                 except Exception as e:

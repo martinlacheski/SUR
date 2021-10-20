@@ -1,16 +1,26 @@
-*En planificacion ver bien el tema de orden de fecha (toma el numero inicial y no el valor de la fecha)
-
 *TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
     asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
     ejecutar un random
 
-*Productos en negativo segun stock minimo y no STOCK 0 CERO
+--------------------------------------------------------------------------------------------------------------------
 
-*En solicitud si el pedido de reposicion es 0 CERO no agregar al listado
+*PEDIDOS - TERMINAR
+
+* Resolver la forma de generar los detalles de las cotizaciones de los proveedores
+
+--------------------------------------------------------------------------------------------------------------------
 
 *Agregar filtro para ver solo determinados estados, rango de fechas, etc. en COMPRAS, VENTAS, PRESUPUESTOS, TRABAJOS
 
-*PEDIDOS - TERMINAR
+--------------------------------------------------------------------------------------------------------------------
+
+* En los reportes AGREGAR IMPORTES NUMEROS Y LETRAS
+
+* En presupuestos agregar fecha de emision del presupuesto
+
+* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
+
+* EN SERVICIOS AGREGAR UN CAMPO DE PONDERACION por esfuerzo de PERSONAS
 
 *AUDITORIA
 

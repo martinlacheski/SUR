@@ -37,7 +37,7 @@ $(function () {
     var tablaTrabajo = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
-        order: [ 0, 'desc' ],
+        order: [0, 'desc'],
         destroy: true,
         deferRender: true,
         ajax: {
@@ -88,7 +88,7 @@ $(function () {
             {
                 targets: [-6],
                 class: 'text-center',
-                orderable: false,
+                // orderable: false,
                 render: function (data, type, row) {
                     return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
                 }
@@ -96,7 +96,7 @@ $(function () {
             {
                 targets: [-5],
                 class: 'text-center',
-                orderable: false,
+                // orderable: false,
                 render: function (data, type, row) {
                     if (row.fechaSalida) {
                         return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
@@ -293,5 +293,8 @@ $(function () {
             });
             $('#modalDetalle').modal('show');
         });
-
+});
+$(document).ready(function () {
+    //Extendemos el Datatables para asignar el formato de fecha
+    $.fn.dataTable.moment('DD-MM-YYYY');
 });
