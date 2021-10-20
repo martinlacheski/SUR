@@ -36,11 +36,6 @@ def notificarCliente(trabajo):
     mensaje += "Te pido que indiques cuándo lo vas a pasar a buscar presionando cualquiera de los siguiente botones."
     bot.send_message(chat_id=cliente.chatIdCliente, text=mensaje)
 
-    # Button display data
-    hoy = datetime.date.today().strftime('%d-%m-%Y')
-    hoy_str = "Hoy (" + str(hoy) + ")"
-    dia_siguiente = "Siguiente día hábil (" + str(dia_habil_siguiente(datetime.date.today()).strftime('%d-%m-%Y')) + ")"
-
     # Callback data
     data_hoy = {
         'hoy': str(datetime.date.today()),
@@ -58,23 +53,19 @@ def notificarCliente(trabajo):
         'se_secomunica': 'Se comunicará luego.'
     }
     keyboard = [
-        [InlineKeyboardButton(hoy_str, callback_data=str(data_hoy))],
-        [InlineKeyboardButton(dia_siguiente, callback_data=str(sig_habil))],
+        [InlineKeyboardButton("Hoy", callback_data=str(data_hoy))],
+        [InlineKeyboardButton("Siguiente día hábil", callback_data=str(sig_habil))],
         [InlineKeyboardButton("Me comunico luego", callback_data=str(se_comunica))],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     bot.send_message(chat_id=cliente.chatIdCliente, text="Opciones:\n", reply_markup=reply_markup)
 
 class Command(BaseCommand):
-
-
-
     def handle(self, *args, **options):
         bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 
         #       *** REGISTRO USUARIO ***
         def registroUsuario(update, context):
-
             if check_chatid_cliente(update.message.from_user.id):
                 update.message.reply_text("🛑 No podes registrar tu cuenta de esta manera.")
             else:
@@ -86,7 +77,6 @@ class Command(BaseCommand):
                                                    "``` /registroUsuario juan miContraseña ``` \n\n"
                                                    "Luego enviá el mensaje\."
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
-
                 elif len(context.args) == 2:
                     usuario = context.args[0]
                     password = context.args[1]
@@ -109,7 +99,6 @@ class Command(BaseCommand):
                         update.message.reply_text("🚫 Usuario o contraseña incorrecta.\n\n"
                                                   "👍 Volvé a ingresar el comando y asegurate que ambos datos esten"
                                                   " escritos correctamente.")
-
                 elif len(context.args) != 0 and len(context.args) != 2:
                     update.message.reply_text(text="No ingresaste bien el comando 😅\nRecordá que tiene que ser similar "
                                                    "a\n\n ``` /registroUsuario juan miContraseña ``` "
@@ -172,6 +161,7 @@ class Command(BaseCommand):
                                                    "a\n\n ``` /registroCliente 20346735739 ``` "
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
+        # Procesa todos los botones en los mensajes
         def button(update, context):
             query = update.callback_query
             # Vemos quién nos respondió y acorde a ello hacemos cosas
@@ -184,12 +174,18 @@ class Command(BaseCommand):
                     # Le repondemos al cliente.
                     query.edit_message_text(text="👍 Tu respuesta ha sido registrada y notificada al personal"
                                                  " de SUR EXPRESS")
-                    # Avisamos a los administradores
+
+                    # Avisamos a los administradores por télegram
                     usersToNotif = notifIncidentesUsuarios.objects.all()
-                    mensaje = estado_retiro['respuesta']
+                    mensaje = estado_retiro['respuesta_bot']
                     for user in usersToNotif:
                         if user.usuario_id.chatIdUsuario:
                             bot.send_message(text=str(mensaje), chat_id=user.usuario_id.chatIdUsuario)
+
+                    # Avisamos a los administradores por Sistema.
+                    eleccion_retiro = ast.literal_eval(eleccion_retiro)
+                    titulo = "Respuesta de Cliente - Trabajo Nro " + str(eleccion_retiro['trabajo']) + "."
+                    notificarSistema(titulo, estado_retiro['respuesta_sist'])
                 else:
                     mensaje = estado_retiro['respuesta']
                     query.edit_message_text(text=mensaje)
@@ -219,7 +215,7 @@ class Command(BaseCommand):
                             update.message.reply_text(mandarTrabajos(trabajosCliente))
                         else:
                             update.message.reply_text("Hola " + str(cliente.razonSocial) + "👋!\n"
-                                                                                           "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
+                                                      "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
                     else:
                         update.message.reply_text(text=str(cliente.razonSocial) + " no entendí lo que dijiste 🤨\n"
                                                                                   "Recordá que únicamente respondo a la palabra:\n\n ```trabajos``` \n\n"

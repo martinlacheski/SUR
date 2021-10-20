@@ -20,5 +20,6 @@ class notificationConsumer(WebsocketConsumer):
         #message = text_data_json['message']
         #print(message)
         self.send(text_data=json.dumps({
-            'message': text_data['text']
+            'titulo': text_data['titulo'],
+            'descripcion': text_data['id_notif'],
         }))

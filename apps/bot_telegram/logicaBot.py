@@ -5,6 +5,12 @@ from django.core.exceptions import *
 from apps.trabajos.models import *
 from apps.bot_telegram.models import *
 from apps.parametros.models import EstadoParametros
+from apps.notif_channel.models import notificacionesGenerales
+
+# Socket
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
 import ast
 
 # ***   CLIENTES ***
@@ -71,41 +77,52 @@ def dia_habil_siguiente(hoy):
             fecha_resultado += datetime.timedelta(days=1)
     return fecha_resultado
 
-# Registra la respuesta del cliente respecto a cuándo va a buscar el trabajo finalizado.
+#   Registra la respuesta del cliente respecto a cuándo va a buscar el trabajo finalizado.
+#   Tambien genera respuestas tanto para clientes como para usuarios (telegram y sistema)
+
 def registrarRetiro(respuesta):
     resp_to_dict = ast.literal_eval(respuesta)
     log_respuesta = respuestaTrabajoFinalizado()
-    try:  # Estará el trabajo y el cliente aún registrado?
+    respuesta_bot = ""
+    try:  # Estarán el trabajo y/o el cliente aún registrados?
         log_respuesta.trabajo = Trabajos.objects.get(pk=int(resp_to_dict['trabajo']))
         log_respuesta.cliente = Clientes.objects.get(pk=int(resp_to_dict['cliente']))
     except ObjectDoesNotExist:
-        respuesta = "❌ Ha ocurrido un problema. Probablemnte tu trabajo o vos fueron dados de baja del sistema."
-        return {'proc': False, 'respuesta' : respuesta}
+        respuesta_bot = "❌ Ha ocurrido un problema. Probablemente tu trabajo o vos fueron dados de baja del sistema."
+        return {'proc': False, 'respuesta_bot' : respuesta_bot}
     log_respuesta.fechaRespuesta = datetime.datetime.today()
-    respuesta = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) +\
-                ", en respuesta a su trabajo finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que lo" \
-                " pasará a buscar el día ("
+    respuesta_bot = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) +" en respuesta a su trabajo" \
+                                            " finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que lo" \
+                                            " pasará a buscar el día "
+    respuesta_sist = "El cliente " + str(log_respuesta.cliente) +" en respuesta a su trabajo" \
+                     " finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que lo" \
+                     " pasará a buscar el día "
     if 'hoy' in resp_to_dict:
         log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date()
         log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día de hoy (" +\
                                             str(datetime.datetime.strptime(resp_to_dict['hoy'],
                                                                            '%Y-%m-%d').date().strftime('%d-%m-%Y')) +\
-                                            ")."
-        respuesta += str(datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + ")"
+                                            "."
+        respuesta_bot += str(datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + "."
+        respuesta_sist += str(datetime.datetime.strptime(resp_to_dict['hoy'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + "."
     elif 'sig_dia_habil' in resp_to_dict:
         log_respuesta.respuesta_puntual = datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date()
         log_respuesta.respuesta_generica = "El cliente pasará a buscar el trabajo finalizado el día " + \
                                            str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'],
                                                                           '%Y-%m-%d').date().strftime('%d-%m-%Y')) + \
-                                           ")."
-        respuesta += str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + ")"
+                                           "."
+        respuesta_bot += str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + "."
+        respuesta_sist += str(datetime.datetime.strptime(resp_to_dict['sig_dia_habil'], '%Y-%m-%d').date().strftime('%d-%m-%Y')) + "."
     elif 'se_secomunica' in resp_to_dict:
         log_respuesta.respuesta_generica = "El cliente se comunicará personalmente."
-        respuesta = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) + \
-                    ", en respuesta a su trabajo finalizado Nro° " + str(resp_to_dict['trabajo']) + ", " \
-                    "informó que se comunicará personalmente para retirar dicho trabajo"
+        respuesta_bot = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) +", en respuesta a su trabajo" \
+                                           " finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que" \
+                                           " se comunicará personalmente para retirar dicho trabajo."
+        respuesta_sist = "El cliente " + str(log_respuesta.cliente) +", en respuesta a su trabajo" \
+                                           " finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que" \
+                                           " se comunicará personalmente para retirar dicho trabajo."
     log_respuesta.save()
-    return {'proc': True, 'respuesta': respuesta}
+    return {'proc': True, 'respuesta_bot': respuesta_bot, 'respuesta_sist' : respuesta_sist}
 
 
 # ***   USUARIOS ***
@@ -117,6 +134,23 @@ def check_chatid_cliente(chat_id):
         if cliente.chatIdCliente == int(chat_id):
             return True
     return False
+
+
+def notificarSistema(titulo, descripcion):
+    # TO-DO: acá se recorrería un for en alguna tabla en donde se setearon quienes reciben este tipo de notificaciones
+    user = Usuarios.objects.get(pk=3)
+
+    n = notificacionesGenerales()
+    n.fechaNotificacion = datetime.datetime.today()
+    n.estado = 'pendiente'
+    n.titulo = titulo
+    n.descripcion = descripcion
+    n.enviadoAUser = user
+    n.save()
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)('telegram_group', {"type": "receive",
+                                                               "titulo": titulo,
+                                                               "id_notif": str(n.id)})
 
 
 
@@ -139,9 +173,4 @@ def personaNoRegistrada(username, nombre):
     logIncidente.observacion = "Persona  con username " + str(username) + " y nombre " + str(nombre) + " le mandó " \
                                "un mensaje al bot sin estar registrada como usuario o como cliente."
     logIncidente.save()
-
-
-# *** PROCESOS GENERALES ***
-
-
 
