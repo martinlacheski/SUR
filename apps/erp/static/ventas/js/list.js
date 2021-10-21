@@ -108,7 +108,8 @@ $(function () {
                     });
                 var id = 1;
                 column.data().unique().sort().each(function (d, j) {
-                    var newOption = new Option(d.toString(), id, false, false);
+                    // var newOption = new Option(d.toString(), id, false, false);
+                    var newOption = new Option(d.toString(), d.toString(), false, false);
                     $('.selectCliente').append(newOption).trigger('change');
                     id += 1;
                 });
@@ -263,15 +264,21 @@ $(function () {
         );
         //Actualizamos la tabla
         tablaVenta.draw();
+        clientes();
     });
-    //Reseteamos el Filtro de Fechas
+    //Reseteamos los filtros
     $('.btnClearRango').on('click', function () {
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
         tablaVenta.draw();
+        $('.selectCliente').val(null).trigger('change');
     });
     //Aplicamos Filtro de Clientes
     $('.selectCliente').on('change', function () {
+        //Reseteamos los filtros
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaVenta.draw();
         //Asignamos a una variabla el cliente del Select
         var cliente = $(this).val();
         if (cliente !== null && cliente !== '' && cliente !== undefined) {
@@ -280,8 +287,6 @@ $(function () {
                 function (settings, data, dataIndex) {
                     // Asignamos el cliente por cada renglon
                     var clienteTabla = (data[4].toString());
-                    console.log(cliente);
-                    console.log(clienteTabla);
                     //Comparamos contra el renglon
                     if (cliente === clienteTabla) {
                         return true;
@@ -324,9 +329,4 @@ $(document).ready(function () {
     $('#filterRangoFechas').val('');
     //Extendemos el Datatables para asignar el formato de fecha
     $.fn.dataTable.moment('DD-MM-YYYY');
-});
-
-$(function () {
-    var table = $('#data').DataTable();
-
 });
