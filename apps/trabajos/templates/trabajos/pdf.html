@@ -73,6 +73,13 @@
         <div class="col-6">
             <p class="text-right">
                 <b>Número:</b> {{ trabajo.id }}<br>
+                {% if trabajo.fechaSalida %}
+                    <b>Fecha de Salida:</b>
+                    {{ trabajo.fechaSalida|date:'d-m-Y' }}<br>
+                {% else %}
+                    <b>Fecha de Entrada:</b>
+                    {{ trabajo.fechaEntrada|date:'d-m-Y' }}<br>
+                {% endif %}
                 <b>Cliente:</b> {{ trabajo.cliente.razonSocial }}<br>
                 <b>Marca:</b> {{ trabajo.modelo.marca.nombre }}<br>
                 <b>Modelo:</b> {{ trabajo.modelo.nombre }}<br>
@@ -157,6 +164,9 @@
     </p>
     <p class="text-uppercase font-weight-bold text-right">
         <b>Total a pagar: $</b> {{ trabajo.total|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase text-right">
+        Son Pesos: <b> {{ enLetras }}</b><br>
     </p>
 </div>
 </body>

@@ -76,6 +76,7 @@
         <div class="col-6">
             <p class="text-right">
                 <b>Número:</b> {{ presupuesto.id }}<br>
+                <b>Fecha:</b> {{ presupuesto.fecha|date:'d-m-Y' }}<br>
                 <b>Cliente:</b> {{ presupuesto.cliente.razonSocial }}<br>
                 <b>Marca:</b> {{ presupuesto.modelo.marca.nombre }}<br>
                 <b>Modelo:</b> {{ presupuesto.modelo.nombre }}<br>
@@ -138,6 +139,9 @@
     </p>
     <p class="text-uppercase font-weight-bold text-right">
         <b>Total a pagar: $</b> {{ presupuesto.total|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase text-right">
+        Son Pesos: <b> {{ enLetras }}</b><br>
     </p>
 </div>
 </body>

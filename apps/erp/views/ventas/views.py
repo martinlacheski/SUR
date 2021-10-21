@@ -14,6 +14,7 @@ from apps.erp.forms import VentasForm, ClientesForm, ServiciosForm, ProductosFor
 from apps.erp.models import Ventas, Productos, Servicios, DetalleProductosVenta, DetalleServiciosVenta, Clientes, \
     Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.models import Empresa, TiposIVA
 from config import settings
 
@@ -322,9 +323,9 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     data['error'] = str(e)
             # Buscamos todos los Servicios
             elif action == 'search_all_servicios':
-                    data = []
-                    for i in Servicios.objects.all():
-                        data.append(i.toJSON())
+                data = []
+                for i in Servicios.objects.all():
+                    data.append(i.toJSON())
             elif action == 'get_detalle_productos':
                 data = []
                 try:
@@ -520,9 +521,14 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
             servicios = 0
             for i in subtotalServicios:
                 servicios += i.subtotal
+            # Obtenemos el valor total para pasar a letras
+            total = Ventas.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             # cargamos los datos del contexto
             context = {
                 'venta': Ventas.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,

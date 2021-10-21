@@ -1,9 +1,10 @@
+//Creamos una variable para cargar el SELECT de Clientes
+var select_clientes = $('select[name="selectCliente"]');
 var tablaProductos;
 var tablaServicios;
 var cantProductos = 0;
 var cantServicios = 0;
 $(function () {
-
     var tablaVenta = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
@@ -92,7 +93,26 @@ $(function () {
             },
         ],
         initComplete: function (settings, json) {
+            this.api().columns(4).every(function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
 
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+                var id = 1;
+                column.data().unique().sort().each(function (d, j) {
+                    var newOption = new Option(d.toString(), id, false, false);
+                    $('.selectCliente').append(newOption).trigger('change');
+                    id += 1;
+                });
+            });
         }
     });
 
@@ -223,8 +243,90 @@ $(function () {
             });
             $('#modalDetalle').modal('show');
         });
+//------------------------------------FILTROS----------------------------------------//
+    //Aplicamos Filtro de Rango de FECHAS
+    $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
+        //Extendemos la busqueda del datatables
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                //Asignamos las variables Desde y Hasta
+                var desde = picker.startDate.format('YYYY-MM-DD');
+                var hasta = picker.endDate.format('YYYY-MM-DD');
+                // Asignamos el dia por cada renglon
+                var dia = moment(moment(data[2], 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                //Comparamos contra el renglon
+                if (desde <= dia && dia <= hasta) {
+                    return true;
+                }
+                return false;
+            }
+        );
+        //Actualizamos la tabla
+        tablaVenta.draw();
+    });
+    //Reseteamos el Filtro de Fechas
+    $('.btnClearRango').on('click', function () {
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaVenta.draw();
+    });
+    //Aplicamos Filtro de Clientes
+    $('.selectCliente').on('change', function () {
+        //Asignamos a una variabla el cliente del Select
+        var cliente = $(this).val();
+        if (cliente !== null && cliente !== '' && cliente !== undefined) {
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el cliente por cada renglon
+                    var clienteTabla = (data[4].toString());
+                    console.log(cliente);
+                    console.log(clienteTabla);
+                    //Comparamos contra el renglon
+                    if (cliente === clienteTabla) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            //Actualizamos la tabla
+            tablaVenta.draw();
+        }
+    });
+    //Reseteamos el Filtro de Fechas
+    $('.btnClearRango').on('click', function () {
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaVenta.draw();
+    });
 });
+
 $(document).ready(function () {
+    //Inicializamos SELECT2
+    $('.select2').select2({
+        theme: "bootstrap4",
+        language: 'es'
+    });
+    //Inicializamos el Filtro de Rango de Fechas
+    $('input[name="filterRangoFechas"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            placeholder: 'Seleccione Rango de Fechas',
+            format: 'DD-MM-YYYY',
+            language: 'es',
+            cancelLabel: 'Cancelar',
+            applyLabel: 'Aplicar',
+        },
+        //Remover Botones de Aplicar y Cancelar
+        autoApply: true,
+    });
+    //Inicializamos limpio el Filtro de Rango de Fechas
+    $('#filterRangoFechas').val('');
     //Extendemos el Datatables para asignar el formato de fecha
     $.fn.dataTable.moment('DD-MM-YYYY');
+});
+
+$(function () {
+    var table = $('#data').DataTable();
+
 });

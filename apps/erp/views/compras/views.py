@@ -13,6 +13,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from apps.erp.forms import ComprasForm, ProveedoresForm, ProductosForm
 from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.models import Empresa, TiposIVA
 from config import settings
 
@@ -126,7 +127,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     producto.utilidad = float(request.POST['utilidad'])
                     producto.precioVenta = float(request.POST['precioVenta'])
                     producto.save()
-             # Buscamos el Precio del Producto luego de actualizar el precio
+            # Buscamos el Precio del Producto luego de actualizar el precio
             elif action == 'search_precioProducto':
                 producto = Productos.objects.get(id=request.POST['pk'])
                 data = producto.costo
@@ -386,9 +387,13 @@ class ComprasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('compras/pdf.html')
-
+            # Obtenemos el valor total para pasar a letras
+            total = Compras.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             context = {
                 'compra': Compras.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
             }

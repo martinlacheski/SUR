@@ -43,7 +43,7 @@
             margin-bottom: 10px;
         }
 
-         @page {
+        @page {
             @bottom-center {
                 content: "Página " counter(page) " de " counter(pages);
             }
@@ -104,9 +104,12 @@
         </tbody>
     </table>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Total: $</b> {{ compra.total|floatformat:2 }}<br>
         <b>IVA: $</b> {{ compra.iva|floatformat:2 }}<br>
         <b>Percepción: $</b> {{ compra.percepcion|floatformat:2 }}<br>
+        <b>Total: $</b> {{ compra.total|floatformat:2 }}<br>
+    </p>
+    <p class="text-uppercase text-right">
+        Son Pesos: <b> {{ enLetras }}</b><br>
     </p>
 </div>
 </body>

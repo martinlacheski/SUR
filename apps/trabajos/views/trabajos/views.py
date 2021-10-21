@@ -16,6 +16,7 @@ from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Ventas, Categorias, Subcategorias, DetalleProductosVenta, \
     DetalleServiciosVenta
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.forms import MarcasForm, ModelosForm
 from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, CondicionesPago, MediosPago
 from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
@@ -1349,6 +1350,10 @@ class TrabajosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View)
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
             subtotalProductos = DetalleProductosTrabajo.objects.filter(trabajo_id=self.kwargs['pk'])
             subtotalServicios = DetalleServiciosTrabajo.objects.filter(trabajo_id=self.kwargs['pk'])
+            # Obtenemos el valor total para pasar a letras
+            total = Trabajos.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             productos = 0
             for i in subtotalProductos:
                 productos += i.subtotal
@@ -1357,6 +1362,7 @@ class TrabajosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View)
                 servicios += i.subtotal
             context = {
                 'trabajo': Trabajos.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,

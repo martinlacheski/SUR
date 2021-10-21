@@ -14,10 +14,6 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
-* En los reportes AGREGAR IMPORTES NUMEROS Y LETRAS
-
-* En presupuestos agregar fecha de emision del presupuesto
-
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
 * EN SERVICIOS AGREGAR UN CAMPO DE PONDERACION por esfuerzo de PERSONAS

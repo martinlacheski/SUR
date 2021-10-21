@@ -14,6 +14,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.forms import MarcasForm, ModelosForm
 from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, Prioridades
 from apps.presupuestos.forms import PresupuestosForm
@@ -108,7 +109,8 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'get_detalle_productos':
                 data = []
                 try:
-                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['pk']):
+                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(
+                            presupuestoPlantilla_id=request.POST['pk']):
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.producto.precioVenta
@@ -118,7 +120,8 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'get_detalle_servicios':
                 data = []
                 try:
-                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['pk']):
+                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(
+                            presupuestoPlantilla_id=request.POST['pk']):
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.servicio.precioVenta
@@ -809,6 +812,10 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
             subtotalProductos = DetalleProductosPresupuesto.objects.filter(presupuesto_id=self.kwargs['pk'])
             subtotalServicios = DetalleServiciosPresupuesto.objects.filter(presupuesto_id=self.kwargs['pk'])
+            # Obtenemos el valor total para pasar a letras
+            total = Presupuestos.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             productos = 0
             for i in subtotalProductos:
                 productos += i.subtotal
@@ -817,6 +824,7 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
                 servicios += i.subtotal
             context = {
                 'presupuesto': Presupuestos.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
