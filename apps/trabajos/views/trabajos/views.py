@@ -1377,5 +1377,4 @@ class TrabajosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View)
             return HttpResponse(pdf, content_type='application/pdf')
         except Exception as e:
             pass
-
         return HttpResponseRedirect(reverse_lazy('trabajos:trabajos_list'))

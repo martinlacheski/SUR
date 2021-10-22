@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -49,20 +50,82 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             elif action == 'search_TrabajoID':
                 venta = Ventas.objects.get(id=request.POST['pk'])
                 data['trabajoID'] = venta.trabajo
-                print(venta.trabajo)
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('ventas/report.html')
+                action = request.POST['action']
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                canceladas = False
+                try:
+                    canceladas = reporte['excluirCanceladas']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                ventas = []
+                try:
+                    ventas = reporte['ventas']
+                except Exception as e:
+                    pass
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': date.today,
+                        'cliente': cliente,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'canceladas': canceladas,
+                        'ventas': ventas,
+                        'usuario': request.user,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+                    # return HttpResponse(pdf, content_type='application/pdf')
+
+                except Exception as e:
+                    print(str(e))
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
             data['error'] = str(e)
+        # if action == 'create_reporte':
+        #     return HttpResponse(pdf, content_type='application/pdf')
+        # else:
         return JsonResponse(data, safe=False)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Listado de Ventas'
-        context['create_url'] = reverse_lazy('erp:ventas_create')
-        context['list_url'] = reverse_lazy('erp:ventas_list')
-        context['entity'] = 'Ventas'
-        return context
+
+def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['title'] = 'Listado de Ventas'
+    context['create_url'] = reverse_lazy('erp:ventas_create')
+    context['report_url'] = reverse_lazy('erp:ventas_report')
+    context['list_url'] = reverse_lazy('erp:ventas_list')
+    context['entity'] = 'Ventas'
+    return context
 
 
 class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
@@ -546,3 +609,70 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
         except:
             pass
         return HttpResponseRedirect(reverse_lazy('erp:ventas_list'))
+
+
+# class VentasReportPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
+def VentasReportPdfView(request):
+    # def get(self, request, *args, **kwargs):
+    # Traemos la empresa para obtener los valores
+    empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+    # Utilizamos el template para generar el PDF
+    template = get_template('ventas/report.html')
+    # action = request.POST['action']
+    data = json.loads(request.body)
+    # action = data['action']
+    # Obtenemos el detalle del Reporte
+    # reporte = json.loads(request.POST['reporte'])
+    # Obtenemos el Cliente si esta filtrado
+    cliente = ""
+    try:
+        cliente = data['cliente']
+    except Exception as e:
+        pass
+    # Obtenemos si se filtro por rango de fechas
+    inicio = ""
+    fin = ""
+    try:
+        inicio = data['fechaDesde']
+        fin = data['fechaHasta']
+    except Exception as e:
+        pass
+    # Obtenemos si se quito las Canceladas
+    canceladas = False
+    try:
+        canceladas = data['excluirCanceladas']
+    except Exception as e:
+        pass
+    # Obtenemos si se quito las Canceladas
+    ventas = []
+    try:
+        ventas = data['ventas']
+    except Exception as e:
+        pass
+    #   cargamos los datos del contexto
+    try:
+        context = {
+            'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                        'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+            'fecha': date.today,
+            'cliente': cliente,
+            'inicio': inicio,
+            'fin': fin,
+            'canceladas': canceladas,
+            'ventas': ventas,
+            'usuario': request.user,
+        }
+        # Generamos el render del contexto
+        html = template.render(context)
+        # Asignamos la ruta del CSS de BOOTSTRAP
+        css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+        # Creamos el PDF
+        pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
+        response.write(pdf)
+        print('todo OK')
+        # return HttpResponse(pdf, content_type='application/pdf')
+    except Exception as e:
+        print(str(e))
+    return response

@@ -38,35 +38,59 @@
     <div class="card card-default">
         <div class="card-header">
             <h3 class="card-title">
+                <i class="fas fa-search"></i>
                 {{ title }}
             </h3>
         </div>
         <div class="card-body">
-            <i class="fas fa-search"></i>
-            <label>Filtros:</label>
-            <div class="row">
-                <div class="form-group col-4">
-                    <label>Clientes:</label>
-                    <div class="input-group">
-                        <select class="form-select form-control select2 selectCliente" id="selectCliente"
-                                aria-label="selectCliente">
-                            <option value="">---------</option>
-                        </select>
+            <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
+                <label>Filtros:</label>
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label>Clientes:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectCliente" id="selectCliente"
+                                    name="selectCliente" aria-label="selectCliente">
+                                <option value="">---------</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group col-3">
-                    <label>Fechas:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="filterRangoFechas"
-                               placeholder="Seleccione Rango de Fechas"
-                               autocomplete="off">
-                        <span class="input-group-append">
-                                        <button type="button" class="btn btn-danger btn-flat btnClearRango"><i
-                                                class="fas fa-times"></i></button></span>
+                    <div class="form-group col-3">
+                        <label>Fechas:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="filterRangoFechas"
+                                   placeholder="Seleccione Rango de Fechas" aria-label="filterRangoFechas"
+                                   autocomplete="off">
+                        </div>
                     </div>
-                </div>
+                    <div class="col-1">
 
-            </div>
+                    </div>
+                    <div class="col-2">
+                        <label>Estados:</label>
+
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input excluirCanceladas"
+                                   id="excluirCanceladas">
+                            <label class="custom-control-label" for="excluirCanceladas"> Excluir Canceladas</label>
+                        </div>
+                    </div>
+                    <div class="form-group col-2">
+                        <label>Acciones:</label>
+                        <div class="card-row">
+                            <button type="submit" class="btn btn-info btn-flat btnReporte"><i
+                                    class="fas fa-file-pdf"></i>Reporte
+                            </button>
+                            <a href="{{ report_url }}" class="btn btn-primary btn-flat btnReporte2">
+                                <i class="fas fa-file-pdf"></i> Ver Reporte
+                            </a>
+                            <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
+                                    class="fas fa-times"></i>Filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <div class="row">
                 <div class="col-12">
                     <table class="table" id="data">
