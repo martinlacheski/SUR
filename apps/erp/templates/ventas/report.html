@@ -76,24 +76,31 @@
         </div>
         <div class="col-6">
             <p class="text-right">
-                <b>Fecha:</b> {{ fecha }}<br>
-                {% if cliente %}
-                    <b>Cliente:</b>
-                    {{ cliente }}<br>
-                {% endif %}
-                {% if inicio %}
-                    <b>Desde:</b> {{ inicio }}<br>
-                {% endif %}
-                {% if fin %}
-                    <b>Hasta:</b> {{ fin }}<br>
-                {% endif %}
-                {% if canceladas %}
-                    <b>Filtradas las Canceladas</b>  <br>
-                {% endif %}
+                <b>Fecha y Hora:</b> {{ fecha|date:'d-m-Y h:m' }}<br>
+
                 <b>Usuario:</b> {{ usuario }}<br>
             </p>
         </div>
     </div>
+    <h5 class="text-uppercase font-weight-bold text-left">
+        Filtros aplicados: <br>
+    </h5>
+    <p>
+        {% if cliente %}
+            Cliente: <b> {{ cliente }}</b>
+        {% endif %}
+        {% if inicio %}
+            Ventas Desde: <b> {{ inicio }} </b>
+        {% endif %}
+        {% if fin %}
+            hasta <b> {{ fin }} </b><br>
+        {% endif %}
+        {% if canceladas %}
+            <b>Filtradas las Ventas Canceladas.</b>
+        {% endif %}
+        {% if soloTrabajos %}
+            <b>Solo las ventas con Trabajos Asociados.</b>
+        {% endif %}</p>
     <h4 class="text-uppercase font-weight-bold text-left">
         Detalle: <br>
     </h4>

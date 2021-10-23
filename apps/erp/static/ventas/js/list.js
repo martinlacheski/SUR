@@ -8,6 +8,7 @@ var cantServicios = 0;
 var fechaInicio = '';
 var fechaFin = '';
 var checkCanceladas = false;
+var checkSinTrabajos = false;
 //Creamos una estructura para el Reporte
 var reporte = {
     items: {
@@ -320,7 +321,39 @@ $(function () {
             tablaVenta.draw();
         }
     });
-    //Filtrar Estado Realizadas
+    //Filtrar Trabajos Asociados
+    $('#excluirSinTrabajos').on('click', function () {
+        var verdadero = ' Cancelada';
+        if (this.checked) {
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkSinTrabajos = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[3]);
+                    //Comparamos contra el renglon
+                    if (!estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaVenta.draw();
+        } else {
+            //Reseteamos los filtros
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.pop();
+            tablaVenta.draw();
+            document.getElementById("excluirCanceladas").checked = false;
+            $('.selectCliente').val(null).trigger('change');
+            $('input[name="filterRangoFechas"]').val('');
+            fechaInicio = '';
+            fechaFin = '';
+        }
+    });
+    //Filtrar Estado Canceladas
     $('#excluirCanceladas').on('click', function () {
         var verdadero = ' Cancelada';
         if (this.checked) {
@@ -345,6 +378,7 @@ $(function () {
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
             tablaVenta.draw();
+            document.getElementById("excluirSinTrabajos").checked = false;
             $('.selectCliente').val(null).trigger('change');
             $('input[name="filterRangoFechas"]').val('');
             fechaInicio = '';
@@ -362,9 +396,10 @@ $(function () {
         $('input[name="filterRangoFechas"]').val('');
         fechaInicio = '';
         fechaFin = '';
+        $('#excluirSinTrabajos').prop('checked', false);
         $('#excluirCanceladas').prop('checked', false);
     });
-//------------------------------------REPORTE----------------------------------------//
+//------------------------------------GENERAR REPORTE----------------------------------------//
     //Boton Generar Reporte
     $('#reporteForm').on('submit', function (e) {
         e.preventDefault();
@@ -382,6 +417,7 @@ $(function () {
         reporte.items.fechaDesde = fechaInicio;
         reporte.items.fechaHasta = fechaFin;
         reporte.items.excluirCanceladas = checkCanceladas;
+        reporte.items.excluirSinTrabajos = checkSinTrabajos;
         reporte.items.ventas = dataVentas;
         var parameters = new FormData();
         //Pasamos la accion
@@ -397,69 +433,11 @@ $(function () {
             },
             processData: false,
             contentType: false,
-        }).done(function (data) {
-            console.log(data.url);
-            if (!data.hasOwnProperty('error')) {
-                /*var url = 'file//' + data.url;
-                var a;
-                a = document.createElement('a');
-                a.href = window.URL.createObjectURL(new Blob([url]));
-                a.download = 'reporte.pdf';
-                a.style.display = 'none';
-                document.body.appendChild(a);
-                a.click();*/
-
-                var dlink = document.createElement("a");
-                dlink.href = 'file//' + data.url;
-                dlink.download = 'reporte.pdf';
-                dlink.click();
-            } else {
-                console.log(data.error);
+            success: function (data) {
+                // abrimos el PDF en una nueva pestaña
+                window.open( data.url, '_blank');
             }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-        }).always(function (data) {
-            console.log(data.error);
         });
-
-    });
-
-    $('.btnReporte2').on('click', function () {
-        var dataVentas = [];
-        //Recorremos el listado del Datatables para pasar el detalle con LOS FILTROS APLICADOS
-        $('#data').DataTable().rows({filter: 'applied'}).every(function (rowIdx, tableLoop, rowLoop) {
-            var data = this.data();
-            dataVentas.push(data);
-        });
-        for (var i = 0; i < dataVentas.length; i++) {
-            dataVentas[i].fecha = moment(moment(dataVentas[i].fecha, 'YYYY-MM-DD')).format('DD-MM-YYYY');
-        }
-        //Asignamos las variables a la estructura
-        reporte.items.cliente = $('select[name="selectCliente"]').val();
-        reporte.items.fechaDesde = fechaInicio;
-        reporte.items.fechaHasta = fechaFin;
-        reporte.items.excluirCanceladas = checkCanceladas;
-        reporte.items.ventas = dataVentas;
-        datos = JSON.stringify(reporte.items)
-        var url = '/ventas/report/'
-        fetch(url, {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken,
-            },
-            data: {'reporte': datos},
-            dataType: 'json',
-            processData: false,
-            contentType: false,
-        })
-            .then((response) => {
-                return response.json();
-            })
-            .then((data) => {
-                location.reload()
-            })
-
-        // window.open('/ventas/report/', '_blank');
     });
 });
 
@@ -471,6 +449,7 @@ $(document).ready(function () {
         theme: "bootstrap4",
         language: 'es'
     });
+    document.getElementById("excluirSinTrabajos").checked = false;
     document.getElementById("excluirCanceladas").checked = false;
     //Inicializamos el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').daterangepicker({
@@ -489,5 +468,4 @@ $(document).ready(function () {
     $.fn.dataTable.moment('DD-MM-YYYY');
     //Inicializamos limpio el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').val('');
-
 });
