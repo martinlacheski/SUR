@@ -79,81 +79,74 @@
                 <b>Fecha:</b> {{ fecha }}<br>
                 {% if cliente %}
                     <b>Cliente:</b>
-                    {{ Cliente }}<br>
+                    {{ cliente }}<br>
                 {% endif %}
                 {% if inicio %}
-                    <b>Desde:</b> {{ inicio|date:'d-m-Y' }}<br>
+                    <b>Desde:</b> {{ inicio }}<br>
                 {% endif %}
                 {% if fin %}
-                     <b>Hasta:</b> {{ fin|date:'d-m-Y' }}<br>
+                    <b>Hasta:</b> {{ fin }}<br>
                 {% endif %}
                 {% if canceladas %}
-                    <b>Canceladas:</b> Filtradas las Canceladas <br>
+                    <b>Filtradas las Canceladas</b>  <br>
                 {% endif %}
                 <b>Usuario:</b> {{ usuario }}<br>
             </p>
         </div>
     </div>
-    <p class="text-uppercase font-weight-bold text-center">
-        Detalle de Productos <br>
-    </p>
+    <h4 class="text-uppercase font-weight-bold text-left">
+        Detalle: <br>
+    </h4>
     <table class="table" style="width: 100%;">
         <thead>
         <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 10%;">Cantidad</th>
-            <th class="text-center" style="width: 70%;">Producto</th>
-            <th class="text-center" style="width: 10%;">Importe</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
+            <th class="text-center" style="width: 10%;">ID</th>
+            <th class="text-center" style="width: 15%;">Estado</th>
+            <th class="text-center" style="width: 15%;">Fecha</th>
+            <th class="text-center" style="width: 10%;">Trabajo ID</th>
+            <th class="text-center" style="width: 15%;">Subtotal</th>
+            <th class="text-center" style="width: 10%;">IVA</th>
+            <th class="text-center" style="width: 10%;">Perc.</th>
+            <th class="text-center" style="width: 15%;">Total</th>
         </tr>
         </thead>
         <tbody>
-        {% for det in venta.detalleproductosventa_set.all %}
+        {% for det in ventas %}
             <tr>
-                <td class="text-center">{{ det.cantidad }}</td>
-                <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">$ {{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
+                {% if det.estadoVenta %}
+                    <td class="text-center">{{ det.id }}</td>
+                    <td class="text-center"> Realizada</td>
+                    <td class="text-right">{{ det.fecha }}</td>
+                    <td class="text-center"> {{ det.trabajo }}</td>
+                    <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
+                    <td class="text-right">$ {{ det.iva|floatformat:2 }}</td>
+                    <td class="text-right">$ {{ det.percepcion|floatformat:2 }}</td>
+                    <td class="text-right">$ {{ det.total|floatformat:2 }}</td>
+                {% else %}
+                    <td class="text-center"><b style="color:red;">{{ det.id }}</b></td>
+                    <td class="text-center"><b style="color:red;">Cancelada</b></td>
+                    <td class="text-right"><b style="color:red;">{{ det.fecha }}</b></td>
+                    <td class="text-center"><b style="color:red;">{{ det.trabajo }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.subtotal|floatformat:2 }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.iva|floatformat:2 }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.percepcion|floatformat:2 }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.total|floatformat:2 }}</b></td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
-    </p>
-    <p class="text-uppercase font-weight-bold text-center">
-        detalle de Servicios <br>
-    </p>
-    <table class="table" style="width: 100%;">
-        <thead>
-        <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 10%;">Cantidad</th>
-            <th class="text-center" style="width: 70%;">Servicio</th>
-            <th class="text-center" style="width: 10%;">Importe</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for det in venta.detalleserviciosventa_set.all %}
-            <tr>
-                <td class="text-center">{{ det.cantidad }}</td>
-                <td class="text-center">{{ det.servicio.descripcion }}</td>
-                <td class="text-right">$ {{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
-    </p>
-    <p class="text-uppercase font-weight-bold text-right">
-        <b>IVA: $</b> {{ venta.iva|floatformat:2 }}<br>
-        <b>Percepción: $</b> {{ venta.percepcion|floatformat:2 }}<br>
-        <b>Total a pagar: $</b> {{ venta.total|floatformat:2 }}<br>
-    </p>
     <p class="text-uppercase text-right">
+        Total de IVA <b>$ {{ iva|floatformat:2 }}</b> <br>
+        Total de Percepciones <b>$ {{ perc|floatformat:2 }}</b><br>
+        Total de Ventas <b>$ {{ total|floatformat:2 }}</b><br>
+    </p>
+    <p style="font-size:13px;" class="text-uppercase text-right">
         Son Pesos: <b> {{ enLetras }}</b><br>
     </p>
+    {% if not canceladas %}
+        <b>Aclaración:</b> En caso de existir, las ventas canceladas no influyen en los totales<br>
+    {% endif %}
 </div>
 </body>
 </html>

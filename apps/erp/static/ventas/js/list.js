@@ -260,6 +260,18 @@ $(function () {
             $('#modalDetalle').modal('show');
         });
 //------------------------------------FILTROS----------------------------------------//
+    //Mostramos los Filtros
+    $('.showFilters').on('click', function () {
+        var filtros = $('#filters');
+
+        if (filtros.css('display') === 'none') {
+            document.getElementById("filters").style.display = "";
+        } else {
+            document.getElementById("filters").style.display = "none";
+        }
+
+    });
+
     //Aplicamos Filtro de Rango de FECHAS
     $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
         //Extendemos la busqueda del datatables
@@ -268,8 +280,8 @@ $(function () {
                 //Asignamos las variables Desde y Hasta
                 var desde = picker.startDate.format('YYYY-MM-DD');
                 var hasta = picker.endDate.format('YYYY-MM-DD');
-                fechaInicio = moment(moment(desde), 'DD-MM-YYYY').format('YYYY-MM-DD');
-                fechaFin = moment(moment(hasta), 'DD-MM-YYYY').format('YYYY-MM-DD');
+                fechaInicio = moment(moment(desde), 'DD-MM-YYYY').format('DD-MM-YYYY');
+                fechaFin = moment(moment(hasta), 'DD-MM-YYYY').format('DD-MM-YYYY');
                 // Asignamos el dia por cada renglon
                 var dia = moment(moment(data[2], 'DD-MM-YYYY')).format('YYYY-MM-DD');
                 //Comparamos contra el renglon
@@ -346,15 +358,15 @@ $(function () {
         $.fn.dataTable.ext.search.pop();
         tablaVenta.draw();
         $('.selectCliente').val(null).trigger('change');
+        //Limpiamos limpio el Filtro de Rango de Fechas
         $('input[name="filterRangoFechas"]').val('');
         fechaInicio = '';
         fechaFin = '';
-
+        $('#excluirCanceladas').prop('checked', false);
     });
-
+//------------------------------------REPORTE----------------------------------------//
     //Boton Generar Reporte
     $('#reporteForm').on('submit', function (e) {
-        // $('.btnReporte2').on('click', function () {
         e.preventDefault();
         var dataVentas = [];
         //Recorremos el listado del Datatables para pasar el detalle con LOS FILTROS APLICADOS
@@ -362,6 +374,9 @@ $(function () {
             var data = this.data();
             dataVentas.push(data);
         });
+        for (var i = 0; i < dataVentas.length; i++) {
+            dataVentas[i].fecha = moment(moment(dataVentas[i].fecha, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+        }
         //Asignamos las variables a la estructura
         reporte.items.cliente = $('select[name="selectCliente"]').val();
         reporte.items.fechaDesde = fechaInicio;
@@ -370,10 +385,9 @@ $(function () {
         reporte.items.ventas = dataVentas;
         var parameters = new FormData();
         //Pasamos la accion
-        // parameters.append('action', 'create_reporte');
+        parameters.append('action', 'create_reporte');
         parameters.append('reporte', JSON.stringify(reporte.items));
-
-        /*$.ajax({
+        $.ajax({
             url: window.location.pathname,
             type: 'POST',
             data: parameters,
@@ -384,16 +398,48 @@ $(function () {
             processData: false,
             contentType: false,
         }).done(function (data) {
-            console.log(data);
+            console.log(data.url);
             if (!data.hasOwnProperty('error')) {
+                /*var url = 'file//' + data.url;
+                var a;
+                a = document.createElement('a');
+                a.href = window.URL.createObjectURL(new Blob([url]));
+                a.download = 'reporte.pdf';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();*/
 
-                window.open('/ventas/report/', '_blank');
+                var dlink = document.createElement("a");
+                dlink.href = 'file//' + data.url;
+                dlink.download = 'reporte.pdf';
+                dlink.click();
             } else {
-                console.log('con error');
+                console.log(data.error);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
         }).always(function (data) {
-        });*/
+            console.log(data.error);
+        });
+
+    });
+
+    $('.btnReporte2').on('click', function () {
+        var dataVentas = [];
+        //Recorremos el listado del Datatables para pasar el detalle con LOS FILTROS APLICADOS
+        $('#data').DataTable().rows({filter: 'applied'}).every(function (rowIdx, tableLoop, rowLoop) {
+            var data = this.data();
+            dataVentas.push(data);
+        });
+        for (var i = 0; i < dataVentas.length; i++) {
+            dataVentas[i].fecha = moment(moment(dataVentas[i].fecha, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+        }
+        //Asignamos las variables a la estructura
+        reporte.items.cliente = $('select[name="selectCliente"]').val();
+        reporte.items.fechaDesde = fechaInicio;
+        reporte.items.fechaHasta = fechaFin;
+        reporte.items.excluirCanceladas = checkCanceladas;
+        reporte.items.ventas = dataVentas;
+        datos = JSON.stringify(reporte.items)
         var url = '/ventas/report/'
         fetch(url, {
             method: 'post',
@@ -401,20 +447,25 @@ $(function () {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken,
             },
-            // body: JSON.stringify({'productId': productId, 'action': action})
-            body: JSON.stringify(parameters)
+            data: {'reporte': datos},
+            dataType: 'json',
+            processData: false,
+            contentType: false,
         })
             .then((response) => {
-                window.open(response, '_blank');
+                return response.json();
             })
             .then((data) => {
-                console.log('hasta aca todo OK')
                 location.reload()
             })
+
+        // window.open('/ventas/report/', '_blank');
     });
 });
 
 $(document).ready(function () {
+    //Ocultamos los Filtros
+    document.getElementById("filters").style.display = "none";
     //Inicializamos SELECT2
     $('.select2').select2({
         theme: "bootstrap4",
@@ -434,8 +485,9 @@ $(document).ready(function () {
         //Remover Botones de Aplicar y Cancelar
         autoApply: true,
     });
-    //Inicializamos limpio el Filtro de Rango de Fechas
-    $('#filterRangoFechas').val('Seleccione Rango de Fechas');
     //Extendemos el Datatables para asignar el formato de fecha
     $.fn.dataTable.moment('DD-MM-YYYY');
+    //Inicializamos limpio el Filtro de Rango de Fechas
+    $('input[name="filterRangoFechas"]').val('');
+
 });

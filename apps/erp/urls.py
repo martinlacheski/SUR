@@ -50,7 +50,7 @@ urlpatterns = [
     path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
     path('ventas/pdf/<int:pk>/', VentasPdfView.as_view(), name='ventas_pdf'),
     # path('ventas/report/', VentasReportPdfView.as_view(), name='ventas_report'),
-    path('ventas/report/', VentasReportPdfView, name='ventas_report'),
+    path('ventas/report/', ventasReporteView, name='ventas_report'),
     # Compras
     path('compras/list/', ComprasListView.as_view(), name='compras_list'),
     path('compras/add/', ComprasCreateView.as_view(), name='compras_create'),
