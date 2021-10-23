@@ -71,14 +71,6 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
-                        {#                        <div class="form-group">#}
-                        {#                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">#}
-                        {#                                {{ form.recordarEmail }}#}
-                        {#                                <label class="custom-control-label" for="id_recordarEmail">Notificación en Email</label>#}
-                        {#                            </div>#}
-                        {#                        </div>#}
-                    </div>
                 </div>
             </div>
             <!-- /.card-body -->
@@ -160,16 +152,16 @@
     </script>
 
     <script>
-    // Ejecutado unicamente si estamos en 'edit'
+        // Ejecutado unicamente si estamos en 'edit'
         {%  if action == 'edit' %}
             // Obtenemos TODOS los usuarios
             users_all = [
-            {% for usuario in usuarios %}
-                {
-                    id: {{ usuario.id }},
-                    text: "{{ usuario.username }}",
-                },
-            {% endfor %}
+                {% for usuario in usuarios %}
+                    {
+                        id: {{ usuario.id }},
+                        text: "{{ usuario.username }}",
+                    },
+                {% endfor %}
             ]
 
             // Configuramos el select2 cosa de que pueda listar TODOS los users disponibles en el sistema
@@ -188,14 +180,12 @@
                 i++;
             {%  endfor %}
 
-
             // Prepopulamos el select con los users de este tipoEvento
             select2.val(ids);
             select2.trigger("change");
-
         {%  endif %}
 
-    // ejecutado unicamente si estamos en 'add'
+        // ejecutado unicamente si estamos en 'add'
         {% if action == 'add' %}
             $('.js-example-basic-multiple').select2({
                 theme: "bootstrap4",
@@ -244,6 +234,7 @@
         //Hacemos el envio del Formulario mediante AJAX
         $("#ajaxForm").submit(function (e) {
             e.preventDefault();
+            getToken(name);
             $.ajax({
                 url: window.location.href,
                 type: 'POST',
