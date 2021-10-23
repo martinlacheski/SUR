@@ -10,7 +10,7 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
-*Agregar filtro para ver solo determinados estados, rango de fechas, etc. en COMPRAS, VENTAS, PRESUPUESTOS, TRABAJOS
+
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -19,9 +19,6 @@
 * EN SERVICIOS AGREGAR UN CAMPO DE PONDERACION por esfuerzo de PERSONAS
 
 *AUDITORIA
-
-*REPORTES
-    Agregar la cabecera cuando se imprime con filtros
 
 *ESTADISTICAS
 

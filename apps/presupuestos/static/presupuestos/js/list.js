@@ -2,8 +2,29 @@ var tablaProductos;
 var tablaServicios;
 var cantProductos = 0;
 var cantServicios = 0;
+//Creamos una variable para cargar el SELECT de Clientes y Modelos
+var select_clientes = $('select[name="selectCliente"]');
+var select_modelos = $('select[name="selectModelo"]');
+//Creamos variables auxiliares para el reporte
+var fechaInicio = '';
+var fechaFin = '';
+var checkCancelados = false;
+var checkNoConfirmados = false;
+//Creamos una estructura para el Reporte
+var reporte = {
+    items: {
+        //Filtros
+        cliente: '',
+        modelo: '',
+        fechaDesde: '',
+        fechaHasta: '',
+        excluirCancelados: '',
+        excluirNoConfirmados: '',
+        //detalle de presupuestos
+        presupuestos: [],
+    },
+};
 $(function () {
-
     var tablaPresupuesto = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
@@ -85,7 +106,42 @@ $(function () {
             },
         ],
         initComplete: function (settings, json) {
-
+            //Agregamos al Select2 los clientes que tenemos en el listado
+            this.api().columns(5).every(function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+                column.data().unique().sort().each(function (d, j) {
+                    var newOption = new Option(d.toString(), d.toString(), false, false);
+                    $('.selectCliente').append(newOption).trigger('change');
+                });
+            });
+            //Agregamos al Select2 los modelos que tenemos en el listado
+            this.api().columns(4).every(function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+                column.data().unique().sort().each(function (d, j) {
+                    var newOption = new Option(d.toString(), d.toString(), false, false);
+                    $('.selectModelo').append(newOption).trigger('change');
+                });
+            });
         }
     });
 
@@ -197,8 +253,248 @@ $(function () {
             });
             $('#modalDetalle').modal('show');
         });
+    //------------------------------------FILTROS----------------------------------------//
+    //Mostramos los Filtros
+    $('.showFilters').on('click', function () {
+        var filtros = $('#filters');
+
+        if (filtros.css('display') === 'none') {
+            document.getElementById("filters").style.display = "";
+        } else {
+            document.getElementById("filters").style.display = "none";
+        }
+
+    });
+
+    //Aplicamos Filtro de Rango de FECHAS
+    $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
+        //Extendemos la busqueda del datatables
+        $.fn.dataTable.ext.search.push(
+            function (settings, data, dataIndex) {
+                //Asignamos las variables Desde y Hasta
+                var desde = picker.startDate.format('YYYY-MM-DD');
+                var hasta = picker.endDate.format('YYYY-MM-DD');
+                fechaInicio = picker.startDate.format('DD-MM-YYYY');
+                fechaFin = picker.endDate.format('DD-MM-YYYY');
+                // Asignamos el dia por cada renglon
+                var dia = moment(moment(data[2], 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                //Comparamos contra el renglon
+                if (desde <= dia && dia <= hasta) {
+                    return true;
+                }
+                return false;
+            }
+        );
+        //Actualizamos la tabla
+        tablaPresupuesto.draw();
+    });
+
+    //Aplicamos Filtro de Clientes
+    $('.selectCliente').on('change', function () {
+        /*//Reseteamos los filtros
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaPresupuesto.draw();*/
+        //Asignamos a una variabla el cliente del Select
+        var cliente = $(this).val();
+        if (cliente !== null && cliente !== '' && cliente !== undefined) {
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el cliente por cada renglon
+                    var clienteTabla = (data[5].toString());
+                    //Comparamos contra el renglon
+                    if (cliente === clienteTabla) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            //Actualizamos la tabla
+            tablaPresupuesto.draw();
+        }
+    });
+    //Aplicamos Filtro de Modelos
+    $('.selectModelo').on('change', function () {
+        /*//Reseteamos los filtros
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaPresupuesto.draw();*/
+        //Asignamos a una variabla el cliente del Select
+        var modelo = $(this).val();
+        if (modelo !== null && modelo !== '' && modelo !== undefined) {
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el cliente por cada renglon
+                    var modeloTabla = (data[4].toString());
+                    //Comparamos contra el renglon
+                    if (modelo === modeloTabla) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            //Actualizamos la tabla
+            tablaPresupuesto.draw();
+        }
+    });
+    //Filtrar Trabajos Asociados
+    $('#excluirNoConfirmados').on('click', function () {
+        var verdadero = ' No confirmado';
+        if (this.checked) {
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkNoConfirmados = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[1]);
+                    //Comparamos contra el renglon
+                    if (verdadero === estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaPresupuesto.draw();
+        } else {
+            //Reseteamos los filtros
+            checkNoConfirmados = false;
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.pop();
+            tablaPresupuesto.draw();
+            document.getElementById("excluirCancelados").checked = false;
+            $('.selectCliente').val(null).trigger('change');
+            $('.selectModelo').val(null).trigger('change');
+            $('input[name="filterRangoFechas"]').val('');
+            fechaInicio = '';
+            fechaFin = '';
+        }
+    });
+    //Filtrar Estado Cancelados
+    $('#excluirCancelados').on('click', function () {
+        var verdadero = ' Cancelado';
+        if (this.checked) {
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkCancelados = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[1]);
+                    //Comparamos contra el renglon
+                    if (verdadero === estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaPresupuesto.draw();
+        } else {
+            //Reseteamos los filtros
+            checkCancelados = false;
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.pop();
+            tablaPresupuesto.draw();
+            document.getElementById("excluirNoConfirmados").checked = false;
+            $('.selectCliente').val(null).trigger('change');
+            $('.selectModelo').val(null).trigger('change');
+            $('input[name="filterRangoFechas"]').val('');
+            fechaInicio = '';
+            fechaFin = '';
+        }
+    });
+
+    //Boton Resetear Filtros
+    $('.btnResetFilters').on('click', function () {
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaPresupuesto.draw();
+        $('.selectCliente').val(null).trigger('change');
+        $('.selectModelo').val(null).trigger('change');
+        //Limpiamos limpio el Filtro de Rango de Fechas
+        $('input[name="filterRangoFechas"]').val('');
+        fechaInicio = '';
+        fechaFin = '';
+        $('#excluirNoConfirmados').prop('checked', false);
+        $('#excluirCancelados').prop('checked', false);
+    });
+//------------------------------------GENERAR REPORTE----------------------------------------//
+    //Boton Generar Reporte
+    $('#reporteForm').on('submit', function (e) {
+        e.preventDefault();
+        var dataPresupuestos = [];
+        //Recorremos el listado del Datatables para pasar el detalle con LOS FILTROS APLICADOS
+        $('#data').DataTable().rows({filter: 'applied'}).every(function (rowIdx, tableLoop, rowLoop) {
+            var data = this.data();
+            dataPresupuestos.push(data);
+        });
+        //Damos formato a la fecha para visualizar correctamente
+        for (var i = 0; i < dataPresupuestos.length; i++) {
+            dataPresupuestos[i].fecha = moment(moment(dataPresupuestos[i].fecha, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+        }
+        //Asignamos las variables a la estructura
+        reporte.items.cliente = $('select[name="selectCliente"]').val();
+        reporte.items.fechaDesde = fechaInicio;
+        reporte.items.fechaHasta = fechaFin;
+        reporte.items.excluirCancelados = checkCancelados;
+        reporte.items.excluirNoConfirmados = checkNoConfirmados;
+        reporte.items.presupuestos = dataPresupuestos;
+        var parameters = new FormData();
+        //Pasamos la accion
+        parameters.append('action', 'create_reporte');
+        parameters.append('reporte', JSON.stringify(reporte.items));
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: parameters,
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken,
+            },
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Abrimos el PDF en una nueva pestaña
+                    window.open(data.url, '_blank');
+                    location.reload();
+                } else {
+                    console.log(data.error);
+                }
+            }
+        });
+    });
 });
+//------------------------------------Inicializar COMPONENTES----------------------------------------//
 $(document).ready(function () {
+    //Ocultamos los Filtros
+    document.getElementById("filters").style.display = "none";
+    //Inicializamos SELECT2
+    $('.select2').select2({
+        theme: "bootstrap4",
+        language: 'es'
+    });
+    document.getElementById("excluirNoConfirmados").checked = false;
+    document.getElementById("excluirCancelados").checked = false;
+    //Inicializamos el Filtro de Rango de Fechas
+    $('input[name="filterRangoFechas"]').daterangepicker({
+        // autoUpdateInput: false,
+        locale: {
+            placeholder: 'Seleccione Rango de Fechas',
+            format: 'DD-MM-YYYY',
+            language: 'es',
+            cancelLabel: 'Cancelar',
+            applyLabel: 'Aplicar',
+        },
+        //Remover Botones de Aplicar y Cancelar
+        autoApply: true,
+    });
     //Extendemos el Datatables para asignar el formato de fecha
     $.fn.dataTable.moment('DD-MM-YYYY');
+    //Inicializamos limpio el Filtro de Rango de Fechas
+    $('input[name="filterRangoFechas"]').val('');
 });

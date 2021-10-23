@@ -1,9 +1,9 @@
-//Creamos una variable para cargar el SELECT de Clientes
-var select_clientes = $('select[name="selectCliente"]');
 var tablaProductos;
 var tablaServicios;
 var cantProductos = 0;
 var cantServicios = 0;
+//Creamos una variable para cargar el SELECT de Clientes
+var select_clientes = $('select[name="selectCliente"]');
 //Creamos variables auxiliares para el reporte
 var fechaInicio = '';
 var fechaFin = '';
@@ -119,13 +119,11 @@ $(function () {
                         var val = $.fn.dataTable.util.escapeRegex(
                             $(this).val()
                         );
-
                         column
                             .search(val ? '^' + val + '$' : '', true, false)
                             .draw();
                     });
                 column.data().unique().sort().each(function (d, j) {
-                    // var newOption = new Option(d.toString(), id, false, false);
                     var newOption = new Option(d.toString(), d.toString(), false, false);
                     $('.selectCliente').append(newOption).trigger('change');
                 });
@@ -434,13 +432,18 @@ $(function () {
             processData: false,
             contentType: false,
             success: function (data) {
-                // abrimos el PDF en una nueva pestaña
-                window.open( data.url, '_blank');
+                if (!data.hasOwnProperty('error')) {
+                    //Abrimos el PDF en una nueva pestaña
+                    window.open(data.url, '_blank');
+                    location.reload();
+                } else {
+                    console.log(data.error);
+                }
             }
         });
     });
 });
-
+//------------------------------------Inicializar COMPONENTES----------------------------------------//
 $(document).ready(function () {
     //Ocultamos los Filtros
     document.getElementById("filters").style.display = "none";

@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from datetime import date
@@ -51,6 +52,92 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 data = []
                 for i in DetalleServiciosPresupuesto.objects.filter(presupuesto_id=request.POST['id']):
                     data.append(i.toJSON())
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('presupuestos/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
+                # Obtenemos el Modelo si esta filtrado
+                modelo = ""
+                try:
+                    modelo = reporte['modelo']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                soloConfirmados = False
+                try:
+                    soloConfirmados = reporte['excluirNoConfirmados']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                cancelados = False
+                try:
+                    cancelados = reporte['excluirCancelados']
+                except Exception as e:
+                    pass
+                # Obtenemos los presupuestos
+                presupuestos = []
+                try:
+                    presupuestos = reporte['presupuestos']
+                except Exception as e:
+                    pass
+                total = 0
+                try:
+                    for i in presupuestos:
+                        if i['estado']:
+                            total += float(i['total'])
+                    total = round(total, 2)
+                except Exception as e:
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'cliente': cliente,
+                        'modelo': modelo,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'cancelados': cancelados,
+                        'soloConfirmados': soloConfirmados,
+                        'presupuestos': presupuestos,
+                        'usuario': request.user,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reportePresupuestos.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reportePresupuestos.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

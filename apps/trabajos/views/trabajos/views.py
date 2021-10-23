@@ -1,6 +1,7 @@
+import datetime
 import json
 import os
-from datetime import date, datetime
+from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -57,6 +58,123 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 data = []
                 for i in DetalleServiciosTrabajo.objects.filter(trabajo_id=request.POST['id']):
                     data.append(i.toJSON())
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('trabajos/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
+                # Obtenemos el Modelo si esta filtrado
+                modelo = ""
+                try:
+                    modelo = reporte['modelo']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                entregados = False
+                try:
+                    entregados = reporte['excluirEntregados']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                cancelados = False
+                try:
+                    cancelados = reporte['excluirCancelados']
+                except Exception as e:
+                    pass
+                # Obtenemos si se visualizan solo los pendientes
+                pendientes = False
+                try:
+                    pendientes = reporte['verPendientes']
+                except Exception as e:
+                    pass
+                # Obtenemos si se visualizan solo los planificados
+                planificados = False
+                try:
+                    planificados = reporte['verPlanificados']
+                except Exception as e:
+                    pass
+                # Obtenemos si se visualizan solo los En Proceso
+                enProceso = False
+                try:
+                    enProceso = reporte['verEnProceso']
+                except Exception as e:
+                    pass
+                # Obtenemos si se visualizan solo los Finalizados
+                finalizados = False
+                try:
+                    finalizados = reporte['verFinalizados']
+                except Exception as e:
+                    pass
+                # Obtenemos los trabajos
+                trabajos = []
+                try:
+                    trabajos = reporte['trabajos']
+                except Exception as e:
+                    pass
+                total = 0
+                estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                estadoCancelado = estado.estadoCancelado.nombre
+                try:
+                    for i in trabajos:
+                        if i['estadoTrabajo'] != estado.estadoCancelado.nombre:
+                            total += float(i['total'])
+                    total = round(total, 2)
+                except Exception as e:
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'cliente': cliente,
+                        'modelo': modelo,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'entregados': entregados,
+                        'cancelados': cancelados,
+                        'pendientes': pendientes,
+                        'planificados': planificados,
+                        'enProceso': enProceso,
+                        'finalizados': finalizados,
+                        'trabajos': trabajos,
+                        'estadoCancelado': estadoCancelado,
+                        'usuario': request.user,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteTrabajos.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteTrabajos.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

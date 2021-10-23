@@ -1,5 +1,7 @@
+import datetime
 import json
 import os
+
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -40,6 +42,97 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
                 data = []
                 for i in DetalleProductosCompra.objects.filter(compra_id=request.POST['id']):
                     data.append(i.toJSON())
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('compras/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Proveedor si esta filtrado
+                proveedor = ""
+                try:
+                    proveedor = reporte['proveedor']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                canceladas = False
+                try:
+                    canceladas = reporte['excluirCanceladas']
+                except Exception as e:
+                    pass
+                # Obtenemos las ventas
+                compras = []
+                try:
+                    compras = reporte['compras']
+                except Exception as e:
+                    pass
+
+                iva = 0
+                try:
+                    for i in compras:
+                        if i['estadoCompra']:
+                            iva += float(i['iva'])
+                    iva = round(iva, 2)
+                except Exception as e:
+                    pass
+                perc = 0
+                try:
+                    for i in compras:
+                        if i['estadoCompra']:
+                            perc += float(i['percepcion'])
+                    perc = round(perc, 2)
+                except Exception as e:
+                    pass
+                total = 0
+                try:
+                    for i in compras:
+                        if i['estadoCompra']:
+                            total += float(i['total'])
+                    total = round(total, 2)
+                except Exception as e:
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'proveedor': proveedor,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'canceladas': canceladas,
+                        'compras': compras,
+                        'usuario': request.user,
+                        'iva': iva,
+                        'perc': perc,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteCompras.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteCompras.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

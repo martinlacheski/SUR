@@ -60,7 +60,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h1 class="name-company text-center">Reporte de Ventas</h1>
+            <h1 class="name-company text-center">Reporte de Compras</h1>
         </div>
     </div>
     <div class="row">
@@ -87,32 +87,28 @@
         Filtros aplicados: <br>
     </h5>
     <p>
-        {% if cliente %}
-            Cliente: <b> {{ cliente }}</b>
+        {% if proveedor %}
+            Proveedor: <b> {{ proveedor }}</b>
         {% endif %}
         {% if inicio %}
-            Ventas Desde: <b> {{ inicio }} </b>
+            Compras Desde: <b> {{ inicio }} </b>
         {% endif %}
         {% if fin %}
             hasta <b> {{ fin }} </b><br>
         {% endif %}
         {% if canceladas %}
-            <b>Filtradas las Ventas Canceladas.</b>
+            <b>Filtradas las Compras Canceladas.</b>
         {% endif %}
-        {% if soloTrabajos %}
-            <b>Solo las ventas con Trabajos Asociados.</b>
-        {% endif %}</p>
     <h4 class="text-uppercase font-weight-bold text-left">
         Detalle: <br>
     </h4>
     <table class="table" style="width: 100%;">
         <thead>
         <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 25%;">Cliente</th>
-            <th class="text-center" style="width: 5%;">Venta Nro.</th>
+            <th class="text-center" style="width: 30%;">Proveedor</th>
+            <th class="text-center" style="width: 6%;">Nro.</th>
             <th class="text-center" style="width: 10%;">Estado</th>
             <th class="text-center" style="width: 10%;">Fecha</th>
-            <th class="text-center" style="width: 5%;">Trabajo Nro.</th>
             <th class="text-center" style="width: 11%;">Subtotal</th>
             <th class="text-center" style="width: 11%;">IVA</th>
             <th class="text-center" style="width: 11%;">Perc.</th>
@@ -120,24 +116,22 @@
         </tr>
         </thead>
         <tbody>
-        {% for det in ventas %}
+        {% for det in compras %}
             <tr>
-                {% if det.estadoVenta %}
-                    <td class="text-center">{{ det.cliente.razonSocial }}</td>
+                {% if det.estadoCompra %}
+                    <td class="text-center">{{ det.proveedor.razonSocial }}</td>
                     <td class="text-center">{{ det.id }}</td>
                     <td class="text-center"> Realizada</td>
                     <td class="text-right">{{ det.fecha }}</td>
-                    <td class="text-center"> {{ det.trabajo }}</td>
                     <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
                     <td class="text-right">$ {{ det.iva|floatformat:2 }}</td>
                     <td class="text-right">$ {{ det.percepcion|floatformat:2 }}</td>
                     <td class="text-right">$ {{ det.total|floatformat:2 }}</td>
                 {% else %}
-                    <td class="text-center"><b style="color:red;">{{ det.cliente.razonSocial }}</b></td>
+                    <td class="text-center"><b style="color:red;">{{ det.proveedor.razonSocial }}</b></td>
                     <td class="text-center"><b style="color:red;">{{ det.id }}</b></td>
                     <td class="text-center"><b style="color:red;">Cancelada</b></td>
                     <td class="text-right"><b style="color:red;">{{ det.fecha }}</b></td>
-                    <td class="text-center"><b style="color:red;">{{ det.trabajo }}</b></td>
                     <td class="text-right"><b style="color:red;">$ {{ det.subtotal|floatformat:2 }}</b></td>
                     <td class="text-right"><b style="color:red;">$ {{ det.iva|floatformat:2 }}</b></td>
                     <td class="text-right"><b style="color:red;">$ {{ det.percepcion|floatformat:2 }}</b></td>
@@ -156,7 +150,7 @@
         Son Pesos: <b> {{ enLetras }}</b><br>
     </p>
     {% if not canceladas %}
-        <b>Aclaración:</b> En caso de existir, las ventas canceladas no influyen en los totales<br>
+        <b>Aclaración:</b> En caso de existir, las compras canceladas no influyen en los totales<br>
     {% endif %}
 </div>
 </body>

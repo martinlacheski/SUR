@@ -1,8 +1,6 @@
 import datetime
 import json
 import os
-import tempfile
-from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -142,7 +140,6 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                     urlWrite = settings.MEDIA_ROOT + 'reportes/reporteVentas.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
                     urlReporte = settings.MEDIA_URL + 'reportes/reporteVentas.pdf'
-                    # urlReporte = '/tmp/reporteVentas.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
