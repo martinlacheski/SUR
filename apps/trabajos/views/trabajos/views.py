@@ -618,7 +618,6 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                     trabajo.percepcion = float(formTrabajoRequest['percepcion'])
                     trabajo.total = float(formTrabajoRequest['total'])
                     trabajo.prioridad_id = formTrabajoRequest['prioridad']
-                    trabajo.fichaTrabajo = formTrabajoRequest['fichaTrabajo']
                     trabajo.observaciones = formTrabajoRequest['observaciones']
                     # Buscamos el estado Especial para iniciar el Proceso
                     try:
@@ -642,7 +641,7 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     for i in formTrabajoRequest['servicios']:
                         det = DetalleServiciosTrabajo()
@@ -659,7 +658,7 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
@@ -884,7 +883,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -904,7 +903,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
@@ -913,6 +912,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
+            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
@@ -1124,7 +1124,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                             det.observaciones = observacion
                             det.usuario = request.user
                             # det.fechaDetalle = timezone.localtime(timezone.now())
-                            det.fechaDetalle = datetime.today()
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -1145,7 +1145,7 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                             det.observaciones = observacion
                             det.usuario = request.user
                             # det.fechaDetalle = timezone.localtime(timezone.now())
-                            det.fechaDetalle = datetime.today()
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
