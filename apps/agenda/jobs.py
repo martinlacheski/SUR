@@ -72,7 +72,8 @@ def scheduler_evento(evento):
                             hour=evento.tipoEvento.horarioRecordatorio.hour,
                             minute=evento.tipoEvento.horarioRecordatorio.minute)
         print(end_date)
-        scheduler_eventos.add_job(notificar, 'interval', minutes=1, args=[evento])
+        scheduler_eventos.add_job(notificar, 'interval', days=1,
+                                  start_date=start_date, end_date=end_date, args=[evento])
     scheduler_eventos.start()
     # if evento.repeticion == '':
     #     print("crea evento único")
