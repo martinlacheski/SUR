@@ -9,7 +9,7 @@ from apps.agenda.forms import *
 from apps.mixins import ValidatePermissionRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from apps.agenda.jobs import scheduler_eventos
+from apps.agenda import jobs
 
 
 class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
@@ -26,7 +26,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
                 form = self.get_form()
                 if form.is_valid():
                     data = form.save()
-                    #TO-DO acá va la creación de un job para que luego notifique al cliente
+                    jobs.scheduler_evento(data['eventoObj'])
                 else:
                     print(form.errors)
             except Exception as e:

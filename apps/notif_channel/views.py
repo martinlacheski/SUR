@@ -4,6 +4,7 @@ from django.views.generic import ListView
 from apps.notif_channel.models import notificacionesGenerales
 from apps.usuarios.models import Usuarios
 import datetime
+from collections import OrderedDict
 
 from apps.mixins import ValidatePermissionRequiredMixin
 
@@ -19,8 +20,8 @@ class NotificacionesNotifView(LoginRequiredMixin, ValidatePermissionRequiredMixi
         data = []
         if action == 'update_notifs':
             notifs = {}
-            n = notificacionesGenerales.objects.order_by('-fechaNotificacion').exclude(estado='resuelta').reverse()[:10]
-            for i in n:
+            n = notificacionesGenerales.objects.order_by('-pk').exclude(estado='resuelta')[:10]
+            for i in reversed(n):
                 data.append(i.toJSON())
             return JsonResponse(data, safe=False)
 

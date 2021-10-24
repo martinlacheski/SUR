@@ -73,6 +73,7 @@ def restarDiasHabiles(Fnotif, diasAntelacion):
 
 
 
+
 #   Se usa para notificar una hora antes del vencimiento del evento.
 #   Si devuelve True significa que la hora de notificación del evento - 1h
 #   es igual a la hora actual, por ende, notificamos.
