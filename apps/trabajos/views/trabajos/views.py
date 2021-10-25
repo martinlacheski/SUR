@@ -132,9 +132,9 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 estadoCancelado = estado.estadoCancelado.nombre
                 try:
                     for i in trabajos:
+                        # Asignamos a una variable el estado de trabajo
                         estadoTrabajo = i['estadoTrabajo']
-                        if estadoTrabajo['nombre'] == estado.estadoCancelado.nombre:
-                            print('entra OK')
+                        # Comparamos el nombre del estado de trabajo con el estado de trabajo en parametros
                         if estadoTrabajo['nombre'] != estado.estadoCancelado.nombre:
                             total += float(i['total'])
                     total = round(total, 2)
