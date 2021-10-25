@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -113,8 +115,8 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">$ {{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.precio|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -127,7 +129,7 @@
         {% endif %}
     {% endfor %}
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
+        <b>Subtotal Productos: $</b> {{ subtotalProductos|intcomma|localize }}<br>
     </p>
     <p class="text-uppercase font-weight-bold text-center">
         detalle de Servicios <br>
@@ -146,8 +148,8 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.servicio.descripcion }}</td>
-                <td class="text-right">$ {{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.precio|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -160,10 +162,10 @@
         {% endif %}
     {% endfor %}
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
+        <b>Subtotal Servicios: $</b> {{ subtotalServicios|intcomma|localize }}<br>
     </p>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Total a pagar: $</b> {{ trabajo.total|floatformat:2 }}<br>
+        <b>Total a pagar: $</b> {{ trabajo.total|intcomma|localize }}<br>
     </p>
     <p class="text-uppercase text-right">
         Son Pesos: <b> {{ enLetras }}</b><br>

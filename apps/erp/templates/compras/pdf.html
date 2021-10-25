@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -97,16 +99,16 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">$ {{ det.costo|floatformat:2 }}</td>
-                <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.costo|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>IVA: $</b> {{ compra.iva|floatformat:2 }}<br>
-        <b>Percepción: $</b> {{ compra.percepcion|floatformat:2 }}<br>
-        <b>Total: $</b> {{ compra.total|floatformat:2 }}<br>
+        <b>IVA: $</b> {{ compra.iva|intcomma|localize }}<br>
+        <b>Percepción: $</b> {{ compra.percepcion|intcomma|localize }}<br>
+        <b>Total: $</b> {{ compra.total|intcomma|localize }}<br>
     </p>
     <p class="text-uppercase text-right">
         Son Pesos: <b> {{ enLetras }}</b><br>

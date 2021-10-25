@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -128,29 +130,29 @@
                     <td class="text-center"> Realizada</td>
                     <td class="text-right">{{ det.fecha }}</td>
                     <td class="text-center"> {{ det.trabajo }}</td>
-                    <td class="text-right">$ {{ det.subtotal|floatformat:2 }}</td>
-                    <td class="text-right">$ {{ det.iva|floatformat:2 }}</td>
-                    <td class="text-right">$ {{ det.percepcion|floatformat:2 }}</td>
-                    <td class="text-right">$ {{ det.total|floatformat:2 }}</td>
+                    <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
+                    <td class="text-right">$ {{ det.iva|intcomma|localize }}</td>
+                    <td class="text-right">$ {{ det.percepcion|intcomma|localize }}</td>
+                    <td class="text-right">$ {{ det.total|intcomma|localize }}</td>
                 {% else %}
                     <td class="text-center"><b style="color:red;">{{ det.cliente.razonSocial }}</b></td>
                     <td class="text-center"><b style="color:red;">{{ det.id }}</b></td>
                     <td class="text-center"><b style="color:red;">Cancelada</b></td>
                     <td class="text-right"><b style="color:red;">{{ det.fecha }}</b></td>
                     <td class="text-center"><b style="color:red;">{{ det.trabajo }}</b></td>
-                    <td class="text-right"><b style="color:red;">$ {{ det.subtotal|floatformat:2 }}</b></td>
-                    <td class="text-right"><b style="color:red;">$ {{ det.iva|floatformat:2 }}</b></td>
-                    <td class="text-right"><b style="color:red;">$ {{ det.percepcion|floatformat:2 }}</b></td>
-                    <td class="text-right"><b style="color:red;">$ {{ det.total|floatformat:2 }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.subtotal|intcomma|localize }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.iva|intcomma|localize }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.percepcion|intcomma|localize }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.total|intcomma|localize }}</b></td>
                 {% endif %}
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <p class="text-uppercase text-right">
-        Total de IVA <b>$ {{ iva|floatformat:2 }}</b> <br>
-        Total de Percepciones <b>$ {{ perc|floatformat:2 }}</b><br>
-        Total de Ventas <b>$ {{ total|floatformat:2 }}</b><br>
+        Total de IVA <b>$ {{ iva|intcomma|localize }}</b> <br>
+        Total de Percepciones <b>$ {{ perc|intcomma|localize }}</b><br>
+        Total de Ventas <b>$ {{ total|intcomma|localize }}</b><br>
     </p>
     <p style="font-size:13px;" class="text-uppercase text-right">
         Son Pesos: <b> {{ enLetras }}</b><br>
