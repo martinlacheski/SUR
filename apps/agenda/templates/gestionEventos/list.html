@@ -65,15 +65,15 @@
                                         {{ form.fechaNotificacion }}
                                     </div>
                                 </div>
-{#                                <div class="col-12 mb-1">#}
-{#                                    <div class="custom-control custom-checkbox">#}
-{#                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">#}
-{#                                        <label for="customCheckbox1" class="custom-control-label"> Se repite</label>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <div class="col-12 mb-4">#}
-{#                                    {{ form.repeticion }}#}
-{#                                </div>#}
+                                <div class="col-12 mb-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">
+                                        <label for="customCheckbox1" class="custom-control-label"> Se repite</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    {{ form.repeticion }}
+                                </div>
                                 <div hidden id="fechaFinalizacionField" class="col-12 mb-4">
                                     <label>Fecha de Finalización</label>
                                     <div class="date input-group" id="fechaFinalizacion" data-target-input="nearest">
@@ -148,28 +148,34 @@
                                 <i>
                                     <p id="modal_descripción"></p>
                                 </i>
+                                 <strong>USUARIOS ASOCIADOS </strong>
+                                <i>
+                                    <p id="modal_user_asoc"></p>
+                                </i>
+                                <strong>RESUELTO POR</strong>
+                                <i>
+                                    <p id="modal_resuelto_por"></p>
+                                </i>
                             </div>
                             <div class="col-6">
                                 <strong>FECHA DE NOTIFICACIÓN </strong>
                                 <i>
                                     <p id="modal_fecha_notif"></p>
                                 </i>
+                                <strong>FECHA DE FINALIZACIÓN </strong>
+                                <i>
+                                    <p id="modal_fecha_final"></p>
+                                </i>
                                  <strong>NOTIFICADO MEDIANTE </strong>
                                 <i>
-                                    <p id="modal_tipo_notif"></p>
+                                    <p id="modal_mediante_notif"></p>
                                 </i>
-                            </div>
-                            <div class="col-6">
-                                <strong>USUARIOS ASOCIADOS </strong>
+                                <strong>REPETICION</strong>
                                 <i>
-                                    <p id="modal_user_asoc"></p>
+                                    <p id="modal_repeticion"></p>
                                 </i>
                             </div>
                             <div class="col-6">
-                                {#                                <strong>REPETICIÓN</strong>#}
-{#                                <i>#}
-{#                                    <p id="modal_repeticion"></p>#}
-{#                                </i>#}
                             </div>
                         </div>
                         <div class="row">
@@ -301,27 +307,41 @@
                     'pk' : id_evento
                 },
                 success : function (data){
-
+                    console.log(data);
+                    console.log(data.tipoEvento);
+                    console.log(data.descripcion);
+                    console.log(data.fechaNotif);
+                    console.log(data.usuariosAsoc);
                     document.getElementById('modal_tipo_evento').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción').innerHTML = data.descripcion;
                     document.getElementById('modal_user_asoc').innerHTML = data.usuariosAsoc.slice(0, -2); //slice para borrar ultima coma
                     document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
 
+                    if (data.fechaFinal) {
+                        document.getElementById('modal_fecha_final').innerHTML = data.fechaFinal;
+                    } else {
+                        document.getElementById('modal_fecha_final').innerHTML = "No posee fecha final"
+                    }
+
                     // Procesamos repetición para string agradable en español
-                    {#switch(data.repeticion) {#}
-                    {#    case 'daily':#}
-                    {#        data.repeticion = 'Diaria';#}
-                    {#        break;#}
-                    {#    case 'weekly':#}
-                    {#        data.repeticion = 'Semanal';#}
-                    {#        break;#}
-                    {#    case 'monthly':#}
-                    {#        data.repeticion = 'Mensual';#}
-                    {#        break;#}
-                    {#    default:#}
-                    {#        data.repeticion = 'Única';#}
-                    {# }#}
-                    {# document.getElementById('modal_repeticion').innerHTML = data.repeticion; #}
+                    if (data.repeticion){
+                        switch(data.repeticion) {
+                        case 'daily':
+                            data.repeticion = 'Diaria';
+                            break;
+                        case 'weekly':
+                            data.repeticion = 'Semanal';
+                            break;
+                        case 'monthly':
+                            data.repeticion = 'Mensual';
+                            break;
+                        default:
+                            data.repeticion = 'Única';
+                     }
+                     document.getElementById('modal_repeticion').innerHTML = data.repeticion;
+                    } else {
+                        document.getElementById('modal_repeticion').innerHTML = "Evento único";
+                    }
 
                     // Procesamos canales de notificacion para convertir en string agradable
                     let notifMsj = "";
@@ -329,8 +349,14 @@
                         if(data.notifMediante[i][1] === true){
                             notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
                         }
-                     }
-                    document.getElementById('modal_tipo_notif').innerHTML = notifMsj.slice(0, -2);
+                    }
+                    document.getElementById('modal_mediante_notif').innerHTML = notifMsj.slice(0, -2);
+
+                    if (data.resueltoPor){
+                        document.getElementById('modal_resuelto_por').innerHTML = data.resueltoPor;
+                    } else {
+                        document.getElementById('modal_resuelto_por').innerHTML = "Aún no fué resuelto";
+                    }
                 }
             });
         }
@@ -348,7 +374,6 @@
         // Obtiene id de evento y hace ajax request para borrar
         $('#btnDelete').on('click', function (){
             getToken(name);
-
             id_evento = $('#btnDelete').attr('evento_id'); // Obtiene id
 
             $.ajax({
@@ -388,51 +413,44 @@
 
         // Uasa para esconder o no el campo de fecha de finalización en caso de que la notificación se repita semanal, diaria o mensual
         // No está en funcionamiento pero será utilizada en el futuro
-        {#$('#customCheckbox1').on('click', function (){#}
-        {#    if (this.checked) {#}
-        {#        $('#selectRepeticion').prop('disabled', false);#}
-        {#        $('#fechaFinalizacionField').prop('hidden', false);#}
-        {##}
-        {##}
-        {#    } else {#}
-        {#        $('#selectRepeticion').prop('disabled', true);#}
-        {#        $('#fechaFinalizacionField').prop('hidden', true);#}
-        {#        $('#id_fechaFinalizacion').val('');#}
-        {#    }#}
-        {#});#}
-        {##}
-        {#$('#customCheckbox1').ready(function(){#}
-        {#        if($('#customCheckbox1').prop('checked')){#}
-        {#            $('#fechaFinalizacionField').prop('hidden', false);#}
-        {#        }else{#}
-        {#            $('#fechaFinalizacionField').prop('hidden', true);#}
-        {#        }#}
-        {#    });#}
+        $('#customCheckbox1').on('click', function (){
+            if (this.checked) {
+                $('#selectRepeticion').prop('disabled', false);
+                $('#fechaFinalizacionField').prop('hidden', false);
+
+
+            } else {
+                $('#selectRepeticion').prop('disabled', true);
+                $('#fechaFinalizacionField').prop('hidden', true);
+                $('#id_fechaFinalizacion').val('');
+            }
+         }) ;
+
+        $('#customCheckbox1').ready(function(){
+                if($('#customCheckbox1').prop('checked')){
+                    $('#fechaFinalizacionField').prop('hidden', false);
+                }else{
+                    $('#fechaFinalizacionField').prop('hidden', true);
+                }
+            });
 
 
 
         // Verifica fechas de finalización que no sea menor que fecha de notificacion
-        // La librería daterangepicker (no datetimepicker, ojo) no soporta chequeos dinámicos. Una basura.
+        // La librería daterangepicker (no datetimepicker, ¡ojo!) no soporta chequeos dinámicos. Una basura.
         $("#formAgenda").submit(function (e) {
             e.preventDefault();
-
             strFechaNotif = $('#id_fechaNotificacion')[0].value.split('-');
             strFechaFinal = $('#id_fechaFinalizacion')[0].value.split('-');
             fechaNotif = new Date(strFechaNotif[2], strFechaNotif[1] - 1, strFechaNotif[0]);
             fechaFinal = new Date(strFechaFinal[2], strFechaFinal[1] - 1, strFechaFinal[0]);
-
             if(fechaFinal < fechaNotif){
                 $('#errorFechas').prop('hidden', false);
             }else{
                 document.getElementById('formAgenda').submit();
             }
-
         });
     </script>
-
-
-
-
 {% endblock %}
 
 

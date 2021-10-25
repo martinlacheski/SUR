@@ -53,5 +53,3 @@ class respuestaTrabajoFinalizado(models.Model):
         db_table = 'bot_respuestaTrabajoFinalziado'
         ordering = ['fechaRespuesta']
 
-
-# Create your models here.

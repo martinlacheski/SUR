@@ -1,6 +1,6 @@
 # Django
 from django.core.management.base import BaseCommand, CommandError
-from django.core.exceptions import *
+from django.core.exceptions import ObjectDoesNotExist
 
 # Telegram
 from typing import Union, List
@@ -161,7 +161,7 @@ class Command(BaseCommand):
                                                    "a\n\n ``` /registroCliente 20346735739 ``` "
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
-        # Procesa todos los botones en los mensajes
+        # Procesa todas las respuestas en botones en los mensajes
         def button(update, context):
             query = update.callback_query
             # Vemos quién nos respondió y acorde a ello hacemos cosas
@@ -192,42 +192,82 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 try:
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
-                    print("aún no están definidas las acciones de los usuarios")
+                    mensaje = generarReporte(query.data)
+                    hoy = datetime.date.today()
+                    if mensaje['tipo'] == 'venta':
+                        bot.send_message(text="Este es el reporte que solicitaste!\n\n ⬆ Ventas al día de la fecha " +
+                                            str(hoy.day) + "\-" + str(hoy.month) + "\-" + str(hoy.year) + "\n\n"
+                                              "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
+                                              "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
+                                              "``` Total servicios\: \$``` " + str(int(mensaje['totalServicios'])) + " pesos\n" +
+                                              "``` Cant\. ventas\: ``` " + str(int(mensaje['cantVentas'])) + "\n",
+                                                parse_mode=telegram.ParseMode.MARKDOWN_V2,
+                                                chat_id=usuario.chatIdUsuario)
+                    if mensaje['tipo'] == "compra":
+                        bot.send_message(text="Este es el reporte que solicitaste!\n\n ⬇ Compras al día de la fecha " +
+                                            str(hoy.day) + "\-" + str(hoy.month) + "\-" + str(hoy.year) + "\n\n"
+                                              "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
+                                              "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
+                                              "``` Cant\. compras\: ``` " + str(int(mensaje['cantCompras'])) + "\n",
+                                         parse_mode=telegram.ParseMode.MARKDOWN_V2,
+                                         chat_id=usuario.chatIdUsuario)
+                    if mensaje['tipo'] == "trabajosPlanif":
+                        bot.send_message(text="Este es el reporte que solicitaste!\n\n 📅 Estado de trabajos para"
+                                              " planificación desde " + mensaje['planifDesde'] + " hasta " +
+                                              mensaje['planifHasta'] + "\n\n" + mensaje['mensaje'],
+                                        chat_id=usuario.chatIdUsuario)
+                    if mensaje['tipo'] == "trabajosDia":
+                        bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Estado de trabajos del día de" 
+                                              " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
+                                         chat_id=usuario.chatIdUsuario)
+
+
                 except ObjectDoesNotExist:
                     print("no está registrado")
 
+        # Procesa los mensajes que NO son comandos.
         def respuestaDefault(update, context):
             msjRecibido = str(update.message.text).upper()
 
-            if (msjRecibido == 'HOLA'):
-                channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)('telegram_group', {
-                    "type": "receive",
-                    "text": str(msjRecibido),
-                })
-            else:
+            try:
+                user_gerencial = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
+                esUser = True
+            except ObjectDoesNotExist:
                 try:
                     cliente = Clientes.objects.get(chatIdCliente=update.effective_chat.id)
-                    msjRecibido = str(update.message.text).upper()
-                    if msjRecibido == 'TRABAJOS':
-                        trabajosCliente = Trabajos.objects.filter(cliente=cliente)
-                        if trabajosCliente:
-                            update.message.reply_text(mandarTrabajos(trabajosCliente))
-                        else:
-                            update.message.reply_text("Hola " + str(cliente.razonSocial) + "👋!\n"
-                                                      "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
-                    else:
-                        update.message.reply_text(text=str(cliente.razonSocial) + " no entendí lo que dijiste 🤨\n"
-                                                                                  "Recordá que únicamente respondo a la palabra:\n\n ```trabajos``` \n\n"
-                                                                                  " la cual tenes que enviar en un único mensaje\."
-                                                  ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
+                    esUser = False
                 except ObjectDoesNotExist:
-                    try:
-                        usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
-                        update.message.reply_text("Hola " + str(usuario.username) + "!")
-                    except ObjectDoesNotExist:
-                        update.message.reply_text("🚫 No estás registrado en el Sistema. Este inconveniente será reportado")
-                        personaNoRegistrada(update.message.from_user.username, update.message.from_user.first_name)
+                    bot.send_message(chat_id=update.effective_chat.id,
+                                     text="No tenes permiso para interactuar conmigo.")
+                    personaNoRegistrada(update.message.from_user.username, update.message.from_user.first_name)
+
+            # palabras que puede usar un user
+            if esUser:
+                if msjRecibido == 'HOY':
+                    botones = armarBotonesConsulta()
+                    bot.send_message(chat_id=user_gerencial.chatIdUsuario, text="📈 Estos son los "
+                                     "reportes que tengo disponibles para vos:\n", reply_markup=botones)
+                else:
+                    update.message.reply_text(text=str(user_gerencial.username) + " no entendí lo que dijiste 🤨\n"
+                                              "Recordá que únicamente respondo a la palabra:\n\n ```hoy``` \n\n"
+                                              " la cual tenes que enviar en un único mensaje\.",
+                                              parse_mode=telegram.ParseMode.MARKDOWN_V2)
+
+            # Palabras que puede usar un cliente
+            else:
+                if msjRecibido == 'TRABAJOS':
+                    trabajosCliente = Trabajos.objects.filter(cliente=cliente)
+                    if trabajosCliente:
+                        update.message.reply_text(mandarTrabajos(trabajosCliente))
+                    else:
+                        update.message.reply_text("Hola " + str(cliente.razonSocial) + "👋!\n"
+                                                   "😅Todavía no tenemos registrado ningún trabajo a tu nombre.")
+                else:
+                    update.message.reply_text(text=str(cliente.razonSocial) + " no entendí lo que dijiste 🤨\n"
+                                              "Recordá que únicamente respondo a la palabra:\n\n ```trabajos``` \n\n"
+                                              " la cual tenes que enviar en un único mensaje\."
+                                              ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
+
 
 
 
@@ -239,8 +279,6 @@ class Command(BaseCommand):
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                             level=logging.INFO)
 
-
-
         # ** COMANDOS **
         start_handler = CommandHandler('registroCliente', registroCliente)
         start_handler2 = CommandHandler('registroUsuario', registroUsuario)
@@ -250,54 +288,3 @@ class Command(BaseCommand):
         dispatcher.add_handler(start_handler4)
         dispatcher.add_handler(CallbackQueryHandler(button))
         updater.start_polling()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# def start(update, context):
-#     context.bot.send_message(chat_id=update.effective_chat.id, text="¡Hola! Esta es la primera"
-#                                                                     " vez que nos encontramos. Encantado de conocerte")
-
-
-
-
-#context.bot.send_message(chat_id=update.effective_chat.id, text="Hola! Soy el asistente de la retificadora Sur Express. Me están construyendo, todavía soy un poco bobo")
-
-#context.args[0]
-
-
-#context.bot.send_message(chat_id=update.effective_chat.id, text=)
-
-
-
