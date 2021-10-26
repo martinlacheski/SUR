@@ -4,6 +4,7 @@ var tablaProductos;
 var pedido = {
     items: {
         fecha: '',
+        fechaLimite: '',
         subtotal: 0.00,
         iva: 0.00,
         total: 0.00,
@@ -167,6 +168,13 @@ $(document).ready(function () {
             locale: 'es',
             maxDate: moment(),
         });
+        //Inicialización de datetimepicker
+        $('#fechaLimite').datetimepicker({
+            format: 'DD-MM-YYYY HH:mm',
+            locale: 'es',
+            minDate: moment(),
+            icons: {time: 'far fa-clock' },
+        });
         //Buscamos el Listado de los productos que deben reponerse por ajax
         $.ajax({
             url: window.location.pathname,
@@ -186,6 +194,10 @@ $(document).ready(function () {
     } else {
         $('#fecha').datetimepicker({
             format: 'DD-MM-YYYY',
+            locale: 'es',
+        });
+        $('#fechaLimite').datetimepicker({
+            format: 'DD-MM-YYYY HH:mm',
             locale: 'es',
         });
         //Buscamos el detalle de los productos por ajax
@@ -237,6 +249,19 @@ $(function () {
                 //pass
             }, function () {
                 $('input[name="fecha"]').val(moment().format('DD-MM-YYYY'));
+            });
+        }
+    });
+    //Verificamos que la fechaLimite no sea menor a la fecha de Solicitud de Pedido
+    $('input[name="fechaLimite"]').on('blur', function () {
+        var fecha = $('input[name="fecha"]').val();
+        var fechaPedido = moment(moment(fecha, 'DD-MM-YYYY')).format('YYYY-MM-DD HH:mm');
+        var fechaLimite = moment(moment($('input[name="fechaLimite"]').val(), 'DD-MM-YYYY HH:mm')).format('YYYY-MM-DD HH:mm');
+        if (fechaPedido > fechaLimite) {
+            error_action('Error', 'La fecha límite no puede ser inferior a la fecha de pedido', function () {
+                //pass
+            }, function () {
+                $('input[name="fechaLimite"]').val(moment().format('DD-MM-YYYY HH:mm'));
             });
         }
     });
@@ -855,6 +880,7 @@ $(function () {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                     //realizamos el pedido mediante Ajax
                     pedido.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                    pedido.items.fechaLimite = moment(moment($('input[name="fechaLimite"]').val(), 'DD-MM-YYYY HH:mm')).format('YYYY-MM-DD HH:mm');
                     var parameters = new FormData();
                     //Pasamos la accion ADD
                     parameters.append('action', $('input[name="action"]').val());

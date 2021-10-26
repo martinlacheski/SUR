@@ -95,6 +95,8 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 presupuestos = []
                 try:
                     presupuestos = reporte['presupuestos']
+                    for presupuesto in presupuestos:
+                        presupuesto['total'] = float(presupuesto['total'])
                 except Exception as e:
                     pass
                 total = 0
@@ -103,7 +105,9 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                         if i['estado']:
                             total += float(i['total'])
                     total = round(total, 2)
+                    print(total)
                 except Exception as e:
+                    print(str(e))
                     pass
                 # Pasamos a letras el total
                 totalEnLetras = NumeroALetras(total).a_letras.upper()

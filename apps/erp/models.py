@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from django.utils.timezone import now
 
 from apps.geografico.models import Localidades
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
@@ -419,6 +420,7 @@ class DetalleProductosCompra(models.Model):
 #   Clase Pedidos de Solicitud de Productos
 class PedidosSolicitud(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
+    fechaLimite = models.DateTimeField(default=now(), verbose_name='Fecha Límite')
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)

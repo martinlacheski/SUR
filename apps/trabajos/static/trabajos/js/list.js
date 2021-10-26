@@ -780,7 +780,7 @@ $(function () {
         }
         //Asignamos las variables a la estructura
         reporte.items.cliente = $('select[name="selectCliente"]').val();
-        reporte.items.cliente = $('select[name="selectModelo"]').val();
+        reporte.items.modelo = $('select[name="selectModelo"]').val();
         reporte.items.fechaDesde = fechaInicio;
         reporte.items.fechaHasta = fechaFin;
         reporte.items.excluirEntregados = checkEntregados;
@@ -843,6 +843,7 @@ $(document).ready(function () {
             language: 'es',
             cancelLabel: 'Cancelar',
             applyLabel: 'Aplicar',
+            theme: 'bootstrap4',
         },
         //Remover Botones de Aplicar y Cancelar
         autoApply: true,

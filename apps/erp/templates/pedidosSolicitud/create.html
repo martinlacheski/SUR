@@ -58,13 +58,19 @@
                         <div class="card card-secondary">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-10">
-
-                                    </div>
                                     <div class="form-group col-2">
                                         <label>(*) Fecha:</label>
                                         <div class="col-12" id="fecha" data-target-input="nearest">
                                             {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-1">
+
+                                    </div>
+                                    <div class="form-group col-3">
+                                        <label>(*) Fecha y Hora Límite:</label>
+                                        <div class="col-12" id="fechaLimite" data-target-input="nearest">
+                                            {{ form.fechaLimite|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                         </div>
                                     </div>
                                 </div>

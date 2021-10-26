@@ -125,6 +125,8 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 trabajos = []
                 try:
                     trabajos = reporte['trabajos']
+                    for trabajo in trabajos:
+                        trabajo['total'] = float(trabajo['total'])
                 except Exception as e:
                     pass
                 total = 0
@@ -137,7 +139,6 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                         # Comparamos el nombre del estado de trabajo con el estado de trabajo en parametros
                         if estadoTrabajo['nombre'] != estado.estadoCancelado.nombre:
                             total += float(i['total'])
-                    total = round(total, 2)
                 except Exception as e:
                     pass
                 # Pasamos a letras el total

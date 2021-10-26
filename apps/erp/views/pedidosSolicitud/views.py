@@ -143,6 +143,7 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     pedido = PedidosSolicitud()
                     pedido.fecha = formPedidoRequest['fecha']
+                    pedido.fechaLimite = formPedidoRequest['fechaLimite']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
                     pedido.iva = float(formPedidoRequest['iva'])
                     pedido.total = float(formPedidoRequest['total'])
@@ -276,6 +277,7 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     # Obtenemos la Solicitud de Pedido que se esta editando
                     pedido = self.get_object()
                     pedido.fecha = formPedidoRequest['fecha']
+                    pedido.fechaLimite = formPedidoRequest['fechaLimite']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
                     pedido.iva = float(formPedidoRequest['iva'])
                     pedido.total = float(formPedidoRequest['total'])
@@ -407,13 +409,13 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                 producto = Productos.objects.get(id=request.POST['pk'])
                 data = producto.costo
             elif action == 'confirm':
-
                 with transaction.atomic():
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     # Obtenemos la Solicitud de Pedido que se esta editando
                     pedido = self.get_object()
                     # print(reverse_lazy('erp:pedidos_solicitudes_update') + '/' + str(pedido.id) + '/')
                     pedido.fecha = formPedidoRequest['fecha']
+                    pedido.fechaLimite = formPedidoRequest['fechaLimite']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
                     pedido.iva = float(formPedidoRequest['iva'])
                     pedido.total = float(formPedidoRequest['total'])

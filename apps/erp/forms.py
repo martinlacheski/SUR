@@ -1,6 +1,4 @@
-from datetime import datetime
-
-from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
+from django.forms import ModelForm, TextInput, Select, EmailInput, DateInput, DateTimeInput
 
 from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras, \
     PedidosSolicitud
@@ -541,6 +539,14 @@ class PedidosSolicitudForm(ModelForm):
                     'class': 'form-control datetimepicker-input',
                     'id': 'fecha',
                     'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'fechaLimite': DateTimeInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fechaLimite',
+                    'data-target': '#fechaLimite',
                     'data-toggle': 'datetimepicker'
                 }
             ),

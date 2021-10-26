@@ -187,6 +187,14 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
                 data = []
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 data.append(parametros.toJSON())
+            elif action == 'get_fechas_planificacion':
+                try:
+                    planificacion = PlanificacionesSemanales.objects.get(id=self.get_object().id)
+                    # data['inicio'] = planificacion.fechaInicio
+                    data['inicio'] = (planificacion.fechaInicio).strftime('%d-%m-%Y')
+                    data['fin'] = (planificacion.fechaFin).strftime('%d-%m-%Y')
+                except Exception as e:
+                    data['error'] = str(e)
             # Metodo para obtener el detalle de los trabajos en la planificacion para mostrar en el template
             elif action == 'get_detalle_planificacion':
                 data = []
@@ -207,15 +215,9 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
                 # Filtramos por rango de fecha y excluimos el ID de la planificacion actual
                 try:
                     planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin]).exclude(id=planificacionID)
-                    for i in planificaciones:
-                        print(i.id)
                     check = True
-                    print(planificaciones)
                     planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin]).exclude(id=planificacionID)
-                    for i in planificaciones:
-                        print(i.id)
                     check = True
-                    print(planificaciones)
                 except Exception as e:
                     check = False
                 data['check'] = check

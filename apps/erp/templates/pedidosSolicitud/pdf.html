@@ -75,6 +75,7 @@
             <p class="text-right">
                 <b>Número:</b> {{ pedido.id }}<br>
                 <b>Fecha:</b> {{ pedido.fecha|date:'d-m-Y' }}<br>
+                <b>Fecha y Hora Límite:</b> {{ pedido.fechaLimite|date:'d-m-Y H:m' }}<br>
                 {% if pedido.estado %}
                     <b>Estado:</b> Confirmado <br>
                 {% elif pedido.estado == None %}

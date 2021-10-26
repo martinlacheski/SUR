@@ -2,6 +2,8 @@
     asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
     ejecutar un random
 
+--------------------------------------------------------------------------------------------------------------------
+
 *** TRABAJOS CONTROLAR QUE NO PERMITA CONFIRMAR UN TRABAJO SIN SERVICIOS REALIZADOS
 
 --------------------------------------------------------------------------------------------------------------------
@@ -14,11 +16,7 @@
 
 *REPORTES
 
-REVISAR LA GENERACION con LOS CONTROLES DE CANCELADO - SOLO EN TRABAJOS AGREGAR EL CONTROL --- OK
-
 REVISAR TEMA DE FECHAS EN TRABAJO QUE GUARDE bien en todos los estados
-
-Mostrar Cancelados de entrada, en vez de excluidos.
 
 Agregar a los importes los puntos $123.456,90 - Revisar en los Detalles
 

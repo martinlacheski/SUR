@@ -7,6 +7,8 @@ var estadoCancelado = 0;
 var tablaTrabajos;
 var tablaPlanificacion;
 var ordenTrabajos = 0;
+var fechaInicio = '';
+var fechaFin = '';
 var planificacion = {
     items: {
         fechaInicio: '',
@@ -91,43 +93,42 @@ function searchParametros() {
 
 $(document).ready(function () {
     //Extendemos el Datatables para asignar el formato de fecha
-    $.fn.dataTable.moment( 'DD-MM-YYYY' );
-
-    //Inicialización de datetimepicker
-    $('#fechaInicio').datetimepicker({
-        format: 'DD-MM-YYYY',
-        date: moment(),
-        locale: 'es',
-        minDate: moment(),
-    });
+    $.fn.dataTable.moment('DD-MM-YYYY');
     var accion = $('input[name="action"]').val();
     if (accion === 'add') {
         //Inicialización de datetimepicker
-        $('#fechaInicio').datetimepicker({
-            format: 'DD-MM-YYYY',
-            date: moment(),
-            locale: 'es',
-            minDate: moment(),
-        });
-        //Inicialización de datetimepicker
-        $('#fechaFin').datetimepicker({
-            format: 'DD-MM-YYYY',
-            date: moment(),
-            locale: 'es',
-            minDate: moment(),
+        $('input[name="rangoFechas"]').daterangepicker({
+            // autoUpdateInput: false,
+            locale: {
+                placeholder: 'Seleccione Rango de Fechas',
+                format: 'DD-MM-YYYY',
+                language: 'es',
+                cancelLabel: 'Cancelar',
+                applyLabel: 'Aplicar',
+                theme: 'bootstrap4',
+                minDate: moment(),
+            },
+            //Remover Botones de Aplicar y Cancelar
+            autoApply: true,
         });
     } else {
-        //Inicialización de datetimepicker
-        $('#fechaInicio').datetimepicker({
-            format: 'DD-MM-YYYY',
-            locale: 'es',
-
-        });
-        //Inicialización de datetimepicker
-        $('#fechaFin').datetimepicker({
-            format: 'DD-MM-YYYY',
-            locale: 'es',
-
+        //Buscamos la fecha de inicio y de fin
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_fechas_planificacion',
+            },
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            dataType: 'json',
+            success: function (data) {
+                fechaInicio = data.inicio;
+                fechaFin = data.fin;
+                $('input[name="rangoFechas"]').val(data.inicio + ' - ' + data.fin).attr('disabled', true);
+            }
         });
         //Buscamos el detalle de trabajos de la planificacion por ajax
         $.ajax({
@@ -303,7 +304,6 @@ $(function () {
                 //Volvemos a listar los trabajos
                 planificacion.listTrabajos();
             }
-
         })
         //Evento quitar trabajo de la planificacion
         .on('click', 'a[rel="remove"]', function () {
@@ -327,21 +327,10 @@ $(function () {
             // Permitimos al Datatables que los elementos sean de tipo SORTABLE
         });
 
-    //Chequeamos que la fecha de FIN sea mayor que la de INICIO
-    $('input[name="fechaFin"]').on('blur', function () {
-        var btn = document.getElementById('btnGuardar');
-        btn.disabled = true;
-        var inicio = $('input[name="fechaInicio"]').val();
-        var fin = $('input[name="fechaFin"]').val();
-        if (inicio >= fin) {
-            error_action('Error', 'La fecha de fin debe ser mayor que la fecha de inicio', function () {
-                //pass
-            }, function () {
-                //pass
-            });
-        } else {
-            btn.disabled = false;
-        }
+    //Aplicamos Filtro de Rango de FECHAS
+    $('input[name="rangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
+        fechaInicio = picker.startDate.format('DD-MM-YYYY');
+        fechaFin = picker.endDate.format('DD-MM-YYYY');
     });
 
     //Funcion Mostrar Errores del Formulario
@@ -373,15 +362,13 @@ $(function () {
     //Hacemos el envio del Formulario mediante AJAX
     $("#planificacionesForm").submit(function (e) {
         e.preventDefault();
-        var inicio = moment(moment($('input[name="fechaInicio"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-        var fin = moment(moment($('input[name="fechaFin"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
         if (planificacion.items.trabajos.length === 0) {
             error_action('Error', 'No hay trabajos planificados', function () {
                 //pass
             }, function () {
                 //pass
             });
-        } else if (inicio >= fin) {
+        } else if (fechaInicio >= fechaFin) {
             error_action('Error', 'La fecha de Fin debe ser mayor que la de inicio', function () {
                 //pass
             }, function () {
@@ -389,14 +376,13 @@ $(function () {
             });
         } else {
             //Buscamos si no hay otra planificacion en el rango de fechas ingresado
-
             $.ajax({
                 url: window.location.pathname,
                 type: 'POST',
                 data: {
                     'action': 'check_fechas_planificacion',
-                    'inicio': inicio,
-                    'fin': fin,
+                    'inicio': moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD'),
+                    'fin': moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD'),
                 },
                 dataType: 'json',
                 headers: {
@@ -407,8 +393,8 @@ $(function () {
                 if (chequear == true) {
                     confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                             //realizamos la creacion de la PLanificacion mediante Ajax
-                            planificacion.items.fechaInicio = moment(moment($('input[name="fechaInicio"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                            planificacion.items.fechaFin = moment(moment($('input[name="fechaFin"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                            planificacion.items.fechaInicio = moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                            planificacion.items.fechaFin = moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD');
                             var parameters = new FormData();
                             //Pasamos la Accion
                             parameters.append('action', $('input[name="action"]').val());
