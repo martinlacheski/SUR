@@ -20,7 +20,7 @@ REVISAR TEMA DE FECHAS EN TRABAJO QUE GUARDE bien en todos los estados
 
 Mostrar Cancelados de entrada, en vez de excluidos.
 
-Agregar a los importes los puntos $123.456,90
+Agregar a los importes los puntos $123.456,90 - Revisar en los Detalles
 
 --------------------------------------------------------------------------------------------------------------------
 

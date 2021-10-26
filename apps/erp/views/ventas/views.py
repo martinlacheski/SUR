@@ -87,6 +87,11 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                 ventas = []
                 try:
                     ventas = reporte['ventas']
+                    for venta in ventas:
+                        venta['subtotal'] = float(venta['subtotal'])
+                        venta['iva'] = float(venta['iva'])
+                        venta['percepcion'] = float(venta['percepcion'])
+                        venta['total'] = float(venta['total'])
                 except Exception as e:
                     pass
 

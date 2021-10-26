@@ -73,6 +73,11 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
                 compras = []
                 try:
                     compras = reporte['compras']
+                    for compra in compras:
+                        compra['subtotal'] = float(compra['subtotal'])
+                        compra['iva'] = float(compra['iva'])
+                        compra['percepcion'] = float(compra['percepcion'])
+                        compra['total'] = float(compra['total'])
                 except Exception as e:
                     pass
 
