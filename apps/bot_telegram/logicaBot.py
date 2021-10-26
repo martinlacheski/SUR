@@ -1,11 +1,17 @@
+# Django y Python
 import datetime
 from apps.usuarios.models import Usuarios
 from apps.erp.models import Clientes
 from django.core.exceptions import *
+
+# Proyecto
 from apps.trabajos.models import *
 from apps.bot_telegram.models import *
 from apps.parametros.models import EstadoParametros
 from apps.notif_channel.models import notificacionesGenerales
+from apps.erp.models import Ventas, Compras, DetalleProductosVenta, DetalleServiciosVenta, DetalleProductosCompra
+# Telegram
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 # Socket
 from channels.layers import get_channel_layer
@@ -151,6 +157,85 @@ def notificarSistema(titulo, descripcion):
     async_to_sync(channel_layer.group_send)('telegram_group', {"type": "receive",
                                                                "titulo": titulo,
                                                                "id_notif": str(n.id)})
+
+def armarBotonesConsulta():
+    keyboard = [
+        [InlineKeyboardButton("⬆ Ventas del día", callback_data="ventasDia")],
+        [InlineKeyboardButton("⬇ Compras del día", callback_data="comprasDia")],
+        [InlineKeyboardButton("📅 Trabajos. ult. Planif.", callback_data="trabajosPlanif")],
+        [InlineKeyboardButton("🛠 Trabajos del día", callback_data="trabajosDia")],
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    return reply_markup
+
+def generarReporte(eleccion):
+    reporteDet = {}
+    totalServicios = 0
+    totalProductos = 0
+    if eleccion == 'ventasDia':
+        ventas = Ventas.objects.filter(fecha=datetime.date.today())
+        cantVentas = 0
+        for v in ventas:
+            cantVentas += 1
+            detVentaServicios = DetalleServiciosVenta.objects.filter(venta=v)
+            detVentaProductos = DetalleProductosVenta.objects.filter(venta=v)
+            for detS in detVentaServicios:
+                totalServicios += detS.subtotal
+            for detP in  detVentaProductos:
+                totalProductos += detP.subtotal
+        reporteDet['totalDia'] = totalProductos + totalServicios
+        reporteDet['totalProductos'] = totalProductos
+        reporteDet['totalServicios'] = totalServicios
+        reporteDet['cantVentas'] = cantVentas
+        reporteDet['tipo'] = "venta"
+        return reporteDet
+
+    if eleccion == 'comprasDia':
+        compras = Compras.objects.filter(fecha=datetime.date.today())
+        cantCompras = 0
+        total = 0
+        for c in compras:
+            cantCompras +=1
+            detCompraProductos = DetalleProductosCompra.objects.filter(compra=c)
+            for detP in detCompraProductos:
+                total += detP.subtotal
+        reporteDet['totalDia'] = total
+        reporteDet['totalProductos'] = total
+        reporteDet['cantCompras'] = cantCompras
+        reporteDet['tipo'] = "compra"
+        return reporteDet
+
+    if eleccion == 'trabajosPlanif':
+        mensaje = ""
+        ultPlanificacion = PlanificacionesSemanales.objects.latest('id')
+        detPlanificacion = DetallePlanificacionesSemanales.objects.filter(planificacion=ultPlanificacion)
+        for det in detPlanificacion:
+            mensaje += " ___ TRABAJO N° " + str(det.trabajo.id) + "___\n"
+            mensaje += "*️⃣  Marca: " + str(det.trabajo.modelo.marca.nombre) + "\n"
+            mensaje += "*️⃣️ Modelo: " + str(det.trabajo.modelo.nombre) + "\n"
+            mensaje += "📝 Observaciones: " + str(det.trabajo.observaciones) + "\n"
+            mensaje += "🛠️ Completado al : " + porcentajeTrabajo(det.trabajo) + "%\n"
+            mensaje += "\n\n"
+
+        reporteDet['mensaje'] = mensaje
+        reporteDet['planifDesde'] = str(ultPlanificacion.fechaInicio.strftime('%d-%m-%Y'))
+        reporteDet['planifHasta'] = str(ultPlanificacion.fechaFin.strftime('%d-%m-%Y'))
+        reporteDet['tipo'] = "trabajosPlanif"
+        return reporteDet
+
+    if eleccion == 'trabajosDia':
+        mensaje = ""
+        trabajos = Trabajos.objects.filter(fechaEntrada=datetime.date.today())
+        for t in trabajos:
+            mensaje += " ___ TRABAJO N° " + str(t.id) + "___\n"
+            mensaje += "*️⃣  Marca: " + str(t.modelo.marca.nombre) + "\n"
+            mensaje += "*️⃣️ Modelo: " + str(t.modelo.nombre) + "\n"
+            mensaje += "📝 Observaciones: " + str(t.observaciones) + "\n"
+            mensaje += "🛠️ Completado al : " + porcentajeTrabajo(t) + "%\n"
+            mensaje += "\n\n"
+        reporteDet['mensaje'] = mensaje
+        reporteDet['tipo'] = "trabajosDia"
+        return reporteDet
 
 
 
