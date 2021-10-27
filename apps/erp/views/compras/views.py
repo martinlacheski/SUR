@@ -252,8 +252,9 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                         det.costo = float(i['costo'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Asignamos el Stock de los productos
-                        det.producto.stockReal += det.cantidad
+                        if det.producto.descuentaStock == True:
+                            # Asignamos el Stock de los productos
+                            det.producto.stockReal += det.cantidad
                         # Asignamos el costo de costo nuevo segun el importe de compra
                         det.producto.costo = det.costo
                         # Asignamos el precio de venta en base al costo
@@ -388,8 +389,9 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                     compra.save()
                     # Reestablecemos el stock de los productos
                     for prod in DetalleProductosCompra.objects.filter(compra_id=self.get_object().id):
-                        prod.producto.stockReal -= prod.cantidad
-                        prod.producto.save()
+                        if prod.producto.descuentaStock == True:
+                            prod.producto.stockReal -= prod.cantidad
+                            prod.producto.save()
                     # Eliminamos todos los productos del Detalle
                     compra.detalleproductoscompra_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
@@ -401,8 +403,9 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                         det.costo = float(i['costo'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Actualizamos el Stock de los Productos del Detalle
-                        det.producto.stockReal += det.cantidad
+                        if det.producto.descuentaStock == True:
+                            # Actualizamos el Stock de los Productos del Detalle
+                            det.producto.stockReal += det.cantidad
                         # Asignamos el costo de costo nuevo segun el importe de compra
                         det.producto.costo = det.costo
                         # Asignamos el precio de venta en base al costo

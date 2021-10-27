@@ -311,9 +311,10 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Descontamos el Stock de los productos
-                        det.producto.stockReal -= det.cantidad
-                        det.producto.save()
+                        if det.producto.descuentaStock == True:
+                            # Descontamos el Stock de los productos
+                            det.producto.stockReal -= det.cantidad
+                            det.producto.save()
                     for i in formVentaRequest['servicios']:
                         det = DetalleServiciosVenta()
                         det.venta_id = venta.id
@@ -510,8 +511,9 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     venta.save()
                     # Reestablecemos el stock de los productos
                     for prod in DetalleProductosVenta.objects.filter(venta_id=self.get_object().id):
-                        prod.producto.stockReal += prod.cantidad
-                        prod.producto.save()
+                        if prod.producto.descuentaStock == True:
+                            prod.producto.stockReal += prod.cantidad
+                            prod.producto.save()
                     # Eliminamos todos los productos del Detalle
                     venta.detalleproductosventa_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
@@ -523,9 +525,10 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Descontamos el Stock de los Productos del Detalle
-                        det.producto.stockReal -= det.cantidad
-                        det.producto.save()
+                        if det.producto.descuentaStock == True:
+                            # Descontamos el Stock de los Productos del Detalle
+                            det.producto.stockReal -= det.cantidad
+                            det.producto.save()
                     # Eliminamos del detalle todos los Servicios del Detalle
                     venta.detalleserviciosventa_set.all().delete()
                     # Volvemos a cargar todos los Servicios del Detalle

@@ -10,6 +10,10 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
+* EN COMPRAS Y VENTAS VER DE QUE NO SUME NI RESTE STOCK SI EL PRODUCTO ES UN SERVICIO QUE SE COMPRA O VENDE
+
+--------------------------------------------------------------------------------------------------------------------
+
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
 *AUDITORIA

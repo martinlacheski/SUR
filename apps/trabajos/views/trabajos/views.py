@@ -1375,9 +1375,10 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Descontamos el Stock de los productos
-                        det.producto.stockReal -= det.cantidad
-                        det.producto.save()
+                        if det.producto.descuentaStock == True:
+                            # Descontamos el Stock de los productos
+                            det.producto.stockReal -= det.cantidad
+                            det.producto.save()
                     # Creamos el detalle de Servicios
                     for i in formTrabajoRequest['servicios']:
                         det = DetalleServiciosVenta()
