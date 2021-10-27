@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, EmailInput, DateInput, DateTimeInput
+from django.forms import ModelForm, TextInput, Select, EmailInput, DateInput, DateTimeInput, CheckboxInput
 
 from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras, \
     PedidosSolicitud
@@ -181,6 +181,18 @@ class ProductosForm(ModelForm):
             'precioVenta': TextInput(attrs={
                 'class': 'form-control',
             }),
+            'esInsumo': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
+            'descuentaStock': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
         }
 
     def save(self, commit=True):
@@ -227,6 +239,9 @@ class ServiciosForm(ModelForm):
                 'class': 'form-control',
             }),
             'precioVenta': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'esfuerzo': TextInput(attrs={
                 'class': 'form-control',
             }),
         }

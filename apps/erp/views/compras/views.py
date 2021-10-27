@@ -80,7 +80,6 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
                         compra['total'] = float(compra['total'])
                 except Exception as e:
                     pass
-
                 iva = 0
                 try:
                     for i in compras:

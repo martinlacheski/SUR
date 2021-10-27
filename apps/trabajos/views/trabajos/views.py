@@ -139,6 +139,7 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                         # Comparamos el nombre del estado de trabajo con el estado de trabajo en parametros
                         if estadoTrabajo['nombre'] != estado.estadoCancelado.nombre:
                             total += float(i['total'])
+                        total = round(total,2)
                 except Exception as e:
                     pass
                 # Pasamos a letras el total

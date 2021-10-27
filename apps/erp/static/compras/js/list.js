@@ -4,7 +4,7 @@ var tablaProductos;
 //Creamos variables auxiliares para el reporte
 var fechaInicio = '';
 var fechaFin = '';
-var checkCanceladas = false;
+var checkCanceladas = true;
 //Creamos una estructura para el Reporte
 var reporte = {
     items: {
@@ -56,9 +56,9 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     if (row.estadoCompra) {
-                        return '<span class="badge badge-success">' + ' Realizada' + '</span>'
+                        return '<span class="badge badge-success">' + ' REALIZADA' + '</span>'
                     }
-                    return '<span class="badge badge-danger">' + ' Cancelada' + '</span>'
+                    return '<span class="badge badge-danger">' + ' CANCELADA' + '</span>'
                 }
             },
             {
@@ -116,6 +116,24 @@ $(function () {
                     $('.selectProveedor').append(newOption).trigger('change');
                 });
             });
+            //Excluimos los cancelados
+            var verdadero = ' CANCELADA';
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkCancelados = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[1]);
+                    //Comparamos contra el renglon
+                    if (verdadero === estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaCompra.draw();
         }
     });
 
@@ -327,7 +345,7 @@ $(document).ready(function () {
         theme: "bootstrap4",
         language: 'es'
     });
-    document.getElementById("excluirCanceladas").checked = false;
+    document.getElementById("excluirCanceladas").checked = true;
     //Inicializamos el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').daterangepicker({
         // autoUpdateInput: false,

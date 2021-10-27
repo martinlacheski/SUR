@@ -105,7 +105,6 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                         if i['estado']:
                             total += float(i['total'])
                     total = round(total, 2)
-                    print(total)
                 except Exception as e:
                     print(str(e))
                     pass

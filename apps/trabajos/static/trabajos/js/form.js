@@ -1916,8 +1916,8 @@ $(function () {
             }
         }
         //Comprobamos que exista al menos un producto o un servicio
-        if (trabajo.items.productos.length === 0 && trabajo.items.servicios.length === 0) {
-            error_action('Error', 'Debe al menos tener un producto o servicio en sus detalles', function () {
+        if (trabajo.items.servicios.length === 0) {
+            error_action('Error', 'Debe al menos tener un servicio en su detalle', function () {
                 //pass
             }, function () {
                 //pass

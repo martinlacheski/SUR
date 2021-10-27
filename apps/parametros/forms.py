@@ -289,6 +289,9 @@ class EstadosForm(ModelForm):
                     'style': 'text-transform: uppercase',
                 }
             ),
+            'orden': TextInput(attrs={
+                'class': 'form-control',
+            }),
         }
 
     def save(self, commit=True):

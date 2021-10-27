@@ -8,7 +8,7 @@ var select_modelos = $('select[name="selectModelo"]');
 //Creamos variables auxiliares para el reporte
 var fechaInicio = '';
 var fechaFin = '';
-var checkCancelados = false;
+var checkCancelados = true;
 var checkNoConfirmados = false;
 //Creamos una estructura para el Reporte
 var reporte = {
@@ -60,11 +60,11 @@ $(function () {
                 class: 'text-center',
                 render: function (data, type, row) {
                     if (row.estado == true) {
-                        return '<span class="badge badge-success">' + ' Confirmado' + '</span>'
+                        return '<span class="badge badge-success">' + ' CONFIRMADO' + '</span>'
                     } else if (row.estado == false) {
-                        return '<span class="badge badge-danger">' + ' Cancelado' + '</span>'
+                        return '<span class="badge badge-danger">' + ' CANCELADO' + '</span>'
                     } else {
-                        return '<span class="badge badge-warning">' + ' No confirmado' + '</span>'
+                        return '<span class="badge badge-warning">' + ' NO CONFIRMADO' + '</span>'
                     }
                 }
             },
@@ -142,6 +142,24 @@ $(function () {
                     $('.selectModelo').append(newOption).trigger('change');
                 });
             });
+            //Excluimos los cancelados
+            var verdadero = ' CANCELADO';
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkCancelados = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[1]);
+                    //Comparamos contra el renglon
+                    if (verdadero === estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaPresupuesto.draw();
         }
     });
 
@@ -479,7 +497,7 @@ $(document).ready(function () {
         language: 'es'
     });
     document.getElementById("excluirNoConfirmados").checked = false;
-    document.getElementById("excluirCancelados").checked = false;
+    document.getElementById("excluirCancelados").checked = true;
     //Inicializamos el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').daterangepicker({
         // autoUpdateInput: false,

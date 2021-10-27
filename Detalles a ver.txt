@@ -4,27 +4,13 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
-*** TRABAJOS CONTROLAR QUE NO PERMITA CONFIRMAR UN TRABAJO SIN SERVICIOS REALIZADOS
-
---------------------------------------------------------------------------------------------------------------------
-
 *PEDIDOS - TERMINAR
 
 * Resolver la forma de generar los detalles de las cotizaciones de los proveedores
 
 --------------------------------------------------------------------------------------------------------------------
 
-*REPORTES
-
-REVISAR TEMA DE FECHAS EN TRABAJO QUE GUARDE bien en todos los estados
-
-Agregar a los importes los puntos $123.456,90 - Revisar en los Detalles
-
---------------------------------------------------------------------------------------------------------------------
-
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
-
-* EN SERVICIOS AGREGAR UN CAMPO DE PONDERACION por esfuerzo de PERSONAS
 
 *AUDITORIA
 

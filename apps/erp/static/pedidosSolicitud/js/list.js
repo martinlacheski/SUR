@@ -35,11 +35,11 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     if (row.estado == true) {
-                        return '<span class="badge badge-success">' + ' Confirmado' + '</span>'
+                        return '<span class="badge badge-success">' + ' CONFIRMADO' + '</span>'
                     } else if (row.estado == false) {
-                        return '<span class="badge badge-danger">' + ' Cancelado' + '</span>'
+                        return '<span class="badge badge-danger">' + ' CANCELADO' + '</span>'
                     } else {
-                        return '<span class="badge badge-warning">' + ' No confirmado' + '</span>'
+                        return '<span class="badge badge-warning">' + ' NO CONFIRMADO' + '</span>'
                     }
                 }
             },

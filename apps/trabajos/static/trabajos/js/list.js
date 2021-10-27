@@ -18,7 +18,7 @@ var checkPendientes = false;
 var checkPlanificados = false;
 var checkEnProceso = false;
 var checkFinalizados = false;
-var checkCancelados = false;
+var checkCancelados = true;
 var checkEntregados = false;
 //Creamos una estructura para el Reporte
 var reporte = {
@@ -219,6 +219,24 @@ $(function () {
                     $('.selectModelo').append(newOption).trigger('change');
                 });
             });
+            //Excluimos los cancelados
+            var verdadero = 'CANCELADO';
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkCancelados = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[1]);
+                    //Comparamos contra el renglon
+                    if (verdadero === estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaTrabajo.draw();
         }
     });
 
@@ -710,7 +728,7 @@ $(function () {
                     var estado = (data[1]);
                     //Comparamos contra el renglon
                     if (verdadero === estado) {
-                       return true;
+                        return true;
                     }
                     return false;
                 }
@@ -771,7 +789,7 @@ $(function () {
         //Damos formato a la fecha para visualizar correctamente
         for (var i = 0; i < dataTrabajos.length; i++) {
             dataTrabajos[i].fechaEntrada = moment(moment(dataTrabajos[i].fechaEntrada, 'YYYY-MM-DD')).format('DD-MM-YYYY');
-            if (dataTrabajos[i].fechaSalida){
+            if (dataTrabajos[i].fechaSalida) {
                 dataTrabajos[i].fechaSalida = moment(moment(dataTrabajos[i].fechaSalida, 'YYYY-MM-DD')).format('DD-MM-YYYY');
             } else {
                 dataTrabajos[i].fechaSalida = 'PENDIENTE';
@@ -828,7 +846,7 @@ $(document).ready(function () {
     });
     //Excluir los generales
     document.getElementById("excluirEntregados").checked = false;
-    document.getElementById("excluirCancelados").checked = false;
+    document.getElementById("excluirCancelados").checked = true;
     //Ver los Particulares
     document.getElementById("verPendientes").checked = false;
     document.getElementById("verPlanificados").checked = false;

@@ -1,6 +1,5 @@
 from django.db import models
 from django.forms import model_to_dict
-from django.utils.timezone import now
 
 from apps.geografico.models import Localidades
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
@@ -179,6 +178,7 @@ class Productos(models.Model):
     ubicacion = models.CharField(max_length=100, null=True, blank=True, verbose_name='Ubicacion Física')
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
+    descuentaStock = models.BooleanField(default=True, verbose_name='¿Descuenta Stock?')
 
     def __str__(self):
         return self.get_full_name()
@@ -245,6 +245,7 @@ class Servicios(models.Model):
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Costo')
     iva = models.ForeignKey(TiposIVA, models.DO_NOTHING, verbose_name='Tipo de IVA')
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
+    esfuerzo = models.PositiveIntegerField(default=20, verbose_name='Esfuerzo')
     imagen = models.ImageField(upload_to='servicios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
 
     def __str__(self):
@@ -420,7 +421,7 @@ class DetalleProductosCompra(models.Model):
 #   Clase Pedidos de Solicitud de Productos
 class PedidosSolicitud(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
-    fechaLimite = models.DateTimeField(default=now(), verbose_name='Fecha Límite')
+    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite')
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)

@@ -19,6 +19,15 @@ $(function () {
         postfix: '$'
     });
 
+    $("input[name='esfuerzo']").TouchSpin({
+        min: 1,
+        max: 100,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '%'
+    });
+
     //Funcion Mostrar Errores del Formulario
     function message_error(obj) {
         var errorList = document.getElementById("errorList");
