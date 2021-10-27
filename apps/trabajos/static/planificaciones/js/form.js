@@ -368,12 +368,6 @@ $(function () {
             }, function () {
                 //pass
             });
-        } else if (fechaInicio >= fechaFin) {
-            error_action('Error', 'La fecha de Fin debe ser mayor que la de inicio', function () {
-                //pass
-            }, function () {
-                //pass
-            });
         } else {
             //Buscamos si no hay otra planificacion en el rango de fechas ingresado
             $.ajax({
@@ -390,7 +384,8 @@ $(function () {
                 },
             }).done(function (data) {
                 chequear = data.check;
-                if (chequear == true) {
+                console.log(chequear);
+                if (chequear == false) {
                     confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                             //realizamos la creacion de la PLanificacion mediante Ajax
                             planificacion.items.fechaInicio = moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD');

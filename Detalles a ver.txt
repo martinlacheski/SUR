@@ -10,7 +10,11 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
-* EN COMPRAS Y VENTAS VER DE QUE NO SUME NI RESTE STOCK SI EL PRODUCTO ES UN SERVICIO QUE SE COMPRA O VENDE
+* EN REPORTES AGREGAR CORTES DE CONTROL POR CLIENTE O POR MODELO, POR EJ
+
+--------------------------------------------------------------------------------------------------------------------
+
+* EN PLANIFICACIONES CHEQUEAR QUE NO PERMITA AGREGAR PLANIFICACIONES ENTRE OTRAS QUE YA EXISTEN
 
 --------------------------------------------------------------------------------------------------------------------
 

@@ -91,18 +91,19 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
             elif action == 'check_fechas_planificacion':
                 inicio = request.POST['inicio']
                 fin = request.POST['fin']
+                print(inicio)
+                print(fin)
                 # Buscamos si existen Planificaciones en ese rango de fechas
                 try:
+                    check = False
                     # planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__gte=inicio, fechaFin__lte=fin)
                     planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin])
-                    for i in planificaciones:
-                        print(i.toJSON)
-                    check = True
+                    if planificaciones:
+                        check = True
                     # planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__gte=inicio, fechaFin__lte=fin)
                     planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin])
-                    for i in planificaciones:
-                        print(i.toJSON)
-                    check = True
+                    if planificaciones:
+                        check = True
                 except Exception as e:
                     check = False
                 data['check'] = check
