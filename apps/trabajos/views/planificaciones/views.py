@@ -88,6 +88,25 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
                 data = []
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 data.append(parametros.toJSON())
+            elif action == 'check_fechas_planificacion':
+                inicio = request.POST['inicio']
+                fin = request.POST['fin']
+                print(inicio)
+                print(fin)
+                # Buscamos si existen Planificaciones en ese rango de fechas
+                try:
+                    check = False
+                    # planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__gte=inicio, fechaFin__lte=fin)
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin])
+                    if planificaciones:
+                        check = True
+                    # planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__gte=inicio, fechaFin__lte=fin)
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin])
+                    if planificaciones:
+                        check = True
+                except Exception as e:
+                    check = False
+                data['check'] = check
             elif action == 'add':
                 with transaction.atomic():
                     formPlanificacionRequest = json.loads(request.POST['planificacion'])
@@ -169,15 +188,40 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
                 data = []
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 data.append(parametros.toJSON())
+            elif action == 'get_fechas_planificacion':
+                try:
+                    planificacion = PlanificacionesSemanales.objects.get(id=self.get_object().id)
+                    # data['inicio'] = planificacion.fechaInicio
+                    data['inicio'] = (planificacion.fechaInicio).strftime('%d-%m-%Y')
+                    data['fin'] = (planificacion.fechaFin).strftime('%d-%m-%Y')
+                except Exception as e:
+                    data['error'] = str(e)
             # Metodo para obtener el detalle de los trabajos en la planificacion para mostrar en el template
             elif action == 'get_detalle_planificacion':
                 data = []
                 try:
                     for i in DetallePlanificacionesSemanales.objects.filter(planificacion_id=self.get_object().id):
                         item = i.trabajo.toJSON()
+                        # item = i.toJSON()
+                        item['orden'] = i.orden
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
+            elif action == 'check_fechas_planificacion':
+                inicio = request.POST['inicio']
+                fin = request.POST['fin']
+                # asignamos a una variable el ID de la planificacion actual
+                planificacionID = self.kwargs['pk']
+                # Buscamos si existen Planificaciones en ese rango de fechas
+                # Filtramos por rango de fecha y excluimos el ID de la planificacion actual
+                try:
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin]).exclude(id=planificacionID)
+                    check = True
+                    planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin]).exclude(id=planificacionID)
+                    check = True
+                except Exception as e:
+                    check = False
+                data['check'] = check
             elif action == 'edit':
                 with transaction.atomic():
                     formPlanificacionRequest = json.loads(request.POST['planificacion'])

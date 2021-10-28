@@ -178,6 +178,7 @@ class Productos(models.Model):
     ubicacion = models.CharField(max_length=100, null=True, blank=True, verbose_name='Ubicacion Física')
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
+    descuentaStock = models.BooleanField(default=True, verbose_name='¿Descuenta Stock?')
 
     def __str__(self):
         return self.get_full_name()
@@ -244,6 +245,7 @@ class Servicios(models.Model):
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Costo')
     iva = models.ForeignKey(TiposIVA, models.DO_NOTHING, verbose_name='Tipo de IVA')
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
+    esfuerzo = models.PositiveIntegerField(default=20, verbose_name='Esfuerzo')
     imagen = models.ImageField(upload_to='servicios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
 
     def __str__(self):
@@ -282,7 +284,7 @@ class Ventas(models.Model):
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente')
     condicionVenta = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de pago')
     medioPago = models.ForeignKey(MediosPago, models.DO_NOTHING, verbose_name='Medio de pago')
-    # trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo Asociado', null=True, blank=True)
+    trabajo = models.CharField(default="", max_length=20, verbose_name='ID Trabajo Asociado', null=True, blank=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -302,7 +304,6 @@ class Ventas(models.Model):
         item['cliente'] = self.cliente.toJSON()
         item['medioPago'] = self.medioPago.toJSON()
         item['condicionVenta'] = self.condicionVenta.toJSON()
-        #item['trabajo'] = self.trabajo.toJSON()
         return item
 
     class Meta:
@@ -414,4 +415,62 @@ class DetalleProductosCompra(models.Model):
     class Meta:
         verbose_name = 'Detalle de Compra'
         verbose_name_plural = 'Detalle de Compras'
+        ordering = ['id']
+
+
+#   Clase Pedidos de Solicitud de Productos
+class PedidosSolicitud(models.Model):
+    fecha = models.DateField(verbose_name='Fecha')
+    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite')
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    estado = models.BooleanField(default="", blank=True, null=True)
+
+    def __str__(self):
+        return self.get_full_sale()
+
+    def get_full_sale(self):
+        return '{} - {}'.format(self.fecha, self.estado)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['subtotal'] = format(self.subtotal, '.2f')
+        item['iva'] = format(self.iva, '.2f')
+        item['total'] = format(self.total, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Solicitud de Pedido'
+        verbose_name_plural = 'Solicitudes de Pedidos'
+        db_table = 'erp_pedidos_solicitud'
+        ordering = ['fecha', 'id']
+
+
+class DetallePedidoSolicitud(models.Model):
+    pedido = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING)
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor', blank=True, null=True)
+    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['pedido'])
+        try:
+            item['proveedor'] = self.proveedor.toJSON()
+        except:
+            pass
+        item['producto'] = self.producto.toJSON()
+        item['costo'] = format(self.costo, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Solicitud de Pedido'
+        verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
         ordering = ['id']

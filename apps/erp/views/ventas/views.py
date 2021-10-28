@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 
@@ -14,6 +15,7 @@ from apps.erp.forms import VentasForm, ClientesForm, ServiciosForm, ProductosFor
 from apps.erp.models import Ventas, Productos, Servicios, DetalleProductosVenta, DetalleServiciosVenta, Clientes, \
     Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.models import Empresa, TiposIVA
 from config import settings
 
@@ -34,7 +36,7 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Ventas.objects.all()[0:15]:
+                for i in Ventas.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
@@ -44,6 +46,113 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                 data = []
                 for i in DetalleServiciosVenta.objects.filter(venta_id=request.POST['id']):
                     data.append(i.toJSON())
+            # Buscamos si la venta tiene TRABAJO
+            elif action == 'search_TrabajoID':
+                venta = Ventas.objects.get(id=request.POST['pk'])
+                data['trabajoID'] = venta.trabajo
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('ventas/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                soloTrabajos = False
+                try:
+                    soloTrabajos = reporte['excluirSinTrabajos']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                canceladas = False
+                try:
+                    canceladas = reporte['excluirCanceladas']
+                except Exception as e:
+                    pass
+                # Obtenemos las ventas
+                ventas = []
+                try:
+                    ventas = reporte['ventas']
+                    for venta in ventas:
+                        venta['subtotal'] = float(venta['subtotal'])
+                        venta['iva'] = float(venta['iva'])
+                        venta['percepcion'] = float(venta['percepcion'])
+                        venta['total'] = float(venta['total'])
+                except Exception as e:
+                    pass
+
+                iva = 0
+                try:
+                    for i in ventas:
+                        if i['estadoVenta']:
+                            iva += float(i['iva'])
+                    iva = round(iva, 2)
+                except Exception as e:
+                    pass
+                perc = 0
+                try:
+                    for i in ventas:
+                        if i['estadoVenta']:
+                            perc += float(i['percepcion'])
+                    perc = round(perc, 2)
+                except Exception as e:
+                    pass
+                total = 0
+                try:
+                    for i in ventas:
+                        if i['estadoVenta']:
+                            total += float(i['total'])
+                    total = round(total, 2)
+                except Exception as e:
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'cliente': cliente,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'canceladas': canceladas,
+                        'soloTrabajos': soloTrabajos,
+                        'ventas': ventas,
+                        'usuario': request.user,
+                        'iva': iva,
+                        'perc': perc,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteVentas.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteVentas.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -202,9 +311,10 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Descontamos el Stock de los productos
-                        det.producto.stockReal -= det.cantidad
-                        det.producto.save()
+                        if det.producto.descuentaStock == True:
+                            # Descontamos el Stock de los productos
+                            det.producto.stockReal -= det.cantidad
+                            det.producto.save()
                     for i in formVentaRequest['servicios']:
                         det = DetalleServiciosVenta()
                         det.venta_id = venta.id
@@ -219,7 +329,6 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
-            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
@@ -315,6 +424,11 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     data['servicio'] = item
                 except Exception as e:
                     data['error'] = str(e)
+            # Buscamos todos los Servicios
+            elif action == 'search_all_servicios':
+                data = []
+                for i in Servicios.objects.all():
+                    data.append(i.toJSON())
             elif action == 'get_detalle_productos':
                 data = []
                 try:
@@ -397,8 +511,9 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                     venta.save()
                     # Reestablecemos el stock de los productos
                     for prod in DetalleProductosVenta.objects.filter(venta_id=self.get_object().id):
-                        prod.producto.stockReal += prod.cantidad
-                        prod.producto.save()
+                        if prod.producto.descuentaStock == True:
+                            prod.producto.stockReal += prod.cantidad
+                            prod.producto.save()
                     # Eliminamos todos los productos del Detalle
                     venta.detalleproductosventa_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
@@ -410,9 +525,10 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                         det.precio = float(i['precioVenta'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Descontamos el Stock de los Productos del Detalle
-                        det.producto.stockReal -= det.cantidad
-                        det.producto.save()
+                        if det.producto.descuentaStock == True:
+                            # Descontamos el Stock de los Productos del Detalle
+                            det.producto.stockReal -= det.cantidad
+                            det.producto.save()
                     # Eliminamos del detalle todos los Servicios del Detalle
                     venta.detalleserviciosventa_set.all().delete()
                     # Volvemos a cargar todos los Servicios del Detalle
@@ -479,7 +595,6 @@ class VentasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
             data['error'] = str(e)
-            print(str(e))
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
@@ -500,7 +615,6 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('ventas/pdf.html')
-            # template = get_template('ventas/invoice.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
             subtotalProductos = DetalleProductosVenta.objects.filter(venta_id=self.kwargs['pk'])
             subtotalServicios = DetalleServiciosVenta.objects.filter(venta_id=self.kwargs['pk'])
@@ -510,15 +624,18 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
             servicios = 0
             for i in subtotalServicios:
                 servicios += i.subtotal
+            # Obtenemos el valor total para pasar a letras
+            total = Ventas.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             # cargamos los datos del contexto
             context = {
                 'venta': Ventas.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
-
-                # 'imagen': '{}{}'.format(settings.MEDIA_URL, empresa.get_imagen())
             }
             # Generamos el render del contexto
             html = template.render(context)
@@ -530,3 +647,4 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
         except:
             pass
         return HttpResponseRedirect(reverse_lazy('erp:ventas_list'))
+

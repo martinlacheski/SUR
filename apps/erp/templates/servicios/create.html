@@ -9,14 +9,11 @@
               rel="stylesheet"/>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
-
         <!-- JQuery-Validation -->
         <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
-
         <!-- Bootstrap Touchspin -->
         <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
         <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
-
         <!-- archivo JS -->
         <script src="{% static 'servicios/js/form.js' %}"></script>
     {% endblock %}
@@ -38,70 +35,73 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="col-9 mb-9">
+                    <div class="col-9 mb-3">
                         <label>(*) Descripción:</label>
                         <br>
-                        {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        <div class="col-12" class="form-control" id="descripcion">
+                            {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
                     </div>
                     <div class="col-3 mb-3">
                         <label>(*) Código:</label>
                         <br>
-                        {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <div class="col-12" class="form-control" id="codigo">
+                            {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
                     </div>
                 </div>
-
                 <div class="row">
-                    <div class="col-4 mb-4">
+                    <div class="col-3 mb-3">
                         <label>Precio de Costo:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="costo" name="costo">
+                        <div class="col-12" class="form-control" id="costo">
                             {{ form.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-3 mb-3">
                         <label>(*) Tipo de IVA:</label>
                         <br>
                         {{ form.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-
-                    <div class="col-4 mb-4">
+                    <div class="col-3 mb-3">
                         <label>Precio de Venta:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
+                        <div class="col-12" class="form-control" id="precioVenta">
                             {{ form.precioVenta|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
                         </div>
                     </div>
+                    <div class="col-3 mb-3">
+                        <label>Esfuerzo del Servicio:</label>
+                        <br>
+                        <div class="col-12" class="form-control" id="esfuerzo">
+                            {{ form.esfuerzo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
                 </div>
-
                 <div class="row">
                     <div class="col-6 mb-6">
                         <label>Imagen:</label>
-
                         {{ form.imagen }}
-
                     </div>
                 </div>
             </div>
-        </div>
-
-        </div>
-        <div class="card-footer">
-            {#Mensaje de error#}
-            <ul id="errorList" class="alert-danger"></ul>
-            {#Botones#}
-            {% if action == 'add' %}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% else %}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% endif %}
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
-
+            <div class="card-footer">
+                {#Mensaje de error#}
+                <ul id="errorList" class="alert-danger"></ul>
+                {#Botones#}
+                {% if action == 'add' %}
+                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                        <i class="fas fa-save"></i> Guardar registro
+                    </button>
+                {% else %}
+                    <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                        <i class="fas fa-save"></i> Guardar registro
+                    </button>
+                {% endif %}
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
         </div>
 
         <!-- Modal -->

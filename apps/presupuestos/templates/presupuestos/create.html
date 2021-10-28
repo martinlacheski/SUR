@@ -73,7 +73,7 @@
 
                     </div>
                     <div class="form-group col-2">
-                        <label>Validez Presupuesto:</label>
+                        <label>Validez en días:</label>
                         <br>
                         {% if action == 'add' %}
                             {{ form.validez }}
@@ -107,17 +107,27 @@
                                                 <option value={{ m.id }}>{{ m.nombre }}</option>
                                             {% endfor %}
                                         </select>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-success btn-flat btnAddMarca" type="button">
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
                                     {% else %}
                                         aria-label="selectMarca" disabled>
                                         disabled </select>
                                     {% endif %}
                         </div>
                     </div>
-                    <div class="form-group col-3">
+                    <div class="form-group col-6">
                         <label>(*) Modelo:</label>
                         <div class="input-group">
                             {% if action == 'add' %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                                <div class="input-group-append">
+                                    <button class="btn btn-success btn-flat btnAddModelo" type="button">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             {% else %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
                             {% endif %}
@@ -252,6 +262,12 @@
                                     <div class="form-group col-2">
                                         <label>Subtotal Productos:</label>
                                         <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
                                             <input type="text" class="form-control" name="subtotalProductos"
                                                    autocomplete="off" readonly>
                                         </div>
@@ -259,6 +275,12 @@
                                     <div class="form-group col-2">
                                         <label>Subtotal Servicios:</label>
                                         <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
                                             <input type="text" class="form-control" name="subtotalServicios"
                                                    autocomplete="off" readonly>
                                         </div>
@@ -268,18 +290,42 @@
                                     </div>
                                     <div class="form-group col-2">
                                         <label>IVA:</label>
-                                        {{ form.iva }}
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.iva }}
+                                        </div>
                                     </div>
                                     <div class="form-group col-2">
                                         <label>Percepción:</label>
-                                        {{ form.percepcion }}
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.percepcion }}
+                                        </div>
                                     </div>
                                     <div class="form-group col-1">
 
                                     </div>
                                     <div class="form-group col-2">
                                         <label>Total a pagar:</label>
-                                        {{ form.total }}
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.total }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -921,7 +967,7 @@
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <input type="text" class="form-control" name="actualizarPrecioVentaServicio"
-                                       autocomplete="off" readonly>
+                                       autocomplete="off" readonly disabled>
                             </div>
                         </div>
 

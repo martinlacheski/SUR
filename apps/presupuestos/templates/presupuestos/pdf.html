@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 {% load static %}
+{% load humanize %}
+{% load l10n %}
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Presupuesto</title>
     <style>
 
         * {
@@ -43,6 +45,12 @@
             margin-bottom: 10px;
         }
 
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -56,25 +64,26 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-3">
+        <div class="col-6">
             <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
         </div>
-        <div class="col-4">
+        <div class="col-1">
 
-            {#            <h1 class="name-company">{{ empresa.nombre }}</h1>#}
-            {#            <p class="text-center">#}
-            {#                <b>CUIT: </b>{{ empresa.cuit }}<br>#}
-            {#                {{ empresa.direccion }}<br>#}
-            {#                {{ empresa.localidad }}<br>#}
-            {#            </p>#}
         </div>
         <div class="col-6">
             <p class="text-right">
                 <b>Número:</b> {{ presupuesto.id }}<br>
+                <b>Fecha:</b> {{ presupuesto.fecha|date:'d-m-Y' }}<br>
                 <b>Cliente:</b> {{ presupuesto.cliente.razonSocial }}<br>
                 <b>Marca:</b> {{ presupuesto.modelo.marca.nombre }}<br>
                 <b>Modelo:</b> {{ presupuesto.modelo.nombre }}<br>
                 <b>Observaciones:</b> {{ presupuesto.observaciones }}<br>
+                <b>Usuario:</b> {{ presupuesto.usuario }}<br>
             </p>
         </div>
     </div>
@@ -95,14 +104,14 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.precio|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Productos: $</b> {{ subtotalProductos|floatformat:2 }}<br>
+        <b>Subtotal Productos: $</b> {{ subtotalProductos|intcomma|localize }}<br>
     </p>
     <p class="text-uppercase font-weight-bold text-center">
         detalle de Servicios <br>
@@ -121,17 +130,20 @@
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.servicio.descripcion }}</td>
-                <td class="text-right">{{ det.precio|floatformat:2 }}</td>
-                <td class="text-right">{{ det.subtotal|floatformat:2 }}</td>
+                <td class="text-right">$ {{ det.precio|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Subtotal Servicios: $</b> {{ subtotalServicios|floatformat:2 }}<br>
+        <b>Subtotal Servicios: $</b> {{ subtotalServicios|intcomma|localize }}<br>
     </p>
     <p class="text-uppercase font-weight-bold text-right">
-        <b>Total a pagar: $</b> {{ presupuesto.total|floatformat:2 }}<br>
+        <b>Total a pagar: $</b> {{ presupuesto.total|intcomma|localize }}<br>
+    </p>
+    <p class="text-uppercase text-right">
+        Son Pesos: <b> {{ enLetras }}</b><br>
     </p>
 </div>
 </body>
