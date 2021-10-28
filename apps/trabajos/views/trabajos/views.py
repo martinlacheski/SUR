@@ -147,9 +147,12 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                         trabajo['total'] = float(trabajo['total'])
                 except Exception as e:
                     pass
+                try:
+                    estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                    estadoCancelado = estado.estadoCancelado.nombre
+                except Exception as e:
+                    pass
                 total = 0
-                estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                estadoCancelado = estado.estadoCancelado.nombre
                 try:
                     for i in trabajos:
                         # Asignamos a una variable el estado de trabajo

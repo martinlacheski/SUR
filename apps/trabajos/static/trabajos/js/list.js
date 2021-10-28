@@ -234,8 +234,13 @@ $(function () {
                             .draw();
                     });
                 column.data().unique().sort().each(function (d, j) {
-                    var newOption = new Option(d.toString(), d.toString(), false, false);
-                    $('.selectModelo').append(newOption).trigger('change');
+                    try {
+                        var newOption = new Option(d.toString(), d.toString(), false, false);
+                        $('.selectModelo').append(newOption).trigger('change');
+                    } catch (error) {
+
+                    }
+
                 });
             });
             //Excluimos los cancelados
@@ -813,7 +818,27 @@ $(function () {
             } else {
                 dataTrabajos[i].fechaSalida = 'PENDIENTE';
             }
-
+        }
+        //Ordenamos alfabeticamente el array por clientes
+        dataTrabajos.sort((a, b) => {
+            let fa = a.cliente.razonSocial;
+            fb = b.cliente.razonSocial;
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
+        //Filtramos para que aparezca una sola vez el nombre
+        clientes = [];
+        for (var i = 0; i < dataTrabajos.length; i++) {
+            if (clientes.find(cliente => cliente === dataTrabajos[i].cliente.razonSocial)) {
+                dataTrabajos[i].cliente.razonSocial = '';
+            } else {
+                clientes.push(dataTrabajos[i].cliente.razonSocial);
+            }
         }
         //Asignamos las variables a la estructura
         reporte.items.cliente = $('select[name="selectCliente"]').val();
