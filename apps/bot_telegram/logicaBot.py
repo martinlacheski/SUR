@@ -42,16 +42,19 @@ def mandarTrabajos(trabajosCliente):
             mensaje += "\n\n"
     return mensaje
 
-# Calcula porcentaje de realización de un trabajo
+# Calcula porcentaje de realización de un trabajo concorde a su ponderación
 def porcentajeTrabajo(trabajo):
-    cantTrabajos = 0
-    cantTrabajosRealizados = 0
+    totalEsfuerzo = 0
+    esfuerzoTrabRealizados = 0
     detalle = DetalleServiciosTrabajo.objects.filter(trabajo_id=trabajo.id)
+    # Calculamos el total del esfuerzo del trabajo y lo dividimos por el total de esfuerzo de servicios ya realizados
     for d in detalle:
-        cantTrabajos += 1
+        totalEsfuerzo += d.servicio.esfuerzo
         if d.estado:
-            cantTrabajosRealizados += 1
-    porcentaje = cantTrabajosRealizados / cantTrabajos
+            esfuerzoTrabRealizados += d.servicio.esfuerzo
+    porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
+    # Redondeamos para tener solo 2 decimales
+    porcentaje = round(round(porcentaje, 2) * 100, 2)
     return str(porcentaje * 100)
 
 # Chequea estado del trabajo. No muestra los que fueron entregados o que se hayan cancelado.
