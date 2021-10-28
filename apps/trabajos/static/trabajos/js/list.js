@@ -82,6 +82,7 @@ $(function () {
         columns: [
             {"data": "id"},
             {"data": "estadoTrabajo.nombre"},
+            {"data": "porcentaje"},
             {"data": "fechaEntrada"},
             {"data": "fechaSalida"},
             {"data": "modelo.nombre"},
@@ -112,6 +113,24 @@ $(function () {
                         return '<span class="badge badge-primary">' + row.estadoTrabajo.nombre + '</span>'
                     } else {
                         return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
+                    }
+                }
+            },
+            {
+                targets: [-7],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    var porcentaje = parseFloat(row.porcentaje).toFixed(2);
+                    if (porcentaje <= 24.99) {
+                        return '<span class="badge badge-danger">' + porcentaje + '</span>'
+                    } else if (porcentaje >= 25 & porcentaje <= 49.99) {
+                        return '<span class="badge badge-warning">' + porcentaje + '</span>'
+                    } else if (porcentaje >= 50 & porcentaje <= 74.99) {
+                        return '<span class="badge badge-info">' + porcentaje + '</span>'
+                    } else if (porcentaje >= 75 & porcentaje <= 99.99) {
+                        return '<span class="badge badge-success">' + porcentaje + '</span>'
+                    } else {
+                        return '<span class="badge badge-primary">' + porcentaje + '</span>'
                     }
                 }
             },

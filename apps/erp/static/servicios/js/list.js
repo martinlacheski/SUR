@@ -15,12 +15,31 @@ $(function () {
         },
         columns: [
             {"data": "descripcion"},
+            {"data": "esfuerzo"},
             {"data": "codigo"},
             {"data": "imagen"},
             {"data": "precioVenta"},
             {"data": "precioVenta"}, //va duplicado algun campo por la botonera
         ],
         columnDefs: [
+            {
+                targets: [-5],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    var porcentaje = parseFloat(data).toFixed(2);
+                    if (porcentaje <= 33.33) {
+                        return '<span class="badge badge-success">' + data + '%' + '</span>'
+                    } else if (porcentaje >= 33.34 && porcentaje <= 66.66) {
+                        return '<span class="badge badge-warning">' + data + '%' + '</span>'
+                    } else  {
+                        return '<span class="badge badge-danger">' + data + '%' + '</span>'
+                    }
+                }
+            },
+            {
+                targets: [-4],
+                class: 'text-center',
+            },
             {
                 targets: [-3],
                 class: 'text-center',
