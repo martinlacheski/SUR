@@ -1,0 +1,21 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'notifIncidencias/js/list.js' %}"></script> <!-- si lo renombro a list.js NO ANDA (??????) -->
+{% endblock %}
+
+{% block columns %}
+      <tr>
+        <th scope="col" style="width: 15%;">ID</th>
+        <th scope="col" style="width: 70%;">Usuario</th>
+        <th scope="col" style="width: 15%;">Acciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
