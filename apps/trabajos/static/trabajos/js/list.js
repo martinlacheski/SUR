@@ -82,6 +82,7 @@ $(function () {
         columns: [
             {"data": "id"},
             {"data": "estadoTrabajo.nombre"},
+            {"data": "porcentaje"},
             {"data": "fechaEntrada"},
             {"data": "fechaSalida"},
             {"data": "modelo.nombre"},
@@ -112,6 +113,24 @@ $(function () {
                         return '<span class="badge badge-primary">' + row.estadoTrabajo.nombre + '</span>'
                     } else {
                         return '<span class="badge badge-info">' + row.estadoTrabajo.nombre + '</span>'
+                    }
+                }
+            },
+            {
+                targets: [-7],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    var porcentaje = parseFloat(row.porcentaje).toFixed(2);
+                    if (porcentaje <= 24.99) {
+                        return '<span class="badge badge-danger">' + porcentaje + '</span>'
+                    } else if (porcentaje >= 25 & porcentaje <= 49.99) {
+                        return '<span class="badge badge-warning">' + porcentaje + '</span>'
+                    } else if (porcentaje >= 50 & porcentaje <= 74.99) {
+                        return '<span class="badge badge-info">' + porcentaje + '</span>'
+                    } else if (porcentaje >= 75 & porcentaje <= 99.99) {
+                        return '<span class="badge badge-success">' + porcentaje + '</span>'
+                    } else {
+                        return '<span class="badge badge-primary">' + porcentaje + '</span>'
                     }
                 }
             },
@@ -184,7 +203,7 @@ $(function () {
         ],
         initComplete: function (settings, json) {
             //Agregamos al Select2 los clientes que tenemos en el listado
-            this.api().columns(5).every(function () {
+            this.api().columns(6).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())
@@ -202,7 +221,7 @@ $(function () {
                 });
             });
             //Agregamos al Select2 los modelos que tenemos en el listado
-            this.api().columns(4).every(function () {
+            this.api().columns(5).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())
@@ -215,8 +234,13 @@ $(function () {
                             .draw();
                     });
                 column.data().unique().sort().each(function (d, j) {
-                    var newOption = new Option(d.toString(), d.toString(), false, false);
-                    $('.selectModelo').append(newOption).trigger('change');
+                    try {
+                        var newOption = new Option(d.toString(), d.toString(), false, false);
+                        $('.selectModelo').append(newOption).trigger('change');
+                    } catch (error) {
+
+                    }
+
                 });
             });
             //Excluimos los cancelados
@@ -402,7 +426,7 @@ $(function () {
                 fechaInicio = picker.startDate.format('DD-MM-YYYY');
                 fechaFin = picker.endDate.format('DD-MM-YYYY');
                 // Asignamos el dia por cada renglon
-                var dia = moment(moment(data[2], 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                var dia = moment(moment(data[3], 'DD-MM-YYYY')).format('YYYY-MM-DD');
                 //Comparamos contra el renglon
                 if (desde <= dia && dia <= hasta) {
                     return true;
@@ -416,10 +440,10 @@ $(function () {
 
     //Aplicamos Filtro de Clientes
     $('.selectCliente').on('change', function () {
-        /*//Reseteamos los filtros
+        //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaTrabajo.draw();*/
+        tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var cliente = $(this).val();
         if (cliente !== null && cliente !== '' && cliente !== undefined) {
@@ -427,7 +451,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos el cliente por cada renglon
-                    var clienteTabla = (data[5].toString());
+                    var clienteTabla = (data[6].toString());
                     //Comparamos contra el renglon
                     if (cliente === clienteTabla) {
                         return true;
@@ -441,10 +465,10 @@ $(function () {
     });
     //Aplicamos Filtro de Modelos
     $('.selectModelo').on('change', function () {
-        /*//Reseteamos los filtros
+        //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaTrabajo.draw();*/
+        tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var modelo = $(this).val();
         if (modelo !== null && modelo !== '' && modelo !== undefined) {
@@ -452,7 +476,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos el cliente por cada renglon
-                    var modeloTabla = (data[4].toString());
+                    var modeloTabla = (data[5].toString());
                     //Comparamos contra el renglon
                     if (modelo === modeloTabla) {
                         return true;
@@ -794,7 +818,27 @@ $(function () {
             } else {
                 dataTrabajos[i].fechaSalida = 'PENDIENTE';
             }
-
+        }
+        //Ordenamos alfabeticamente el array por clientes
+        dataTrabajos.sort((a, b) => {
+            let fa = a.cliente.razonSocial;
+            fb = b.cliente.razonSocial;
+            if (fa < fb) {
+                return -1;
+            }
+            if (fa > fb) {
+                return 1;
+            }
+            return 0;
+        });
+        //Filtramos para que aparezca una sola vez el nombre
+        clientes = [];
+        for (var i = 0; i < dataTrabajos.length; i++) {
+            if (clientes.find(cliente => cliente === dataTrabajos[i].cliente.razonSocial)) {
+                dataTrabajos[i].cliente.razonSocial = '';
+            } else {
+                clientes.push(dataTrabajos[i].cliente.razonSocial);
+            }
         }
         //Asignamos las variables a la estructura
         reporte.items.cliente = $('select[name="selectCliente"]').val();

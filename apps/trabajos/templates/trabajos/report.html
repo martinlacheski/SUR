@@ -33,11 +33,20 @@
             padding: 3px;
         }
 
+        table tbody tr td b {
+            background-color: grey;
+            display: block;
+            border-collapse: collapse;
+            padding: 0px;
+            border-spacing: 0px;
+        }
+
         table tbody tr td {
             border: 1px solid black;
             padding: 3px;
             font-size: 13px;
         }
+
 
         .img-logo {
             margin-top: 10px;
@@ -137,35 +146,69 @@
         </thead>
         <tbody>
         {% for det in trabajos %}
-            <tr>
-                {% if det.estadoTrabajo.nombre == estadoCancelado %}
-                    <td class="text-center"><b style="color:red;"> {{ det.cliente.razonSocial }}</b></td>
-                    <td class="text-center"><b style="color:red;"> {{ det.id }}</b></td>
-                    <td class="text-center"><b style="color:red;"> CANCELADO</b></td>
-                    <td class="text-right"><b style="color:red;"> {{ det.fechaEntrada }}</b></td>
-                    {% if det.fechaSalida %}
-                        <td class="text-right"><b style="color:red;"> {{ det.fechaSalida }}</b></td>
+            {% if det.cliente.razonSocial %}
+                <tr>
+                    {% if det.estadoTrabajo.nombre == estadoCancelado %}
+                        <td class="text-center" style="color:red;"> {{ det.cliente.razonSocial }}</td>
+                        <td class="text-center" style="color:red;"> {{ det.id }}</td>
+                        <td class="text-center" style="color:red;"> CANCELADO</td>
+                        <td class="text-right" style="color:red;"> {{ det.fechaEntrada }}</td>
+                        {% if det.fechaSalida %}
+                            <td class="text-right" style="color:red;"> {{ det.fechaSalida }}</td>
+                        {% else %}
+                            <td class="text-right" style="color:red;"> PENDIENTE</td>
+                        {% endif %}
+                        <td class="text-center" style="color:red;"> {{ det.modelo.marca.nombre }}</td>
+                        <td class="text-center" style="color:red;"> {{ det.modelo.nombre }}</td>
+                        <td class="text-right" style="color:red;">$ {{ det.total|intcomma|localize }}</td>
                     {% else %}
-                        <td class="text-right"><b style="color:red;"> PENDIENTE</b></td>
+                        <td class="text-center"><b> {{ det.cliente.razonSocial }}</b></td>
+                        <td class="text-center"><b> {{ det.id }}</b></td>
+                        <td class="text-center"><b> {{ det.estadoTrabajo.nombre }}</b></td>
+                        <td class="text-right"><b> {{ det.fechaEntrada }}</b></td>
+                        {% if det.fechaSalida %}
+                            <td class="text-right"><b> {{ det.fechaSalida }}</b></td>
+                        {% else %}
+                            <td class="text-right"><b> PENDIENTE</b></td>
+                        {% endif %}
+                        <td class="text-center"><b> {{ det.modelo.marca.nombre }}</b></td>
+                        <td class="text-center"><b> {{ det.modelo.nombre }}</b></td>
+                        <td class="text-right"><b>$ {{ det.total|intcomma|localize }}</b></td>
                     {% endif %}
-                    <td class="text-center"><b style="color:red;"> {{ det.modelo.marca.nombre }}</b></td>
-                    <td class="text-center"><b style="color:red;"> {{ det.modelo.nombre }}</b></td>
-                    <td class="text-right"><b style="color:red;">$ {{ det.total|intcomma|localize }}</b></td>
-                {% else %}
-                    <td class="text-center"> {{ det.cliente.razonSocial }}</td>
-                    <td class="text-center"> {{ det.id }}</td>
-                    <td class="text-center"> {{ det.estadoTrabajo.nombre }}</td>
-                    <td class="text-right"> {{ det.fechaEntrada }}</td>
-                    {% if det.fechaSalida %}
-                        <td class="text-right"> {{ det.fechaSalida }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    {% if det.estadoTrabajo.nombre == estadoCancelado %}
+                        <td class="text-center" class="active"><b style="color:red;"> {{ det.cliente.razonSocial }}</b>
+                        </td>
+                        <td class="text-center"><b style="color:red;"> {{ det.id }}</b></td>
+                        <td class="text-center"><b style="color:red;"> CANCELADO</b></td>
+                        <td class="text-right"><b style="color:red;"> {{ det.fechaEntrada }}</b></td>
+                        {% if det.fechaSalida %}
+                            <td class="text-right"><b style="color:red;"> {{ det.fechaSalida }}</b></td>
+                        {% else %}
+                            <td class="text-right"><b style="color:red;"> PENDIENTE</b></td>
+                        {% endif %}
+                        <td class="text-center"><b style="color:red;"> {{ det.modelo.marca.nombre }}</b></td>
+                        <td class="text-center"><b style="color:red;"> {{ det.modelo.nombre }}</b></td>
+                        <td class="text-right"><b style="color:red;">$ {{ det.total|intcomma|localize }}</b></td>
                     {% else %}
-                        <td class="text-right"> PENDIENTE</td>
+                        <td class="text-center"> {{ det.cliente.razonSocial }}</td>
+                        <td class="text-center"> {{ det.id }}</td>
+                        <td class="text-center"> {{ det.estadoTrabajo.nombre }}</td>
+                        <td class="text-right"> {{ det.fechaEntrada }}</td>
+                        {% if det.fechaSalida %}
+                            <td class="text-right"> {{ det.fechaSalida }}</td>
+                        {% else %}
+                            <td class="text-right"> PENDIENTE</td>
+                        {% endif %}
+                        <td class="text-center"> {{ det.modelo.marca.nombre }}</td>
+                        <td class="text-center"> {{ det.modelo.nombre }}</td>
+                        <td class="text-right">$ {{ det.total|intcomma|localize }}</td>
                     {% endif %}
-                    <td class="text-center"> {{ det.modelo.marca.nombre }}</td>
-                    <td class="text-center"> {{ det.modelo.nombre }}</td>
-                    <td class="text-right">$ {{ det.total|intcomma|localize }}</td>
-                {% endif %}
-            </tr>
+                </tr>
+            {% endif %}
+
         {% endfor %}
         </tbody>
     </table>
