@@ -39,17 +39,21 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             return JsonResponse(data)
 
 
-        # TO-DO Se tiene que refactorizar para que unicamente toque la tabla eventosAgenda
+        # Resuelve un evento en caso de que este no esté resuelto. Registra quien y cuando lo hizo
         if action == 'evento_cumplido':
-            print("refactorizame")
-            # data = {}
-            # notif = notificaciones.objects.get(pk=request.POST['pk'])
-            # user = Usuarios.objects.get(pk=request.POST['user'])
-            # ev = eventosAgenda.objects.get(pk=notif.eventoAsoc.id)
-            # self.descartarNotificaciones(notif.eventoAsoc, user)
-            # ev.resuelto = True
-            # ev.save()
-            # return JsonResponse(data)
+            data = {}
+            evento = eventosAgenda.objects.get(pk=request.POST['pk'])
+            if evento.resuelto:
+                data['check'] = 'not_ok'
+                data['error'] = "Este evento ya fué resuelto."
+            else:
+                evento.resuelto = True
+                evento.resueltoPor_id = Usuarios.objects.get(username=request.POST['usuario'])
+                evento.horaResolucion = datetime.today()
+                evento.save()
+                data['check'] = 'ok'
+                data['redirect'] = self.success_url
+            return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -87,7 +91,7 @@ class UpdateEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                 print(str(e))
             return HttpResponseRedirect(self.success_url)
         if action == 'search_data':
-            data = datos_evento(request.POST['pk'])
+            data = datos_evento_evID(request.POST['pk'])
             return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -109,11 +113,10 @@ class DeleteEventosAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-
+        data = {}
         id = request.POST['pk']
         action = request.POST['action']
         if action == 'delete':
-            data = {}
             try:
                 evento = eventosAgenda.objects.get(pk=self.object.id)
                 self.object.estado = False
@@ -145,6 +148,10 @@ def datos_evento_evID(ev_id):
     data['descripcion'] = str(evento.descripcion)
     data['notifMediante'] = (['Sistema', evento.tipoEvento.recordarSistema],
                              ['Telegram', evento.tipoEvento.recordarTelegram])
+    if evento.resuelto:
+        data['resueltoPor'] = str(evento.resueltoPor_id.username) + " el " +\
+                              str(evento.horaResolucion.date().strftime('%d-%m-%Y')) + " a las " +\
+                              str(evento.horaResolucion.time().strftime('%H:%m'))
     return data
 
 

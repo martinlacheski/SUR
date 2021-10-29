@@ -45,6 +45,9 @@ class eventosAgenda(models.Model):
     )
     repeticion = models.CharField(max_length=7, choices=REPETICION, blank=True)
     estado = models.BooleanField(default=True)
+    resueltoPor_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario que resolvió el evento',
+                                       null=True, blank=True)
+    horaResolucion = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.descripcion

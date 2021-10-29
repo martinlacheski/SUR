@@ -195,7 +195,7 @@ class Command(BaseCommand):
                     mensaje = generarReporte(query.data)
                     hoy = datetime.date.today()
                     if mensaje['tipo'] == 'venta':
-                        bot.send_message(text="Este es el reporte que solicitaste!\n\n ⬆ Ventas al día de la fecha " +
+                        bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
                                             str(hoy.day) + "\-" + str(hoy.month) + "\-" + str(hoy.year) + "\n\n"
                                               "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
                                               "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
@@ -204,7 +204,7 @@ class Command(BaseCommand):
                                                 parse_mode=telegram.ParseMode.MARKDOWN_V2,
                                                 chat_id=usuario.chatIdUsuario)
                     if mensaje['tipo'] == "compra":
-                        bot.send_message(text="Este es el reporte que solicitaste!\n\n ⬇ Compras al día de la fecha " +
+                        bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬇ Compras al día de la fecha " +
                                             str(hoy.day) + "\-" + str(hoy.month) + "\-" + str(hoy.year) + "\n\n"
                                               "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
                                               "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
@@ -243,13 +243,13 @@ class Command(BaseCommand):
 
             # palabras que puede usar un user
             if esUser:
-                if msjRecibido == 'HOY':
+                if msjRecibido == 'REPORTAME':
                     botones = armarBotonesConsulta()
                     bot.send_message(chat_id=user_gerencial.chatIdUsuario, text="📈 Estos son los "
-                                     "reportes que tengo disponibles para vos:\n", reply_markup=botones)
+                                     "reportes que tengo disponibles para vos\n", reply_markup=botones)
                 else:
                     update.message.reply_text(text=str(user_gerencial.username) + " no entendí lo que dijiste 🤨\n"
-                                              "Recordá que únicamente respondo a la palabra:\n\n ```hoy``` \n\n"
+                                              "Recordá que únicamente respondo a la palabra:\n\n ```reportame``` \n\n"
                                               " la cual tenes que enviar en un único mensaje\.",
                                               parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
