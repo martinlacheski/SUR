@@ -16,6 +16,14 @@ AGREGAR LOS NETOS IVA Y PERCEPCIONES
 
 --------------------------------------------------------------------------------------------------------------------
 
+
+*AUDITORIA
+
+
+* EN PLANIFICACIONES CHEQUEAR QUE NO PERMITA AGREGAR PLANIFICACIONES ENTRE OTRAS QUE YA EXISTEN
+
+--------------------------------------------------------------------------------------------------------------------
+
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
 *AUDITORIA
@@ -25,3 +33,4 @@ AGREGAR LOS NETOS IVA Y PERCEPCIONES
 *GRUPOS DE USUARIOS
 
 *ROLES Y PERMISOS
+

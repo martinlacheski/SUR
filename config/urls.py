@@ -31,5 +31,7 @@ urlpatterns = [
     path('', include('apps.presupuestos.urls')),
     path('', include('apps.trabajos.urls')),
     path('', include('apps.agenda.urls')),
+    path('', include('apps.bot_telegram.urls')),
+    path('', include('apps.notif_channel.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
