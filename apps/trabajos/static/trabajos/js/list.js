@@ -203,7 +203,7 @@ $(function () {
         ],
         initComplete: function (settings, json) {
             //Agregamos al Select2 los clientes que tenemos en el listado
-            this.api().columns(5).every(function () {
+            this.api().columns(6).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())
@@ -221,7 +221,7 @@ $(function () {
                 });
             });
             //Agregamos al Select2 los modelos que tenemos en el listado
-            this.api().columns(4).every(function () {
+            this.api().columns(5).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())
@@ -426,7 +426,7 @@ $(function () {
                 fechaInicio = picker.startDate.format('DD-MM-YYYY');
                 fechaFin = picker.endDate.format('DD-MM-YYYY');
                 // Asignamos el dia por cada renglon
-                var dia = moment(moment(data[2], 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                var dia = moment(moment(data[3], 'DD-MM-YYYY')).format('YYYY-MM-DD');
                 //Comparamos contra el renglon
                 if (desde <= dia && dia <= hasta) {
                     return true;
@@ -440,10 +440,10 @@ $(function () {
 
     //Aplicamos Filtro de Clientes
     $('.selectCliente').on('change', function () {
-        /*//Reseteamos los filtros
+        //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaTrabajo.draw();*/
+        tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var cliente = $(this).val();
         if (cliente !== null && cliente !== '' && cliente !== undefined) {
@@ -451,7 +451,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos el cliente por cada renglon
-                    var clienteTabla = (data[5].toString());
+                    var clienteTabla = (data[6].toString());
                     //Comparamos contra el renglon
                     if (cliente === clienteTabla) {
                         return true;
@@ -465,10 +465,10 @@ $(function () {
     });
     //Aplicamos Filtro de Modelos
     $('.selectModelo').on('change', function () {
-        /*//Reseteamos los filtros
+        //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaTrabajo.draw();*/
+        tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var modelo = $(this).val();
         if (modelo !== null && modelo !== '' && modelo !== undefined) {
@@ -476,7 +476,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos el cliente por cada renglon
-                    var modeloTabla = (data[4].toString());
+                    var modeloTabla = (data[5].toString());
                     //Comparamos contra el renglon
                     if (modelo === modeloTabla) {
                         return true;
