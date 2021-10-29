@@ -53,3 +53,21 @@ class respuestaTrabajoFinalizado(models.Model):
         db_table = 'bot_respuestaTrabajoFinalziado'
         ordering = ['fechaRespuesta']
 
+
+
+class seguimientoTrabajos(models.Model):
+    trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo asociado')
+    ultPorcentajeAvance = models.IntegerField(default=0)
+    cantVecesNotif = models.IntegerField(default=0)
+    inicialUserAsig = models.ForeignKey(Usuarios, models.DO_NOTHING,
+                                        verbose_name='Inicial. Usuario asociado',
+                                        related_name="Usuario_inicial")
+    ultUserAsig = models.ForeignKey(Usuarios, models.DO_NOTHING,
+                                    verbose_name='Ult. Usuario asociado',
+                                    blank=True, null=True, related_name="Usuario_final")
+
+    class Meta:
+        verbose_name = 'Seguimiento de estado de trabajo'
+        verbose_name_plural = 'Seguimiento de estado de trabajos'
+        db_table = 'bot_seguimientoTrabajos'
+        ordering = ['trabajo']

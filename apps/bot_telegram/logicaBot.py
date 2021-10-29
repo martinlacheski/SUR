@@ -52,7 +52,10 @@ def porcentajeTrabajo(trabajo):
         totalEsfuerzo += d.servicio.esfuerzo
         if d.estado:
             esfuerzoTrabRealizados += d.servicio.esfuerzo
-    porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
+    if esfuerzoTrabRealizados == 0:
+        porcentaje = 1
+    else:
+        porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
     # Redondeamos para tener solo 2 decimales
     porcentaje = round(round(porcentaje, 2) * 100, 2)
     return str(porcentaje * 100)

@@ -38,7 +38,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 INSTALLED_APPS = [
     'channels',
-    'django_crontab',
+    'django_cron',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
