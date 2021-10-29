@@ -1,16 +1,30 @@
-*GENERAR MODULO PLANIFICACION SEMANAL
+*TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
+    asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
+    ejecutar un random
 
-    *   Falta Guardar el Orden personalizado (no toma todavia)
-    *   Controlar que no haya planificaciones por fechas Repetido
-    *   Eliminar Planificacion y actualizar estado                      -- OK
+--------------------------------------------------------------------------------------------------------------------
 
-*GENERAR MODULO PEDIDOS - INCORPORAR RELACION DE PEDIDOS con detallePedidoSolicitud para relacionar, y ver cuales
-    estan pendientes. Incorporar un campo de estado (boolean) al PedidosSolicitud
+*PEDIDOS - TERMINAR
 
+* Resolver la forma de generar los detalles de las cotizaciones de los proveedores
+
+--------------------------------------------------------------------------------------------------------------------
+
+* EN REPORTES AGREGAR CORTES DE CONTROL POR CLIENTE O POR MODELO, POR EJ
+
+--------------------------------------------------------------------------------------------------------------------
+=======
 
 *AUDITORIA
 
-*REPORTES
+
+* EN PLANIFICACIONES CHEQUEAR QUE NO PERMITA AGREGAR PLANIFICACIONES ENTRE OTRAS QUE YA EXISTEN
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
+
+*AUDITORIA
 
 *ESTADISTICAS
 

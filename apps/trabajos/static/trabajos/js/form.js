@@ -356,7 +356,46 @@ $(document).ready(function () {
         language: 'es'
     });
     var accion = $('input[name="action"]').val();
-    if (accion === 'add' || accion === 'express' ) {
+    if (accion === 'add') {
+        $('input[name="subtotalProductos"]').val('0.00');
+        $('input[name="subtotalServicios"]').val('0.00');
+        $('input[name="iva"]').val('0.00');
+        $('input[name="percepcion"]').val('0.00');
+        $('input[name="total"]').val('0.00');
+        $('input[name="descripcion"]').val('');
+        $('select[name="cliente"]').val(null).trigger('change');
+        $('select[name="marca"]').val(null).trigger('change');
+        $('select[name="modelo"]').val(null).trigger('change');
+        $('select[name="selectPlantilla"]').val(null).trigger('change');
+        $('input[name="searchProductos"]').attr('disabled', true);
+        $('input[name="searchServicios"]').attr('disabled', true);
+        //Inicialización de datetimepicker
+        $('#fechaEntrada').datetimepicker({
+            format: 'DD-MM-YYYY',
+            date: moment(),
+            locale: 'es',
+            // minDate: moment(),
+            maxDate: moment(),
+        });
+        // Buscamos el usuario mas desocupado
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_mas_desocupado',
+            },
+            dataType: 'json',
+            success: function (data) {
+                // Colocamos en el select el usuario mas desocupado
+                $('select[name="usuarioAsignado"]').html('').select2({
+                    theme: "bootstrap4",
+                    language: 'es',
+                    data: data
+                });
+            }
+        });
+    } else if (accion === 'express') {
         $('input[name="subtotalProductos"]').val('0.00');
         $('input[name="subtotalServicios"]').val('0.00');
         $('input[name="iva"]').val('0.00');
@@ -376,21 +415,11 @@ $(document).ready(function () {
             locale: 'es',
             maxDate: moment(),
         });
-        // $('#fechaSalida').datetimepicker({
-        //     format: 'DD-MM-YYYY',
-        //     date: moment(),
-        //     locale: 'es',
-        //     maxDate: moment(),
-        // });
     } else {
         $('#fechaEntrada').datetimepicker({
             format: 'DD-MM-YYYY',
             locale: 'es',
         });
-        // $('#fechaSalida').datetimepicker({
-        //     format: 'DD-MM-YYYY',
-        //     locale: 'es',
-        // });
         //Buscamos si el cliente tiene percepcion
         searchPercepcion();
         //Buscamos el detalle de los productos por ajax
@@ -426,7 +455,8 @@ $(document).ready(function () {
             }
         });
     }
-});
+})
+;
 
 $(function () {
     //Llamamos a la funcion de Token
@@ -1886,8 +1916,8 @@ $(function () {
             }
         }
         //Comprobamos que exista al menos un producto o un servicio
-        if (trabajo.items.productos.length === 0 && trabajo.items.servicios.length === 0) {
-            error_action('Error', 'Debe al menos tener un producto o servicio en sus detalles', function () {
+        if (trabajo.items.servicios.length === 0) {
+            error_action('Error', 'Debe al menos tener un servicio en su detalle', function () {
                 //pass
             }, function () {
                 //pass
@@ -1937,6 +1967,14 @@ $(function () {
                     var parameters = new FormData();
                     //Pasamos la accion
                     parameters.append('action', $('input[name="action"]').val());
+                    //Verificamos si todos los servicios estan realizados, convertimos la accion a CONFIRM Trabajo
+                    if ((estadoServicio == true) && (accion == 'edit')) {
+                        var confirm = 'si';
+                        parameters.append('confirm', confirm);
+                    } else {
+                        var confirm = 'no';
+                        parameters.append('confirm', confirm);
+                    }
                     //Agregamos la estructura de Trabajo con los detalles correspondientes
                     parameters.append('trabajo', JSON.stringify(trabajo.items));
                     if (accion == 'deliver') {

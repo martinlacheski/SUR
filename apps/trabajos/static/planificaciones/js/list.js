@@ -97,7 +97,6 @@ $(function () {
             //Seleccionamos el Presupuesto sobre la cual queremos traer el detalle
             var tr = tablaPlanificacion.cell($(this).closest('td, li')).index();
             var data = tablaPlanificacion.row(tr.row).data();
-
             //Cargamos el detalle de productos
             $('#tablaTrabajos').DataTable({
                 responsive: true,
@@ -120,13 +119,14 @@ $(function () {
                 },
                 columns: [
                     {"data": "orden"},
+                    {"data": "trabajo.id"},
                     {"data": "trabajo.modelo.nombre"},
                     {"data": "trabajo.cliente.razonSocial"},
                     {"data": "trabajo.estadoTrabajo"},
                 ],
                 columnDefs: [
                     {
-                        targets: [-4, -3, -2],
+                        targets: [-5, -4, -3, -2],
                         class: 'text-center',
                     },
 

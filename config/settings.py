@@ -46,9 +46,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     #Librerias
     'widget_tweaks',
-    #Aplicaciones
+    'django.contrib.humanize',
+    # Aplicaciones
     'apps.parametros',
     'apps.login',
     'apps.home',
@@ -77,8 +79,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        #'DIRS': [],
-        #Reemplazamos por el siguiente
+        # 'DIRS': [],
+        # Reemplazamos por el siguiente
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -101,8 +103,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-        #Reemplazamos por lo siguiente:
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        # Reemplazamos por lo siguiente:
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
@@ -129,10 +131,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
 
+
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'
 
-#TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
 TIME_ZONE = 'America/Buenos_Aires'
 
 USE_I18N = True
@@ -146,7 +149,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#Carpeta de archivos estaticos
+# Carpeta de archivos estaticos
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 STATICFILES_DIRS = [
@@ -159,22 +162,24 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Base url de los archivos
 MEDIA_URL = '/media/'
 
-#Redireccion al Login Correcto
+# Redireccion al Login Correcto
 LOGIN_REDIRECT_URL = '/home/'
 
-#Redireccion al logout
+# Redireccion al logout
 LOGOUT_REDIRECT_URL = '/login/'
 
-#Direccion de Login
+# Direccion de Login
 LOGIN_URL = '/login/'
 
-#Extension Modelo Abstracto Usuarios
+# Extension Modelo Abstracto Usuarios
 AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 # Probablemente innecesarios. Si joden, chau
 #DATE_FORMAT = '%d-%m-%y'

@@ -1,4 +1,5 @@
-from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput
+from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput, \
+    CheckboxInput
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
 
@@ -10,13 +11,19 @@ class TiposUsuariosForm(ModelForm):
 
     class Meta:
         model = TiposUsuarios
-        fields = ['nombre']
+        fields = ['nombre', 'realizaTrabajos']
         widgets = {
             'nombre': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un nombre',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
+                }
+            ),
+            'realizaTrabajos': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
                 }
             ),
         }

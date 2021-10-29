@@ -74,9 +74,9 @@
                     <div class="col-4 mb-4">
                         <label>Cuil:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="cuil"
-                             onkeypress="return isNumberKey(event)">
+                        <div class="col-12" class="form-control" id="cuil" onkeypress="return isNumberKey(event)">
                             {{ form.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            <span hidden id="errorCuit" style="color: red;">CUIL no válido </span>
                         </div>
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                     <div class="col-4 mb-4">
                         <label>Dirección de email:</label>
                         <br>
-                        <div class="input-group" type="email" class="form-control" id="email" name="email">
+                        <div class="input-group" type="email" class="form-control" id="email">
                             {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                             <span hidden id="errorEmail"
                                   style="color: red;">Dirección de correo electrónico no válido </span>
@@ -144,27 +144,18 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
-
-        </div>
-        <div class="card-footer">
-            {#Mensaje de error#}
-            <ul id="errorList" class="alert-danger"></ul>
-            {#Botones#}
-            {% if action == 'add' %}
+            <div class="card-footer">
+                {#Mensaje de error#}
+                <ul id="errorList" class="alert-danger"></ul>
+                {#Botones#}
                 <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
-            {% else %}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% endif %}
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
         </div>
         <!-- Modal -->
         <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"

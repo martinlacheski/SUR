@@ -19,9 +19,15 @@
         <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
         <link href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"
               rel="stylesheet"/>
+        <!-- daterange picker -->
+        <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js' %}"></script>
         <!-- Bootstrap Touchspin -->
         <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
         <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+        <!-- dataTables Sorting -->
+        <script src="{% static 'lib/datatables-sorting/datetime-moment.js' %}"></script>
         <!-- archivo JS -->
         <script src="{% static 'planificaciones/js/form.js' %}"></script>
     {% endblock %}
@@ -43,19 +49,15 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="form-group col-8">
+                    <div class="form-group col-9">
 
                     </div>
-                    <div class="form-group col-2">
-                        <label>(*) Inicio:</label>
-                        <div class="col-12" id="fechaInicio" data-target-input="nearest">
-                            {{ form.fechaInicio|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                        </div>
-                    </div>
-                    <div class="form-group col-2">
-                        <label>(*) Fin:</label>
-                        <div class="col-12" id="fechaFin" data-target-input="nearest">
-                            {{ form.fechaFin|add_class:'form-control fechaFin'|attr:'autocomplete:off'|attr:'required:true' }}
+                    <div class="form-group col-3">
+                        <label>Seleccione Rango de Fechas:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="rangoFechas"
+                                   placeholder="Seleccione Rango de Fechas" aria-label="rangoFechas"
+                                   autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -66,10 +68,10 @@
                         <table class="table table table-bordered" id="data">
                             <thead>
                             <tr>
-                                <th scope="col" style="width: 5%;">ID</th>
+                                <th scope="col" style="width: 13%;">Ingresó</th>
                                 <th scope="col" style="width: 10%;">Estado</th>
                                 <th scope="col" style="width: 25%;">Modelo</th>
-                                <th scope="col" style="width: 55%;">Cliente</th>
+                                <th scope="col" style="width: 47%;">Cliente</th>
                                 <th scope="col" style="width: 5%;">Agregar</th>
                             </tr>
                             </thead>
@@ -82,13 +84,15 @@
                     </div>
                     <div class="col-5">
                         <p><b>Planificación:</b></p>
-                        <table class="table table table-bordered ui-state-default ui-sortable-handle" id="dataPlanificacion">
+                        <table class="table table table-bordered ui-state-default ui-sortable-handle"
+                               id="dataPlanificacion">
                             <thead>
                             <tr>
+                                <th scope="col" style="width: 5%;">Orden</th>
                                 <th scope="col" style="width: 5%;">ID</th>
-                                <th scope="col" style="width: 30%;">Modelo</th>
-                                <th scope="col" style="width: 60%;">Cliente</th>
-                                <th scope="col" style="width: 5%;">Quitar</th>
+                                <th scope="col" style="width: 23%;">Modelo</th>
+                                <th scope="col" style="width: 42%;">Cliente</th>
+                                <th scope="col" style="width: 25%;">Opciones</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -98,17 +102,14 @@
                     </div>
                 </div>
             </div>
+            <div class="card-footer">
+                <button type="submit" id="btnGuardar" class="btn btn-primary btn-flat">
+                    <i class="fas fa-save"></i> Guardar registro
+                </button>
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
         </div>
-        <div class="card-footer">
-            <button type="submit" id="btnGuardar" class="btn btn-primary btn-flat">
-                <i class="fas fa-save"></i> Guardar registro
-            </button>
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
-        </div>
-        </div>
-        </div>
-
     </form>
 {% endblock %}

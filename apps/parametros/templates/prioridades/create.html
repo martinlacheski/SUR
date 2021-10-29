@@ -41,12 +41,12 @@
                 {% endif %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="form-group col-9 mb-5">
+                    <div class="form-group col-9 mb-3">
                         <label>Condición de Pago:</label>
                         {{ form.nombre|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
 
-                    <div class="form-group col-3 mb-5">
+                    <div class="form-group col-3 mb-3">
                         <label>Plazo:</label>
                         <div class="col-12" class="form-control" onkeypress="return isNumberKey(event)">
                             {{ form.plazoPrioridad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}

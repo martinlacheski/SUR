@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Ventas</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+            font-size: 13px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 250px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+        {#meta[author] { string-set: author attr(author); }#}
+        meta[author] {
+            string-set: {{ usuario }};
+        }
+
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="name-company text-center">Reporte de Ventas</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
+        </div>
+        <div class="col-1">
+            {#<h1 class="name-company">{{ empresa.nombre }}</h1>#}
+        </div>
+        <div class="col-6">
+            <p class="text-right">
+                <b>Fecha y Hora:</b> {{ fecha|date:'d-m-Y H:m' }}<br>
+
+                <b>Usuario:</b> {{ usuario }}<br>
+            </p>
+        </div>
+    </div>
+    <h5 class="text-uppercase font-weight-bold text-left">
+        Filtros aplicados: <br>
+    </h5>
+    <p>
+        {% if cliente %}
+            Cliente: <b> {{ cliente }}</b>
+        {% endif %}
+        {% if inicio %}
+            Ventas Desde: <b> {{ inicio }} </b>
+        {% endif %}
+        {% if fin %}
+            hasta <b> {{ fin }} </b><br>
+        {% endif %}
+        {% if canceladas %}
+            <b>Filtradas las Ventas Canceladas.</b>
+        {% endif %}
+        {% if soloTrabajos %}
+            <b>Solo las ventas con Trabajos Asociados.</b>
+        {% endif %}</p>
+    <h4 class="text-uppercase font-weight-bold text-left">
+        Detalle: <br>
+    </h4>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 25%;">Cliente</th>
+            <th class="text-center" style="width: 5%;">Venta Nro.</th>
+            <th class="text-center" style="width: 10%;">Estado</th>
+            <th class="text-center" style="width: 10%;">Fecha</th>
+            <th class="text-center" style="width: 5%;">Trabajo Nro.</th>
+            <th class="text-center" style="width: 11%;">Subtotal</th>
+            <th class="text-center" style="width: 11%;">IVA</th>
+            <th class="text-center" style="width: 11%;">Perc.</th>
+            <th class="text-center" style="width: 11%;">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in ventas %}
+            <tr>
+                {% if det.estadoVenta %}
+                    <td class="text-center">{{ det.cliente.razonSocial }}</td>
+                    <td class="text-center">{{ det.id }}</td>
+                    <td class="text-center"> Realizada</td>
+                    <td class="text-right">{{ det.fecha }}</td>
+                    <td class="text-center"> {{ det.trabajo }}</td>
+                    <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
+                    <td class="text-right">$ {{ det.iva|intcomma|localize }}</td>
+                    <td class="text-right">$ {{ det.percepcion|intcomma|localize }}</td>
+                    <td class="text-right">$ {{ det.total|intcomma|localize }}</td>
+                {% else %}
+                    <td class="text-center"><b style="color:red;">{{ det.cliente.razonSocial }}</b></td>
+                    <td class="text-center"><b style="color:red;">{{ det.id }}</b></td>
+                    <td class="text-center"><b style="color:red;">Cancelada</b></td>
+                    <td class="text-right"><b style="color:red;">{{ det.fecha }}</b></td>
+                    <td class="text-center"><b style="color:red;">{{ det.trabajo }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.subtotal|intcomma|localize }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.iva|intcomma|localize }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.percepcion|intcomma|localize }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.total|intcomma|localize }}</b></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-uppercase text-right">
+        Total de IVA <b>$ {{ iva|intcomma|localize }}</b> <br>
+        Total de Percepciones <b>$ {{ perc|intcomma|localize }}</b><br>
+        Total de Ventas <b>$ {{ total|intcomma|localize }}</b><br>
+    </p>
+    <p style="font-size:13px;" class="text-uppercase text-right">
+        Son Pesos: <b> {{ enLetras }}</b><br>
+    </p>
+    {% if not canceladas %}
+        <b>Aclaración:</b> En caso de existir, las ventas canceladas no influyen en los totales<br>
+    {% endif %}
+</div>
+</body>
+</html>
