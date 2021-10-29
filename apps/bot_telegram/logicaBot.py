@@ -168,8 +168,8 @@ def armarBotonesConsulta():
     keyboard = [
         [InlineKeyboardButton("⬆ Ventas del día", callback_data="ventasDia")],
         [InlineKeyboardButton("⬇ Compras del día", callback_data="comprasDia")],
-        [InlineKeyboardButton("📅 Trabajos. ult. Planif.", callback_data="trabajosPlanif")],
-        [InlineKeyboardButton("🛠 Trabajos del día", callback_data="trabajosDia")],
+        [InlineKeyboardButton("📅 Estado trabajos planif.", callback_data="trabajosPlanif")],
+        [InlineKeyboardButton("🛠 Nuevos trabajos", callback_data="trabajosDia")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     return reply_markup
@@ -215,13 +215,16 @@ def generarReporte(eleccion):
         mensaje = ""
         ultPlanificacion = PlanificacionesSemanales.objects.latest('id')
         detPlanificacion = DetallePlanificacionesSemanales.objects.filter(planificacion=ultPlanificacion)
-        for det in detPlanificacion:
-            mensaje += " ___ TRABAJO N° " + str(det.trabajo.id) + "___\n"
-            mensaje += "*️⃣  Marca: " + str(det.trabajo.modelo.marca.nombre) + "\n"
-            mensaje += "*️⃣️ Modelo: " + str(det.trabajo.modelo.nombre) + "\n"
-            mensaje += "📝 Observaciones: " + str(det.trabajo.observaciones) + "\n"
-            mensaje += "🛠️ Completado al : " + porcentajeTrabajo(det.trabajo) + "%\n"
-            mensaje += "\n\n"
+        if detPlanificacion:
+            for det in detPlanificacion:
+                mensaje += " ___ TRABAJO N° " + str(det.trabajo.id) + "___\n"
+                mensaje += "*️⃣  Marca: " + str(det.trabajo.modelo.marca.nombre) + "\n"
+                mensaje += "*️⃣️ Modelo: " + str(det.trabajo.modelo.nombre) + "\n"
+                mensaje += "📝 Observaciones: " + str(det.trabajo.observaciones) + "\n"
+                mensaje += "🛠️ Completado al : " + porcentajeTrabajo(det.trabajo) + "%\n"
+                mensaje += "\n\n"
+        else:
+            mensaje += "Aún no hay trabajos en esta planificación!"
 
         reporteDet['mensaje'] = mensaje
         reporteDet['planifDesde'] = str(ultPlanificacion.fechaInicio.strftime('%d-%m-%Y'))
@@ -232,13 +235,16 @@ def generarReporte(eleccion):
     if eleccion == 'trabajosDia':
         mensaje = ""
         trabajos = Trabajos.objects.filter(fechaEntrada=datetime.date.today())
-        for t in trabajos:
-            mensaje += " ___ TRABAJO N° " + str(t.id) + "___\n"
-            mensaje += "*️⃣  Marca: " + str(t.modelo.marca.nombre) + "\n"
-            mensaje += "*️⃣️ Modelo: " + str(t.modelo.nombre) + "\n"
-            mensaje += "📝 Observaciones: " + str(t.observaciones) + "\n"
-            mensaje += "🛠️ Completado al : " + porcentajeTrabajo(t) + "%\n"
-            mensaje += "\n\n"
+        if trabajos:
+            for t in trabajos:
+                mensaje += " ___ TRABAJO N° " + str(t.id) + "___\n"
+                mensaje += "*️⃣  Marca: " + str(t.modelo.marca.nombre) + "\n"
+                mensaje += "*️⃣️ Modelo: " + str(t.modelo.nombre) + "\n"
+                mensaje += "📝 Observaciones: " + str(t.observaciones) + "\n"
+                mensaje += "🛠️ Completado al : " + porcentajeTrabajo(t) + "%\n"
+                mensaje += "\n\n"
+        else:
+            mensaje += "Aún no han ingresado nuevos trabajos el día de hoy!"
         reporteDet['mensaje'] = mensaje
         reporteDet['tipo'] = "trabajosDia"
         return reporteDet

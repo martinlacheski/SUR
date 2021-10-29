@@ -23,27 +23,21 @@ def notificar(evento):
     if diaDeNotificacion(datetime.date.today().weekday(), dias_aviso):
         for user in usersToNotify:
             if user.usuarioNotif.chatIdUsuario:
-                if evento.tipoEvento.recordarTelegram:
-                    print(type(evento.fechaNotificacion))
-                    print(evento.fechaNotificacion)
-                    ev = evento.fechaNotificacion - timedelta(days=1)
-                    print(ev)
-                    print(type(ev))
+                if evento.tipoEvento.recordarTelegram and (not evento.vencido or not evento.resuelto):
                     if evento.fechaNotificacion - timedelta(days=1) == datetime.date.today():
                         msj = 'RECORDATORIO URGENTE 🚨\n\n Hola! 👋 Recordá que programaste el siguiente evento el ' \
                               'cual vence MAÑANA: \n\n' \
-                              ' \n📍 Evento de tipo: ' + evento.tipoEvento.nombre + '\n' + '📝 Descripción: ' + evento.descripcion + '\n🗓 Vence en la fecha: ' + str(
-                            evento.fechaNotificacion.day) + '/' + str(evento.fechaNotificacion.month) + '/' + \
-                              str(evento.fechaNotificacion.year)
+                              ' \n📍 Evento de tipo: ' + evento.tipoEvento.nombre + '\n' + '📝 Descripción: ' +\
+                              evento.descripcion + '\n🗓 Vence en la fecha: ' +\
+                              str(evento.fechaNotificacion.strftime('%d-%m-%Y'))
                     else:
                         msj = 'RECORDATORIO\n\n Hola! 👋 Recordá que programaste el siguiente evento: \n\n' \
                               ' \n📍 Evento de tipo: ' + evento.tipoEvento.nombre + '\n' \
                               + '📝 Descripción: ' + evento.descripcion + '\n🗓 Vence en la fecha: ' \
-                              + str(evento.fechaNotificacion.day) + '/' + str(evento.fechaNotificacion.month) \
-                              + '/' + str(evento.fechaNotificacion.year)
+                              +  str(evento.fechaNotificacion.strftime('%d-%m-%Y'))
                     bot.send_message(text=msj, chat_id=user.usuarioNotif.chatIdUsuario)
 
-            if evento.tipoEvento.recordarSistema:
+            if evento.tipoEvento.recordarSistema and (not evento.vencido or not evento.resuelto):
                 n = notificacionesGenerales()
                 if evento.fechaNotificacion - timedelta(days=1) == datetime.date.today():
                     print("hola")
@@ -51,7 +45,7 @@ def notificar(evento):
                     titulo = "Evento URGENTE - Tipo " + str(evento.tipoEvento)
                     descripcion = "¡RECUERDE!\n\n Evento de tipo " + str(evento.tipoEvento) + " programado para el día " + \
                                   evento.fechaNotificacion.strftime('%d-%m-%Y') + " (MAÑANA) con " \
-                                                                                  "descripción: '" + str(evento.descripcion) + "'."
+                                  "descripción: '" + str(evento.descripcion) + "'."
                 else:
                     n.estado = 'pendiente'
                     titulo = "Evento Pendiente - Tipo " + str(evento.tipoEvento)
@@ -69,9 +63,11 @@ def notificar(evento):
                                                         {"type": "receive",
                                                          "titulo": titulo,
                                                          "id_notif": str(n.id)})
+            if evento.fechaNotificacion == datetime.date().today():
+                evento.vencido = True
+                evento.save()
 
 def notificar_generic(evento):
-    print("me ejecuto generic")
     usersToNotify = notificacionUsuarios.objects.filter(tipoEvento=evento.tipoEvento)
     dias_aviso = diasAvisoEvento.objects.last()
     if diaDeNotificacion(datetime.date.today().weekday(), dias_aviso):
@@ -79,9 +75,9 @@ def notificar_generic(evento):
             if user.usuarioNotif.chatIdUsuario:
                 if evento.tipoEvento.recordarTelegram:
                     msj = 'RECORDATORIO\n\n Hola! 👋 Recordá que programaste el siguiente evento: \n\n' \
-                          ' \n📍 Evento de tipo: ' + evento.tipoEvento.nombre + '\n' + '📝 Descripción: ' + evento.descripcion + '\n🗓 Vence en la fecha: ' + str(
-                        evento.fechaNotificacion.day) + '/' + str(evento.fechaNotificacion.month) + '/' + str(
-                        evento.fechaNotificacion.year)
+                          ' \n📍 Evento de tipo: ' + evento.tipoEvento.nombre + '\n' + '📝 Descripción: ' +\
+                          evento.descripcion + '\n🗓 Vence en la fecha: ' +\
+                          str(evento.fechaNotificacion.strftime('%d-%m-%Y'))
                     bot.send_message(text=msj, chat_id=user.usuarioNotif.chatIdUsuario)
 
                 if evento.tipoEvento.recordarSistema:
@@ -102,6 +98,7 @@ def notificar_generic(evento):
                                                              "titulo": titulo,
                                                              "id_notif": str(n.id)})
 
+
 def scheduler_evento(evento):
     scheduler_eventos = BackgroundScheduler(timezone=settings.TIME_ZONE)
     start_date = datetime.datetime(year=evento.fechaNotificacion.year,
@@ -114,7 +111,6 @@ def scheduler_evento(evento):
                                  day=evento.fechaNotificacion.day,
                                  hour=evento.tipoEvento.horarioRecordatorio.hour,
                                  minute=evento.tipoEvento.horarioRecordatorio.minute)
-    print("entramos al creador de eventos")
     if evento.repeticion == '':
         print("crea evento único")
         d = restarDiasHabiles(evento.fechaNotificacion, diasAvisoEvento.objects.last().diasAntelacion)

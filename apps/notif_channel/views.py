@@ -27,7 +27,34 @@ class NotificacionesNotifView(LoginRequiredMixin, ValidatePermissionRequiredMixi
 
         if action == 'detalle_notif':
             user = Usuarios.objects.get(pk=request.POST['user'])
-            print("id de notif que viene desde fron end: " + request.POST['pk'])
+            n = notificacionesGenerales.objects.get(pk=request.POST['pk'])
+            data.append(n.toJSON())
+            if not n.fechaRevisionUser:
+                n.estado = 'vista'
+                n.fechaRevisionUser = datetime.datetime.today()
+                n.save()
+            return JsonResponse (data, safe=False)
+
+class NotificacionesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    permission_required = 'notif_channel.view_notificacionesgenerales'
+    model = notificacionesGenerales
+    template_name = 'completoNotificaciones/list.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        action = request.POST['action']
+        data = []
+        if action == 'search_data':
+            notifs = {}
+            n = notificacionesGenerales.objects.order_by('-pk')
+            for i in n:
+                data.append(i.toJSON())
+            return JsonResponse(data, safe=False)
+
+        if action == 'detalle_notif':
+            user = Usuarios.objects.get(pk=request.POST['user'])
             n = notificacionesGenerales.objects.get(pk=request.POST['pk'])
             data.append(n.toJSON())
             n.estado = 'vista'

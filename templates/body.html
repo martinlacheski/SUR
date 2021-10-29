@@ -361,7 +361,7 @@
                     listaNotif.innerHTML = '';
                     for (const n in data){
                         agregarNotif(data[n].titulo, data[n].estado, data[n].id);
-                        if (data[n].estado === 'pendiente'){
+                        if (data[n].estado === 'pendiente' || data[n].estado === 'urgente'){
                             cantNotif += 1
                         }
                     }
