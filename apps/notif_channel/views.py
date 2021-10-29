@@ -4,7 +4,8 @@ from django.views.generic import ListView
 from apps.notif_channel.models import notificacionesGenerales
 from apps.usuarios.models import Usuarios
 import datetime
-from collections import OrderedDict
+from django.urls import reverse_lazy
+
 
 from apps.mixins import ValidatePermissionRequiredMixin
 
@@ -26,7 +27,6 @@ class NotificacionesNotifView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             return JsonResponse(data, safe=False)
 
         if action == 'detalle_notif':
-            user = Usuarios.objects.get(pk=request.POST['user'])
             n = notificacionesGenerales.objects.get(pk=request.POST['pk'])
             data.append(n.toJSON())
             if not n.fechaRevisionUser:
@@ -39,6 +39,7 @@ class NotificacionesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
     permission_required = 'notif_channel.view_notificacionesgenerales'
     model = notificacionesGenerales
     template_name = 'completoNotificaciones/list.html'
+    success_url = reverse_lazy('notificaciones:listNotificacionesCompleta')
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -46,6 +47,7 @@ class NotificacionesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
     def post(self, request):
         action = request.POST['action']
         data = []
+
         if action == 'search_data':
             notifs = {}
             n = notificacionesGenerales.objects.order_by('-pk')
@@ -53,11 +55,18 @@ class NotificacionesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data.append(i.toJSON())
             return JsonResponse(data, safe=False)
 
-        if action == 'detalle_notif':
-            user = Usuarios.objects.get(pk=request.POST['user'])
+        if action == 'detalle_notif_completo':
             n = notificacionesGenerales.objects.get(pk=request.POST['pk'])
             data.append(n.toJSON())
-            n.estado = 'vista'
-            n.fechaRevisionUser = datetime.datetime.today()
-            n.save()
-            return JsonResponse (data, safe=False)
+            if not n.fechaRevisionUser:
+                n.estado = 'vista'
+                n.fechaRevisionUser = datetime.datetime.today()
+                n.save()
+            return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['notifi_list_url'] = self.success_url
+        context['title'] = 'Histórico de Notificaciones'
+        context['entity'] = 'Notificaciones'
+        return context

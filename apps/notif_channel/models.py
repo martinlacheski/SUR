@@ -5,8 +5,7 @@ from django.forms import model_to_dict
 class notificacionesGenerales(models.Model):
 	fechaNotificacion = models.DateTimeField()
 	ESTADO = (('pendiente', 'Pendiente'),
-	          ('resuelta', 'Semanalmente'),
-	          ('vista', 'Mensualmente'),
+	          ('vista', 'Vista'),
 	          ('urgente', 'Urgente'))
 	estado = models.CharField(max_length=9, choices=ESTADO, blank=True)
 	titulo = models.CharField(max_length=30)
