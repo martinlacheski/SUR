@@ -1,10 +1,11 @@
 # chat/urls.py
 from django.urls import path
 
-from apps.notif_channel.views import NotificacionesNotifView
+from apps.notif_channel.views import NotificacionesNotifView, NotificacionesListView
 
-#Las URL se van a llamar dentro del body. No importa cual tenga.
-# es mas. Probablemente no se use este urls.py
+
+app_name = 'notificaciones'
 urlpatterns = [
     path('notificaciones/updateList/', NotificacionesNotifView.as_view(), name='listNotificaciones'),
+    path('notificaciones/list/', NotificacionesListView.as_view(), name='listNotificacionesCompleta'),
 ]

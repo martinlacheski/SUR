@@ -1,0 +1,23 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'completoNotificaciones/js/list.js' %}"></script> <!-- si lo renombro a list.js NO ANDA (??????) -->
+{% endblock %}
+
+{% block columns %}
+      <tr>
+        <th scope="col" style="width: 5%;">Notificacion</th>
+          <th scope="col" style="width: 25%;">Titulo</th>
+          <th scope="col" style="width: 10%;">Notificada el</th>
+          <th scope="col" style="width: 5%;">Estado</th>
+        <th scope="col" style="width: 5%;">Opciones</th>
+    </tr>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript %}
+
+{% endblock %}
