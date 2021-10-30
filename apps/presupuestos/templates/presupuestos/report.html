@@ -153,7 +153,10 @@
         </tbody>
     </table>
     <p class="text-uppercase text-right">
-        Total <b>$ {{ total|intcomma|localize }}</b><br>
+        Subtotal: <b>$ {{ subtotal|intcomma|localize }}</b><br>
+        IVA: <b>$ {{ iva|intcomma|localize }}</b><br>
+        Percepciones: <b>$ {{ percepcion|intcomma|localize }}</b><br>
+        Total: <b>$ {{ total|intcomma|localize }}</b><br>
     </p>
     <p style="font-size:13px;" class="text-uppercase text-right">
         Son Pesos: <b> {{ enLetras }}</b><br>

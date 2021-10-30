@@ -91,8 +91,6 @@ class PlanificacionesSemanalesCreateView(LoginRequiredMixin, ValidatePermissionR
             elif action == 'check_fechas_planificacion':
                 inicio = request.POST['inicio']
                 fin = request.POST['fin']
-                print(inicio)
-                print(fin)
                 # Buscamos si existen Planificaciones en ese rango de fechas
                 try:
                     check = False
@@ -207,21 +205,6 @@ class PlanificacionesSemanalesUpdateView(LoginRequiredMixin, ValidatePermissionR
                         data.append(item)
                 except Exception as e:
                     data['error'] = str(e)
-            elif action == 'check_fechas_planificacion':
-                inicio = request.POST['inicio']
-                fin = request.POST['fin']
-                # asignamos a una variable el ID de la planificacion actual
-                planificacionID = self.kwargs['pk']
-                # Buscamos si existen Planificaciones en ese rango de fechas
-                # Filtramos por rango de fecha y excluimos el ID de la planificacion actual
-                try:
-                    planificaciones = PlanificacionesSemanales.objects.filter(fechaInicio__range=[inicio, fin]).exclude(id=planificacionID)
-                    check = True
-                    planificaciones = PlanificacionesSemanales.objects.filter(fechaFin__range=[inicio, fin]).exclude(id=planificacionID)
-                    check = True
-                except Exception as e:
-                    check = False
-                data['check'] = check
             elif action == 'edit':
                 with transaction.atomic():
                     formPlanificacionRequest = json.loads(request.POST['planificacion'])

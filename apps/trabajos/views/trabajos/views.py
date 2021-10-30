@@ -153,13 +153,22 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 except Exception as e:
                     pass
                 total = 0
+                neto = 0
+                iva = 0
+                percepcion = 0
                 try:
                     for i in trabajos:
                         # Asignamos a una variable el estado de trabajo
                         estadoTrabajo = i['estadoTrabajo']
                         # Comparamos el nombre del estado de trabajo con el estado de trabajo en parametros
                         if estadoTrabajo['nombre'] != estado.estadoCancelado.nombre:
+                            neto += float(i['subtotal'])
+                            iva += float(i['iva'])
+                            percepcion += float(i['percepcion'])
                             total += float(i['total'])
+                        neto = round(neto,2)
+                        iva = round(iva,2)
+                        percepcion = round(percepcion,2)
                         total = round(total,2)
                 except Exception as e:
                     pass
@@ -184,6 +193,9 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                         'trabajos': trabajos,
                         'estadoCancelado': estadoCancelado,
                         'usuario': request.user,
+                        'subtotal': neto,
+                        'iva': iva,
+                        'percepcion': percepcion,
                         'total': total,
                         'enLetras': totalEnLetras,
                     }

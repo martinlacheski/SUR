@@ -94,28 +94,20 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                         venta['total'] = float(venta['total'])
                 except Exception as e:
                     pass
-
-                iva = 0
-                try:
-                    for i in ventas:
-                        if i['estadoVenta']:
-                            iva += float(i['iva'])
-                    iva = round(iva, 2)
-                except Exception as e:
-                    pass
-                perc = 0
-                try:
-                    for i in ventas:
-                        if i['estadoVenta']:
-                            perc += float(i['percepcion'])
-                    perc = round(perc, 2)
-                except Exception as e:
-                    pass
                 total = 0
+                neto = 0
+                iva = 0
+                percepcion = 0
                 try:
                     for i in ventas:
                         if i['estadoVenta']:
+                            neto += float(i['subtotal'])
+                            iva += float(i['iva'])
+                            percepcion += float(i['percepcion'])
                             total += float(i['total'])
+                    neto = round(neto, 2)
+                    iva = round(iva, 2)
+                    percepcion = round(percepcion, 2)
                     total = round(total, 2)
                 except Exception as e:
                     pass
@@ -134,8 +126,9 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                         'soloTrabajos': soloTrabajos,
                         'ventas': ventas,
                         'usuario': request.user,
+                        'subtotal': neto,
                         'iva': iva,
-                        'perc': perc,
+                        'percepcion': percepcion,
                         'total': total,
                         'enLetras': totalEnLetras,
                     }
