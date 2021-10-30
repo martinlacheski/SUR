@@ -5,15 +5,6 @@ $(function () {
         destroy: true,
         deferRender: true,
         paging: true,
-        // dom: 'Bfrtip',
-        // buttons: [
-        //     {
-        //         extend: 'pdfHtml5',
-        //         // orientation: 'landscape',
-        //         orientation: 'vertical',
-        //         pageSize: 'A4'
-        //     }
-        // ],
         ajax: {
             url: window.location.pathname,
             type: 'POST',

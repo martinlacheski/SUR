@@ -185,6 +185,15 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
+                    <!-- Empresa -->
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                            <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
+                                <i class="fas fa-briefcase nav-icon"></i>
+                                <p>Datos Empresa</p>
+                            </a>
+                        </li>
+                    </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item has-treeview">
                             <a href="" class="nav-link">
@@ -365,22 +374,37 @@
                                 </li>
                             </ul>
                         </li>
+                    </ul>
+                </li>
 
-                        <!-- Sistema -->
+                <!-- Sistema -->
+                <li class="nav-item has-treeview">
+                    <!-- Sistema -->
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <p>
+                            Sistema
+                            <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                        <!-- Auditoria -->
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-cog"></i>
+                                <i class="fas fa-book-reader nav-icon"></i>
                                 <p>
-                                    Sistema
+                                    Auditoría
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <!-- Empresa -->
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
-                                        <i class="fas fa-briefcase nav-icon"></i>
-                                        <p>Datos Empresa</p>
+                                    <a href="{% url 'erp:productos_audit' %}" class="nav-link">
+                                        <i class="fas fa-dolly nav-icon"></i>
+                                        <p>
+                                            Productos
+                                        </p>
                                     </a>
                                 </li>
                             </ul>
@@ -411,8 +435,6 @@
                         </li>
                     </ul>
                 </li>
-
-
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

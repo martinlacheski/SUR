@@ -1,4 +1,4 @@
-//Creamos una variable para cargar el SELECT de Clientes
+//Creamos una variable para cargar el SELECT de Proveedores
 var select_proveedores = $('select[name="selectProveedor"]');
 var tablaProductos;
 //Creamos variables auxiliares para el reporte
@@ -17,7 +17,6 @@ var reporte = {
         compras: [],
     },
 };
-var tablaProductos;
 $(function () {
     var tablaCompra = $('#data').DataTable({
         responsive: true,

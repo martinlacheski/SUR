@@ -16,9 +16,25 @@ AGREGAR LOS NETOS IVA Y PERCEPCIONES
 
 --------------------------------------------------------------------------------------------------------------------
 
+*AUDITORIA sobre:
+EVENTOS DE AGENDA
+PRODUCTOS
+SERVICIOS
+CLIENTES
+PROVEEDORES
+COMPRAS
+VENTAS
+PRESUPUESTOS
+TRABAJOS
+PLANIFICACIONES
+SOLICITUD DE PEDIDOS
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
-*AUDITORIA
+
 
 *ESTADISTICAS
 

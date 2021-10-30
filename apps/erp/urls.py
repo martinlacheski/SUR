@@ -28,6 +28,7 @@ urlpatterns = [
     path('productos/add/', ProductosCreateView.as_view(), name='productos_create'),
     path('productos/update/<int:pk>/', ProductosUpdateView.as_view(), name='productos_update'),
     path('productos/delete/<int:pk>/', ProductosDeleteView.as_view(), name='productos_delete'),
+    path('productos/audit/', ProductosAuditListView.as_view(), name='productos_audit'),
     # Servicios
     path('servicios/list/', ServiciosListView.as_view(), name='servicios_list'),
     path('servicios/add/', ServiciosCreateView.as_view(), name='servicios_create'),

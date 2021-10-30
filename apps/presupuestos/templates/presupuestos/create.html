@@ -686,15 +686,23 @@
                                 <br>
                                 {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
-                            <div class="col-1 mb-1">
+                            <div class="col-1 mb-3">
                                 <label> </label>
                                 <br>
                             </div>
+                            <div class="col-2 mb-3">
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.esInsumo }}
+                                    <label class="custom-control-label" for="id_esInsumo">¿Es Insumo?</label>
+                                </div>
+                            </div>
                             <div class="col-3 mb-3">
-                                <label>¿Es Insumo?: </label>
-                                <br>
-                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
-                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.descuentaStock }}
+                                    <label class="custom-control-label" for="id_descuentaStock">¿Descuenta
+                                        Stock?</label>
                                 </div>
                             </div>
                         </div>

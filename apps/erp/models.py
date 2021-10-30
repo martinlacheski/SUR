@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 from apps.geografico.models import Localidades
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
@@ -179,6 +180,7 @@ class Productos(models.Model):
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
     descuentaStock = models.BooleanField(default=True, verbose_name='¿Descuenta Stock?')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name()
@@ -474,3 +476,5 @@ class DetallePedidoSolicitud(models.Model):
         verbose_name = 'Detalle de Solicitud de Pedido'
         verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
         ordering = ['id']
+
+

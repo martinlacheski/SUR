@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     # Librerias
     'widget_tweaks',
     'django.contrib.humanize',
+    'simple_history',
     # Aplicaciones
     'apps.parametros',
     'apps.login',
@@ -65,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Para las pistas de auditoria. Completar el historia de usuario automaticamente
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
