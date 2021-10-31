@@ -574,13 +574,13 @@ $(function () {
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verEnProceso").checked = false;
             document.getElementById("verFinalizados").checked = false;
-            /*//Reseteamos Cliente y Modelo
+            //Reseteamos Cliente y Modelo
             $('.selectCliente').val(null).trigger('change');
             $('.selectModelo').val(null).trigger('change');
             //Reseteamos la Tabla
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
-            tablaTrabajo.draw();*/
+            tablaTrabajo.draw();
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkPendientes = true;
             //Extendemos la busqueda del datatables
@@ -628,13 +628,13 @@ $(function () {
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verEnProceso").checked = false;
             document.getElementById("verFinalizados").checked = false;
-            /*//Reseteamos Cliente y Modelo
+            //Reseteamos Cliente y Modelo
             $('.selectCliente').val(null).trigger('change');
             $('.selectModelo').val(null).trigger('change');
             //Reseteamos la Tabla
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
-            tablaTrabajo.draw();*/
+            tablaTrabajo.draw();
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkPlanificados = true;
             //Extendemos la busqueda del datatables
@@ -682,13 +682,13 @@ $(function () {
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verFinalizados").checked = false;
-            /*//Reseteamos Cliente y Modelo
+            //Reseteamos Cliente y Modelo
             $('.selectCliente').val(null).trigger('change');
             $('.selectModelo').val(null).trigger('change');
             //Reseteamos la Tabla
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
-            tablaTrabajo.draw();*/
+            tablaTrabajo.draw();
             //Asignamos Verdadero a la variable auxiliar del reporte
             verEnProceso = true;
             //Extendemos la busqueda del datatables
@@ -736,13 +736,13 @@ $(function () {
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verEnProceso").checked = false;
-            /*//Reseteamos Cliente y Modelo
+            //Reseteamos Cliente y Modelo
             $('.selectCliente').val(null).trigger('change');
             $('.selectModelo').val(null).trigger('change');
             //Reseteamos la Tabla
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
-            tablaTrabajo.draw();*/
+            tablaTrabajo.draw();
             //Asignamos Verdadero a la variable auxiliar del reporte
             verFinalizados = true;
             //Extendemos la busqueda del datatables
@@ -794,7 +794,7 @@ $(function () {
         fechaInicio = '';
         fechaFin = '';
         $('#excluirEntregados').prop('checked', false);
-        $('#excluirCancelados').prop('checked', false);
+        $('#excluirCancelados').prop('checked', true);
         $('#verPendientes').prop('checked', false);
         $('#verPlanificados').prop('checked', false);
         $('#verEnProceso').prop('checked', false);
