@@ -8,6 +8,7 @@ var reporte = {
     items: {
         //Filtros
         producto: '',
+        accion: '',
         usuario: '',
         fechaDesde: '',
         fechaHasta: '',
@@ -474,6 +475,7 @@ $(function () {
         }
         //Asignamos las variables a la estructura
         reporte.items.producto = $('select[name="selectProducto"]').val();
+        reporte.items.accion = $('select[name="selectAccion"]').val();
         reporte.items.usuario = $('select[name="selectUsuario"]').val();
         reporte.items.fechaDesde = fechaInicio;
         reporte.items.fechaHasta = fechaFin;

@@ -93,6 +93,12 @@
         {% if producto %}
             Producto: <b> {{ producto.descripcion }}</b>
         {% endif %}
+        {% if usuarioAuditoria %}
+            Usuario: <b> {{ usuarioAuditoria }}</b>
+        {% endif %}
+        {% if accion %}
+            Tipo de acción: <b> {{ accion }}</b>
+        {% endif %}
         {% if inicio %}
             Movimientos Desde: <b> {{ inicio }} </b>
         {% endif %}
@@ -105,15 +111,15 @@
     <table class="table" style="width: 100%;">
         <thead>
         <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 6%;">Nro.</th>
-            <th class="text-center" style="width: 10%;">Fecha y Hora</th>
-            <th class="text-center" style="width: 31%;">Producto</th>
-            <th class="text-center" style="width: 10%;">Costo</th>
+            <th class="text-center" style="width: 4%;">ID</th>
+            <th class="text-center" style="width: 12%;">Fecha y Hora</th>
+            <th class="text-center" style="width: 39%;">Producto</th>
+            <th class="text-center" style="width: 7%;">Costo</th>
             <th class="text-center" style="width: 6%;">Utilidad</th>
-            <th class="text-center" style="width: 10%;">Precio</th>
+            <th class="text-center" style="width: 9%;">Precio</th>
             <th class="text-center" style="width: 7%;">Stock</th>
-            <th class="text-center" style="width: 9%;">Accion</th>
-            <th class="text-center" style="width: 11%;">Usuario</th>
+            <th class="text-center" style="width: 7%;">Accion</th>
+            <th class="text-center" style="width: 9%;">Usuario</th>
         </tr>
         </thead>
         <tbody>

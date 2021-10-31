@@ -139,6 +139,12 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     usuario = reporte['usuario']
                 except Exception as e:
                     pass
+                # Obtenemos la accion si esta filtrada
+                accion = ""
+                try:
+                    accion = reporte['accion']
+                except Exception as e:
+                    pass
                 # Obtenemos si se filtro por rango de fechas
                 inicio = ""
                 fin = ""
@@ -164,6 +170,7 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                                     'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
                         'fecha': datetime.datetime.now(),
                         'producto': producto,
+                        'accion': accion,
                         'inicio': inicio,
                         'fin': fin,
                         'productos': productos,
