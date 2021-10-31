@@ -74,6 +74,52 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                             'precioVenta': i.precioVenta, 'history_date': i.history_date,
                             'history_type': i.history_type, 'history_user': usuario}
                     data.append(dict)
+            elif action == 'view_movimiento':
+                data = []
+                mov = Productos.history.get(history_id=request.POST['pk'])
+                movAnt = mov.prev_record
+                try:
+                    usuario = mov.history_user.username
+                    movAnt = mov.prev_record
+                except:
+                    usuario = '----'
+                if movAnt:
+                    dict = {'categoria': mov.subcategoria.categoria.nombre, 'subcategoria': mov.subcategoria.nombre,
+                        'descripcion': mov.descripcion, 'abreviatura': mov.abreviatura,
+                        'codigo': mov.codigo, 'codigoProveedor': mov.codigoProveedor,
+                        'codigoBarras1': mov.codigoBarras1,
+                        'stockReal': mov.stockReal, 'stockMinimo': mov.stockMinimo, 'reposicion': mov.reposicion,
+                        'costo': mov.costo, 'utilidad': mov.utilidad, 'iva': mov.iva.nombre,
+                        'precioVenta': mov.precioVenta, 'imagen': mov.imagen, 'ubicacion': mov.ubicacion,
+                        'observaciones': mov.observaciones, 'esInsumo': mov.esInsumo,
+                        'descuentaStock': mov.descuentaStock,
+                        'history_date': mov.history_date, 'history_type': mov.history_type, 'history_user': usuario,
+                        'categoriaOld': movAnt.subcategoria.categoria.nombre,
+                        'subcategoriaOld': movAnt.subcategoria.nombre,
+                        'descripcionOld': movAnt.descripcion, 'abreviaturaOld': movAnt.abreviatura,
+                        'codigoOld': movAnt.codigo, 'codigoProveedorOld': movAnt.codigoProveedor,
+                        'codigoBarras1Old': movAnt.codigoBarras1,
+                        'stockRealOld': movAnt.stockReal, 'stockMinimoOld': movAnt.stockMinimo,
+                        'reposicionOld': movAnt.reposicion,
+                        'costoOld': movAnt.costo, 'utilidadOld': movAnt.utilidad,
+                        'ivaOld': movAnt.iva.nombre,
+                        'precioVentaOld': movAnt.precioVenta, 'imagenOld': movAnt.imagen,
+                        'ubicacionOld': movAnt.ubicacion,
+                        'observacionesOld': movAnt.observaciones, 'esInsumoOld': movAnt.esInsumo,
+                        'descuentaStockOld': movAnt.descuentaStock}
+                    data.append(dict)
+                else:
+                    dict = {'categoria': mov.subcategoria.categoria.nombre, 'subcategoria': mov.subcategoria.nombre,
+                            'descripcion': mov.descripcion, 'abreviatura': mov.abreviatura,
+                            'codigo': mov.codigo, 'codigoProveedor': mov.codigoProveedor,
+                            'codigoBarras1': mov.codigoBarras1,
+                            'stockReal': mov.stockReal, 'stockMinimo': mov.stockMinimo, 'reposicion': mov.reposicion,
+                            'costo': mov.costo, 'utilidad': mov.utilidad, 'iva': mov.iva.nombre,
+                            'precioVenta': mov.precioVenta, 'imagen': mov.imagen, 'ubicacion': mov.ubicacion,
+                            'observaciones': mov.observaciones, 'esInsumo': mov.esInsumo,
+                            'descuentaStock': mov.descuentaStock,
+                            'history_date': mov.history_date, 'history_type': mov.history_type, 'history_user': usuario}
+                    data.append(dict)
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
@@ -105,10 +151,10 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 productos = []
                 try:
                     productos = reporte['productos']
-                    for producto in productos:
-                        producto['costo'] = float(producto['costo'])
-                        producto['utilidad'] = float(producto['utilidad'])
-                        producto['precioVenta'] = float(producto['precioVenta'])
+                    for prod in productos:
+                        prod['costo'] = float(prod['costo'])
+                        prod['utilidad'] = float(prod['utilidad'])
+                        prod['precioVenta'] = float(prod['precioVenta'])
                 except Exception as e:
                     pass
                 #   cargamos los datos del contexto

@@ -80,14 +80,17 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     if (row.history_type == '+') {
-                        var buttons = '<a class="btn btn-primary btn-xs btn-flat readonly"><i class="fas fa-plus"></i></a> ';
-                        return buttons
+                        // var buttons = '<a class="btn btn-primary btn-xs btn-flat readonly"><i class="fas fa-plus"></i></a> ';
+                        // return buttons
+                        return 'Creación'
                     } else if (row.history_type == '~') {
-                        var buttons = '<a class="btn btn-warning btn-xs btn-flat readonly"><i class="fas fa-edit"></i></a> ';
-                        return buttons
+                        // var buttons = '<a class="btn btn-warning btn-xs btn-flat readonly"><i class="fas fa-edit"></i></a> ';
+                        // return buttons
+                        return 'Actualización'
                     } else if (row.history_type == '-') {
-                        var buttons = '<a class="btn btn-danger btn-xs btn-flat readonly"><i class="fas fa-minus"></i></a> ';
-                        return buttons
+                        // var buttons = '<a class="btn btn-danger btn-xs btn-flat readonly"><i class="fas fa-minus"></i></a> ';
+                        // return buttons
+                        return 'Eliminación'
                     }
                 }
             },
@@ -120,6 +123,33 @@ $(function () {
                     $('.selectProducto').append(newOption).trigger('change');
                 });
             });
+            //Agregamos al Select2 las acciones que tenemos en el listado
+            this.api().columns(5).every(function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+                column.data().unique().sort().each(function (d, j) {
+                    var option = d.toString();
+                    if (option === '+') {
+                        option = 'Creación';
+                    } else if (option === '-') {
+                        option = 'Eliminación';
+                    } else if (option === '~') {
+                        option = 'Actualización';
+                    }
+                    var newOption = new Option(option, option, false, false);
+                    // var newOption = new Option(d.toString(), d.toString(), false, false);
+                    $('.selectAccion').append(newOption).trigger('change');
+                });
+            });
             //Agregamos al Select2 los Usuarios que tenemos en el listado
             this.api().columns(6).every(function () {
                 var column = this;
@@ -144,13 +174,170 @@ $(function () {
     });
     $('#data tbody')
         .on('click', 'a[rel="detalleMovimiento"]', function () {
-            //Seleccionamos el Producto sobre la cual queremos traer el detalle
+            //Asignamos a una variable el renglon que necesitamos
             var tr = tablaProductos.cell($(this).closest('td, li')).index();
-            var data = tablaProductos.row(tr.row).data();
+            renglon = tr.row;
+            //Asignamos a una variable el movimiento en base al renglon
+            var audit = tablaProductos.row(tr.row).data();
             //Realizamos el AJAX para buscar el DETALLE DE LA AUDITORIA
-
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'action': 'view_movimiento',
+                    'pk': audit.history_id,
+                },
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                },
+            }).done(function (data) {
+                var dato = data[0];
+                //Cargamos los datos del Producto y mostramos en el modal con las modificaciones
+                var categoria = $('#modalCategoria').val(dato.categoria);
+                var subcategoria = $('#modalSubcategoria').val(dato.subcategoria);
+                var descripcion = $('#modalDescripcion').val(dato.descripcion);
+                var abreviatura = $('#modalAbreviatura').val(dato.abreviatura);
+                var codigo = $('#modalCodigo').val(dato.codigo);
+                var codigoProveedor = $('#modalCodigoProveedor').val(dato.codigoProveedor);
+                var codigoBarras1 = $('#modalCodigoBarras1').val(dato.codigoBarras1);
+                var stockReal = $('#modalStockReal').val(dato.stockReal);
+                var stockMinimo = $('#modalStockMinimo').val(dato.stockMinimo);
+                var reposicion = $('#modalReposicion').val(dato.reposicion);
+                var costo = $('#modalCosto').val(dato.costo);
+                var utilidad = $('#modalUtilidad').val(dato.utilidad);
+                var iva = $('#modalTipoIva').val(dato.iva);
+                var precioVenta = $('#modalPrecioVenta').val(dato.precioVenta);
+                var ubicacion = $('#modalUbicacion').val(dato.ubicacion);
+                var observaciones = $('#modalObservaciones').val(dato.observaciones);
+                var esInsumo = $('#modalEsInsumo').val(dato.esInsumo);
+                var descuentaStock = $('#modalDescuentaStock').val(dato.descuentaStock);
+                var imagen = $('#modalImagen').val(dato.imagen);
+                $('#modalCategoriaOld').val(dato.imagen);
+                var categoriaOld = document.getElementById('modalCategoriaOld');
+                categoriaOld.innerHTML = dato.categoriaOld;
+                var subcategoriaOld = document.getElementById('modalSubcategoriaOld');
+                subcategoriaOld.innerHTML = dato.subcategoriaOld;
+                var descripcionOld = document.getElementById('modalDescripcionOld');
+                descripcionOld.innerHTML = dato.descripcionOld;
+                var abreviaturaOld = document.getElementById('modalAbreviaturaOld');
+                abreviaturaOld.innerHTML = dato.abreviaturaOld;
+                var codigoOld = document.getElementById('modalCodigoOld');
+                codigoOld.innerHTML = dato.codigoOld;
+                var codigoProveedorOld = document.getElementById('modalCodigoProveedorOld');
+                codigoProveedorOld.innerHTML = dato.codigoProveedorOld;
+                var codigoBarras1Old = document.getElementById('modalCodigoBarras1Old');
+                codigoBarras1Old.innerHTML = dato.codigoBarras1Old;
+                var stockRealOld = document.getElementById('modalStockRealOld');
+                stockRealOld.innerHTML = dato.stockRealOld;
+                var stockMinimoOld = document.getElementById('modalStockMinimoOld');
+                stockMinimoOld.innerHTML = dato.stockMinimoOld;
+                var reposicionOld = document.getElementById('modalReposicionOld');
+                reposicionOld.innerHTML = dato.reposicionOld;
+                var costoOld = document.getElementById('modalCostoOld');
+                costoOld.innerHTML = dato.costoOld;
+                var utilidadOld = document.getElementById('modalUtilidadOld');
+                utilidadOld.innerHTML = dato.utilidadOld;
+                var ivaOld = document.getElementById('modalTipoIvaOld');
+                ivaOld.innerHTML = dato.ivaOld;
+                var precioVentaOld = document.getElementById('modalPrecioVentaOld');
+                precioVentaOld.innerHTML = dato.precioVentaOld;
+                var ubicacionOld = document.getElementById('modalUbicacionOld');
+                ubicacionOld.innerHTML = dato.ubicacionOld;
+                var observacionesOld = document.getElementById('modalObservacionesOld');
+                observacionesOld.innerHTML = dato.observacionesOld;
+                var esInsumoOld = document.getElementById('modalEsInsumoOld');
+                esInsumoOld.innerHTML = dato.esInsumoOld;
+                var descuentaStockOld = document.getElementById('modalDescuentaStockOld');
+                descuentaStockOld.innerHTML = dato.descuentaStockOld;
+                var imagenOld = document.getElementById('modalImagenOld');
+                imagenOld.innerHTML = dato.imagenOld;
+                if (categoria.val() !== categoriaOld.innerHTML) {
+                    categoriaOld.innerHTML = 'Valor anterior: ' + categoriaOld.innerHTML
+                    $("#modalCategoriaOld").removeAttr("hidden");
+                }
+                if (subcategoria.val() !== subcategoriaOld.innerHTML) {
+                    subcategoriaOld.innerHTML = 'Valor anterior: ' + subcategoriaOld.innerHTML
+                    $("#modalSubcategoriaOld").removeAttr("hidden");
+                }
+                if (descripcion.val() !== descripcionOld.innerHTML) {
+                    descripcionOld.innerHTML = 'Valor anterior: ' + descripcionOld.innerHTML
+                    $("#modalDescripcionOld").removeAttr("hidden");
+                }
+                if (abreviatura.val() !== abreviaturaOld.innerHTML) {
+                    abreviaturaOld.innerHTML = 'Valor anterior: ' + abreviaturaOld.innerHTML
+                    $("#modalAbreviaturaOld").removeAttr("hidden");
+                }
+                if (codigo.val() !== codigoOld.innerHTML) {
+                    codigoOld.innerHTML = 'Valor anterior: ' + codigoOld.innerHTML
+                    $("#modalCodigoOld").removeAttr("hidden");
+                }
+                if (codigoProveedor.val() !== codigoProveedorOld.innerHTML) {
+                    codigoProveedorOld.innerHTML = 'Valor anterior: ' + codigoProveedorOld.innerHTML
+                    $("#modalCodigoProveedorOld").removeAttr("hidden");
+                }
+                if (codigoBarras1.val() !== codigoBarras1Old.innerHTML) {
+                    codigoBarras1Old.innerHTML = 'Valor anterior: ' + codigoBarras1Old.innerHTML
+                    $("#modalCodigoBarras1Old").removeAttr("hidden");
+                }
+                if (stockReal.val() !== stockRealOld.innerHTML) {
+                    stockRealOld.innerHTML = 'Valor anterior: ' + stockRealOld.innerHTML
+                    $("#modalStockRealOld").removeAttr("hidden");
+                }
+                if (stockMinimo.val() !== stockMinimoOld.innerHTML) {
+                    stockMinimoOld.innerHTML = 'Valor anterior: ' + stockMinimoOld.innerHTML
+                    $("#modalStockMinimoOld").removeAttr("hidden");
+                }
+                if (reposicion.val() !== reposicionOld.innerHTML) {
+                    reposicionOld.innerHTML = 'Valor anterior: ' + reposicionOld.innerHTML
+                    $("#modalReposicionOld").removeAttr("hidden");
+                }
+                if (costo.val() !== costoOld.innerHTML) {
+                    costoOld.innerHTML = 'Valor anterior: ' + costoOld.innerHTML
+                    $("#modalCostoOld").removeAttr("hidden");
+                }
+                if (utilidad.val() !== utilidadOld.innerHTML) {
+                    utilidadOld.innerHTML = 'Valor anterior: ' + utilidadOld.innerHTML
+                    $("#modalUtilidadOld").removeAttr("hidden");
+                }
+                if (iva.val() !== ivaOld.innerHTML) {
+                    ivaOld.innerHTML = 'Valor anterior: ' + ivaOld.innerHTML
+                    $("#modalIvaOld").removeAttr("hidden");
+                }
+                if (precioVenta.val() !== precioVentaOld.innerHTML) {
+                    precioVentaOld.innerHTML = 'Valor anterior: ' + precioVentaOld.innerHTML
+                    $("#modalPrecioVentaOld").removeAttr("hidden");
+                }
+                if (ubicacion.val() !== ubicacionOld.innerHTML) {
+                    ubicacionOld.innerHTML = 'Valor anterior: ' + ubicacionOld.innerHTML
+                    $("#modalUbicacionOld").removeAttr("hidden");
+                }
+                if (observaciones.val() !== observacionesOld.innerHTML) {
+                    observacionesOld.innerHTML = 'Valor anterior: ' + observacionesOld.innerHTML
+                    $("#modalObservacionesOld").removeAttr("hidden");
+                }
+                if (esInsumo.val() !== esInsumoOld.innerHTML) {
+                    esInsumoOld.innerHTML = 'Valor anterior: ' + esInsumoOld.innerHTML
+                    $("#modalEsInsumoOld").removeAttr("hidden");
+                }
+                if (descuentaStock.val() !== descuentaStockOld.innerHTML) {
+                    descuentaStockOld.innerHTML = 'Valor anterior: ' + descuentaStockOld.innerHTML
+                    $("#modalDescuentaStockOld").removeAttr("hidden");
+                }
+                if (imagen.val() !== imagenOld.innerHTML) {
+                    imagenOld.innerHTML = 'Valor anterior: ' + imagenOld.innerHTML
+                    $("#modalImagenOld").removeAttr("hidden");
+                }
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+            }).always(function (data) {
+            });
             $('#modalProducto').modal('show');
         });
+    //Al cerrar el Modal de Movimiento reseteamos los valores del formulario
+    $('#modalProducto').on('hidden.bs.modal', function (e) {
+        //Reseteamos los input del Modal
+        $('#formProducto').trigger('reset');
+    });
 //------------------------------------FILTROS----------------------------------------//
     //Mostramos los Filtros
     $('.showFilters').on('click', function () {
@@ -183,7 +370,6 @@ $(function () {
         //Actualizamos la tabla
         tablaProductos.draw();
     });
-
     //Aplicamos Filtro de Productos
     $('.selectProducto').on('change', function () {
         //Reseteamos los filtros
@@ -209,7 +395,31 @@ $(function () {
             tablaProductos.draw();
         }
     });
-
+    //Aplicamos Filtro de Accion
+    $('.selectAccion').on('change', function () {
+        //Reseteamos los filtros
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaProductos.draw();
+        //Asignamos a una variabla el usuario del Select
+        var accion = $(this).val();
+        if (accion !== null && accion !== '' && accion !== undefined) {
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el usuario por cada renglon
+                    var accionTabla = (data[5].toString());
+                    //Comparamos contra el renglon
+                    if (accion === accionTabla) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            //Actualizamos la tabla
+            tablaProductos.draw();
+        }
+    });
     //Aplicamos Filtro de Usuarios
     $('.selectUsuario').on('change', function () {
         //Reseteamos los filtros
@@ -243,6 +453,7 @@ $(function () {
         tablaProductos.draw();
         $('.selectProducto').val(null).trigger('change');
         $('.selectUsuario').val(null).trigger('change');
+        $('.selectAccion').val(null).trigger('change');
         //Limpiamos limpio el Filtro de Rango de Fechas
         $('input[name="filterRangoFechas"]').val('');
         fechaInicio = '';

@@ -64,7 +64,16 @@
                                autocomplete="off">
                     </div>
                 </div>
-                <div class="form-group col-3">
+                <div class="form-group col-2">
+                    <label>Accion:</label>
+                    <div class="input-group">
+                        <select class="form-select form-control select2 selectAccion" id="selectAccion"
+                                name="selectAccion" aria-label="selectAccion">
+                            <option value="">---------</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-2">
                     <label>Usuarios:</label>
                     <div class="input-group">
                         <select class="form-select form-control select2 selectUsuario" id="selectUsuario"
@@ -73,11 +82,11 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-1">
                     <label class="mb-4"></label>
                     <div class="card-row">
                         <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
-                                class="fas fa-times"></i> Filtros
+                                class="fas fa-times"></i>
                         </button>
                     </div>
                 </div>
@@ -135,31 +144,36 @@
                             <div class="col-6 mb-3">
                                 <label>Categoría:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalCategoria" readonly>
+                                    <input type="text" class="form-control" id="modalCategoria" readonly>
                                 </div>
+                                <span hidden id="modalCategoriaOld" style="color: red;">"</span>
+
                             </div>
                             <div class="form-group col-6">
-                                <label>(*) Subcategoría:</label>
+                                <label>Subcategoría:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalSubcategoria" readonly>
+                                    <input type="text" class="form-control" id="modalSubcategoria" readonly>
                                 </div>
+                                <span hidden id="modalSubcategoriaOld" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-6 mb-6">
-                                    <label>(*) Descripción:</label>
+                                    <label>Descripción:</label>
                                     <br>
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="modalDescripcion" readonly>
+                                        <input type="text" class="form-control" id="modalDescripcion" readonly>
                                     </div>
+                                    <span hidden id="modalDescripcionOld" style="color: red;"> </span>
                                 </div>
-                                <div class="form-group col-3 mb-3">
+                                <div class="form-group col-4 mb-3">
                                     <label>Abreviatura:</label>
                                     <br>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" name="modalAbreviatura" readonly>
+                                    <div class="input-group col-9">
+                                        <input type="text" class="form-control" id="modalAbreviatura" readonly>
                                     </div>
+                                    <span hidden class="col-12" id="modalAbreviaturaOld" style="color: red;"> </span>
                                 </div>
                             </div>
                         </div>
@@ -168,42 +182,47 @@
                                 <label>Código:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalCodigo" readonly>
+                                    <input type="text" class="form-control" id="modalCodigo" readonly>
                                 </div>
+                                <span hidden id="modalCodigoOld" style="color: red;"> </span>
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalCodigoProveedor" readonly>
+                                    <input type="text" class="form-control" id="modalCodigoProveedor" readonly>
                                 </div>
-
+                                <span hidden id="modalCodigoProveedorOld" style="color: red;"> </span>
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código de Barras:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalCodigoBarras" readonly>
+                                    <input type="text" class="form-control" id="modalCodigoBarras1" readonly>
                                 </div>
+                                <span hidden id="modalCodigoBarras1Old" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-3 mb-3">
                                 <label>Stock:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalStock" readonly>
+                                    <input type="text" class="form-control" id="modalStockReal" readonly>
                                 </div>
+                                <span hidden id="modalStockRealOld" style="color: red;"> </span>
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Stock Mínimo:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalStockMinimo" readonly>
+                                    <input type="text" class="form-control" id="modalStockMinimo" readonly>
                                 </div>
+                                <span hidden id="modalStockMinimoOld" style="color: red;"> </span>
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Pedido Reposición:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalReposicion" readonly>
+                                    <input type="text" class="form-control" id="modalReposicion" readonly>
                                 </div>
+                                <span hidden id="modalReposicionOld" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
@@ -211,29 +230,33 @@
                                 <label>Precio de Costo:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalPrecioCosto" readonly>
+                                    <input type="text" class="form-control" id="modalCosto" readonly>
                                 </div>
+                                <span hidden id="modalCostoOld" style="color: red;"> </span>
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Margen de Utilidad:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalUtilidad" readonly>
+                                    <input type="text" class="form-control" id="modalUtilidad" readonly>
                                 </div>
+                                <span hidden id="modalUtilidadOld" style="color: red;"> </span>
                             </div>
                             <div class="col-3 mb-3">
-                                <label>(*) Tipo de IVA:</label>
+                                <label>Tipo de IVA:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalTipoIva" readonly>
+                                    <input type="text" class="form-control" id="modalTipoIva" readonly>
                                 </div>
+                                <span hidden id="modalTipoIvaOld" style="color: red;"> </span>
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalPrecioVenta" readonly>
+                                    <input type="text" class="form-control" id="modalPrecioVenta" readonly>
                                 </div>
+                                <span hidden id="modalPrecioVentaOld" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
@@ -241,15 +264,17 @@
                                 <label>Ubicacion Física:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalUbicacion" readonly>
+                                    <input type="text" class="form-control" id="modalUbicacion" readonly>
                                 </div>
+                                <span hidden id="modalUbicacionOld" style="color: red;"> </span>
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Observaciones:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalObservaciones" readonly>
+                                    <input type="text" class="form-control" id="modalObservaciones" readonly>
                                 </div>
+                                <span hidden id="modalObservacionesOld" style="color: red;"> </span>
                             </div>
                             <div class="col-1 mb-1">
                                 <label> </label>
@@ -259,23 +284,26 @@
                                 <label>¿Es Insumo?</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalEsInsumo" readonly>
+                                    <input type="text" class="form-control" id="modalEsInsumo" readonly>
                                 </div>
+                                <span hidden id="modalEsInsumoOld" style="color: red;"> </span>
                             </div>
                             <div class="col-2 mb-3">
                                 <label>¿Descuenta Stock?</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalDescuentaStock" readonly>
+                                    <input type="text" class="form-control" id="modalDescuentaStock" readonly>
                                 </div>
+                                <span hidden id="modalDescuentaStockOld" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6 mb-6">
                                 <label>Imagen:</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="modalImagen" readonly>
+                                    <input type="text" class="form-control" id="modalImagen" readonly>
                                 </div>
+                                <span hidden id="modalImagenOld" style="color: red;"> </span>
                             </div>
                         </div>
                     </div>
