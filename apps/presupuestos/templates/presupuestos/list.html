@@ -12,6 +12,24 @@
     <!-- Moment -->
     <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
     <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+    <!-- dataTables Sorting -->
+    <script src="{% static 'lib/datatables-sorting/datetime-moment.js' %}"></script>
+    <!-- dataTables Clear Filter -->
+    <script src="{% static 'lib/datatables-filter-clear/fnFilterClear.js' %}"></script>
+    <!-- daterange picker -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js' %}"></script>
+    <!-- Select2 -->
+    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+          rel="stylesheet"/>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+    <!-- Tempus Dominus -->
+    <link rel="stylesheet"
+          href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <!-- archivo JS -->
     <script src="{% static 'presupuestos/js/list.js' %}"></script>
 {% endblock %}
@@ -25,33 +43,92 @@
             </h3>
         </div>
         <div class="card-body">
-            <table class="table" id="data">
-                <thead>
-                <tr>
-                    <th scope="col" style="width: 5%;">ID</th>
-                    <th scope="col" style="width: 5%;">Estado</th>
-                    <th scope="col" style="width: 10%;">Fecha</th>
-                    <th scope="col" style="width: 10%;">Marca</th>
-                    <th scope="col" style="width: 20%;">Modelo</th>
-                    <th scope="col" style="width: 25%;">Cliente</th>
-                    <th scope="col" style="width: 10%;">Total</th>
-                    <th scope="col" style="width: 15%;">Opciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% block rows %}
+            <label>Filtros: <i class="fas fa-angle-down showFilters"></i> </label>
+            <div class="row" id="filters">
+                <div class="form-group col-3">
+                    <label>Clientes:</label>
+                    <div class="input-group">
+                        <select class="form-select form-control select2 selectCliente" id="selectCliente"
+                                name="selectCliente" aria-label="selectCliente">
+                            <option value="">---------</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-2">
+                    <label>Modelos:</label>
+                    <div class="input-group">
+                        <select class="form-select form-control select2 selectModelo" id="selectModelo"
+                                name="selectModelo" aria-label="selectModelo">
+                            <option value="">---------</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group col-3">
+                    <label>Fechas:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="filterRangoFechas"
+                               placeholder="Seleccione Rango de Fechas" aria-label="filterRangoFechas"
+                               autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-3">
+                    <label></label>
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                        <input type="checkbox" class="custom-control-input excluirNoConfirmados"
+                               id="excluirNoConfirmados">
+                        <label class="custom-control-label" for="excluirNoConfirmados"> Excluir No Confirmados</label>
+                    </div>
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                        <input type="checkbox" class="custom-control-input excluirCancelados"
+                               id="excluirCancelados">
+                        <label class="custom-control-label" for="excluirCancelados"> Excluir Cancelados</label>
+                    </div>
+                </div>
+                <div class="form-group col-1">
+                    <label></label>
+                    <div class="card-row">
+                        <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
+                                class="fas fa-times"></i> Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <table class="table" id="data">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 5%;">ID</th>
+                            <th scope="col" style="width: 5%;">Estado</th>
+                            <th scope="col" style="width: 10%;">Fecha</th>
+                            <th scope="col" style="width: 10%;">Marca</th>
+                            <th scope="col" style="width: 20%;">Modelo</th>
+                            <th scope="col" style="width: 25%;">Cliente</th>
+                            <th scope="col" style="width: 10%;">Total</th>
+                            <th scope="col" style="width: 15%;">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% block rows %}
 
-                {% endblock %}
-                </tbody>
-            </table>
+                        {% endblock %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         <div class="card-footer">
-            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
-                <i class="fas fa-plus"></i> Nuevo registro
-            </a>
-            <a href="{{ list_url }}" class="btn btn-success btn-flat">
-                <i class="fas fa-sync"></i> Actualizar
-            </a>
+            <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
+                <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                    <i class="fas fa-plus"></i> Nuevo registro
+                </a>
+                <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                    <i class="fas fa-sync"></i> Actualizar
+                </a>
+                <button type="submit" class="btn btn-info btn-flat btnReporte">
+                    <i class="fas fa-file-pdf"></i> Generar Reporte
+                </button>
+            </form>
         </div>
     </div>
     <!-- Modal Cancelar Presupuesto Base -->
@@ -138,6 +215,7 @@
     <script type="application/javascript">
         //Llamamos a la funcion de Token
         getToken(name);
+
         //Funcion para Eliminar mediante AJAX
         function btnEliminar(id, href) {
             // Reactivación de botón y mensaje a default.

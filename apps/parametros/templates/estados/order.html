@@ -1,0 +1,62 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+
+    <script src="{% static 'estados/js/order.js' %}"></script>
+    <style>
+        #sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+
+        #sortable li {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit"></i>
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <ul id="sortable">
+                    {% for e in estados %}
+                        <li class="ui-state-default ui-sortable-handle" id={{ e.id }}>{{ e.nombre }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card-footer">
+                {#Mensaje de error#}
+                <ul id="errorList" class="alert-danger"></ul>
+                {#Botones#}
+                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                    <i class="fas fa-save"></i> Guardar orden
+                </button>
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+    <script>
+
+    </script>
+{% endblock %}

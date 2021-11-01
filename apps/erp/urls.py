@@ -1,6 +1,7 @@
 from apps.erp.views.categorias.views import *
 from apps.erp.views.clientes.views import *
 from apps.erp.views.compras.views import *
+from apps.erp.views.pedidosSolicitud.views import *
 from apps.erp.views.proveedores.views import *
 from apps.erp.views.subcategorias.views import *
 from apps.erp.views.productos.views import *
@@ -27,11 +28,13 @@ urlpatterns = [
     path('productos/add/', ProductosCreateView.as_view(), name='productos_create'),
     path('productos/update/<int:pk>/', ProductosUpdateView.as_view(), name='productos_update'),
     path('productos/delete/<int:pk>/', ProductosDeleteView.as_view(), name='productos_delete'),
+    path('productos/audit/', ProductosAuditListView.as_view(), name='productos_audit'),
     # Servicios
     path('servicios/list/', ServiciosListView.as_view(), name='servicios_list'),
     path('servicios/add/', ServiciosCreateView.as_view(), name='servicios_create'),
     path('servicios/update/<int:pk>/', ServiciosUpdateView.as_view(), name='servicios_update'),
     path('servicios/delete/<int:pk>/', ServiciosDeleteView.as_view(), name='servicios_delete'),
+    path('servicios/audit/', ServiciosAuditListView.as_view(), name='servicios_audit'),
     # Clientes
     path('clientes/list/', ClientesListView.as_view(), name='clientes_list'),
     path('clientes/add/', ClientesCreateView.as_view(), name='clientes_create'),
@@ -54,4 +57,11 @@ urlpatterns = [
     path('compras/update/<int:pk>/', ComprasUpdateView.as_view(), name='compras_update'),
     path('compras/delete/<int:pk>/', ComprasDeleteView.as_view(), name='compras_delete'),
     path('compras/pdf/<int:pk>/', ComprasPdfView.as_view(), name='compras_pdf'),
+    # Solicitudes de Pedidos
+    path('pedidos/solicitudes/list/', PedidosSolicitudListView.as_view(), name='pedidos_solicitudes_list'),
+    path('pedidos/solicitudes/add/', PedidosSolicitudCreateView.as_view(), name='pedidos_solicitudes_create'),
+    path('pedidos/solicitudes/update/<int:pk>/', PedidosSolicitudUpdateView.as_view(), name='pedidos_solicitudes_update'),
+    path('pedidos/solicitudes/confirm/<int:pk>/', PedidosSolicitudConfirmView.as_view(), name='pedidos_solicitudes_confirm'),
+    path('pedidos/solicitudes/delete/<int:pk>/', PedidosSolicitudDeleteView.as_view(), name='pedidos_solicitudes_delete'),
+    path('pedidos/solicitudes/pdf/<int:pk>/', PedidosSolicitudPdfView.as_view(), name='pedidos_solicitudes_pdf'),
 ]

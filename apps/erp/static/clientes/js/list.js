@@ -15,11 +15,12 @@ $(function () {
         },
         columns: [
             {"data": "razonSocial"},
+            {"data": "telefono"},
+            {"data": "email"},
             {"data": "cuil"},
             {"data": "localidad.nombre"},
             {"data": "email"},
-            {"data": "telefono"},
-            {"data": "email"},
+
         ],
         columnDefs: [
             {

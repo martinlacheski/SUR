@@ -1,5 +1,7 @@
+import datetime
 import json
 import os
+
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -11,8 +13,9 @@ from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ComprasForm, ProveedoresForm, ProductosForm
-from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores
+from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.models import Empresa, TiposIVA
 from config import settings
 
@@ -33,12 +36,101 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Compras.objects.all()[0:15]:
+                for i in Compras.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
                 for i in DetalleProductosCompra.objects.filter(compra_id=request.POST['id']):
                     data.append(i.toJSON())
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('compras/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Proveedor si esta filtrado
+                proveedor = ""
+                try:
+                    proveedor = reporte['proveedor']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                canceladas = False
+                try:
+                    canceladas = reporte['excluirCanceladas']
+                except Exception as e:
+                    pass
+                # Obtenemos las ventas
+                compras = []
+                try:
+                    compras = reporte['compras']
+                    for compra in compras:
+                        compra['subtotal'] = float(compra['subtotal'])
+                        compra['iva'] = float(compra['iva'])
+                        compra['percepcion'] = float(compra['percepcion'])
+                        compra['total'] = float(compra['total'])
+                except Exception as e:
+                    pass
+                total = 0
+                neto = 0
+                iva = 0
+                percepcion = 0
+                try:
+                    for i in compras:
+                        if i['estadoCompra']:
+                            neto += float(i['subtotal'])
+                            iva += float(i['iva'])
+                            percepcion += float(i['percepcion'])
+                            total += float(i['total'])
+                    neto = round(neto, 2)
+                    iva = round(iva, 2)
+                    percepcion = round(percepcion, 2)
+                    total = round(total, 2)
+                except Exception as e:
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'proveedor': proveedor,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'canceladas': canceladas,
+                        'compras': compras,
+                        'usuario': request.user,
+                        'subtotal': neto,
+                        'iva': iva,
+                        'percepcion': percepcion,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteCompras.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteCompras.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -82,7 +174,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -94,7 +186,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term)| Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -108,6 +200,11 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -121,7 +218,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     producto.utilidad = float(request.POST['utilidad'])
                     producto.precioVenta = float(request.POST['precioVenta'])
                     producto.save()
-             # Buscamos el Precio del Producto luego de actualizar el precio
+            # Buscamos el Precio del Producto luego de actualizar el precio
             elif action == 'search_precioProducto':
                 producto = Productos.objects.get(id=request.POST['pk'])
                 data = producto.costo
@@ -143,15 +240,15 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                     compra.save()
                     for i in formCompraRequest['productos']:
                         det = DetalleProductosCompra()
-                        print(i['costo'])
                         det.compra_id = compra.id
                         det.producto_id = i['id']
                         det.cantidad = int(i['cantidad'])
                         det.costo = float(i['costo'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Asignamos el Stock de los productos
-                        det.producto.stockReal += det.cantidad
+                        if det.producto.descuentaStock == True:
+                            # Asignamos el Stock de los productos
+                            det.producto.stockReal += det.cantidad
                         # Asignamos el costo de costo nuevo segun el importe de compra
                         det.producto.costo = det.costo
                         # Asignamos el precio de venta en base al costo
@@ -172,6 +269,7 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
         context['entity'] = 'Compras'
         context['list_url'] = self.success_url
         context['action'] = 'add'
+        context['categorias'] = Categorias.objects.all()
         context['formProveedor'] = ProveedoresForm()
         context['formProducto'] = ProductosForm()
         context['productos'] = Productos.objects.all()
@@ -208,7 +306,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -244,6 +342,11 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -280,8 +383,9 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                     compra.save()
                     # Reestablecemos el stock de los productos
                     for prod in DetalleProductosCompra.objects.filter(compra_id=self.get_object().id):
-                        prod.producto.stockReal -= prod.cantidad
-                        prod.producto.save()
+                        if prod.producto.descuentaStock == True:
+                            prod.producto.stockReal -= prod.cantidad
+                            prod.producto.save()
                     # Eliminamos todos los productos del Detalle
                     compra.detalleproductoscompra_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
@@ -293,8 +397,9 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                         det.costo = float(i['costo'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
-                        # Actualizamos el Stock de los Productos del Detalle
-                        det.producto.stockReal += det.cantidad
+                        if det.producto.descuentaStock == True:
+                            # Actualizamos el Stock de los Productos del Detalle
+                            det.producto.stockReal += det.cantidad
                         # Asignamos el costo de costo nuevo segun el importe de compra
                         det.producto.costo = det.costo
                         # Asignamos el precio de venta en base al costo
@@ -316,6 +421,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
         context['entity'] = 'Compras'
         context['list_url'] = self.success_url
         context['action'] = 'edit'
+        context['categorias'] = Categorias.objects.all()
         context['formProveedor'] = ProveedoresForm()
         context['formProducto'] = ProductosForm()
         return context
@@ -372,12 +478,16 @@ class ComprasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
-            empresa = Empresa.objects.get(id=1)
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('compras/pdf.html')
-
+            # Obtenemos el valor total para pasar a letras
+            total = Compras.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             context = {
                 'compra': Compras.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
                             'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
             }

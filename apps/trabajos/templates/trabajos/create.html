@@ -42,7 +42,7 @@
         <div class="card card-primary">
             <div class="card-header">
                 <h3 class="card-title">
-                    {% if action == 'add' %}
+                    {% if action == 'add' or action == 'express' %}
                         <i class="fas fa-plus"></i>
                     {% else %}
                         <i class="fas fa-edit"></i>
@@ -55,15 +55,15 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="form-group col-6">
-                        <label>Cliente:</label>
+                        <label>(*) Cliente:</label>
                         <div class="input-group">
-                            {% if action == 'add' %}
+                            {% if action == 'add' or action == 'express' %}
                                 {{ form.cliente }}
                                 <div class="input-group-append">
-                                <button class="btn btn-success btn-flat btnAddCliente" type="button">
-                                    <i class="fas fa-user-plus"></i>
-                                </button>
-                            </div>
+                                    <button class="btn btn-success btn-flat btnAddCliente" type="button">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                </div>
                             {% else %}
                                 {{ form.cliente|attr:'disabled:true' }}
                             {% endif %}
@@ -72,9 +72,9 @@
                     <div class="form-group col-2">
                     </div>
                     <div class="form-group col-2">
-                        <label>Fecha de Entrada:</label>
+                        <label>(*) Fecha de Entrada:</label>
                         <div class="col-12" id="fechaEntrada" data-target-input="nearest">
-                            {% if action == 'add' %}
+                            {% if action == 'add' or action == 'express' %}
                                 {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                             {% else %}
                                 {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled:true' }}
@@ -93,7 +93,7 @@
                         <label>Marca:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectMarca" id="selectMarca"
-                                    {% if action == 'add' %}
+                                    {% if action == 'add' or action == 'express' %}
                                     aria-label="selectMarca">
                                             <option value="">---------</option>
                                             {% for m in marcas %}
@@ -107,9 +107,9 @@
                         </div>
                     </div>
                     <div class="form-group col-3">
-                        <label>Modelo:</label>
+                        <label>(*) Modelo:</label>
                         <div class="input-group">
-                            {% if action == 'add' %}
+                            {% if action == 'add' or action == 'express' %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
                             {% else %}
                                 {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
@@ -120,7 +120,7 @@
                         <label>Plantilla:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
-                                    {% if action == 'add' %}
+                                    {% if action == 'add' or action == 'express' %}
                                     name="selectPlantilla" aria-label="selectPlantilla">
                                             <option value="">---------</option>
                                         </select>
@@ -144,30 +144,34 @@
                         <div class="form-group">
                             <label>Estado del Trabajo:</label>
                             <br>
-                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'disabled' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4">
                         <div class="form-group">
-                            <label>Prioridad:</label>
+                            <label>(*) Prioridad:</label>
                             <br>
                             {{ form.prioridad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
-                            <label>Usuario Asignado:</label>
-                            <br>
-                            {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% if action != 'express' %}
+                                <label>(*) Usuario Asignado:</label>
+                                <br>
+                                {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% endif %}
                         </div>
                     </div>
                     <div class="col-4">
                         <div class="form-group">
-                            <label>Ficha de Trabajo:</label>
-                            <br>
-                            {{ form.fichaTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {% if action != 'express' %}
+                                <label>Ficha de Trabajo:</label>
+                                <br>
+                                {{ form.fichaTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -205,12 +209,13 @@
                                     <thead>
                                     <tr>
                                         <th scope="col" style="width: 7%;">Eliminar</th>
-                                        <th scope="col" style="width: 47%;">Producto</th>
+                                        <th scope="col" style="width: 40%;">Producto</th>
                                         <th scope="col" style="width: 10%;">Importe</th>
                                         <th scope="col" style="width: 12%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
                                         <th scope="col" style="width: 7%;">Actualizar</th>
                                         <th scope="col" style="width: 7%;">Obs.</th>
+                                        <th scope="col" style="width: 7%;">Utilizado</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -253,12 +258,13 @@
                                     <thead>
                                     <tr>
                                         <th scope="col" style="width: 7%;">Eliminar</th>
-                                        <th scope="col" style="width: 47%;">Producto</th>
+                                        <th scope="col" style="width: 40%;">Servicio</th>
                                         <th scope="col" style="width: 10%;">Importe</th>
                                         <th scope="col" style="width: 12%;">Cantidad</th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
                                         <th scope="col" style="width: 7%;">Actualizar</th>
                                         <th scope="col" style="width: 7%;">Obs.</th>
+                                        <th scope="col" style="width: 7%;">Realizado</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -277,6 +283,12 @@
                                     <div class="form-group col-2">
                                         <label>Subtotal Productos:</label>
                                         <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
                                             <input type="text" class="form-control" name="subtotalProductos"
                                                    autocomplete="off" readonly>
                                         </div>
@@ -284,6 +296,12 @@
                                     <div class="form-group col-2">
                                         <label>Subtotal Servicios:</label>
                                         <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
                                             <input type="text" class="form-control" name="subtotalServicios"
                                                    autocomplete="off" readonly>
                                         </div>
@@ -293,18 +311,42 @@
                                     </div>
                                     <div class="form-group col-2">
                                         <label>IVA:</label>
-                                        {{ form.iva }}
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.iva }}
+                                        </div>
                                     </div>
                                     <div class="form-group col-2">
                                         <label>Percepción:</label>
-                                        {{ form.percepcion }}
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.percepcion }}
+                                        </div>
                                     </div>
                                     <div class="form-group col-1">
 
                                     </div>
                                     <div class="form-group col-2">
                                         <label>Total a pagar:</label>
-                                        {{ form.total }}
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.total }}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -312,13 +354,45 @@
                     </div>
                 </div>
                 <div class="card-footer">
+                    {% if action == 'deliver' %}
+                        <div class="row">
+                            <div class="form-group col-3">
+                                <label>(*) Condición:</label>
+                                <div class="input-group">
+                                    <select class="form-select form-control select2 selectCondicionPago"
+                                            id="selectCondicionPago" name="selectCondicionPago"
+                                            aria-label="selectCondicionPago" required>
+                                        <option value="">---------</option>
+                                        {% for c in condicionesPago %}
+                                            <option value={{ c.id }}>{{ c.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label>(*) Medio de pago:</label>
+                                <div class="input-group">
+                                    <select class="form-select form-control select2 selectMedioPago"
+                                            id="selectMedioPago" name="selectMedioPago" aria-label="selectMedioPago"
+                                            required>
+                                        <option value="">---------</option>
+                                        {% for m in mediosPago %}
+                                            <option value={{ m.id }}>{{ m.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                     <button type="submit" class="btn btn-primary btn-flat">
-                        {% if action == 'add' %}
+                        {% if action == 'add' or action == 'express' %}
                             <i class="fas fa-save"></i> Guardar registro
                         {% elif action == 'edit' %}
                             <i class="fas fa-save"></i> Guardar registro
-                        {% else %}
-                            <i class="fas fa-save"></i> Confirmar trabajo
+                        {% elif action == 'confirm' %}
+                            <i class="fas fa-save"></i> Finalizar trabajo
+                        {% elif action == 'deliver' %}
+                            <i class="fas fa-save"></i> Entregar trabajo
                         {% endif %}
                     </button>
                     <a href="{{ list_url }}" class="btn btn-danger btn-flat">
@@ -420,7 +494,7 @@
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-12">
-                                    <label>Razón Social:</label>
+                                    <label>(*) Razón Social:</label>
                                     <br>
                                     {{ formCliente.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -429,28 +503,29 @@
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-6 mb-6">
-                                    <label>Condición frente al IVA:</label>
+                                    <label>(*) Condición frente al IVA:</label>
                                     <br>
                                     {{ formCliente.condicionIVA|add_class:'form-control condicionIvaFormCliente'|attr:'required:true' }}
                                 </div>
                                 <div class="form-group col-6 mb-6">
-                                    <label>Cuil - Cuit:</label>
+                                    <label>(*) Cuil - Cuit:</label>
                                     <br>
                                     <div class="col-12" class="form-control" id="cuil" name="cuil"
                                          onkeypress="return isNumberKey(event)">
                                         {{ formCliente.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        <span hidden id="errorCuit" style="color: red;">CUIL no válido </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="form-group col-6 mb-6">
-                                <label>Localidad:</label>
+                                <label>(*) Localidad:</label>
                                 <br>
                                 {{ formCliente.localidad|add_class:'form-control localidadFormCliente'|attr:'required:true' }}
                             </div>
                             <div class="form-group col-6 mb-6">
-                                <label>Dirección:</label>
+                                <label>(*) Dirección:</label>
                                 <div class="col-12" class="form-control" id="direccion" name="direccion">
                                     {{ formCliente.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -467,7 +542,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-4 mb-4">
-                                <label>Teléfono:</label>
+                                <label>(*) Teléfono:</label>
                                 <div class="col-12" class="form-control" id="telefono" name="telefono"
                                      onkeypress="return isNumberKey(event)"
                                      autocomplete="off" required>
@@ -492,12 +567,12 @@
                         </div>
                         <div class="row">
                             <div class="form-group col-6 mb-4">
-                                <label>Condición de Pago:</label>
+                                <label>(*) Condición de Pago:</label>
                                 <br>
                                 {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
                             </div>
                             <div class="col-6 mb-6">
-                                <label>Tipo de Percepción:</label>
+                                <label>(*) Tipo de Percepción:</label>
                                 <div class="input-group">
                                     {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
                                 </div>
@@ -554,24 +629,39 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6">
-                                    <label>Subcategoría:</label>
-                                    <br>
-                                    {{ formProducto.subcategoria|add_class:'form-control select2'|attr:'autocomplete:off'|attr:'required:true' }}
+                                <div class="input-group">
+                                    <div class="col-6 mb-3">
+                                        <label>Categoría:</label>
+                                        <div class="input-group">
+                                            <select class="form-select form-control select2 selectCategoria"
+                                                    id="selectCategoria"
+                                                    aria-label="selectCategorias">
+                                                <option value="">---------</option>
+                                                {% for c in categorias %}
+                                                    <option value={{ c.id }}>{{ c.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label>(*) Subcategoría:</label>
+                                        <br>
+                                        {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-6 mb-6">
-                                    <label>Descripción:</label>
+                                    <label>(*) Descripción:</label>
                                     <br>
                                     {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                                 <div class="form-group col-3 mb-3">
                                     <label>Abreviatura:</label>
                                     <br>
-                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
                         </div>
@@ -584,16 +674,11 @@
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>
                                 {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
-
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código de Barras 1:</label>
                                 <br>
                                 {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Código de Barras 2:</label>
-                                {{ formProducto.codigoBarras2|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
                         </div>
                         <div class="row">
@@ -632,7 +717,7 @@
                                 </div>
                             </div>
                             <div class="col-3 mb-3">
-                                <label>Tipo de IVA:</label>
+                                <label>(*) Tipo de IVA:</label>
                                 <br>
                                 {{ formProducto.iva|add_class:'form-control ivaProducto'|attr:'autocomplete:off'|attr:'required:true' }}
                             </div>
@@ -655,15 +740,23 @@
                                 <br>
                                 {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
-                            <div class="col-1 mb-1">
+                            <div class="col-1 mb-3">
                                 <label> </label>
                                 <br>
                             </div>
+                            <div class="col-2 mb-3">
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.esInsumo }}
+                                    <label class="custom-control-label" for="id_esInsumo">¿Es Insumo?</label>
+                                </div>
+                            </div>
                             <div class="col-3 mb-3">
-                                <label>¿Es Insumo?: </label>
-                                <br>
-                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
-                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.descuentaStock }}
+                                    <label class="custom-control-label" for="id_descuentaStock">¿Descuenta
+                                        Stock?</label>
                                 </div>
                             </div>
                         </div>
@@ -704,7 +797,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-9 mb-9">
-                                <label>Descripción:</label>
+                                <label>(*) Descripción:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="descripcionServicio"
                                      name="descripcionServicio">
@@ -712,7 +805,7 @@
                                 </div>
                             </div>
                             <div class="col-3 mb-3">
-                                <label>Código:</label>
+                                <label>(*) Código:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="codigoServicio" name="codigoServicio">
                                     {{ formServicio.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -720,26 +813,34 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>Precio de Costo:</label>
                                 <br>
-                                <div class="col-12" class="form-control" id="costoServicio" name="costoServicio">
+                                <div class="col-12" class="form-control" id="costoServicio" name="costoCosto">
                                     {{ formServicio.costo|add_class:'form-control costoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
-                            <div class="col-4 mb-4">
-                                <label>Tipo de IVA:</label>
+                            <div class="col-3 mb-3">
+                                <label>(*) Tipo de IVA:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="ivaServicio" name="ivaServicio">
                                     {{ formServicio.iva|add_class:'form-control ivaServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="precioVentaServicio"
                                      name="precioVentaServicio">
                                     {{ formServicio.precioVenta|add_class:'form-control precioVentaServicio'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Esfuerzo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="esfuerzoServicio"
+                                     name="esfuerzoServicio">
+                                    {{ formServicio.esfuerzo|add_class:'form-control esfuerzoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
                         </div>
@@ -936,7 +1037,7 @@
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <input type="text" class="form-control" name="actualizarPrecioVentaServicio"
-                                       autocomplete="off" readonly>
+                                       autocomplete="off" readonly disabled>
                             </div>
                         </div>
 
@@ -948,6 +1049,108 @@
                             <button type="submit" id="btnAddProducto"
                                     class="btn btn-primary btn-block btnEditServicio btn-flat">
                                 <i class="fas fa-edit"></i> Actualizar Precio Servicio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Observaciones Productos -->
+    <div class="modal fade" id="modalObservacionesProducto" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formObservacionesProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Observación sobre el Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idObservacionProductoUpdate" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="observacionDescripcionProducto"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Observaciones:</label>
+                                <br>
+                                <input style="text-transform: uppercase;" type="text" class="form-control"
+                                       name="observacionProducto"
+                                       autocomplete="off" placeholder="INGRESE UNAS OBSERVACIONES">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformObservacionesProducto" name="errorListformObservacionesProducto"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnObservacionesProducto"
+                                    class="btn btn-primary btn-block btnObservacionesProducto btn-flat">
+                                <i class="fas fa-edit"></i> Ingresar Observación Producto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Observaciones Servicios -->
+    <div class="modal fade" id="modalObservacionesServicio" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formObservacionesServicio" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Observación sobre el Servicio</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idObservacionServicio" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="observacionDescripcionServicio"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Observaciones:</label>
+                                <br>
+                                <input style="text-transform: uppercase;" type="text" class="form-control"
+                                       name="observacionServicio"
+                                       autocomplete="off" placeholder="INGRESE UNAS OBSERVACIONES">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformObservacionesServicio" name="errorListformObservacionesServicio"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnObservacionesServicio"
+                                    class="btn btn-primary btn-block btnObservacionesServicio btn-flat">
+                                <i class="fas fa-edit"></i> Ingresar Observación Servicio
                             </button>
                         </div>
                     </div>

@@ -1,6 +1,6 @@
 from django.forms import ModelForm, DateInput, Select, TextInput
 
-from apps.trabajos.models import Trabajos
+from apps.trabajos.models import Trabajos, PlanificacionesSemanales
 
 
 class TrabajosForm(ModelForm):
@@ -65,6 +65,7 @@ class TrabajosForm(ModelForm):
             ),
             'estadoTrabajo': Select(
                 attrs={
+                    'readonly': True,
                     'class': 'form-control select2',
                 }
             ),
@@ -82,3 +83,48 @@ class TrabajosForm(ModelForm):
             }),
         }
         exclude = ['usuario', 'estado']
+
+
+class PlanificacionesSemanalesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = PlanificacionesSemanales
+        fields = '__all__'
+        widgets = {
+            'nombre': TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'INGRESE UN NOMBRE',
+                # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                'style': 'text-transform: uppercase'
+            }),
+            'fechaInicio': DateInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fechaInicio',
+                    'data-target': '#fechaInicio',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'fechaFin': DateInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fechaFin',
+                    'data-target': '#fechaFin',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data

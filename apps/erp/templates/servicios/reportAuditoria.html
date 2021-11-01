@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Auditoria</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+            font-size: 13px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 250px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+        {#meta[author] { string-set: author attr(author); }#}
+        meta[author] {
+            string-set: {{ usuario }};
+        }
+
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="name-company text-center">Reporte de Auditoria</h1>
+            <h2 class="name-company text-center">Servicios</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
+        </div>
+        <div class="col-1">
+            {#<h1 class="name-company">{{ empresa.nombre }}</h1>#}
+        </div>
+        <div class="col-6">
+            <p class="text-right">
+                <b>Fecha y Hora:</b> {{ fecha|date:'d-m-Y H:m' }}<br>
+
+                <b>Usuario:</b> {{ usuario }}<br>
+            </p>
+        </div>
+    </div>
+    <h5 class="text-uppercase font-weight-bold text-left">
+        Filtros aplicados: <br>
+    </h5>
+    <p>
+        {% if servicio %}
+            Servicio: <b> {{ servicio.descripcion }}</b>
+        {% endif %}
+        {% if usuarioAuditoria %}
+            Usuario: <b> {{ usuarioAuditoria }}</b>
+        {% endif %}
+        {% if accion %}
+            Tipo de acción: <b> {{ accion }}</b>
+        {% endif %}
+        {% if inicio %}
+            Movimientos Desde: <b> {{ inicio }} </b>
+        {% endif %}
+        {% if fin %}
+            hasta <b> {{ fin }} </b><br>
+        {% endif %}
+    <h4 class="text-uppercase font-weight-bold text-left">
+        Detalle: <br>
+    </h4>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 4%;">ID</th>
+            <th class="text-center" style="width: 12%;">Fecha y Hora</th>
+            <th class="text-center" style="width: 41%;">Servicio</th>
+            <th class="text-center" style="width: 8%;">Costo</th>
+            <th class="text-center" style="width: 10%;">Precio</th>
+            <th class="text-center" style="width: 8%;">Esfuerzo</th>
+            <th class="text-center" style="width: 8%;">Accion</th>
+            <th class="text-center" style="width: 9%;">Usuario</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in servicios %}
+            <tr>
+                <td class="text-center">{{ det.history_id }}</td>
+                <td class="text-center">{{ det.history_date }}</td>
+                <td class="text-left">{{ det.descripcion }}</td>
+                <td class="text-right">$ {{ det.costo|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.precioVenta|intcomma|localize }}</td>
+                <td class="text-right">{{ det.esfuerzo|intcomma|localize }}%</td>
+                {% if det.history_type == "+" %}
+                    <td class="text-center">Crear</td>
+                {% elif det.history_type == "~" %}
+                    <td class="text-center">Modificar</td>
+                {% elif det.history_type == "-" %}
+                    <td class="text-center">Eliminar</td>
+                {% endif %}
+                <td class="text-center"> {{ det.history_user }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

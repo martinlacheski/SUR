@@ -72,9 +72,9 @@
                         </div>
                     </div>
                     <div class="col-6 mb-6">
-                        <label>Modelo:</label>
+                        <label>(*) Modelo:</label>
                         <div class="input-group">
-                            {{ form.modelo|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                            {{ form.modelo }}
                             <div class="input-group-append">
                                 <button class="btn btn-success btn-flat btnAddModelo" type="button">
                                     <i class="fas fa-plus"></i>
@@ -87,7 +87,7 @@
                     <div class="col-6 mb-6">
                         <br>
                         <div class="form-group">
-                            <label>Descripción:</label>
+                            <label>(*) Descripción:</label>
                             <br>
                             {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
@@ -284,8 +284,21 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="input-group">
+                                <div class="col-6 mb-3">
+                                    <label>Categoría:</label>
+                                    <div class="input-group">
+                                        <select class="form-select form-control select2 selectCategoria"
+                                                id="selectCategoria"
+                                                aria-label="selectCategorias">
+                                            <option value="">---------</option>
+                                            {% for c in categorias %}
+                                                <option value={{ c.id }}>{{ c.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group col-6">
-                                    <label>Subcategoría:</label>
+                                    <label>(*) Subcategoría:</label>
                                     <br>
                                     {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -294,7 +307,7 @@
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-6 mb-6">
-                                    <label>Descripción:</label>
+                                    <label>(*) Descripción:</label>
                                     <br>
                                     {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -302,7 +315,7 @@
                                 <div class="form-group col-3 mb-3">
                                     <label>Abreviatura:</label>
                                     <br>
-                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
                         </div>
@@ -315,16 +328,11 @@
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>
                                 {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
-
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código de Barras 1:</label>
                                 <br>
                                 {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Código de Barras 2:</label>
-                                {{ formProducto.codigoBarras2|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
                         </div>
                         <div class="row">
@@ -363,7 +371,7 @@
                                 </div>
                             </div>
                             <div class="col-3 mb-3">
-                                <label>Tipo de IVA:</label>
+                                <label>(*) Tipo de IVA:</label>
                                 <br>
                                 {{ formProducto.iva|add_class:'form-control ivaProducto'|attr:'autocomplete:off'|attr:'required:true' }}
                             </div>
@@ -386,15 +394,23 @@
                                 <br>
                                 {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
-                            <div class="col-1 mb-1">
+                            <div class="col-1 mb-3">
                                 <label> </label>
                                 <br>
                             </div>
+                            <div class="col-2 mb-3">
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.esInsumo }}
+                                    <label class="custom-control-label" for="id_esInsumo">¿Es Insumo?</label>
+                                </div>
+                            </div>
                             <div class="col-3 mb-3">
-                                <label>¿Es Insumo?: </label>
-                                <br>
-                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
-                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.descuentaStock }}
+                                    <label class="custom-control-label" for="id_descuentaStock">¿Descuenta
+                                        Stock?</label>
                                 </div>
                             </div>
                         </div>
@@ -435,7 +451,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-9 mb-9">
-                                <label>Descripción:</label>
+                                <label>(*) Descripción:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="descripcionServicio"
                                      name="descripcionServicio">
@@ -444,7 +460,7 @@
 
                             </div>
                             <div class="col-3 mb-3">
-                                <label>Código:</label>
+                                <label>(*) Código:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="codigoServicio" name="codigoServicio">
                                     {{ formServicio.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -460,7 +476,7 @@
                                 </div>
                             </div>
                             <div class="col-4 mb-4">
-                                <label>Tipo de IVA:</label>
+                                <label>(*) Tipo de IVA:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="ivaServicio" name="ivaServicio">
                                     {{ formServicio.iva|add_class:'form-control ivaServicio'|attr:'autocomplete:off'|attr:'required:true' }}

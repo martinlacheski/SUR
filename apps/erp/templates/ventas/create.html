@@ -59,7 +59,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="form-group col-4">
-                                        <label>Cliente:</label>
+                                        <label>(*) Cliente:</label>
                                         <div class="input-group">
                                             {{ form.cliente }}
                                             <div class="input-group-append">
@@ -70,17 +70,17 @@
                                         </div>
                                     </div>
                                     <div class="form-group col-3">
-                                        <label>Condición:</label>
+                                        <label>(*) Condición:</label>
                                         <br>
                                         {{ form.condicionVenta }}
                                     </div>
                                     <div class="form-group col-3">
-                                        <label>Medio de pago:</label>
+                                        <label>(*) Medio de pago:</label>
                                         <br>
                                         {{ form.medioPago }}
                                     </div>
                                     <div class="form-group col-2">
-                                        <label>Fecha:</label>
+                                        <label>(*) Fecha:</label>
                                         <div class="col-12 date" id="fecha" data-target-input="nearest">
                                             {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                         </div>
@@ -104,8 +104,7 @@
                                                                autocomplete="off">
                                                         <span class="input-group-append">
                                         <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
-                                                class="fas fa-times"></i></button>
-                                      </span>
+                                                class="fas fa-times"></i></button></span>
                                                     </div>
                                                 </div>
                                                 <hr>
@@ -200,19 +199,51 @@
                                                 <div class="row">
                                                     <div class="form-group col-3 mb-3">
                                                         <label>Subtotal:</label>
-                                                        {{ form.subtotal }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.subtotal }}
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-3 mb-3">
                                                         <label>IVA:</label>
-                                                        {{ form.iva }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.iva }}
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-3 mb-3">
                                                         <label>Percepción:</label>
-                                                        {{ form.percepcion }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.percepcion }}
+                                                        </div>
                                                     </div>
                                                     <div class="form-group col-3 mb-3">
                                                         <label>Total a pagar:</label>
-                                                        {{ form.total }}
+                                                        <div class="input-group">
+                                                            <div class="input-group-append">
+                                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                                </div>
+                                                            </div>
+                                                            {{ form.total }}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -229,6 +260,10 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
     <!-- Modal CLIENTE -->
     <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -248,7 +283,7 @@
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-12">
-                                    <label>Razón Social:</label>
+                                    <label>(*) Razón Social:</label>
                                     <br>
                                     {{ formCliente.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -257,17 +292,18 @@
                         <div class="row">
                             <div class="input-group">
                                 <div class="form-group col-6 mb-6">
-                                    <label>Condición frente al IVA:</label>
+                                    <label>(*) Condición frente al IVA:</label>
                                     <br>
                                     {{ formCliente.condicionIVA|add_class:'form-control condicionIvaFormCliente'|attr:'required:true' }}
                                 </div>
 
                                 <div class="form-group col-6 mb-6">
-                                    <label>Cuil - Cuit:</label>
+                                    <label>(*) Cuil - Cuit:</label>
                                     <br>
                                     <div class="col-12" class="form-control" id="cuil" name="cuil"
                                          onkeypress="return isNumberKey(event)">
                                         {{ formCliente.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        <span hidden id="errorCuit" style="color: red;">CUIL no válido </span>
                                     </div>
                                 </div>
                             </div>
@@ -275,12 +311,12 @@
 
                         <div class="row">
                             <div class="form-group col-6 mb-6">
-                                <label>Localidad:</label>
+                                <label>(*) Localidad:</label>
                                 <br>
                                 {{ formCliente.localidad|add_class:'form-control localidadFormCliente'|attr:'required:true' }}
                             </div>
                             <div class="form-group col-6 mb-6">
-                                <label>Dirección:</label>
+                                <label>(*) Dirección:</label>
                                 <div class="col-12" class="form-control" id="direccion" name="direccion">
                                     {{ formCliente.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -298,7 +334,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-4 mb-4">
-                                <label>Teléfono:</label>
+                                <label>(*) Teléfono:</label>
                                 <div class="col-12" class="form-control" id="telefono" name="telefono"
                                      onkeypress="return isNumberKey(event)"
                                      autocomplete="off" required>
@@ -306,7 +342,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-6 mb-6">
                                 <label>CBU - CVU:</label>
@@ -322,21 +357,19 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-6 mb-4">
-                                <label>Condición de Pago:</label>
+                                <label>(*) Condición de Pago:</label>
                                 <br>
                                 {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
                             </div>
                             <div class="col-6 mb-6">
-                                <label>Tipo de Percepción:</label>
+                                <label>(*) Tipo de Percepción:</label>
                                 <div class="input-group" class=" form-control">
                                     {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
                                 </div>
                             </div>
                         </div>
-
                         <div class="row">
                             <div class="form-group col-2 mb-2">
                                 <label>¿Cuenta Corriente?:</label>
@@ -349,7 +382,6 @@
                                     {{ formCliente.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
-
                             <div class="form-group col-4 mb-4">
                                 <label>Plazo:</label>
                                 <br>
@@ -389,8 +421,21 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="input-group">
+                                <div class="col-6 mb-3">
+                                    <label>Categoría:</label>
+                                    <div class="input-group">
+                                        <select class="form-select form-control select2 selectCategoria"
+                                                id="selectCategoria"
+                                                aria-label="selectCategorias">
+                                            <option value="">---------</option>
+                                            {% for c in categorias %}
+                                                <option value={{ c.id }}>{{ c.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
                                 <div class="form-group col-6">
-                                    <label>Subcategoría:</label>
+                                    <label>(*) Subcategoría:</label>
                                     <br>
                                     {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -398,8 +443,8 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6 mb-6">
-                                    <label>Descripción:</label>
+                                <div class="form-group col-6 mb-3">
+                                    <label>(*) Descripción:</label>
                                     <br>
                                     {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
@@ -407,7 +452,7 @@
                                 <div class="form-group col-3 mb-3">
                                     <label>Abreviatura:</label>
                                     <br>
-                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
                         </div>
@@ -426,10 +471,6 @@
                                 <label>Código de Barras 1:</label>
                                 <br>
                                 {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Código de Barras 2:</label>
-                                {{ formProducto.codigoBarras2|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
                         </div>
                         <div class="row">
@@ -468,7 +509,7 @@
                                 </div>
                             </div>
                             <div class="col-3 mb-3">
-                                <label>Tipo de IVA:</label>
+                                <label>(*) Tipo de IVA:</label>
                                 <br>
                                 {{ formProducto.iva|add_class:'form-control ivaProducto'|attr:'autocomplete:off'|attr:'required:true' }}
 
@@ -492,15 +533,23 @@
                                 <br>
                                 {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
-                            <div class="col-1 mb-1">
+                            <div class="col-1 mb-3">
                                 <label> </label>
                                 <br>
                             </div>
+                            <div class="col-2 mb-3">
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.esInsumo }}
+                                    <label class="custom-control-label" for="id_esInsumo">¿Es Insumo?</label>
+                                </div>
+                            </div>
                             <div class="col-3 mb-3">
-                                <label>¿Es Insumo?: </label>
-                                <br>
-                                <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
-                                    {{ formProducto.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.descuentaStock }}
+                                    <label class="custom-control-label" for="id_descuentaStock">¿Descuenta
+                                        Stock?</label>
                                 </div>
                             </div>
                         </div>
@@ -541,7 +590,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-9 mb-9">
-                                <label>Descripción:</label>
+                                <label>(*) Descripción:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="descripcionServicio"
                                      name="descripcionServicio">
@@ -549,7 +598,7 @@
                                 </div>
                             </div>
                             <div class="col-3 mb-3">
-                                <label>Código:</label>
+                                <label>(*) Código:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="codigoServicio" name="codigoServicio">
                                     {{ formServicio.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -557,26 +606,34 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>Precio de Costo:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="costoServicio" name="costoCosto">
                                     {{ formServicio.costo|add_class:'form-control costoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
-                            <div class="col-4 mb-4">
-                                <label>Tipo de IVA:</label>
+                            <div class="col-3 mb-3">
+                                <label>(*) Tipo de IVA:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="ivaServicio" name="ivaServicio">
                                     {{ formServicio.iva|add_class:'form-control ivaServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="precioVentaServicio"
                                      name="precioVentaServicio">
                                     {{ formServicio.precioVenta|add_class:'form-control precioVentaServicio'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Esfuerzo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="esfuerzoServicio"
+                                     name="esfuerzoServicio">
+                                    {{ formServicio.esfuerzo|add_class:'form-control esfuerzoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
                         </div>
@@ -773,7 +830,7 @@
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <input type="text" class="form-control" name="actualizarPrecioVentaServicio"
-                                       autocomplete="off" readonly>
+                                       autocomplete="off" readonly disabled>
                             </div>
                         </div>
 

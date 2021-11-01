@@ -41,12 +41,11 @@
                 {% endif %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="form-group col-9 mb-5">
+                    <div class="form-group col-9 mb-3">
                         <label>Tipo de Percepción:</label>
-
                         {{ form.nombre|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="form-group col-3 mb-5">
+                    <div class="form-group col-3 mb-3">
                         <label>Porcentaje:</label>
                         <div class="col-12" class="form-control">
                             {{ form.percepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -56,7 +55,7 @@
             </div>
             <div class="card-footer">
                 {#Mensaje de error#}
-                <ul id="errorList"  class="alert-danger"></ul>
+                <ul id="errorList" class="alert-danger"></ul>
                 {#Botones#}
                 <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
                     <i class="fas fa-save"></i> Guardar registro

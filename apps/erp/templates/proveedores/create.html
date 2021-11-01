@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="input-group">
                         <div class="form-group col-12">
-                            <label>Razón Social:</label>
+                            <label>(*) Razón Social:</label>
                             <br>
                             {{ form.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
@@ -46,17 +46,18 @@
                 <div class="row">
                     <div class="input-group">
                         <div class="form-group col-6">
-                            <label>Condición frente al IVA:</label>
+                            <label>(*) Condición frente al IVA:</label>
                             <br>
                             {{ form.condicionIVA|add_class:'form-control'|attr:'required:true' }}
                         </div>
 
                         <div class="form-group col-6">
-                            <label>Cuit:</label>
+                            <label>(*) Cuit:</label>
                             <br>
-                            <div class="col-12" class="form-control" id="cuil" name="cuil"
+                            <div class="col-12" class="form-control" id="cuit" name="cuit"
                                  onkeypress="return isNumberKey(event)">
                                 {{ form.cuit|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                <span hidden id="errorCuit" style="color: red;">CUIT no válido </span>
                             </div>
                         </div>
                     </div>
@@ -64,12 +65,12 @@
 
                 <div class="row">
                     <div class="form-group col-6">
-                        <label>Localidad:</label>
+                        <label>(*) Localidad:</label>
                         <br>
                         {{ form.localidad|add_class:'form-control'|attr:'required:true' }}
                     </div>
                     <div class="form-group col-6">
-                        <label>Dirección:</label>
+                        <label>(*) Dirección:</label>
                         <div class="col-12" class="form-control" id="direccion" name="direccion">
                             {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
@@ -78,7 +79,7 @@
 
                 <div class="row">
                     <div class="form-group col-6">
-                        <label>Dirección de email:</label>
+                        <label>(*) Dirección de email:</label>
                         <br>
                         <div class="input-group" type="email" class="form-control" id="email" name="email">
                             {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -87,7 +88,7 @@
                         </div>
                     </div>
                     <div class="form-group col-4">
-                        <label>Teléfono:</label>
+                        <label>(*) Teléfono:</label>
                         <div class="col-12" class="form-control" id="telefono" name="telefono"
                              onkeypress="return isNumberKey(event)"
                              autocomplete="off" required>
@@ -114,22 +115,25 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6 class="form-control">
-                            <label>Condición de Pago:</label>
+                        <div class="form-group col-6">
+                            <label>(*) Condición de Pago:</label>
                             <br>
                             {{ form.condicionPago|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
-                        <div class="form-group col-6 class="form-control">
-                            <label>Tipo de Percepción:</label>
+                        <div class="form-group col-6">
+                            <label>(*) Tipo de Percepción:</label>
                             <br>
-                            {{ form.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-2">
-                        <label>¿Cuenta Corriente?:</label>
-                        <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
+                    <div class="form-group col-3 mb-3">
+                        <label class="mb-4"></label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input" id="ctaCte" name="ctaCte">
+                            <label class="custom-control-label" for="ctaCte">¿Cuenta Corriente?</label>
+                        </div>
                     </div>
                     <div class="form-group col-4">
                         <label>Plazo:</label>
@@ -139,28 +143,18 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-        </div>
-
         </div>
         <div class="card-footer">
             {#Mensaje de error#}
             <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
-            {% if action == 'add' %}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% else %}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
-                    <i class="fas fa-save"></i> Guardar registro
-                </button>
-            {% endif %}
+            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                 <i class="fas fa-times"></i> Cancelar
             </a>
-
         </div>
         <!-- Modal -->
         <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
@@ -205,5 +199,4 @@
             </div>
         </div>
     </form>
-
 {% endblock %}

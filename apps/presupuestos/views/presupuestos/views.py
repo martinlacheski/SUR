@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 from datetime import date
@@ -12,14 +13,16 @@ from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
-from apps.erp.models import Productos, Servicios, Clientes
+from apps.erp.models import Productos, Servicios, Clientes, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.forms import MarcasForm, ModelosForm
-from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA
+from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoParametros, Prioridades
 from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
+from apps.usuarios.models import TiposUsuarios, Usuarios
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -39,7 +42,7 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Presupuestos.objects.all()[0:15]:
+                for i in Presupuestos.objects.all():
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
@@ -49,6 +52,107 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 data = []
                 for i in DetalleServiciosPresupuesto.objects.filter(presupuesto_id=request.POST['id']):
                     data.append(i.toJSON())
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('presupuestos/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el Cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
+                # Obtenemos el Modelo si esta filtrado
+                modelo = ""
+                try:
+                    modelo = reporte['modelo']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                soloConfirmados = False
+                try:
+                    soloConfirmados = reporte['excluirNoConfirmados']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito las Canceladas
+                cancelados = False
+                try:
+                    cancelados = reporte['excluirCancelados']
+                except Exception as e:
+                    pass
+                # Obtenemos los presupuestos
+                presupuestos = []
+                try:
+                    presupuestos = reporte['presupuestos']
+                    for presupuesto in presupuestos:
+                        presupuesto['total'] = float(presupuesto['total'])
+                except Exception as e:
+                    pass
+                total = 0
+                neto = 0
+                iva = 0
+                percepcion = 0
+                try:
+                    for i in presupuestos:
+                        if i['estado']:
+                            neto += float(i['subtotal'])
+                            iva += float(i['iva'])
+                            percepcion += float(i['percepcion'])
+                            total += float(i['total'])
+                    neto = round(neto, 2)
+                    iva = round(iva, 2)
+                    percepcion = round(percepcion, 2)
+                    total = round(total, 2)
+                except Exception as e:
+                    print(str(e))
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'cliente': cliente,
+                        'modelo': modelo,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'cancelados': cancelados,
+                        'soloConfirmados': soloConfirmados,
+                        'presupuestos': presupuestos,
+                        'usuario': request.user,
+                        'subtotal': neto,
+                        'iva': iva,
+                        'percepcion': percepcion,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reportePresupuestos.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reportePresupuestos.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -85,6 +189,16 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 with transaction.atomic():
                     formCliente = ClientesForm(request.POST)
                     data = formCliente.save()
+            # si no existe la marca la creamos
+            elif action == 'create_marca':
+                with transaction.atomic():
+                    formMarca = MarcasForm(request.POST)
+                    data = formMarca.save()
+            # si no existe el modelo lo creamos
+            elif action == 'create_modelo':
+                with transaction.atomic():
+                    formModelo = ModelosForm(request.POST)
+                    data = formModelo.save()
             elif action == 'search_modelos':
                 data = [{'id': '', 'text': '---------'}]
                 for i in Modelos.objects.filter(marca_id=request.POST['pk']):
@@ -92,12 +206,13 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             # Buscamos las plantillas de Presupuestos creadas
             elif action == 'search_plantillas':
                 data = [{'id': '', 'text': '---------'}]
-                for i in PlantillaPresupuestos.objects.filter(modelo_id=request.POST['pk']):
+                for i in PlantillaPresupuestos.objects.filter(modelo_id=request.POST['pk']).exclude(estado=False):
                     data.append({'id': i.id, 'text': i.get_full_name()})
             elif action == 'get_detalle_productos':
                 data = []
                 try:
-                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['pk']):
+                    for i in DetalleProductosPlantillaPresupuesto.objects.filter(
+                            presupuestoPlantilla_id=request.POST['pk']):
                         item = i.producto.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.producto.precioVenta
@@ -107,7 +222,8 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'get_detalle_servicios':
                 data = []
                 try:
-                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(presupuestoPlantilla_id=request.POST['pk']):
+                    for i in DetalleServiciosPlantillaPresupuesto.objects.filter(
+                            presupuestoPlantilla_id=request.POST['pk']):
                         item = i.servicio.toJSON()
                         item['cantidad'] = i.cantidad
                         item['precio'] = i.servicio.precioVenta
@@ -121,7 +237,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -133,7 +249,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -173,6 +289,11 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -261,6 +382,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
         context['presupuestosPlantilla'] = PlantillaPresupuestos.objects.all()
+        context['categorias'] = Categorias.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
@@ -317,7 +439,7 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -329,7 +451,7 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -369,6 +491,11 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -462,6 +589,7 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['formMarca'] = MarcasForm()
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
+        context['categorias'] = Categorias.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
@@ -518,7 +646,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 data.append({'id': term, 'text': term})
                 productos = Productos.objects.filter(
                     Q(descripcion__icontains=term) | Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                    | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))[0:10]
+                    | Q(codigoBarras1__icontains=term))[0:10]
                 for i in productos[0:10]:
                     item = i.toJSON()
                     # Creamos un item VALUE para que reconozca el input de Busqueda
@@ -530,7 +658,7 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 try:
                     producto = Productos.objects.get(
                         Q(codigo__icontains=term) | Q(codigoProveedor__icontains=term)
-                        | Q(codigoBarras1__icontains=term) | Q(codigoBarras2__icontains=term))
+                        | Q(codigoBarras1__icontains=term))
                     item = producto.toJSON()
                     data['producto'] = item
                 except Exception as e:
@@ -570,6 +698,11 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
+            # Select Anidado de Categorias
+            elif action == 'search_subcategorias':
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
+                    data.append({'id': i.id, 'text': i.nombre})
             # si no existe el Producto lo creamos
             elif action == 'create_producto':
                 with transaction.atomic():
@@ -606,6 +739,27 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 data['costo'] = servicio.costo
                 data['precioVenta'] = servicio.precioVenta
             elif action == 'confirm':
+                usuarioAsignado = Usuarios.objects.all().last()
+                # data = []
+                # Asigno a una variable los parametros de estados y de tipos de usuarios
+                estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
+                # Obtenemos los usuarios con esos filtros
+                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                try:
+                    # asignamos a una variable una cantidad alta de trabajos pendientes
+                    cant = 1000000
+                    # recorremos por cada usuario dentro del filtro anterior excluyendo trabajos finalizados en adelante
+                    for user in usuarios:
+                        trabajos = Trabajos.objects.filter(usuarioAsignado_id=user.id).exclude(
+                            estadoTrabajo__orden__gte=estado.estadoFinalizado.orden).count()
+                        if cant > trabajos:
+                            usuarioAsignado = user
+                            cant = trabajos
+                    # data.append({'id': usuario.id, 'text': usuario.username})
+                except Exception as e:
+                    data['error'] = str(e)
+                #     Comenzamos el proceso de Crear Trabajo
                 with transaction.atomic():
                     formPresupuestoRequest = json.loads(request.POST['presupuesto'])
                     # Obtenemos el Presupuesto Base que se esta editando
@@ -632,7 +786,16 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                     trabajo.iva = float(formPresupuestoRequest['iva'])
                     trabajo.percepcion = float(formPresupuestoRequest['percepcion'])
                     trabajo.total = float(formPresupuestoRequest['total'])
+                    # Asignamos el usuario que filtramos anteriormente
+                    trabajo.usuarioAsignado = usuarioAsignado
                     trabajo.observaciones = formPresupuestoRequest['observaciones']
+                    trabajo.prioridad_id = request.POST['prioridad']
+                    # Obtenemos el nombre del estado en el ORDEN INICIAL
+                    try:
+                        estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        trabajo.estadoTrabajo_id = estado.estadoInicial_id
+                    except Exception as e:
+                        pass
                     trabajo.save()
                     # Eliminamos todos los productos del Detalle
                     presupuesto.detalleproductospresupuesto_set.all().delete()
@@ -692,8 +855,10 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
         context['formMarca'] = MarcasForm()
         context['formModelo'] = ModelosForm()
         context['marcas'] = Marcas.objects.all()
+        context['categorias'] = Categorias.objects.all()
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
+        context['prioridades'] = Prioridades.objects.all()
         return context
 
 
@@ -743,12 +908,16 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
     def get(self, request, *args, **kwargs):
         try:
             # Traemos la empresa para obtener los valores
-            empresa = Empresa.objects.get(id=1)
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestos/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
             subtotalProductos = DetalleProductosPresupuesto.objects.filter(presupuesto_id=self.kwargs['pk'])
             subtotalServicios = DetalleServiciosPresupuesto.objects.filter(presupuesto_id=self.kwargs['pk'])
+            # Obtenemos el valor total para pasar a letras
+            total = Presupuestos.objects.get(pk=self.kwargs['pk']).total
+            # Pasamos a letras el total
+            totalEnLetras = NumeroALetras(total).a_letras.upper()
             productos = 0
             for i in subtotalProductos:
                 productos += i.subtotal
@@ -757,6 +926,7 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
                 servicios += i.subtotal
             context = {
                 'presupuesto': Presupuestos.objects.get(pk=self.kwargs['pk']),
+                'enLetras': totalEnLetras,
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
@@ -770,6 +940,6 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
             pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
             return HttpResponse(pdf, content_type='application/pdf')
         except Exception as e:
-            print(str(e))
+            pass
 
         return HttpResponseRedirect(reverse_lazy('presupuestos:presupuestos_list'))

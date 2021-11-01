@@ -1,8 +1,43 @@
-*HACER MODAL OBSERVACIONES DETALLE DE TRABAJO
+*TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
+    asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
+    ejecutar un random
 
-*TRABAJAR CON MODULO PLANIFICACION
+Para cargar los registros de Auditoria
+python manage.py populate_history --auto
 
-*INCORPORAR APARTADO PARA QUE SE REGISTRE EL TRABAJO COMO RETIRADO
+--------------------------------------------------------------------------------------------------------------------
+
+*PEDIDOS - TERMINAR
+
+* Resolver la forma de generar los detalles de las cotizaciones de los proveedores
+
+--------------------------------------------------------------------------------------------------------------------
+
+* EN REPORTES AGREGAR CORTES DE CONTROL POR CLIENTE O POR MODELO, POR EJ
+
+AGREGAR LOS NETOS IVA Y PERCEPCIONES
+
+--------------------------------------------------------------------------------------------------------------------
+
+*AUDITORIA sobre:
+EVENTOS DE AGENDA
+PRODUCTOS                 OK
+SERVICIOS                 OK
+COMPRAS
+VENTAS
+PRESUPUESTOS
+TRABAJOS
+PLANIFICACIONES
+SOLICITUD DE PEDIDOS
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
 
+*ESTADISTICAS
+
+*GRUPOS DE USUARIOS
+
+*ROLES Y PERMISOS
 
