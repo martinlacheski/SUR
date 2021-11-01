@@ -57,14 +57,19 @@ class respuestaTrabajoFinalizado(models.Model):
 
 class seguimientoTrabajos(models.Model):
     trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo asociado')
-    ultPorcentajeAvance = models.IntegerField(default=0)
-    cantVecesNotif = models.IntegerField(default=0)
+    # ultPorcentajeAvance = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
+    cantVecesNotif_dia = models.IntegerField(default=0, verbose_name="Cantidad de veces notificadas en el día")
+    cantVecesNotif_total = models.IntegerField(default=0, verbose_name="Cantidad de veces TOTALES notificadas (1 por día)")
     inicialUserAsig = models.ForeignKey(Usuarios, models.DO_NOTHING,
                                         verbose_name='Inicial. Usuario asociado',
-                                        related_name="Usuario_inicial")
+                                        related_name="Usuario_inicial",
+                                        null=True, blank=True)
     ultUserAsig = models.ForeignKey(Usuarios, models.DO_NOTHING,
                                     verbose_name='Ult. Usuario asociado',
                                     blank=True, null=True, related_name="Usuario_final")
+    respuestaUser = models.CharField(max_length=40, verbose_name='Respuesta', null=True, blank=True)
+    fechaEnvio = models.DateTimeField(default=datetime.datetime.today())
+    fechaRespuesta = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         verbose_name = 'Seguimiento de estado de trabajo'

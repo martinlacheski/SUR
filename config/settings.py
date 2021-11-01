@@ -38,7 +38,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 
 INSTALLED_APPS = [
     'channels',
-    'django_cron',
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -179,6 +179,9 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CRONJOBS = [
+    ('*/1 * * * *', 'apps.bot_telegram.cron.rastreoTrabajos')
+]
 
 
 # Probablemente innecesarios. Si joden, chau
@@ -192,10 +195,6 @@ APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
 DJANGO_SETTINGS_MODULE = 'config.settings'
 
-
-CRONJOBS = [
-    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
-]
 
 CHANNEL_LAYERS = {
     "default": {

@@ -17,7 +17,6 @@ bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 # Especifico de APScheduler
 
 def notificar(evento):
-    print("me ejecuto")
     usersToNotify = notificacionUsuarios.objects.filter(tipoEvento=evento.tipoEvento)
     dias_aviso = diasAvisoEvento.objects.last()
     if diaDeNotificacion(datetime.date.today().weekday(), dias_aviso):

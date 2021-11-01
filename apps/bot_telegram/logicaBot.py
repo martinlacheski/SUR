@@ -58,7 +58,7 @@ def porcentajeTrabajo(trabajo):
         porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
     # Redondeamos para tener solo 2 decimales
     porcentaje = round(round(porcentaje, 2) * 100, 2)
-    return str(porcentaje * 100)
+    return str(porcentaje)
 
 # Chequea estado del trabajo. No muestra los que fueron entregados o que se hayan cancelado.
 def checkEstado(trabajo):
