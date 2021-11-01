@@ -296,6 +296,7 @@ class Ventas(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estadoVenta = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         # return self.cliente.razonSocial
@@ -326,6 +327,7 @@ class DetalleProductosVenta(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -350,6 +352,7 @@ class DetalleServiciosVenta(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.servicio.descripcion

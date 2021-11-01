@@ -51,6 +51,7 @@ urlpatterns = [
     path('ventas/update/<int:pk>/', VentasUpdateView.as_view(), name='ventas_update'),
     path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
     path('ventas/pdf/<int:pk>/', VentasPdfView.as_view(), name='ventas_pdf'),
+    path('ventas/audit/', VentasAuditListView.as_view(), name='ventas_audit'),
     # Compras
     path('compras/list/', ComprasListView.as_view(), name='compras_list'),
     path('compras/add/', ComprasCreateView.as_view(), name='compras_create'),

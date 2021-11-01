@@ -20,15 +20,15 @@ AGREGAR LOS NETOS IVA Y PERCEPCIONES
 --------------------------------------------------------------------------------------------------------------------
 
 *AUDITORIA sobre:
-EVENTOS DE AGENDA
-PRODUCTOS                 OK
-SERVICIOS                 OK
-COMPRAS
+PRODUCTOS                   OK
+SERVICIOS                   OK
 VENTAS
-PRESUPUESTOS
 TRABAJOS
-PLANIFICACIONES
-SOLICITUD DE PEDIDOS
+EVENTOS DE AGENDA
+COMPRAS                     Dejar por ultimo
+PRESUPUESTOS                Dejar por ultimo
+PLANIFICACIONES             Dejar por ultimo
+SOLICITUD DE PEDIDOS        Dejar por ultimo
 
 --------------------------------------------------------------------------------------------------------------------
 
