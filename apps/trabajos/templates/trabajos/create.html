@@ -813,26 +813,34 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>Precio de Costo:</label>
                                 <br>
-                                <div class="col-12" class="form-control" id="costoServicio" name="costoServicio">
+                                <div class="col-12" class="form-control" id="costoServicio" name="costoCosto">
                                     {{ formServicio.costo|add_class:'form-control costoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>(*) Tipo de IVA:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="ivaServicio" name="ivaServicio">
                                     {{ formServicio.iva|add_class:'form-control ivaServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
-                            <div class="col-4 mb-4">
+                            <div class="col-3 mb-3">
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="precioVentaServicio"
                                      name="precioVentaServicio">
                                     {{ formServicio.precioVenta|add_class:'form-control precioVentaServicio'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Esfuerzo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="esfuerzoServicio"
+                                     name="esfuerzoServicio">
+                                    {{ formServicio.esfuerzo|add_class:'form-control esfuerzoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
                             </div>
                         </div>

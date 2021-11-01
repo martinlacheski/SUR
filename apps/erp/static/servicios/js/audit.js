@@ -1,4 +1,4 @@
-var tablaProductos;
+var tablaServicios;
 //Creamos variables auxiliares para el reporte
 var fechaInicio = '';
 var fechaFin = '';
@@ -7,17 +7,17 @@ var checkCanceladas = true;
 var reporte = {
     items: {
         //Filtros
-        producto: '',
+        servicio: '',
         accion: '',
         usuario: '',
         fechaDesde: '',
         fechaHasta: '',
         //detalle de compras
-        productos: [],
+        servicios: [],
     },
 };
 $(function () {
-    tablaProductos = $('#data').DataTable({
+    tablaServicios = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -79,7 +79,7 @@ $(function () {
             },
         ],
         initComplete: function (settings, json) {
-            //Agregamos al Select2 los Productos que tenemos en el listado
+            //Agregamos al Select2 los Servicios que tenemos en el listado
             this.api().columns(2).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
@@ -94,7 +94,7 @@ $(function () {
                     });
                 column.data().unique().sort().each(function (d, j) {
                     var newOption = new Option(d.toString(), d.toString(), false, false);
-                    $('.selectProducto').append(newOption).trigger('change');
+                    $('.selectServicio').append(newOption).trigger('change');
                 });
             });
             //Agregamos al Select2 las acciones que tenemos en el listado
@@ -143,16 +143,16 @@ $(function () {
                 });
             });
             //Actualizamos la tabla
-            tablaProductos.draw();
+            tablaServicios.draw();
         }
     });
     $('#data tbody')
         .on('click', 'a[rel="detalleMovimiento"]', function () {
             //Asignamos a una variable el renglon que necesitamos
-            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            var tr = tablaServicios.cell($(this).closest('td, li')).index();
             renglon = tr.row;
             //Asignamos a una variable el movimiento en base al renglon
-            var audit = tablaProductos.row(tr.row).data();
+            var audit = tablaServicios.row(tr.row).data();
             //Realizamos el AJAX para buscar el DETALLE DE LA AUDITORIA
             $.ajax({
                 url: window.location.pathname,
@@ -167,113 +167,41 @@ $(function () {
                 },
             }).done(function (data) {
                 var dato = data[0];
-                //Cargamos los datos del Producto y mostramos en el modal con las modificaciones
-                var categoria = $('#modalCategoria').val(dato.categoria);
-                var subcategoria = $('#modalSubcategoria').val(dato.subcategoria);
+                //Cargamos los datos del Servicio y mostramos en el modal con las modificaciones
                 var descripcion = $('#modalDescripcion').val(dato.descripcion);
-                var abreviatura = $('#modalAbreviatura').val(dato.abreviatura);
                 var codigo = $('#modalCodigo').val(dato.codigo);
-                var codigoProveedor = $('#modalCodigoProveedor').val(dato.codigoProveedor);
-                var codigoBarras1 = $('#modalCodigoBarras1').val(dato.codigoBarras1);
-                var stockReal = $('#modalStockReal').val(dato.stockReal);
-                var stockMinimo = $('#modalStockMinimo').val(dato.stockMinimo);
-                var reposicion = $('#modalReposicion').val(dato.reposicion);
                 var costo = $('#modalCosto').val(dato.costo);
-                var utilidad = $('#modalUtilidad').val(dato.utilidad);
                 var iva = $('#modalTipoIva').val(dato.iva);
                 var precioVenta = $('#modalPrecioVenta').val(dato.precioVenta);
-                var ubicacion = $('#modalUbicacion').val(dato.ubicacion);
-                var observaciones = $('#modalObservaciones').val(dato.observaciones);
-                var esInsumo = $('#modalEsInsumo').val(dato.esInsumo);
-                var descuentaStock = $('#modalDescuentaStock').val(dato.descuentaStock);
+                var esfuerzo = $('#modalEsfuerzo').val(dato.esfuerzo);
                 var imagen = $('#modalImagen').val(dato.imagen);
                 $('#modalCategoriaOld').val(dato.imagen);
                 if (audit.history_type === '~') {
-                    var categoriaOld = document.getElementById('modalCategoriaOld');
-                    categoriaOld.innerHTML = dato.categoriaOld;
-                    var subcategoriaOld = document.getElementById('modalSubcategoriaOld');
-                    subcategoriaOld.innerHTML = dato.subcategoriaOld;
                     var descripcionOld = document.getElementById('modalDescripcionOld');
                     descripcionOld.innerHTML = dato.descripcionOld;
-                    var abreviaturaOld = document.getElementById('modalAbreviaturaOld');
-                    abreviaturaOld.innerHTML = dato.abreviaturaOld;
                     var codigoOld = document.getElementById('modalCodigoOld');
                     codigoOld.innerHTML = dato.codigoOld;
-                    var codigoProveedorOld = document.getElementById('modalCodigoProveedorOld');
-                    codigoProveedorOld.innerHTML = dato.codigoProveedorOld;
-                    var codigoBarras1Old = document.getElementById('modalCodigoBarras1Old');
-                    codigoBarras1Old.innerHTML = dato.codigoBarras1Old;
-                    var stockRealOld = document.getElementById('modalStockRealOld');
-                    stockRealOld.innerHTML = dato.stockRealOld;
-                    var stockMinimoOld = document.getElementById('modalStockMinimoOld');
-                    stockMinimoOld.innerHTML = dato.stockMinimoOld;
-                    var reposicionOld = document.getElementById('modalReposicionOld');
-                    reposicionOld.innerHTML = dato.reposicionOld;
                     var costoOld = document.getElementById('modalCostoOld');
                     costoOld.innerHTML = dato.costoOld;
-                    var utilidadOld = document.getElementById('modalUtilidadOld');
-                    utilidadOld.innerHTML = dato.utilidadOld;
                     var ivaOld = document.getElementById('modalTipoIvaOld');
                     ivaOld.innerHTML = dato.ivaOld;
                     var precioVentaOld = document.getElementById('modalPrecioVentaOld');
                     precioVentaOld.innerHTML = dato.precioVentaOld;
-                    var ubicacionOld = document.getElementById('modalUbicacionOld');
-                    ubicacionOld.innerHTML = dato.ubicacionOld;
-                    var observacionesOld = document.getElementById('modalObservacionesOld');
-                    observacionesOld.innerHTML = dato.observacionesOld;
-                    var esInsumoOld = document.getElementById('modalEsInsumoOld');
-                    esInsumoOld.innerHTML = dato.esInsumoOld;
-                    var descuentaStockOld = document.getElementById('modalDescuentaStockOld');
-                    descuentaStockOld.innerHTML = dato.descuentaStockOld;
+                    var esfuerzoOld = document.getElementById('modalEsfuerzoOld');
+                    esfuerzoOld.innerHTML = dato.esfuerzoOld;
                     var imagenOld = document.getElementById('modalImagenOld');
                     imagenOld.innerHTML = dato.imagenOld;
-                    if (categoria.val() !== categoriaOld.innerHTML) {
-                        categoriaOld.innerHTML = 'Valor anterior: ' + categoriaOld.innerHTML
-                        $("#modalCategoriaOld").removeAttr("hidden");
-                    }
-                    if (subcategoria.val() !== subcategoriaOld.innerHTML) {
-                        subcategoriaOld.innerHTML = 'Valor anterior: ' + subcategoriaOld.innerHTML
-                        $("#modalSubcategoriaOld").removeAttr("hidden");
-                    }
                     if (descripcion.val() !== descripcionOld.innerHTML) {
                         descripcionOld.innerHTML = 'Valor anterior: ' + descripcionOld.innerHTML
                         $("#modalDescripcionOld").removeAttr("hidden");
-                    }
-                    if (abreviatura.val() !== abreviaturaOld.innerHTML) {
-                        abreviaturaOld.innerHTML = 'Valor anterior: ' + abreviaturaOld.innerHTML
-                        $("#modalAbreviaturaOld").removeAttr("hidden");
                     }
                     if (codigo.val() !== codigoOld.innerHTML) {
                         codigoOld.innerHTML = 'Valor anterior: ' + codigoOld.innerHTML
                         $("#modalCodigoOld").removeAttr("hidden");
                     }
-                    if (codigoProveedor.val() !== codigoProveedorOld.innerHTML) {
-                        codigoProveedorOld.innerHTML = 'Valor anterior: ' + codigoProveedorOld.innerHTML
-                        $("#modalCodigoProveedorOld").removeAttr("hidden");
-                    }
-                    if (codigoBarras1.val() !== codigoBarras1Old.innerHTML) {
-                        codigoBarras1Old.innerHTML = 'Valor anterior: ' + codigoBarras1Old.innerHTML
-                        $("#modalCodigoBarras1Old").removeAttr("hidden");
-                    }
-                    if (stockReal.val() !== stockRealOld.innerHTML) {
-                        stockRealOld.innerHTML = 'Valor anterior: ' + stockRealOld.innerHTML
-                        $("#modalStockRealOld").removeAttr("hidden");
-                    }
-                    if (stockMinimo.val() !== stockMinimoOld.innerHTML) {
-                        stockMinimoOld.innerHTML = 'Valor anterior: ' + stockMinimoOld.innerHTML
-                        $("#modalStockMinimoOld").removeAttr("hidden");
-                    }
-                    if (reposicion.val() !== reposicionOld.innerHTML) {
-                        reposicionOld.innerHTML = 'Valor anterior: ' + reposicionOld.innerHTML
-                        $("#modalReposicionOld").removeAttr("hidden");
-                    }
                     if (costo.val() !== costoOld.innerHTML) {
                         costoOld.innerHTML = 'Valor anterior: ' + costoOld.innerHTML
                         $("#modalCostoOld").removeAttr("hidden");
-                    }
-                    if (utilidad.val() !== utilidadOld.innerHTML) {
-                        utilidadOld.innerHTML = 'Valor anterior: ' + utilidadOld.innerHTML
-                        $("#modalUtilidadOld").removeAttr("hidden");
                     }
                     if (iva.val() !== ivaOld.innerHTML) {
                         ivaOld.innerHTML = 'Valor anterior: ' + ivaOld.innerHTML
@@ -283,21 +211,9 @@ $(function () {
                         precioVentaOld.innerHTML = 'Valor anterior: ' + precioVentaOld.innerHTML
                         $("#modalPrecioVentaOld").removeAttr("hidden");
                     }
-                    if (ubicacion.val() !== ubicacionOld.innerHTML) {
-                        ubicacionOld.innerHTML = 'Valor anterior: ' + ubicacionOld.innerHTML
-                        $("#modalUbicacionOld").removeAttr("hidden");
-                    }
-                    if (observaciones.val() !== observacionesOld.innerHTML) {
-                        observacionesOld.innerHTML = 'Valor anterior: ' + observacionesOld.innerHTML
-                        $("#modalObservacionesOld").removeAttr("hidden");
-                    }
-                    if (esInsumo.val() !== esInsumoOld.innerHTML) {
-                        esInsumoOld.innerHTML = 'Valor anterior: ' + esInsumoOld.innerHTML
-                        $("#modalEsInsumoOld").removeAttr("hidden");
-                    }
-                    if (descuentaStock.val() !== descuentaStockOld.innerHTML) {
-                        descuentaStockOld.innerHTML = 'Valor anterior: ' + descuentaStockOld.innerHTML
-                        $("#modalDescuentaStockOld").removeAttr("hidden");
+                     if (esfuerzo.val() !== esfuerzoOld.innerHTML) {
+                        esfuerzoOld.innerHTML = 'Valor anterior: ' + esfuerzoOld.innerHTML
+                        $("#modalEsfuerzoOld").removeAttr("hidden");
                     }
                     if (imagen.val() !== imagenOld.innerHTML) {
                         imagenOld.innerHTML = 'Valor anterior: ' + imagenOld.innerHTML
@@ -307,12 +223,12 @@ $(function () {
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function (data) {
             });
-            $('#modalProducto').modal('show');
+            $('#modalServicio').modal('show');
         });
     //Al cerrar el Modal de Movimiento reseteamos los valores del formulario
-    $('#modalProducto').on('hidden.bs.modal', function (e) {
+    $('#modalServicio').on('hidden.bs.modal', function (e) {
         //Reseteamos los input del Modal
-        $('#formProducto').trigger('reset');
+        $('#formServicio').trigger('reset');
         $('.spanForm').attr("hidden", true);
     });
 //------------------------------------FILTROS----------------------------------------//
@@ -345,31 +261,31 @@ $(function () {
             }
         );
         //Actualizamos la tabla
-        tablaProductos.draw();
+        tablaServicios.draw();
     });
-    //Aplicamos Filtro de Productos
-    $('.selectProducto').on('change', function () {
+    //Aplicamos Filtro de Servicios
+    $('.selectServicio').on('change', function () {
         //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaProductos.draw();
-        //Asignamos a una variabla el producto del Select
-        var producto = $(this).val();
-        if (producto !== null && producto !== '' && producto !== undefined) {
+        tablaServicios.draw();
+        //Asignamos a una variabla el servicio del Select
+        var servicio = $(this).val();
+        if (servicio !== null && servicio !== '' && servicio !== undefined) {
             //Extendemos la busqueda del datatables
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
-                    // Asignamos el producto por cada renglon
-                    var productoTabla = (data[2].toString());
+                    // Asignamos el servicio por cada renglon
+                    var servicioTabla = (data[2].toString());
                     //Comparamos contra el renglon
-                    if (producto === productoTabla) {
+                    if (servicio === servicioTabla) {
                         return true;
                     }
                     return false;
                 }
             );
             //Actualizamos la tabla
-            tablaProductos.draw();
+            tablaServicios.draw();
         }
     });
     //Aplicamos Filtro de Accion
@@ -377,7 +293,7 @@ $(function () {
         //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaProductos.draw();
+        tablaServicios.draw();
         //Asignamos a una variabla el usuario del Select
         var accion = $(this).val();
         if (accion !== null && accion !== '' && accion !== undefined) {
@@ -394,7 +310,7 @@ $(function () {
                 }
             );
             //Actualizamos la tabla
-            tablaProductos.draw();
+            tablaServicios.draw();
         }
     });
     //Aplicamos Filtro de Usuarios
@@ -402,7 +318,7 @@ $(function () {
         //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaProductos.draw();
+        tablaServicios.draw();
         //Asignamos a una variabla el usuario del Select
         var usuario = $(this).val();
         if (usuario !== null && usuario !== '' && usuario !== undefined) {
@@ -419,7 +335,7 @@ $(function () {
                 }
             );
             //Actualizamos la tabla
-            tablaProductos.draw();
+            tablaServicios.draw();
         }
     });
 
@@ -427,8 +343,8 @@ $(function () {
     $('.btnResetFilters').on('click', function () {
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaProductos.draw();
-        $('.selectProducto').val(null).trigger('change');
+        tablaServicios.draw();
+        $('.selectServicio').val(null).trigger('change');
         $('.selectUsuario').val(null).trigger('change');
         $('.selectAccion').val(null).trigger('change');
         //Limpiamos limpio el Filtro de Rango de Fechas
@@ -450,12 +366,12 @@ $(function () {
             dataAuditoria[i].history_date = moment(moment(dataAuditoria[i].history_date, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
         }
         //Asignamos las variables a la estructura
-        reporte.items.producto = $('select[name="selectProducto"]').val();
+        reporte.items.servicio = $('select[name="selectServicio"]').val();
         reporte.items.accion = $('select[name="selectAccion"]').val();
         reporte.items.usuario = $('select[name="selectUsuario"]').val();
         reporte.items.fechaDesde = fechaInicio;
         reporte.items.fechaHasta = fechaFin;
-        reporte.items.productos = dataAuditoria;
+        reporte.items.servicios = dataAuditoria;
         var parameters = new FormData();
         //Pasamos la accion
         parameters.append('action', 'create_reporte');

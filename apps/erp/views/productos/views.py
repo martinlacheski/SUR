@@ -69,9 +69,9 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                         usuario = i.history_user.username
                     except:
                         usuario = '----'
-                    dict = {'history_id': i.history_id, 'descripcion': i.descripcion, 'stockReal': i.stockReal,
-                            'costo': i.costo, 'utilidad': i.utilidad,
-                            'precioVenta': i.precioVenta, 'history_date': i.history_date,
+                    dict = {'history_id': i.history_id, 'descripcion': i.descripcion, 'costo': i.costo,
+                            'utilidad': i.utilidad, 'iva': i.iva.nombre, 'precioVenta': i.precioVenta,
+                            'stockReal': i.stockReal, 'history_date': i.history_date,
                             'history_type': i.history_type, 'history_user': usuario}
                     data.append(dict)
             elif action == 'view_movimiento':
@@ -85,28 +85,28 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     usuario = '----'
                 if movAnt:
                     dict = {'categoria': mov.subcategoria.categoria.nombre, 'subcategoria': mov.subcategoria.nombre,
-                        'descripcion': mov.descripcion, 'abreviatura': mov.abreviatura,
-                        'codigo': mov.codigo, 'codigoProveedor': mov.codigoProveedor,
-                        'codigoBarras1': mov.codigoBarras1,
-                        'stockReal': mov.stockReal, 'stockMinimo': mov.stockMinimo, 'reposicion': mov.reposicion,
-                        'costo': mov.costo, 'utilidad': mov.utilidad, 'iva': mov.iva.nombre,
-                        'precioVenta': mov.precioVenta, 'imagen': mov.imagen, 'ubicacion': mov.ubicacion,
-                        'observaciones': mov.observaciones, 'esInsumo': mov.esInsumo,
-                        'descuentaStock': mov.descuentaStock,
-                        'history_date': mov.history_date, 'history_type': mov.history_type, 'history_user': usuario,
-                        'categoriaOld': movAnt.subcategoria.categoria.nombre,
-                        'subcategoriaOld': movAnt.subcategoria.nombre,
-                        'descripcionOld': movAnt.descripcion, 'abreviaturaOld': movAnt.abreviatura,
-                        'codigoOld': movAnt.codigo, 'codigoProveedorOld': movAnt.codigoProveedor,
-                        'codigoBarras1Old': movAnt.codigoBarras1,
-                        'stockRealOld': movAnt.stockReal, 'stockMinimoOld': movAnt.stockMinimo,
-                        'reposicionOld': movAnt.reposicion,
-                        'costoOld': movAnt.costo, 'utilidadOld': movAnt.utilidad,
-                        'ivaOld': movAnt.iva.nombre,
-                        'precioVentaOld': movAnt.precioVenta, 'imagenOld': movAnt.imagen,
-                        'ubicacionOld': movAnt.ubicacion,
-                        'observacionesOld': movAnt.observaciones, 'esInsumoOld': movAnt.esInsumo,
-                        'descuentaStockOld': movAnt.descuentaStock}
+                            'descripcion': mov.descripcion, 'abreviatura': mov.abreviatura,
+                            'codigo': mov.codigo, 'codigoProveedor': mov.codigoProveedor,
+                            'codigoBarras1': mov.codigoBarras1,
+                            'stockReal': mov.stockReal, 'stockMinimo': mov.stockMinimo, 'reposicion': mov.reposicion,
+                            'costo': mov.costo, 'utilidad': mov.utilidad, 'iva': mov.iva.nombre,
+                            'precioVenta': mov.precioVenta, 'imagen': mov.imagen, 'ubicacion': mov.ubicacion,
+                            'observaciones': mov.observaciones, 'esInsumo': mov.esInsumo,
+                            'descuentaStock': mov.descuentaStock,
+                            'history_date': mov.history_date, 'history_type': mov.history_type, 'history_user': usuario,
+                            'categoriaOld': movAnt.subcategoria.categoria.nombre,
+                            'subcategoriaOld': movAnt.subcategoria.nombre,
+                            'descripcionOld': movAnt.descripcion, 'abreviaturaOld': movAnt.abreviatura,
+                            'codigoOld': movAnt.codigo, 'codigoProveedorOld': movAnt.codigoProveedor,
+                            'codigoBarras1Old': movAnt.codigoBarras1,
+                            'stockRealOld': movAnt.stockReal, 'stockMinimoOld': movAnt.stockMinimo,
+                            'reposicionOld': movAnt.reposicion,
+                            'costoOld': movAnt.costo, 'utilidadOld': movAnt.utilidad,
+                            'ivaOld': movAnt.iva.nombre,
+                            'precioVentaOld': movAnt.precioVenta, 'imagenOld': movAnt.imagen,
+                            'ubicacionOld': movAnt.ubicacion,
+                            'observacionesOld': movAnt.observaciones, 'esInsumoOld': movAnt.esInsumo,
+                            'descuentaStockOld': movAnt.descuentaStock}
                     data.append(dict)
                 else:
                     dict = {'categoria': mov.subcategoria.categoria.nombre, 'subcategoria': mov.subcategoria.nombre,

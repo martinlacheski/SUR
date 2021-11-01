@@ -1,12 +1,19 @@
+import datetime
+import json
+import os
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
+from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from weasyprint import CSS, HTML
 
 from apps.erp.forms import ServiciosForm
 from apps.erp.models import Servicios
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.models import TiposIVA
+from apps.parametros.models import TiposIVA, Empresa
+from config import settings
 
 
 class ServiciosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -37,6 +44,137 @@ class ServiciosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Lis
         context['create_url'] = reverse_lazy('erp:servicios_create')
         context['list_url'] = reverse_lazy('erp:servicios_list')
         context['entity'] = 'Servicios'
+        return context
+
+
+class ServiciosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = Servicios
+    template_name = 'servicios/audit.html'
+    permission_required = 'erp.view_servicios'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Servicios.history.all():
+                    try:
+                        usuario = i.history_user.username
+                    except:
+                        usuario = '----'
+                    dict = {'history_id': i.history_id, 'descripcion': i.descripcion, 'history_date': i.history_date,
+                            'history_type': i.history_type, 'costo': i.costo, 'precioVenta': i.precioVenta,
+                             'esfuerzo': i.esfuerzo, 'history_user': usuario}
+                    data.append(dict)
+            elif action == 'view_movimiento':
+                data = []
+                mov = Servicios.history.get(history_id=request.POST['pk'])
+                movAnt = mov.prev_record
+                try:
+                    usuario = mov.history_user.username
+                    movAnt = mov.prev_record
+                except:
+                    usuario = '----'
+                if movAnt:
+                    dict = {'descripcion': mov.descripcion, 'codigo': mov.codigo,
+                        'costo': mov.costo, 'iva': mov.iva.nombre,
+                        'precioVenta': mov.precioVenta, 'esfuerzo': mov.esfuerzo, 'imagen': mov.imagen,
+                        'history_date': mov.history_date, 'history_type': mov.history_type, 'history_user': usuario,
+                        'descripcionOld': movAnt.descripcion, 'codigoOld': movAnt.codigo,
+                        'costoOld': movAnt.costo, 'ivaOld': movAnt.iva.nombre, 'precioVentaOld': movAnt.precioVenta,
+                        'esfuerzoOld': movAnt.esfuerzo, 'imagenOld': movAnt.imagen}
+                    data.append(dict)
+                else:
+                    dict = {'descripcion': mov.descripcion, 'codigo': mov.codigo,
+                            'costo': mov.costo, 'iva': mov.iva.nombre,
+                            'precioVenta': mov.precioVenta, 'esfuerzo': mov.esfuerzo, 'imagen': mov.imagen,
+                            'history_date': mov.history_date, 'history_type': mov.history_type, 'history_user': usuario}
+                    data.append(dict)
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('servicios/reportAuditoria.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el servicio si esta filtrado
+                servicio = ""
+                try:
+                    servicio = reporte['servicio']
+                except Exception as e:
+                    pass
+                # Obtenemos el usuario si esta filtrado
+                usuario = ""
+                try:
+                    usuario = reporte['usuario']
+                except Exception as e:
+                    pass
+                # Obtenemos la accion si esta filtrada
+                accion = ""
+                try:
+                    accion = reporte['accion']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos el reporte
+                servicios = []
+                try:
+                    servicios = reporte['servicios']
+                    for serv in servicios:
+                        serv['costo'] = float(serv['costo'])
+                        serv['precioVenta'] = float(serv['precioVenta'])
+                except Exception as e:
+                    pass
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'servicio': servicio,
+                        'accion': accion,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'servicios': servicios,
+                        'usuarioAuditoria': usuario,
+                        'usuario': request.user,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteAuditoriaServicios.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteAuditoriaServicios.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Auditoría de Servicios'
+        context['list_url'] = reverse_lazy('erp:servicios_audit')
+        context['entity'] = 'Auditoría Servicios'
         return context
 
 

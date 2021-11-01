@@ -22,8 +22,9 @@ class Clientes(models.Model):
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
     tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
-    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
-    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True, blank=True,
+                                       verbose_name='Límite de Cuenta Corriente')
+    plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
     def __str__(self):
         return self.razonSocial
@@ -70,7 +71,7 @@ class Proveedores(models.Model):
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
     tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
-    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
 
     def __str__(self):
         return self.razonSocial
@@ -166,8 +167,10 @@ class Productos(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     abreviatura = models.CharField(max_length=30, null=True, blank=True, verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo', unique=True)
-    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor', unique=True)
-    codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1', unique=True)
+    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor',
+                                       unique=True)
+    codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1',
+                                     unique=True)
     stockReal = models.IntegerField(default=0, verbose_name='Stock Real')
     stockMinimo = models.PositiveIntegerField(default=0, verbose_name='Stock Mínimo')
     reposicion = models.PositiveIntegerField(default=0, verbose_name='Pedido Reposición')
@@ -249,6 +252,7 @@ class Servicios(models.Model):
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
     esfuerzo = models.PositiveIntegerField(default=20, verbose_name='Esfuerzo')
     imagen = models.ImageField(upload_to='servicios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.descripcion
@@ -314,6 +318,7 @@ class Ventas(models.Model):
         db_table = 'erp_ventas'
         ordering = ['fecha', 'id']
 
+
 # Detalle de Productos de la venta
 class DetalleProductosVenta(models.Model):
     venta = models.ForeignKey(Ventas, models.DO_NOTHING)
@@ -336,6 +341,7 @@ class DetalleProductosVenta(models.Model):
         verbose_name = 'Detalle de Venta - Productos'
         verbose_name_plural = 'Detalle de Ventas - Productos'
         ordering = ['id']
+
 
 # Detalle de Servicios de la venta
 class DetalleServiciosVenta(models.Model):
@@ -457,7 +463,6 @@ class DetallePedidoSolicitud(models.Model):
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 
-
     def __str__(self):
         return self.producto.descripcion
 
@@ -476,5 +481,3 @@ class DetallePedidoSolicitud(models.Model):
         verbose_name = 'Detalle de Solicitud de Pedido'
         verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
         ordering = ['id']
-
-

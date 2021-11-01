@@ -33,7 +33,7 @@
           href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
     <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <!-- Archivo JS -->
-    <script src="{% static 'productos/js/audit.js' %}"></script>
+    <script src="{% static 'servicios/js/audit.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -48,10 +48,10 @@
             <label>Filtros: <i class="fas fa-angle-down showFilters"></i> </label>
             <div class="row" id="filters">
                 <div class="form-group col-4">
-                    <label>Productos:</label>
+                    <label>Servicios:</label>
                     <div class="input-group">
-                        <select class="form-select form-control select2 selectProducto" id="selectProducto"
-                                name="selectProducto" aria-label="selectProducto">
+                        <select class="form-select form-control select2 selectServicio" id="selectServicio"
+                                name="selectServicio" aria-label="selectServicio">
                             <option value="">---------</option>
                         </select>
                     </div>
@@ -98,7 +98,7 @@
                         <tr>
                             <th scope="col" style="width: 5%;">ID</th>
                             <th scope="col" style="width: 15%;">Fecha y Hora</th>
-                            <th scope="col" style="width: 45%;">Producto</th>
+                            <th scope="col" style="width: 45%;">Servicio</th>
                             <th scope="col" style="width: 15%;">Accion</th>
                             <th scope="col" style="width: 15%;">Usuario</th>
                             <th scope="col" style="width: 5%;">Ver</th>
@@ -123,10 +123,10 @@
             </form>
         </div>
     </div>
-    <!-- Modal PRODUCTO -->
-    <div class="modal fade" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <!-- Modal Servicio -->
+    <div class="modal fade" id="modalServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <form id="formProducto" enctype="multipart/form-data" method="post">
+        <form id="formServicio" enctype="multipart/form-data" method="post">
             <div class="modal-dialog modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -139,25 +139,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <div class="col-6 mb-3">
-                                <label>Categoría:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalCategoria" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalCategoriaOld" style="color: red;">"</span>
-
-                            </div>
-                            <div class="form-group col-6">
-                                <label>Subcategoría:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalSubcategoria" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalSubcategoriaOld" style="color: red;"> </span>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6 mb-6">
+                                <div class="form-group col-9 mb-3">
                                     <label>Descripción:</label>
                                     <br>
                                     <div class="input-group">
@@ -165,62 +148,14 @@
                                     </div>
                                     <span class="spanForm" hidden id="modalDescripcionOld" style="color: red;"> </span>
                                 </div>
-                                <div class="form-group col-4 mb-3">
-                                    <label>Abreviatura:</label>
+                                <div class="form-group col-3 mb-3">
+                                    <label>Código:</label>
                                     <br>
                                     <div class="input-group col-9">
-                                        <input type="text" class="form-control" id="modalAbreviatura" readonly>
+                                        <input type="text" class="form-control" id="modalCodigo" readonly>
                                     </div>
-                                    <span class="spanForm" hidden class="col-12" id="modalAbreviaturaOld" style="color: red;"> </span>
+                                    <span class="spanForm" hidden class="col-12" id="modalCodigoOld" style="color: red;"> </span>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-3 mb-3">
-                                <label>Código:</label>
-                                <br>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalCodigo" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalCodigoOld" style="color: red;"> </span>
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Código Proveedor:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalCodigoProveedor" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalCodigoProveedorOld" style="color: red;"> </span>
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Código de Barras:</label>
-                                <br>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalCodigoBarras1" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalCodigoBarras1Old" style="color: red;"> </span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col-3 mb-3">
-                                <label>Stock:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalStockReal" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalStockRealOld" style="color: red;"> </span>
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Stock Mínimo:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalStockMinimo" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalStockMinimoOld" style="color: red;"> </span>
-                            </div>
-                            <div class="form-group col-3 mb-3">
-                                <label>Pedido Reposición:</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalReposicion" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalReposicionOld" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
@@ -231,14 +166,6 @@
                                     <input type="text" class="form-control" id="modalCosto" readonly>
                                 </div>
                                 <span class="spanForm" hidden id="modalCostoOld" style="color: red;"> </span>
-                            </div>
-                            <div class="col-3 mb-3">
-                                <label>Margen de Utilidad:</label>
-                                <br>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalUtilidad" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalUtilidadOld" style="color: red;"> </span>
                             </div>
                             <div class="col-3 mb-3">
                                 <label>Tipo de IVA:</label>
@@ -256,47 +183,17 @@
                                 </div>
                                 <span class="spanForm" hidden id="modalPrecioVentaOld" style="color: red;"> </span>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-3 mb-3">
-                                <label>Ubicacion Física:</label>
+                                <label>Esfuerzo:</label>
                                 <br>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="modalUbicacion" readonly>
+                                    <input type="text" class="form-control" id="modalEsfuerzo" readonly>
                                 </div>
-                                <span class="spanForm" hidden id="modalUbicacionOld" style="color: red;"> </span>
-                            </div>
-                            <div class="col-3 mb-3">
-                                <label>Observaciones:</label>
-                                <br>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalObservaciones" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalObservacionesOld" style="color: red;"> </span>
-                            </div>
-                            <div class="col-1 mb-1">
-                                <label> </label>
-                                <br>
-                            </div>
-                            <div class="col-2 mb-3">
-                                <label>¿Es Insumo?</label>
-                                <br>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalEsInsumo" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalEsInsumoOld" style="color: red;"> </span>
-                            </div>
-                            <div class="col-2 mb-3">
-                                <label>¿Descuenta Stock?</label>
-                                <br>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="modalDescuentaStock" readonly>
-                                </div>
-                                <span class="spanForm" hidden id="modalDescuentaStockOld" style="color: red;"> </span>
+                                <span class="spanForm" hidden id="modalEsfuerzoOld" style="color: red;"> </span>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6 mb-6">
+                            <div class="col-6 mb-3">
                                 <label>Imagen:</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="modalImagen" readonly>

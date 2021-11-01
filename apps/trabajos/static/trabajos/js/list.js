@@ -87,7 +87,7 @@ $(function () {
             {"data": "fechaSalida"},
             {"data": "modelo.nombre"},
             {"data": "cliente.razonSocial"},
-            {"data": "total"},
+            {"data": "asignado"}, //Duplicado para ver el Usuario Asignado
             {"data": "id"},
         ],
         columnDefs: [
@@ -162,9 +162,13 @@ $(function () {
             {
                 targets: [-2],
                 class: 'text-center',
-                orderable: false,
                 render: function (data, type, row) {
-                    return '$' + parseFloat(data).toFixed(2);
+                    // console.log(row.usuarioAsignado.username)
+                    if (row.asignado !== 'EXPRESS') {
+                        return row.asignado
+                    } else {
+                        return '<span class="badge badge-success">' + row.asignado + '</span>'
+                    }
                 }
             },
             {
@@ -237,6 +241,29 @@ $(function () {
                     try {
                         var newOption = new Option(d.toString(), d.toString(), false, false);
                         $('.selectModelo').append(newOption).trigger('change');
+                    } catch (error) {
+
+                    }
+
+                });
+            });
+            //Agregamos al Select2 los usuarios Asignados que tenemos en el listado
+            this.api().columns(7).every(function () {
+                var column = this;
+                var select = $('<select><option value=""></option></select>')
+                    .appendTo($(column.footer()).empty())
+                    .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex(
+                            $(this).val()
+                        );
+                        column
+                            .search(val ? '^' + val + '$' : '', true, false)
+                            .draw();
+                    });
+                column.data().unique().sort().each(function (d, j) {
+                    try {
+                        var newOption = new Option(d.toString(), d.toString(), false, false);
+                        $('.selectUsuario').append(newOption).trigger('change');
                     } catch (error) {
 
                     }
@@ -407,10 +434,14 @@ $(function () {
 
         if (filtros.css('display') === 'none') {
             document.getElementById("filters").style.display = "";
+            document.getElementById("filters1").style.display = "";
             document.getElementById("filters2").style.display = "";
+            document.getElementById("filters3").style.display = "";
         } else {
             document.getElementById("filters").style.display = "none";
+            document.getElementById("filters1").style.display = "none";
             document.getElementById("filters2").style.display = "none";
+            document.getElementById("filters3").style.display = "none";
         }
 
     });
@@ -488,6 +519,64 @@ $(function () {
             tablaTrabajo.draw();
         }
     });
+    //Aplicamos Filtro de Usuarios
+    $('.selectUsuario').on('change', function () {
+        //Asignamos a una variabla el usuario del Select
+        var usuario = $(this).val();
+        if (usuario !== null && usuario !== '' && usuario !== undefined) {
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el usuario por cada renglon
+                    var usuarioTabla = (data[7].toString());
+                    //Comparamos contra el renglon
+                    if (usuario === usuarioTabla) {
+                        return true;
+                    }
+                    return false;
+                }
+            );
+            //Actualizamos la tabla
+            tablaTrabajo.draw();
+        }
+    });
+    //Excluir Estado Finalizados
+    $('#excluirFinalizados').on('click', function () {
+        var verdadero = 'FINALIZADO';
+        if (this.checked) {
+            //Asignamos Verdadero a la variable auxiliar del reporte
+            checkFinalizados = true;
+            //Extendemos la busqueda del datatables
+            $.fn.dataTable.ext.search.push(
+                function (settings, data, dataIndex) {
+                    // Asignamos el estado por cada renglon
+                    var estado = (data[1]);
+                    //Comparamos contra el renglon
+                    if (verdadero === estado) {
+                        return false;
+                    }
+                    return true;
+                }
+            );
+            //Actualizamos la tabla
+            tablaTrabajo.draw();
+        } else {
+            //Reseteamos los filtros
+            checkFinalizados = false;
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.pop();
+            tablaTrabajo.draw();
+            document.getElementById("verPendientes").checked = false;
+            document.getElementById("verPlanificados").checked = false;
+            document.getElementById("verEnProceso").checked = false;
+            document.getElementById("verFinalizados").checked = false;
+            $('.selectCliente').val(null).trigger('change');
+            $('.selectModelo').val(null).trigger('change');
+            $('input[name="filterRangoFechas"]').val('');
+            fechaInicio = '';
+            fechaFin = '';
+        }
+    });
     //Excluir Estado Entregados
     $('#excluirEntregados').on('click', function () {
         var verdadero = 'ENTREGADO';
@@ -514,8 +603,6 @@ $(function () {
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
             tablaTrabajo.draw();
-            document.getElementById("excluirEntregados").checked = false;
-            document.getElementById("excluirCancelados").checked = false;
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verEnProceso").checked = false;
@@ -553,8 +640,6 @@ $(function () {
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();
             tablaTrabajo.draw();
-            document.getElementById("excluirEntregados").checked = false;
-            document.getElementById("excluirCancelados").checked = false;
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verEnProceso").checked = false;
@@ -571,6 +656,8 @@ $(function () {
         var verdadero = 'PENDIENTE';
         if (this.checked) {
             //Cambiamos el CHECK de los otros estados determinados
+            document.getElementById("excluirFinalizados").checked = false;
+            document.getElementById("excluirEntregados").checked = false;
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verEnProceso").checked = false;
             document.getElementById("verFinalizados").checked = false;
@@ -625,6 +712,8 @@ $(function () {
         var verdadero = 'PLANIFICADO';
         if (this.checked) {
             //Cambiamos el CHECK de los otros estados determinados
+            document.getElementById("excluirFinalizados").checked = false;
+            document.getElementById("excluirEntregados").checked = false;
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verEnProceso").checked = false;
             document.getElementById("verFinalizados").checked = false;
@@ -679,6 +768,8 @@ $(function () {
         var verdadero = 'EN PROCESO';
         if (this.checked) {
             //Cambiamos el CHECK de los otros estados determinados
+            document.getElementById("excluirFinalizados").checked = false;
+            document.getElementById("excluirEntregados").checked = false;
             document.getElementById("verPendientes").checked = false;
             document.getElementById("verPlanificados").checked = false;
             document.getElementById("verFinalizados").checked = false;
@@ -789,10 +880,12 @@ $(function () {
         tablaTrabajo.draw();
         $('.selectCliente').val(null).trigger('change');
         $('.selectModelo').val(null).trigger('change');
+        $('.selectUsuario').val(null).trigger('change');
         //Limpiamos limpio el Filtro de Rango de Fechas
         $('input[name="filterRangoFechas"]').val('');
         fechaInicio = '';
         fechaFin = '';
+        $('#excluirFinalizados').prop('checked', false);
         $('#excluirEntregados').prop('checked', false);
         $('#excluirCancelados').prop('checked', true);
         $('#verPendientes').prop('checked', false);
@@ -882,7 +975,9 @@ $(function () {
 $(document).ready(function () {
     //Ocultamos los Filtros
     document.getElementById("filters").style.display = "none";
+    document.getElementById("filters1").style.display = "none";
     document.getElementById("filters2").style.display = "none";
+    document.getElementById("filters3").style.display = "none";
     //Inicializamos SELECT2
     $('.select2').select2({
         theme: "bootstrap4",

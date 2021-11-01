@@ -34,6 +34,7 @@ urlpatterns = [
     path('servicios/add/', ServiciosCreateView.as_view(), name='servicios_create'),
     path('servicios/update/<int:pk>/', ServiciosUpdateView.as_view(), name='servicios_update'),
     path('servicios/delete/<int:pk>/', ServiciosDeleteView.as_view(), name='servicios_delete'),
+    path('servicios/audit/', ServiciosAuditListView.as_view(), name='servicios_audit'),
     # Clientes
     path('clientes/list/', ClientesListView.as_view(), name='clientes_list'),
     path('clientes/add/', ClientesCreateView.as_view(), name='clientes_create'),

@@ -45,7 +45,6 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             if action == 'searchdata':
                 data = []
                 for i in Trabajos.objects.all():
-
                     # Obtenemos el estado de avance por cada trabajo
                     totalEsfuerzo = 0
                     esfuerzoTrabRealizados = 0
@@ -62,6 +61,10 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                     # Redondeamos para tener solo 2 decimales
                     porcentaje = round(round(porcentaje, 2) * 100, 2)
                     item = i.toJSON()
+                    if i.usuarioAsignado:
+                        item['asignado'] = i.usuarioAsignado.username
+                    else:
+                        item['asignado'] = 'EXPRESS'
                     item['porcentaje'] = str(porcentaje)
                     data.append(item)
             elif action == 'get_parametros_estados':
@@ -898,6 +901,10 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     # Buscamos el estado Especial para iniciar el Proceso
                     try:
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        # Buscamos si hay un servicio ya realizado para cambiar el estado de Pendiente a En Proceso
+                        for i in formTrabajoRequest['servicios']:
+                            if i['estado'] == True:
+                                trabajo.estadoTrabajo_id = estado.estadoEspecial_id
                         if confirm == 'si':
                             trabajo.estadoTrabajo_id = estado.estadoFinalizado_id
                         elif trabajo.estadoTrabajo_id == estado.estadoPlanificado_id:
