@@ -1,0 +1,248 @@
+{% extends 'form.html' %}
+{% load static %}
+{% block head %}
+
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
+    <!-- Tempus Dominus -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+    <!-- dropzonejs -->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/dropzone/min/dropzone.min.css' %}">
+    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+          rel="stylesheet"/>
+
+    <!-- Bootstrap Touchspin -->
+    <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+    <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+{% endblock %}
+
+{%  block content %}
+    <form id="ajaxForm" method="post" action=".">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Configuración de Notificaciones</h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible errorForm">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h5><i class="icon fas fa-ban"></i> Ha ocurrido un error al querer guardar el registro</h5>
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="col-12">
+                        <label>Dias de antelacion</label>
+                        <div class="col-2" class="input-group-text" id="diasAntelacion">
+                            {{ form.diasAntelacion }}
+                        </div>
+                    </div>
+                </div>
+                <hr class="style1">
+                <div class="row mt-4">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.lunes }}
+                                <label class="custom-control-label" for="id_lunes">Lunes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.martes }}
+                                <label class="custom-control-label" for="id_martes">Martes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.miercoles }}
+                                <label class="custom-control-label" for="id_miercoles">Miercoles</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.jueves }}
+                                <label class="custom-control-label" for="id_jueves">Jueves</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.viernes }}
+                                <label class="custom-control-label" for="id_viernes">Viernes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.sabado }}
+                                <label class="custom-control-label" for="id_sabado">Sábado</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-group">
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.domingo }}
+                                <label class="custom-control-label" for="id_domingo">Domingo</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-body -->
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"> Confirmación </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Estás seguro de realizar la siguiente acción?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Si</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Error Eliminar Clave Foranea-->
+        <div class="modal fade" id="submitModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmación</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>No se puede eliminar</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Si</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            {#            Mensaje de error#}
+            <ul id="errorList"  class="alert-danger"></ul>
+            {#            Botones#}
+            <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                <i class="fas fa-save"></i> Guardar registro
+            </button>
+            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <i class="fas fa-times"></i> Cancelar
+            </a>
+        </div>
+    </form>
+
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js'%}"></script>
+    <!-- IMPORTANTE. Para poner en español algunos complementos en AdminLTE3 se necesita de moment.js -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js'%}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/inputmask/jquery.inputmask.min.js'%}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+
+    <!-- Inicialización de timepicker -->
+    <script>
+        //Timepicker
+        $('#timepicker').datetimepicker({
+            format: 'LT'
+        })
+    </script>
+
+    <script>
+        $('.form-select').select2({
+            theme: "bootstrap4",
+            language: 'es'
+        });
+    </script>
+
+    <script>
+        $("input[name='diasAntelacion']").TouchSpin({
+            min: 0,
+            max: 7,
+            step: 1,
+        });
+    </script>
+
+
+    <script>
+        //Funcion Mostrar Errores del Formulario
+        function message_error(obj) {
+            var errorList = document.getElementById("errorList");
+            errorList.innerHTML = '';
+            if (typeof (obj) === 'object') {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                $.each(obj, function (key, value) {
+                    var li = document.createElement("li");
+
+                    li.innerText = key + ': ' + value;
+                    errorList.appendChild(li);
+                });
+            } else {
+                var li = document.createElement("h5");
+                li.textContent = "Error:";
+                errorList.appendChild(li);
+                var li = document.createElement("li");
+                li.innerText = obj;
+                errorList.appendChild(li);
+            }
+        }
+        //Llamamos a la funcion de Token
+        getToken(name);
+        //Hacemos el envio del Formulario mediante AJAX
+        $("#ajaxForm").submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                url: window.location.href,
+                type: 'POST',
+                data: new FormData(this),
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        location.replace(data.redirect);
+                    } else {
+                        message_error(data.error);
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

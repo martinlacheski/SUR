@@ -1,17 +1,16 @@
 {% extends 'list.html' %}
 {% load static %}
 {% block head_list %}
-    <script src="{% static 'gestionTipoEventos/list.js' %}"></script>
+    <script src="{% static 'gestionTipoEventos/js/list2.js' %}"></script> <!-- si lo renombro a list.js NO ANDA (??????) -->
 {% endblock %}
 
 {% block columns %}
-    <tr>
-        <th scope="col" style="width: 20%;">Tipo Evento</th>
+      <tr>
+        <th scope="col" style="width: 15%;">Tipo Evento</th>
         <th scope="col" style="width: 10%;">Hs. Recordatorio</th>
-        <th scope="col" style="width: 5%;">Notif. Sistema</th>
-        <th scope="col" style="width: 5%;">Notif. Telegram</th>
-        <th scope="col" style="width: 5%;">Notif. Email</th>
-        <th scope="col" style="width: 5%;">A Usuario</th>
+        <th scope="col" style="width: 10%;">Notif. Sistema</th>
+        <th scope="col" style="width: 10%;">Notif. Telegram</th>
+        <th scope="col" style="width: 10%;">A Usuarios</th>
         <th scope="col" style="width: 10%;">Opciones</th>
     </tr>
 {% endblock %}

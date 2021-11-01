@@ -25,7 +25,7 @@ class Clientes(models.Model):
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True, blank=True,
                                        verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
-
+    
     def __str__(self):
         return self.razonSocial
 
