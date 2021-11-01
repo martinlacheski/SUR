@@ -53,7 +53,7 @@ def porcentajeTrabajo(trabajo):
         if d.estado:
             esfuerzoTrabRealizados += d.servicio.esfuerzo
     if esfuerzoTrabRealizados == 0:
-        porcentaje = 1
+        porcentaje = 0
     else:
         porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
     # Redondeamos para tener solo 2 decimales

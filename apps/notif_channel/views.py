@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.http import JsonResponse
 from django.views.generic import ListView
 from apps.notif_channel.models import notificacionesGenerales
@@ -52,7 +53,9 @@ class NotificacionesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             notifs = {}
             n = notificacionesGenerales.objects.order_by('-pk')
             for i in n:
-                data.append(i.toJSON())
+                item = i.toJSON()
+                item['notificado'] = naturaltime(i.fechaNotificacion)
+                data.append(item)
             return JsonResponse(data, safe=False)
 
         if action == 'detalle_notif_completo':

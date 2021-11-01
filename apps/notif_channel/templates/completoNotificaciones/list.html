@@ -12,11 +12,9 @@
     <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-    <!-- dataTables Boton PDF -->
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/pdfmake/pdfmake.min.js' %}"></script>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/pdfmake/vfs_fonts.js' %}"></script>
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+    <!-- Moment -->
+    <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
     {% block head_list %}
 
     {% endblock %}
@@ -37,9 +35,9 @@
                 <thead>
                 {% block columns %}
                     <tr>
-                        <th scope="col" style="width: 5%;">Notificacion</th>
+                        <th scope="col" style="width: 5%;">ID</th>
                         <th scope="col" style="width: 25%;">Titulo</th>
-                        <th scope="col" style="width: 10%;">Notificada el</th>
+                        <th scope="col" style="width: 10%;">Notificado hace</th>
                         <th scope="col" style="width: 5%;">Estado</th>
                         <th scope="col" style="width: 5%;">Opciones</th>
                     </tr>
@@ -133,10 +131,10 @@
                 success: function (data) {
                     console.log(data[0]);
                     document.getElementById('modal_id_notif').innerHTML = data[0].id;
-                    document.getElementById('modal_fecha_notif').innerHTML = data[0].fechaNotificacion;
+                    document.getElementById('modal_fecha_notif').innerHTML = moment(moment(data[0].fechaNotificacion, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY / HH:mm');
                     document.getElementById('modal_estado_notif').innerHTML = data[0].estado;
                     document.getElementById('modal_titulo_notif').innerHTML = data[0].titulo;
-                    document.getElementById('modal_fecharevision_notif').innerHTML = data[0].fechaRevisionUser;
+                    document.getElementById('modal_fecharevision_notif').innerHTML = moment(moment(data[0].fechaRevisionUser, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY / HH:mm');
                     document.getElementById('modal_usernotif_notif').innerHTML = data[0].enviadoAUser;
                     document.getElementById('modal_descripcion_notif').innerHTML = data[0].descripcion;
                     $('#modal-lg-notif-detalle').modal('show');

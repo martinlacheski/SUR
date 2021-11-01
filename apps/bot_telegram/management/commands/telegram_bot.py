@@ -194,9 +194,10 @@ class Command(BaseCommand):
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
                     mensaje = generarReporte(query.data)
                     hoy = datetime.date.today()
+                    print(str(hoy.strftime('%d\-%m\-%Y')))
                     if mensaje['tipo'] == 'venta':
                         bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
-                                            str(hoy.day) + "\-" + str(hoy.month) + "\-" + str(hoy.year) + "\n\n"
+                                                str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
                                               "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
                                               "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
                                               "``` Total servicios\: \$``` " + str(int(mensaje['totalServicios'])) + " pesos\n" +
@@ -205,7 +206,7 @@ class Command(BaseCommand):
                                                 chat_id=usuario.chatIdUsuario)
                     if mensaje['tipo'] == "compra":
                         bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬇ Compras al día de la fecha " +
-                                            str(hoy.day) + "\-" + str(hoy.month) + "\-" + str(hoy.year) + "\n\n"
+                                              str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
                                               "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
                                               "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
                                               "``` Cant\. compras\: ``` " + str(int(mensaje['cantCompras'])) + "\n",
