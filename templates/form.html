@@ -3,10 +3,10 @@
 {% load static %}
 {% block head %}
     {% block head_form %}
-
     {% endblock %}
 {% endblock %}
 {% block content %}
+
     <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
         <div class="card card-default">
             <div class="card-header">
@@ -56,6 +56,7 @@
                 errorList.appendChild(li);
                 $.each(obj, function (key, value) {
                     var li = document.createElement("li");
+
                     li.innerText = key + ': ' + value;
                     errorList.appendChild(li);
                 });
@@ -68,7 +69,6 @@
                 errorList.appendChild(li);
             }
         }
-
         //Llamamos a la funcion de Token
         getToken(name);
         //Hacemos el envio del Formulario mediante AJAX

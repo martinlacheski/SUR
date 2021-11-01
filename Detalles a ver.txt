@@ -31,10 +31,8 @@ PLANIFICACIONES
 SOLICITUD DE PEDIDOS
 
 --------------------------------------------------------------------------------------------------------------------
---------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
-
 
 
 *ESTADISTICAS
@@ -42,3 +40,4 @@ SOLICITUD DE PEDIDOS
 *GRUPOS DE USUARIOS
 
 *ROLES Y PERMISOS
+

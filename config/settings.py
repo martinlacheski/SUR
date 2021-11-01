@@ -95,7 +95,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-CRONJOBS = [('* * * * *', 'apps.agenda.cron.cron_prueba')]
 
 DATABASES = {
     'default': {
@@ -127,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-# LANGUAGE_CODE = 'en-us'
+#LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'
 
 # TIME_ZONE = 'UTC'
@@ -173,3 +172,13 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Necesarios
+APSCHEDULER_DATETIME_FORMAT = "%d-%m-%Y %H:%M:%S"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
+
+DJANGO_SETTINGS_MODULE = 'config.settings'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
+]
