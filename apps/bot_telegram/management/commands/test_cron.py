@@ -53,7 +53,7 @@ class Command(BaseCommand):
                 segTrab.save()
                 trabajosASupervisar.append(t)
         if trabajosASupervisar:
-            scheduler_eventos.add_job(self.job, 'interval', seconds=10, args=[trabajosASupervisar]) # Se tiene que setear para que se ejecute 4 veces
+            scheduler_eventos.add_job(self.job, 'interval', seconds=100, args=[trabajosASupervisar]) # Se tiene que setear para que se ejecute 4 veces
             scheduler_eventos.start()
 
     def job(self, t_supervisar):
@@ -70,15 +70,15 @@ class Command(BaseCommand):
                             bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text=mensaje(t))
                             # Callback data
                             faltan_repuestos = {'trabajo': str(t.id), 'respuesta': "Faltan repuestos"}
-                            otro_inconveniente = {'trabajo': str(t.id), 'respuesta': "Otro inconveniente"}
+                            postergar = {'trabajo': str(t.id), 'respuesta': "Postergar"}
                             # Arma botones y los envia
                             keyboard = [
                                         [InlineKeyboardButton("🛠 Faltan repuestos", callback_data=str(faltan_repuestos))],
-                                        [InlineKeyboardButton("🕙 Otro inconveniente", callback_data=str(otro_inconveniente))],
+                                        [InlineKeyboardButton("🕙 Postergar", callback_data=str(postergar))],
                                        ]
                             reply_markup = InlineKeyboardMarkup(keyboard)
                             bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario,
-                                             text="¿Cómo está la situación?\n",
+                                             text="Elegí una opción: \n",
                                              reply_markup=reply_markup)
                             # Actualiza seguimiento
                             segTrab.cantVecesNotif_dia += 1

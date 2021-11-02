@@ -174,7 +174,6 @@ class Command(BaseCommand):
                     # Le repondemos al cliente.
                     query.edit_message_text(text="👍 Tu respuesta ha sido registrada y notificada al personal"
                                                  " de SUR EXPRESS")
-
                     # Avisamos a los administradores por télegram
                     usersToNotif = notifIncidentesUsuarios.objects.all()
                     mensaje = estado_retiro['respuesta_bot']
@@ -192,35 +191,41 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 try:
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
-                    mensaje = generarReporte(query.data)
-                    hoy = datetime.date.today()
-                    print(str(hoy.strftime('%d\-%m\-%Y')))
-                    if mensaje['tipo'] == 'venta':
-                        bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
-                                                str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
-                                              "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
-                                              "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
-                                              "``` Total servicios\: \$``` " + str(int(mensaje['totalServicios'])) + " pesos\n" +
-                                              "``` Cant\. ventas\: ``` " + str(int(mensaje['cantVentas'])) + "\n",
-                                                parse_mode=telegram.ParseMode.MARKDOWN_V2,
-                                                chat_id=usuario.chatIdUsuario)
-                    if mensaje['tipo'] == "compra":
-                        bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬇ Compras al día de la fecha " +
-                                              str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
-                                              "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
-                                              "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
-                                              "``` Cant\. compras\: ``` " + str(int(mensaje['cantCompras'])) + "\n",
-                                         parse_mode=telegram.ParseMode.MARKDOWN_V2,
-                                         chat_id=usuario.chatIdUsuario)
-                    if mensaje['tipo'] == "trabajosPlanif":
-                        bot.send_message(text="Este es el reporte que solicitaste!\n\n 📅 Estado de trabajos para"
-                                              " planificación desde " + mensaje['planifDesde'] + " hasta " +
-                                              mensaje['planifHasta'] + "\n\n" + mensaje['mensaje'],
-                                        chat_id=usuario.chatIdUsuario)
-                    if mensaje['tipo'] == "trabajosDia":
-                        bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Estado de trabajos del día de" 
-                                              " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
-                                         chat_id=usuario.chatIdUsuario)
+                    opciones = ['ventasDia', 'comprasDia', 'trabajosPlanif', 'trabajosDia']
+                    if query.data in opciones:
+                        mensaje = generarReporte(query.data)
+                        hoy = datetime.date.today()
+                        print(str(hoy.strftime('%d\-%m\-%Y')))
+                        if mensaje['tipo'] == 'venta':
+                            bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
+                                                    str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
+                                                  "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
+                                                  "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
+                                                  "``` Total servicios\: \$``` " + str(int(mensaje['totalServicios'])) + " pesos\n" +
+                                                  "``` Cant\. ventas\: ``` " + str(int(mensaje['cantVentas'])) + "\n",
+                                                    parse_mode=telegram.ParseMode.MARKDOWN_V2,
+                                                    chat_id=usuario.chatIdUsuario)
+                        if mensaje['tipo'] == "compra":
+                            bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬇ Compras al día de la fecha " +
+                                                  str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
+                                                  "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
+                                                  "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
+                                                  "``` Cant\. compras\: ``` " + str(int(mensaje['cantCompras'])) + "\n",
+                                             parse_mode=telegram.ParseMode.MARKDOWN_V2,
+                                             chat_id=usuario.chatIdUsuario)
+                        if mensaje['tipo'] == "trabajosPlanif":
+                            bot.send_message(text="Este es el reporte que solicitaste!\n\n 📅 Estado de trabajos para"
+                                                  " planificación desde " + mensaje['planifDesde'] + " hasta " +
+                                                  mensaje['planifHasta'] + "\n\n" + mensaje['mensaje'],
+                                            chat_id=usuario.chatIdUsuario)
+                        if mensaje['tipo'] == "trabajosDia":
+                            bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Estado de trabajos del día de" 
+                                                  " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
+                                             chat_id=usuario.chatIdUsuario)
+                    else:
+                        resp_to_dict = ast.literal_eval(query.data)
+                        response = almacenarRespuesta(resp_to_dict)
+                        query.edit_message_text(text=response)
 
 
                 except ObjectDoesNotExist:

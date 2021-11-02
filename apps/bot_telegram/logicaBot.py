@@ -249,6 +249,16 @@ def generarReporte(eleccion):
         reporteDet['tipo'] = "trabajosDia"
         return reporteDet
 
+# Almacena respuesta de alerta de trabajo pendiente
+def almacenarRespuesta(respuesta):
+    trabajo = Trabajos.objects.get(pk=respuesta['trabajo'])
+    segTrabajo = seguimientoTrabajos.objects.get(trabajo=trabajo)
+    segTrabajo.fechaRespuesta = datetime.datetime.today()
+    segTrabajo.respuestaUser = respuesta['respuesta']
+    segTrabajo.save()
+    respuesta_bot = "👍 Respuesta registrada"
+    return respuesta_bot
+
 
 
 # ***   LOGS DE SUCESOS ***
