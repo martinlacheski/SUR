@@ -220,29 +220,30 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                 # Obtenemos el ID de la venta para Filtrar
                 venta = request.POST['venta_id']
                 # Creamos unas variables para realizar los filtros
-                # detalle_productos = []
-                # ids_exclude= []
+                detalle_productos = []
+                ids_exclude= []
                 # Obtenemos los detalles que corresponden a la venta
-                # ventaFiltrar = DetalleProductosVenta.history.filter(venta_id=venta)
-                # for i in ventaFiltrar:
-                #     if i.producto.id not in ids_exclude:
-                #         detalle = {
-                #             'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
-                #             'subtotal': i.subtotal, 'history_type': i.history_type, 'history_id': i.history_id}
-                #         detalle_productos.append(detalle)
-                #         ids_exclude.append(i.producto.id)
-                # for prod in ids_exclude:
-                #     val = ventaFiltrar.filter(producto_id=prod)
-                #     last = val.order_by("-id")[0]
-                #     print(last.history_id)
+                ventaFiltrar = DetalleProductosVenta.history.filter(venta_id=venta)
+                for i in ventaFiltrar:
+                    if not i.history_type == "-":
+                        detalle = {
+                            'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
+                            'subtotal': i.subtotal, 'history_type': i.history_type, 'history_id': i.history_id}
+                        detalle_productos.append(detalle)
+                        ids_exclude.append(i.producto.id)
+                for prod in ids_exclude:
+                    val = ventaFiltrar.filter(producto_id=prod)
+                    last = val.order_by("-id")[0]
+                    print(last.history_id)
                 detalle_productos = []
                 for i in DetalleProductosVenta.history.filter(venta_id=venta).order_by('producto__descripcion'):
                     # i = i.next_record
-                    detalle = {
-                        'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
-                        'subtotal': i.subtotal, 'history_type': i.history_type,
-                        'history_date': i.history_date, 'history_id': i.history_id}
-                    detalle_productos.append(detalle)
+                    if not i.history_type == "-":
+                        detalle = {
+                            'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
+                            'subtotal': i.subtotal, 'history_type': i.history_type,
+                            'history_date': i.history_date, 'history_id': i.history_id}
+                        detalle_productos.append(detalle)
                 item['detalle_productos'] = detalle_productos
                 detalle_servicios = []
                 for i in DetalleServiciosVenta.history.filter(venta_id=venta).order_by('servicio__descripcion'):
