@@ -236,20 +236,50 @@ $(function () {
                 tablaProductos = $('#tablaProductos').DataTable({
                     paging: false,
                     searching: false,
-                    ordering: false,
+                    // ordering: false,
                     //info: false,
                     responsive: true,
                     lengthMenu: [25, 50, 75, 100],
+                    order: [0, 'asc'],
                     autoWidth: false,
                     destroy: true,
                     data: productos,
                     columns: [
+                        {"data": "history_id"},
+                        {"data": "history_date"},
+                        {"data": "history_type"},
                         {"data": "producto"},
                         {"data": "precio"},
                         {"data": "cantidad"},
                         {"data": "subtotal"},
                     ],
                     columnDefs: [
+                        {
+                            targets: [0],
+                            class: 'text-center',
+                        },
+                        {
+                            targets: [1],
+                            class: 'text-center',
+                            render: function (data, type, row) {
+                                return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
+                            }
+
+                        },
+                        {
+                            targets: [2],
+                            class: 'text-center',
+                            orderable: false,
+                            render: function (data, type, row) {
+                                if (row.history_type == '+') {
+                                    return 'Creación'
+                                } else if (row.history_type == '~') {
+                                    return 'Actualización'
+                                } else if (row.history_type == '-') {
+                                    return 'Eliminación'
+                                }
+                            }
+                        },
                         {
                             targets: [-4, -2],
                             class: 'text-center',
@@ -273,20 +303,50 @@ $(function () {
                 tablaProductos = $('#tablaServicios').DataTable({
                     paging: false,
                     searching: false,
-                    ordering: false,
+                    // ordering: false,
                     //info: false,
                     responsive: true,
                     lengthMenu: [25, 50, 75, 100],
+                    order: [0, 'asc'],
                     autoWidth: false,
                     destroy: true,
                     data: servicios,
                     columns: [
+                        {"data": "history_id"},
+                        {"data": "history_date"},
+                        {"data": "history_type"},
                         {"data": "servicio"},
                         {"data": "precio"},
                         {"data": "cantidad"},
                         {"data": "subtotal"},
                     ],
                     columnDefs: [
+                        {
+                            targets: [0],
+                            class: 'text-center',
+                        },
+                        {
+                            targets: [1],
+                            class: 'text-center',
+                            render: function (data, type, row) {
+                                return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
+                            }
+
+                        },
+                        {
+                            targets: [2],
+                            class: 'text-center',
+                            orderable: false,
+                            render: function (data, type, row) {
+                                if (row.history_type == '+') {
+                                    return 'Creación'
+                                } else if (row.history_type == '~') {
+                                    return 'Actualización'
+                                } else if (row.history_type == '-') {
+                                    return 'Eliminación'
+                                }
+                            }
+                        },
                         {
                             targets: [-4, -2],
                             class: 'text-center',
@@ -350,10 +410,6 @@ $(function () {
     });
     //Aplicamos Filtro de Productos
     $('.selectCliente').on('change', function () {
-        //Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaVentas.draw();
         //Asignamos a una variabla el producto del Select
         var producto = $(this).val();
         if (producto !== null && producto !== '' && producto !== undefined) {
@@ -375,10 +431,6 @@ $(function () {
     });
     //Aplicamos Filtro de Accion
     $('.selectAccion').on('change', function () {
-        //Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaVentas.draw();
         //Asignamos a una variabla el usuario del Select
         var accion = $(this).val();
         if (accion !== null && accion !== '' && accion !== undefined) {
@@ -400,10 +452,6 @@ $(function () {
     });
     //Aplicamos Filtro de Usuarios
     $('.selectUsuario').on('change', function () {
-        //Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaVentas.draw();
         //Asignamos a una variabla el usuario del Select
         var usuario = $(this).val();
         if (usuario !== null && usuario !== '' && usuario !== undefined) {

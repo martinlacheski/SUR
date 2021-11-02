@@ -240,7 +240,8 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                     # i = i.next_record
                     detalle = {
                         'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
-                        'subtotal': i.subtotal, 'history_type': i.history_type, 'history_id': i.history_id}
+                        'subtotal': i.subtotal, 'history_type': i.history_type,
+                        'history_date': i.history_date, 'history_id': i.history_id}
                     detalle_productos.append(detalle)
                 item['detalle_productos'] = detalle_productos
                 detalle_servicios = []
@@ -248,7 +249,8 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                     # i = i.next_record
                     detalle = {
                         'servicio': i.servicio.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
-                        'subtotal': i.subtotal, 'history_type': i.history_type, 'history_id': i.history_id}
+                        'subtotal': i.subtotal, 'history_type': i.history_type,
+                        'history_date': i.history_date, 'history_id': i.history_id}
                     detalle_servicios.append(detalle)
                 item['detalle_servicios'] = detalle_servicios
                 data.append(item)
