@@ -68,8 +68,9 @@ class seguimientoTrabajos(models.Model):
                                     verbose_name='Ult. Usuario asociado',
                                     blank=True, null=True, related_name="Usuario_final")
     respuestaUser = models.CharField(max_length=40, verbose_name='Respuesta', null=True, blank=True)
-    fechaEnvio = models.DateTimeField(default=datetime.datetime.today())
+    fechaEnvio = models.DateTimeField(default=datetime.datetime.today(), null=True, blank=True)
     fechaRespuesta = models.DateTimeField(blank=True, null=True)
+    notif_por_sist = models.IntegerField(default=0, verbose_name="Cantidad de veces notificadas por Sistema.")
 
     class Meta:
         verbose_name = 'Seguimiento de estado de trabajo'

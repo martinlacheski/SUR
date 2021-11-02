@@ -192,7 +192,9 @@ class Command(BaseCommand):
                 try:
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
                     opciones = ['ventasDia', 'comprasDia', 'trabajosPlanif', 'trabajosDia']
+                    # Bloque ejecutado si se trata de proc automatizado de consulta gerencial
                     if query.data in opciones:
+                        #TO - DO: acá solamente usuarios gerenciales pueden acceder
                         mensaje = generarReporte(query.data)
                         hoy = datetime.date.today()
                         print(str(hoy.strftime('%d\-%m\-%Y')))
@@ -223,6 +225,7 @@ class Command(BaseCommand):
                                                   " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
                                              chat_id=usuario.chatIdUsuario)
                     else:
+                        # Bloque ejecutado por proc auto de asiganción de trabajos
                         resp_to_dict = ast.literal_eval(query.data)
                         response = almacenarRespuesta(resp_to_dict)
                         query.edit_message_text(text=response)

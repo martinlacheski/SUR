@@ -16,12 +16,14 @@ from apps.bot_telegram.logicaBot import porcentajeTrabajo
 
 
 bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
+scheduler_eventos = BlockingScheduler(timezone=settings.TIME_ZONE)
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # APS
-        scheduler_eventos = BlockingScheduler(timezone=settings.TIME_ZONE)
+
+        # TO-DO. Hay que implementar un correcto cron
         start_date = datetime.datetime.today()
         end_date = datetime.datetime.today() + datetime.timedelta(hours=3)
 
@@ -35,7 +37,6 @@ class Command(BaseCommand):
         # Armamos una lista de los trabajos a supervisar
         trabajosASupervisar = []
         for t in trabajos:
-            # avance = porcentajeTrabajo(t)
             cant_dias_en_proceso = datetime.date.today() - t.fechaEntrada
             # Si la cantidad de días desde que el trabajo está en la empresa es mayor a su plazo aproximado, hacemos cosas
             if cant_dias_en_proceso.days > t.prioridad.plazoPrioridad:
@@ -53,19 +54,27 @@ class Command(BaseCommand):
                 segTrab.save()
                 trabajosASupervisar.append(t)
         if trabajosASupervisar:
-            scheduler_eventos.add_job(self.job, 'interval', seconds=100, args=[trabajosASupervisar]) # Se tiene que setear para que se ejecute 4 veces
+            scheduler_eventos.add_job(self.job, 'interval', seconds=10, args=[trabajosASupervisar]) # Se tiene que setear para que se ejecute 4 veces
             scheduler_eventos.start()
 
     def job(self, t_supervisar):
+        notifSist = 0
         for t in t_supervisar:
+            print(t)
             segTrab = seguimientoTrabajos.objects.get(trabajo=t)
-            # Envía notificaciones siempre y cuando no haya respuesta.
-            if not segTrab.respuestaUser:
+            # Envía notificaciones siempre y cuando no haya respuesta o la respuesta haya sido 'Postergar'
+            if not segTrab.respuestaUser or segTrab.respuestaUser == 'Postergar':
+                print("hola")
                 if segTrab.cantVecesNotif_dia >= 3:
-                    reasignacionTrabajo(t)
+                    reasignacionTrabajo(t, segTrab)
+                    bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text="🔴 Por falta de respuesta"
+                                                                                   "he reasignado tu trabajo Nroª " +
+                                                                                    str(t.id) + ".")
+
                 else:
                     try:
                         if t.usuarioAsignado.chatIdUsuario:
+                            print("alo")
                             # Arma mensaje
                             bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text=mensaje(t))
                             # Callback data
@@ -82,8 +91,21 @@ class Command(BaseCommand):
                                              reply_markup=reply_markup)
                             # Actualiza seguimiento
                             segTrab.cantVecesNotif_dia += 1
-                            segTrab.fechaEnvio= datetime.datetime.today()
+                            segTrab.fechaEnvio = datetime.datetime.today()
                             segTrab.save()
+                        else:
+                            if segTrab.notif_por_sist < 3:
+                                titulo = "Aviso de trabajo pendiente fallido"
+                                descripcion = "No se pudo notificar al usuario " + str(t.usuarioAsignado.username) + " que" \
+                                              " su trabajo Nroª " + str(t.id) + " se encuentra fuera del periodo asignado " \
+                                              "según su prioridad debido a que dicho usuario no se registró con el Bot."
+
+                                notificarSistema(titulo, descripcion)
+                                notifSist += 1
+                                segTrab.notif_por_sist = notifSist
+                                segTrab.save()
+                            else:
+                                break # Si ya notificamos 3 veces por sistema, paramos el for
                     except AttributeError:
                         print("TO-DO: acá hay que avisar que un trabajo express sin usuario asignado está estancando")
 
@@ -105,8 +127,10 @@ def mensaje(t):
 #                                   se toma un trabajador de manera aleatoria
 
 # Función principal. Aplica los 3 diferentes criterios donde cada criterio tiene en cuenta el anterior.
-def reasignacionTrabajo(trabajo):
-    segTrabajo = seguimientoTrabajos.objects.get(trabajo=trabajo)
+def reasignacionTrabajo(trabajo, segTrabajo):
+
+    # Traemos los empleados a evaluar realziando un group by de los que ya tienen trabajos.
+    # No incluimos al trabajador que actualmente está encargado del trabajo
     estados = EstadoParametros.objects.last()
     estados_filter = [estados.estadoEspecial.id,
                       estados.estadoInicial.id,
@@ -123,7 +147,6 @@ def reasignacionTrabajo(trabajo):
         segTrabajo.save()
         trabajo.usuarioAsignado = Usuarios.objects.get(pk=nuevoUserAsig)
         trabajo.save()
-
 
     # Si no hay emps ademas del que ya está encargado, reportamos
     elif len(empAEvaluar) == 0:
@@ -146,7 +169,7 @@ def reasignacionTrabajo(trabajo):
                 avanceXEmp = avanceTotalizado(emp)
                 auxAvances = {
                     'usuarioAsignado': emp['usuarioAsignado'],
-                    'avance' : avanceXEmp,
+                    'avance': avanceXEmp,
                 }
                 listadoAvances.append(auxAvances)
             empSeleccionados = []
@@ -159,7 +182,7 @@ def reasignacionTrabajo(trabajo):
                     empSeleccionados.append(emp)
 
             if not eleccionUnitaria(empSeleccionados, segTrabajo):      # Tercer criterio
-                empRandom = random.choice(empSeleccionados)
+                empRandom = random.choice(empSeleccionados)             # (nunca se le asigna un trabajo a un emp NULL)
                 if not empRandom['usuarioAsignado']:
                     reasignacionTrabajo(trabajo)
                 else:
@@ -176,26 +199,28 @@ def avanceTotalizado(empleado):
         avance += float(porcentajeTrabajo(t))
     return avance
 
+
 # Encargada de efectivamente realizar la re-asiganción y de llamar al notificador.
 def eleccionUnitaria(empSeleccionados, segTrabajo):
     if len(empSeleccionados) == 1:
         if not (empSeleccionados[0]['usuarioAsignado']):
-            print("usuario NONE")
+            print(empSeleccionados[0])
         else:
             nuevoUserAsig = Usuarios.objects.get(pk=empSeleccionados[0]['usuarioAsignado'])
             segTrabajo.ultUserAsig = nuevoUserAsig
             segTrabajo.save()
             trab = Trabajos.objects.get(pk=segTrabajo.trabajo.id)
-            trab.usuarioAsignado = Usuarios.objects.get(pk=nuevoUserAsig)
+            trab.usuarioAsignado = Usuarios.objects.get(pk=nuevoUserAsig.id)
             trab.save()
             msjNotificarSistema(nuevoUserAsig, trab, segTrabajo)
         return True
     else:
         return False
 
+
 # Arma titulo y mensaje de notificación por Sistema. Llama a la función original de logicaBot
 def msjNotificarSistema(nuevoUser, trabajo, segTrabajo):
-    oldUser = Usuarios.objects.get(pk=segTrabajo.inicialUserAsig)
+    oldUser = Usuarios.objects.get(pk=segTrabajo.inicialUserAsig.ID)
     titulo = "Cambio de asignación de Trabajo"
     descripcion = "El trabajo Nro° " + str(trabajo.id) + " originalmente responsabilidad del usuario " \
                   + str(oldUser.username) + ", fué re-asignado al usuario  " + str(nuevoUser.username) + "."
