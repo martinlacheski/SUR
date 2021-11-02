@@ -70,7 +70,6 @@ class Command(BaseCommand):
                     bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text="🔴 Por falta de respuesta"
                                                                                    "he reasignado tu trabajo Nroª " +
                                                                                     str(t.id) + ".")
-
                 else:
                     try:
                         if t.usuarioAsignado.chatIdUsuario:
@@ -183,10 +182,10 @@ def reasignacionTrabajo(trabajo, segTrabajo):
 
             if not eleccionUnitaria(empSeleccionados, segTrabajo):      # Tercer criterio
                 empRandom = random.choice(empSeleccionados)             # (nunca se le asigna un trabajo a un emp NULL)
-                if not empRandom['usuarioAsignado']:
-                    reasignacionTrabajo(trabajo)
-                else:
-                    eleccionUnitaria(empSeleccionados, segTrabajo)
+                while not empRandom['usuarioAsignado']:
+                    empRandom = random.choice(empSeleccionados)
+                eleccionUnitaria(empSeleccionados, segTrabajo)
+
 
 # Realiza una sumatoria del avance total de todos los trabajos de cada empleado.
 # No tiene en cuenta trabajos finalizados, cancelados o entregados.
