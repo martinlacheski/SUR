@@ -3,6 +3,8 @@ import datetime
 from apps.usuarios.models import Usuarios
 from apps.erp.models import Clientes
 from django.core.exceptions import *
+from django.utils import timezone
+
 
 # Proyecto
 from apps.trabajos.models import *
@@ -102,7 +104,7 @@ def registrarRetiro(respuesta):
     except ObjectDoesNotExist:
         respuesta_bot = "❌ Ha ocurrido un problema. Probablemente tu trabajo o vos fueron dados de baja del sistema."
         return {'proc': False, 'respuesta_bot' : respuesta_bot}
-    log_respuesta.fechaRespuesta = datetime.datetime.today()
+    log_respuesta.fechaRespuesta = timezone.now().date()
     respuesta_bot = "Hola! 😌\nTe informo que el cliente " + str(log_respuesta.cliente) +" en respuesta a su trabajo" \
                                             " finalizado Nro° " + str(resp_to_dict['trabajo']) + ", informó que lo" \
                                             " pasará a buscar el día "
@@ -153,7 +155,7 @@ def notificarSistema(titulo, descripcion):
     user = Usuarios.objects.get(pk=3)
 
     n = notificacionesGenerales()
-    n.fechaNotificacion = datetime.datetime.today()
+    n.fechaNotificacion = timezone.now().date()
     n.estado = 'pendiente'
     n.titulo = titulo
     n.descripcion = descripcion
@@ -179,7 +181,7 @@ def generarReporte(eleccion):
     totalServicios = 0
     totalProductos = 0
     if eleccion == 'ventasDia':
-        ventas = Ventas.objects.filter(fecha=datetime.date.today())
+        ventas = Ventas.objects.filter(fecha=timezone.now().date())
         cantVentas = 0
         for v in ventas:
             cantVentas += 1
@@ -197,7 +199,7 @@ def generarReporte(eleccion):
         return reporteDet
 
     if eleccion == 'comprasDia':
-        compras = Compras.objects.filter(fecha=datetime.date.today())
+        compras = Compras.objects.filter(fecha=timezone.now().date())
         cantCompras = 0
         total = 0
         for c in compras:
@@ -234,7 +236,7 @@ def generarReporte(eleccion):
 
     if eleccion == 'trabajosDia':
         mensaje = ""
-        trabajos = Trabajos.objects.filter(fechaEntrada=datetime.date.today())
+        trabajos = Trabajos.objects.filter(fechaEntrada=timezone.now().date())
         if trabajos:
             for t in trabajos:
                 mensaje += " ___ TRABAJO N° " + str(t.id) + "___\n"
@@ -253,10 +255,13 @@ def generarReporte(eleccion):
 def almacenarRespuesta(respuesta):
     trabajo = Trabajos.objects.get(pk=respuesta['trabajo'])
     segTrabajo = seguimientoTrabajos.objects.get(trabajo=trabajo)
-    segTrabajo.fechaRespuesta = datetime.datetime.today()
-    segTrabajo.respuestaUser = respuesta['respuesta']
-    segTrabajo.save()
-    respuesta_bot = "👍 Respuesta registrada"
+    if segTrabajo.respuestaUser != 'Postergar':
+        respuesta_bot = "Ya registraste una respuesta el día de hoy."
+    else:
+        segTrabajo.fechaRespuesta = timezone.now().today()
+        segTrabajo.respuestaUser = respuesta['respuesta']
+        segTrabajo.save()
+        respuesta_bot = "👍 Respuesta registrada - " + str(respuesta['respuesta'])
     return respuesta_bot
 
 
@@ -266,7 +271,7 @@ def almacenarRespuesta(respuesta):
 # Registra suceso en donde un cliente se quiere registrar pero su cuit/cuil no está en el sistema.
 def clienteNoRegistrado(cuil_cuit, username, nombre):
     logIncidente = registroBotIncidencias()
-    logIncidente.fechaSuceso = datetime.datetime.today()
+    logIncidente.fechaSuceso = timezone.now().date()
     logIncidente.observacion = "Cliente con username " + str(username) + " y nombre " + str(nombre) + " ingresó " \
                                "su CUIT/CUIL " + cuil_cuit + " mediante Télegram pero el mismo no está" \
                                " registrado en el sistema."
@@ -276,7 +281,7 @@ def clienteNoRegistrado(cuil_cuit, username, nombre):
 # TO-DO, hay que poner una zona horaria a la basura esta
 def personaNoRegistrada(username, nombre):
     logIncidente = registroBotIncidencias()
-    logIncidente.fechaSuceso = datetime.datetime.today()
+    logIncidente.fechaSuceso = timezone.now().date()
     logIncidente.observacion = "Persona  con username " + str(username) + " y nombre " + str(nombre) + " le mandó " \
                                "un mensaje al bot sin estar registrada como usuario o como cliente."
     logIncidente.save()

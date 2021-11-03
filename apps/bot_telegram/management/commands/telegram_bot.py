@@ -1,6 +1,8 @@
 # Django
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils import timezone
+
 
 # Telegram
 from typing import Union, List
@@ -38,13 +40,13 @@ def notificarCliente(trabajo):
 
     # Callback data
     data_hoy = {
-        'hoy': str(datetime.date.today()),
+        'hoy': str(timezone.now().date),
         'cliente': str(cliente.id),
         'trabajo': str(trabajo.id),
 
     }
     sig_habil = {
-        'sig_dia_habil': str(dia_habil_siguiente(datetime.date.today())),
+        'sig_dia_habil': str(dia_habil_siguiente(timezone.now().date())),
         'cliente': str(cliente.id),
         'trabajo': str(trabajo.id),
 
@@ -196,7 +198,7 @@ class Command(BaseCommand):
                     if query.data in opciones:
                         #TO - DO: acá solamente usuarios gerenciales pueden acceder
                         mensaje = generarReporte(query.data)
-                        hoy = datetime.date.today()
+                        hoy = timezone.now().date()
                         print(str(hoy.strftime('%d\-%m\-%Y')))
                         if mensaje['tipo'] == 'venta':
                             bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
@@ -227,7 +229,15 @@ class Command(BaseCommand):
                     else:
                         # Bloque ejecutado por proc auto de asiganción de trabajos
                         resp_to_dict = ast.literal_eval(query.data)
+                        t = Trabajos.objects.get(pk=resp_to_dict['trabajo'])
+                        seg = seguimientoTrabajos.objects.get(trabajo=t)
                         response = almacenarRespuesta(resp_to_dict)
+                        # Notificamos inmediatamente al sistema que alguien respondió "Faltan repuestos".
+                        if 'Faltan repuestos' in response:
+                            titulo = "Faltan repuestos para un trabajo estancado"
+                            descripcion = "Usuario " + str(seg.trabajo.usuarioAsignado.username) + " ha indicado que" \
+                                          " faltan repuestos para el trabajo Nro° " + str(t.id) + "."
+                            notificarSistema(titulo, descripcion)
                         query.edit_message_text(text=response)
 
 

@@ -49,16 +49,16 @@ class Command(BaseCommand):
                     segTrab = seguimientoTrabajos()
                     segTrab.trabajo = t
                     segTrab.inicialUserAsig = t.usuarioAsignado
-                    # segTrab.ultPorcentajeAvance = float(avance)
                     segTrab.cantVecesNotif_dia = 0
                 segTrab.save()
                 trabajosASupervisar.append(t)
+        # Si hay trabajos para supervisar, creamos un job.
         if trabajosASupervisar:
             scheduler_eventos.add_job(self.job, 'interval', seconds=10, args=[trabajosASupervisar]) # Se tiene que setear para que se ejecute 4 veces
             scheduler_eventos.start()
 
     def job(self, t_supervisar):
-        notifSist = 0
+        # Por cada trabajo en la lista de trabajos que están fuera de periodo
         for t in t_supervisar:
             print(t)
             segTrab = seguimientoTrabajos.objects.get(trabajo=t)
@@ -68,18 +68,17 @@ class Command(BaseCommand):
                 if segTrab.cantVecesNotif_dia >= 3:
                     reasignacionTrabajo(t, segTrab)
                     bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text="🔴 Por falta de respuesta"
-                                                                                   "he reasignado tu trabajo Nroª " +
+                                                                                   "he reasignado tu trabajo Nro° " +
                                                                                     str(t.id) + ".")
                 else:
+                    # Usamos el try en caso de que se quiera evaluar un usuario NONE (trabajo express)
                     try:
+                        # Si el usuario tiene chatId, armamos msj con botones y enviamos.
                         if t.usuarioAsignado.chatIdUsuario:
                             print("alo")
-                            # Arma mensaje
                             bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text=mensaje(t))
-                            # Callback data
                             faltan_repuestos = {'trabajo': str(t.id), 'respuesta': "Faltan repuestos"}
                             postergar = {'trabajo': str(t.id), 'respuesta': "Postergar"}
-                            # Arma botones y los envia
                             keyboard = [
                                         [InlineKeyboardButton("🛠 Faltan repuestos", callback_data=str(faltan_repuestos))],
                                         [InlineKeyboardButton("🕙 Postergar", callback_data=str(postergar))],
@@ -88,25 +87,29 @@ class Command(BaseCommand):
                             bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario,
                                              text="Elegí una opción: \n",
                                              reply_markup=reply_markup)
+
                             # Actualiza seguimiento
                             segTrab.cantVecesNotif_dia += 1
                             segTrab.fechaEnvio = datetime.datetime.today()
                             segTrab.save()
+                        # Si el usuario no tiene chatID, informamos mediante sistema.
                         else:
-                            if segTrab.notif_por_sist < 3:
+                            if segTrab.notif_por_sist < 1:
                                 titulo = "Aviso de trabajo pendiente fallido"
                                 descripcion = "No se pudo notificar al usuario " + str(t.usuarioAsignado.username) + " que" \
                                               " su trabajo Nroª " + str(t.id) + " se encuentra fuera del periodo asignado " \
                                               "según su prioridad debido a que dicho usuario no se registró con el Bot."
 
                                 notificarSistema(titulo, descripcion)
-                                notifSist += 1
-                                segTrab.notif_por_sist = notifSist
+                                segTrab.notif_por_sist += 1
                                 segTrab.save()
                             else:
-                                break # Si ya notificamos 3 veces por sistema, paramos el for
+                                break # Si ya notificamos 1 vez por sistema, paramos el for y no notificamos más por sistema.
                     except AttributeError:
-                        print("TO-DO: acá hay que avisar que un trabajo express sin usuario asignado está estancando")
+                        titulo = "Trabajo atrasado sin usuario asignado"
+                        descripcion = "El trabajo Nro° " + str(t.id) + " se encuentra fuera del periodo asignado " \
+                                      "según su prioridad  y no tiene un usuario asignado."
+                        notificarSistema(titulo, descripcion)
 
 
 
@@ -125,10 +128,10 @@ def mensaje(t):
 #               TERCER CRITERIO:    De manera aleatoria, habiendose evaluado los criterios 1 y 2,
 #                                   se toma un trabajador de manera aleatoria
 
-# Función principal. Aplica los 3 diferentes criterios donde cada criterio tiene en cuenta el anterior.
+# Aplica los 3 diferentes criterios donde cada criterio tiene en cuenta el anterior.
 def reasignacionTrabajo(trabajo, segTrabajo):
 
-    # Traemos los empleados a evaluar realziando un group by de los que ya tienen trabajos.
+    # Traemos los empleados a evaluar realizando un group by de los que ya tienen trabajos.
     # No incluimos al trabajador que actualmente está encargado del trabajo
     estados = EstadoParametros.objects.last()
     estados_filter = [estados.estadoEspecial.id,
@@ -149,7 +152,10 @@ def reasignacionTrabajo(trabajo, segTrabajo):
 
     # Si no hay emps ademas del que ya está encargado, reportamos
     elif len(empAEvaluar) == 0:
-        print("Notificar a administración que el trabajo está retardado y no hay usuario a quien asignar")
+        titulo = "Trabajo atrasado sin usuario al cual asignar."
+        descripcion = "El trabajo Nro° " + str(trabajo.id) + " se encuentra atrasado" \
+                      "según su prioridad y no hay usuario a quien re-asignarselo."
+        notificarSistema(titulo, descripcion)
 
     # Si hay candidatos, evaluamos
     elif len(empAEvaluar) > 1:                                          # Primer criterio
@@ -204,6 +210,7 @@ def eleccionUnitaria(empSeleccionados, segTrabajo):
     if len(empSeleccionados) == 1:
         if not (empSeleccionados[0]['usuarioAsignado']):
             print(empSeleccionados[0])
+            print("Unicamente se lo podemos re-asignar a un empleado NONE")
         else:
             nuevoUserAsig = Usuarios.objects.get(pk=empSeleccionados[0]['usuarioAsignado'])
             segTrabajo.ultUserAsig = nuevoUserAsig
