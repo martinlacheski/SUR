@@ -2,9 +2,6 @@
     asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
     ejecutar un random
 
-Para cargar los registros de Auditoria
-python manage.py populate_history --auto
-
 --------------------------------------------------------------------------------------------------------------------
 
 *PEDIDOS - TERMINAR
@@ -19,21 +16,17 @@ AGREGAR LOS NETOS IVA Y PERCEPCIONES
 
 --------------------------------------------------------------------------------------------------------------------
 
-*AUDITORIA sobre:
-EVENTOS DE AGENDA
-PRODUCTOS                 OK
-SERVICIOS                 OK
-COMPRAS
-VENTAS
-PRESUPUESTOS
-TRABAJOS
-PLANIFICACIONES
-SOLICITUD DE PEDIDOS
+
+*AUDITORIA
+
+
+* EN PLANIFICACIONES CHEQUEAR QUE NO PERMITA AGREGAR PLANIFICACIONES ENTRE OTRAS QUE YA EXISTEN
 
 --------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
+*AUDITORIA
 
 *ESTADISTICAS
 

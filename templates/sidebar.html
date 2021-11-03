@@ -29,6 +29,16 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
+                 <!-- Agenda -->
+                <li class="nav-item has-treeview">
+                    <a href="{% url 'notificaciones:listNotificacionesCompleta' %}" class="nav-link">
+                        <i class="far fa-bell nav-icon"></i>
+                        <p>
+                            Notificaciones
+                        </p>
+                    </a>
+                </li>
+
                 <!-- Agenda -->
                 <li class="nav-item has-treeview">
                     <a href="{% url 'agenda:dashboard' %}" class="nav-link">
@@ -185,15 +195,6 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                    <!-- Empresa -->
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
-                                <i class="fas fa-briefcase nav-icon"></i>
-                                <p>Datos Empresa</p>
-                            </a>
-                        </li>
-                    </ul>
                     <ul class="nav nav-treeview">
                         <li class="nav-item has-treeview">
                             <a href="" class="nav-link">
@@ -213,7 +214,7 @@
                                 <li class="nav-item">
                                     <a href="{% url 'agenda:notifEventosList' %}" class="nav-link">
                                         <i class="fas fa-bell nav-icon"></i>
-                                        <p>Gestion de Notif.</p>
+                                        <p>Gestion Notif. Eventos</p>
                                     </a>
                                 </li>
                             </ul>
@@ -380,47 +381,22 @@
                                 </li>
                             </ul>
                         </li>
-                    </ul>
-                </li>
 
-                <!-- Sistema -->
-                <li class="nav-item has-treeview">
-                    <!-- Sistema -->
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-cog"></i>
-                        <p>
-                            Sistema
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <!-- Auditoria -->
+                        <!-- Sistema -->
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
-                                <i class="fas fa-book-reader nav-icon"></i>
+                                <i class="nav-icon fas fa-cog"></i>
                                 <p>
-                                    Auditoría
+                                    Sistema
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
+                            <!-- Empresa -->
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{% url 'erp:productos_audit' %}" class="nav-link">
-                                        <i class="fas fa-dolly nav-icon"></i>
-                                        <p>
-                                            Productos
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'erp:servicios_audit' %}" class="nav-link">
-                                        <i class="fas fa-wrench nav-icon"></i>
-                                        <p>
-                                            Servicios
-                                        </p>
+                                    <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
+                                        <i class="fas fa-briefcase nav-icon"></i>
+                                        <p>Datos Empresa</p>
                                     </a>
                                 </li>
                             </ul>
@@ -444,13 +420,22 @@
                                 <li class="nav-item">
                                     <a href="{% url 'usuarios:tipos_usuarios_list' %}" class="nav-link">
                                         <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Tipos de Usuarios</p>
+
+                                      <p>Tipos</p>
+                                    </a>
+                                </li><li class="nav-item">
+                                    <a href="{% url 'bot:notifIncidenList' %}" class="nav-link">
+                                        <i class="far fa-bell nav-icon"></i>
+                                        <p>Adm. de Notif.</p>
+                                            <p class="ml-4">Incidencias</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
                 </li>
+
+
             </ul>
         </nav>
         <!-- /.sidebar-menu -->

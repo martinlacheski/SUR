@@ -45,6 +45,9 @@ class eventosAgenda(models.Model):
     )
     repeticion = models.CharField(max_length=7, choices=REPETICION, blank=True)
     estado = models.BooleanField(default=True)
+    resueltoPor_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario que resolvió el evento',
+                                       null=True, blank=True)
+    horaResolucion = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.descripcion
@@ -60,11 +63,9 @@ class eventosAgenda(models.Model):
         ordering = ['fechaCreacion']
 
     # Para convertir a MAYUSCULA
-    """
     def save(self, force_insert=False, force_update=False):
-        self.nombre = self.nombre.upper()
-        super(Paises, self).save(force_insert, force_update)
-    """
+        self.descripcion = self.descripcion.upper()
+        super(eventosAgenda, self).save(force_insert, force_update)
 
 
 class diasAvisoEvento(models.Model):
@@ -91,7 +92,7 @@ class diasAvisoEvento(models.Model):
 class notificacionUsuarios (models.Model):
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
     usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='UsuarioAsoc', null=False, blank=False)
-
+    estado = models.BooleanField(default=True)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -105,48 +106,4 @@ class notificacionUsuarios (models.Model):
         db_table = 'agenda_notificacionUsuarios'
         ordering = ['tipoEvento']
 
-
-class notificaciones (models.Model):
-    eventoAsoc = models.ForeignKey(eventosAgenda, models.DO_NOTHING, verbose_name="Evento Asociado")
-    usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario a Notificar")
-    notificarSist = models.BooleanField(default=True, null=False)
-    notificarTel = models.BooleanField(default=True, null=False)
-    NOTIFICAR = (
-        ('yes', 'Si'),
-        ('no', 'No'),
-        ('passive', 'add pero no notif'),
-        ('pending', 'Pendiente'),
-        ('urgent', 'Urgente'),
-    )
-    notificacion = models.CharField(max_length=7, choices=NOTIFICAR, blank=True)
-
-# ***************** CAMPOS DE AUDITORÍA Y DE TOMA DE DECISIONES *****************
-    # Ultima vez notificadas
-    ultNotifSist = models.DateField(blank=True, null=True)
-    ultNotifTel = models.DateField(blank=True, null=True)
-
-    # Cantidad de veces notificadas
-    cantNotifTel = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas', blank=True)
-    cantNotifSist = models.IntegerField(default=0, verbose_name='cantidad de veces notificadas', blank=True)
-
-    # Cuando y quien dió como resuelta la notif (TELEGRAM)
-    resueltaPorUserTel = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario resolucion Tel",
-                                           related_name='resUserTel', null=True, blank=True)
-    resolDateTel = models.DateField(blank=True, null=True)
-
-    # Cuando y quien dió como resuelta la notif (SISTEMA)
-    resueltaPorUserSist = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario resolucion Sist",
-                                            related_name='resUserSist', null=True, blank=True)
-    resolDateSist = models.DateField(blank=True, null=True)
-
-    # Cuando y quién vió la notificacion (SISTEMA)
-    vistaPorUserSist = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name="Usuario vista Sist",
-                                         null=True, blank=True, related_name='vistaUserSist')
-    ultVistaUserSist = models.DateField(blank=True, null=True)
-
-    class Meta:
-        verbose_name = 'Notificacion fuente'
-        verbose_name_plural = 'Notificaciones fuente'
-        db_table = 'agenda_notificaciones'
-        ordering = ['eventoAsoc']
 

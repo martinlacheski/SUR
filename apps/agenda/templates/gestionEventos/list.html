@@ -6,7 +6,8 @@
     <!-- daterange picker -->
     <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.css' %}">
     <!-- Tempus Dominus -->
-    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
     <!-- dropzonejs -->
     <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/plugins/dropzone/min/dropzone.min.css' %}">
     <!-- select2 -->
@@ -65,22 +66,24 @@
                                         {{ form.fechaNotificacion }}
                                     </div>
                                 </div>
-{#                                <div class="col-12 mb-1">#}
-{#                                    <div class="custom-control custom-checkbox">#}
-{#                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1" value="repite">#}
-{#                                        <label for="customCheckbox1" class="custom-control-label"> Se repite</label>#}
-{#                                    </div>#}
-{#                                </div>#}
-{#                                <div class="col-12 mb-4">#}
-{#                                    {{ form.repeticion }}#}
-{#                                </div>#}
+                                <div class="col-12 mb-1">
+                                    <div class="custom-control custom-checkbox">
+                                        <input class="custom-control-input" type="checkbox" id="customCheckbox1"
+                                               value="repite">
+                                        <label for="customCheckbox1" class="custom-control-label"> Se repite</label>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-4">
+                                    {{ form.repeticion }}
+                                </div>
                                 <div hidden id="fechaFinalizacionField" class="col-12 mb-4">
                                     <label>Fecha de Finalización</label>
                                     <div class="date input-group" id="fechaFinalizacion" data-target-input="nearest">
                                         {{ form.fechaFinalizacion }}
                                     </div>
                                 </div>
-                                <p hidden id="errorFechas" style="color:red;">Fecha de Finalización es menor a la de Notificación </p>
+                                <p hidden id="errorFechas" style="color:red;">Fecha de Finalización es menor a la de
+                                    Notificación </p>
                                 {% if action == 'add' %}
                                     <div class="col-12">
                                         <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
@@ -94,9 +97,12 @@
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <a href="{% url 'agenda:dashboard' %}"><button type="button" id="btnVolverEvento" class="btn btn-info btn-flat btn-block">
-                                            <i class="fas fa-undo"></i> Volver
-                                        </button></a>
+                                        <a href="{% url 'agenda:dashboard' %}">
+                                            <button type="button" id="btnVolverEvento"
+                                                    class="btn btn-info btn-flat btn-block">
+                                                <i class="fas fa-undo"></i> Volver
+                                            </button>
+                                        </a>
                                     </div>
 
                                 {% endif %}
@@ -107,10 +113,21 @@
                 </form>
                 <div class="card">
                     <div class="card-body">
-                        <div class="mb-1 bg-olive color-palette"><span>Único</span></div>
-                        <div class="mb-1 bg-navy color-palette"><span>Diario</span></div>
-                        <div class="mb-1 bg-primary color-palette"><span>Semanal</span></div>
-                        <div class="bg-purple color-palette"><span>Mensual</span></div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class=" text-center mb-1 bg-olive color-palette"><span>Único</span></div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center mb-1 bg-navy color-palette"><span>Diario</span></div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center mb-1 bg-primary color-palette"><span>Semanal</span></div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center bg-purple color-palette"><span>Mensual</span></div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -148,39 +165,55 @@
                                 <i>
                                     <p id="modal_descripción"></p>
                                 </i>
+                                <strong>USUARIOS ASOCIADOS </strong>
+                                <i>
+                                    <p id="modal_user_asoc"></p>
+                                </i>
+                                <strong>RESUELTO POR</strong>
+                                <i>
+                                    <p id="modal_resuelto_por"></p>
+                                </i>
                             </div>
                             <div class="col-6">
                                 <strong>FECHA DE NOTIFICACIÓN </strong>
                                 <i>
                                     <p id="modal_fecha_notif"></p>
                                 </i>
-                                 <strong>NOTIFICADO MEDIANTE </strong>
+                                <strong>FECHA DE FINALIZACIÓN </strong>
                                 <i>
-                                    <p id="modal_tipo_notif"></p>
+                                    <p id="modal_fecha_final"></p>
+                                </i>
+                                <strong>NOTIFICADO MEDIANTE </strong>
+                                <i>
+                                    <p id="modal_mediante_notif"></p>
+                                </i>
+                                <strong>REPETICION</strong>
+                                <i>
+                                    <p id="modal_repeticion"></p>
                                 </i>
                             </div>
-                            <div class="col-6">
-                                <strong>USUARIOS ASOCIADOS </strong>
-                                <i>
-                                    <p id="modal_user_asoc"></p>
-                                </i>
-                            </div>
-                            <div class="col-6">
-                                {#                                <strong>REPETICIÓN</strong>#}
-{#                                <i>#}
-{#                                    <p id="modal_repeticion"></p>#}
-{#                                </i>#}
+                            <div class="col-12">
+                                <p id="errorDetalleEvento" style="color: red;"></p>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <!-- cambiar a dubmit dsp -->
-                                <button type="button" id="btnMod" evento_id="" class="btn btn-warning btn-flat btn-block">
+                                <button type="button" id="btnMod" evento_id=""
+                                        class="btn btn-warning btn-flat btn-block">
                                     <i class="fas fa-save"></i> Modificar Evento
                                 </button>
                             </div>
-                            <div class="col-6">
-                                <button type="button"  id="btnDel" evento_id="" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger btn-flat btn-block">
+                            <div class="col-4">
+                                <!-- cambiar a dubmit dsp -->
+                                <button type="button" id="btnRes" evento_id=""
+                                        class="btn btn-success btn-flat btn-block">
+                                    <i class="fas fa-check"></i> Resolver Evento
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <button type="button" id="btnDel" evento_id="" data-toggle="modal"
+                                        data-target="#deleteModal" class="btn btn-danger btn-flat btn-block">
                                     <i class="fas fa-trash-alt"></i> Eliminar Evento
                                 </button>
                             </div>
@@ -196,13 +229,13 @@
 
 {% endblock %}
 {% block javascript %}
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js'%}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
 
     <!-- IMPORTANTE. Para poner en español algunos complementos en AdminLTE3 se necesita de moment.js -->
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js'%}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/locale/es.js' %}"></script>
 
     <!-- InputMask -->
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/inputmask/jquery.inputmask.min.js'%}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/inputmask/jquery.inputmask.min.js' %}"></script>
     <!-- daterangepicker -->
     <script src="{% static 'lib/adminlte-3.1.0/plugins/daterangepicker/daterangepicker.js' %}"></script>
     <!-- rrule para fullCallendar y libs de fullCalendar-->
@@ -219,7 +252,7 @@
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
 
     <!-- Funciones Específicas (no librerias)-->
-    <script src="{% static 'gestionEventos/js/functions.js' %}"> </script>
+    <script src="{% static 'gestionEventos/js/functions.js' %}"></script>
 
 
 
@@ -227,10 +260,7 @@
 
     <!-- Inicialización de fullCalendar, no se puede mover por cuestones de contexto de template -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            {% for evento in eventos %}
-                console.log("{{ evento.estado }}");
-            {% endfor %}
+        document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 events: [
@@ -238,7 +268,7 @@
                         {%  if evento.estado %}
                             {
                                 id: "{{ evento.id }}",
-                                title: "{{ evento.tipoEvento }}" ,
+                                title: "{{ evento.tipoEvento }}",
                                 {% if evento.repeticion %}
                                     rrule: {
                                         freq: "{{ evento.repeticion }}",
@@ -275,12 +305,14 @@
                 },
 
                 // Ubicar contenido de un evento en formulario para su posterior mod o eliminacion.
-                eventClick: function(info) {
+                eventClick: function (info) {
                     info.el.style.borderColor = 'red';
                     $('#modal-lg-eventos').modal();
+                    document.getElementById('errorDetalleEvento').innerHTML = ""; //Borramos error en evento
                     dataToModal(info.event.id);
                     $('#btnMod').attr('evento_id', info.event.id);
-                    $('#btnDelete').attr('evento_id', info.event.id);
+                    $('#btnDelete').attr('evento_id', info.event.id); // No es el modal principal
+                    $('#btnRes').attr('evento_id', info.event.id);
 
                     // Al hacer click en cualquier evento, nos vamos al link de editar evento.
                     //location.replace('/' + '{{ update_url }}' + info.event.id);
@@ -290,7 +322,7 @@
             calendar.render();
         });
 
-        function dataToModal(id_evento){
+        function dataToModal(id_evento) {
             getToken(name);
             $.ajax({
                 url: '{{ dashboard_url }}',
@@ -298,39 +330,54 @@
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'search_data',
-                    'pk' : id_evento
+                    'pk': id_evento
                 },
-                success : function (data){
-
+                success: function (data) {
                     document.getElementById('modal_tipo_evento').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción').innerHTML = data.descripcion;
                     document.getElementById('modal_user_asoc').innerHTML = data.usuariosAsoc.slice(0, -2); //slice para borrar ultima coma
                     document.getElementById('modal_fecha_notif').innerHTML = data.fechaNotif;
 
+                    if (data.fechaFinal) {
+                        document.getElementById('modal_fecha_final').innerHTML = data.fechaFinal;
+                    } else {
+                        document.getElementById('modal_fecha_final').innerHTML = "No posee fecha final"
+                    }
+
                     // Procesamos repetición para string agradable en español
-                    {#switch(data.repeticion) {#}
-                    {#    case 'daily':#}
-                    {#        data.repeticion = 'Diaria';#}
-                    {#        break;#}
-                    {#    case 'weekly':#}
-                    {#        data.repeticion = 'Semanal';#}
-                    {#        break;#}
-                    {#    case 'monthly':#}
-                    {#        data.repeticion = 'Mensual';#}
-                    {#        break;#}
-                    {#    default:#}
-                    {#        data.repeticion = 'Única';#}
-                    {# }#}
-                    {# document.getElementById('modal_repeticion').innerHTML = data.repeticion; #}
+                    if (data.repeticion) {
+                        switch (data.repeticion) {
+                            case 'daily':
+                                data.repeticion = 'Diaria';
+                                break;
+                            case 'weekly':
+                                data.repeticion = 'Semanal';
+                                break;
+                            case 'monthly':
+                                data.repeticion = 'Mensual';
+                                break;
+                            default:
+                                data.repeticion = 'Única';
+                        }
+                        document.getElementById('modal_repeticion').innerHTML = data.repeticion;
+                    } else {
+                        document.getElementById('modal_repeticion').innerHTML = "Evento único";
+                    }
 
                     // Procesamos canales de notificacion para convertir en string agradable
                     let notifMsj = "";
-                    for (let i = 0; i <= 1; i++){
-                        if(data.notifMediante[i][1] === true){
+                    for (let i = 0; i <= 1; i++) {
+                        if (data.notifMediante[i][1] === true) {
                             notifMsj = notifMsj + data.notifMediante[i][0] + " | ";
                         }
-                     }
-                    document.getElementById('modal_tipo_notif').innerHTML = notifMsj.slice(0, -2);
+                    }
+                    document.getElementById('modal_mediante_notif').innerHTML = notifMsj.slice(0, -2);
+
+                    if (data.resueltoPor) {
+                        document.getElementById('modal_resuelto_por').innerHTML = data.resueltoPor;
+                    } else {
+                        document.getElementById('modal_resuelto_por').innerHTML = "Aún no fué resuelto";
+                    }
                 }
             });
         }
@@ -338,7 +385,7 @@
 
     <!-- Redirección a edición de objeto. No se puede mover porcuesitones de context -->
     <script>
-        $('#btnMod').click(function(){
+        $('#btnMod').click(function () {
             evento_id = $('#btnMod').attr('evento_id');
             location.replace('/' + '{{ update_url }}' + evento_id);
         });
@@ -346,9 +393,8 @@
 
     <script>
         // Obtiene id de evento y hace ajax request para borrar
-        $('#btnDelete').on('click', function (){
+        $('#btnDelete').on('click', function () {
             getToken(name);
-
             id_evento = $('#btnDelete').attr('evento_id'); // Obtiene id
 
             $.ajax({
@@ -357,15 +403,38 @@
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'delete',
-                    'pk' : id_evento
+                    'pk': id_evento
                 },
-                success : function (data){
+                success: function (data) {
                     // Control de eliminación de un registro que es dependencia de otros.
-                    if (data.check === 'ok'){
+                    if (data.check === 'ok') {
                         location.replace(data.redirect);
-                    }else {
-                        console.log('algo salió mal');
-                        console.log(data.check);
+                    } else {
+
+                    }
+                }
+            });
+        });
+
+        // Obtiene id de evento y hace ajax request para marcarlo como resuelto
+        $('#btnRes').on('click', function () {
+            getToken(name);
+            id_evento = $('#btnRes').attr('evento_id'); // Obtiene id
+            $.ajax({
+                url: '{{ dashboard_url }}',
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'evento_cumplido',
+                    'pk': id_evento,
+                    'usuario' : "{{ request.user }}",
+                },
+                success: function (data) {
+                    // Control de eliminación de un registro que es dependencia de otros.
+                    if (data.check === 'ok') {
+                        location.replace(data.redirect);
+                    } else {
+                        document.getElementById('errorDetalleEvento').innerHTML = data.error
                     }
                 }
             });
@@ -388,51 +457,43 @@
 
         // Uasa para esconder o no el campo de fecha de finalización en caso de que la notificación se repita semanal, diaria o mensual
         // No está en funcionamiento pero será utilizada en el futuro
-        {#$('#customCheckbox1').on('click', function (){#}
-        {#    if (this.checked) {#}
-        {#        $('#selectRepeticion').prop('disabled', false);#}
-        {#        $('#fechaFinalizacionField').prop('hidden', false);#}
-        {##}
-        {##}
-        {#    } else {#}
-        {#        $('#selectRepeticion').prop('disabled', true);#}
-        {#        $('#fechaFinalizacionField').prop('hidden', true);#}
-        {#        $('#id_fechaFinalizacion').val('');#}
-        {#    }#}
-        {#});#}
-        {##}
-        {#$('#customCheckbox1').ready(function(){#}
-        {#        if($('#customCheckbox1').prop('checked')){#}
-        {#            $('#fechaFinalizacionField').prop('hidden', false);#}
-        {#        }else{#}
-        {#            $('#fechaFinalizacionField').prop('hidden', true);#}
-        {#        }#}
-        {#    });#}
+        $('#customCheckbox1').on('click', function () {
+            if (this.checked) {
+                $('#selectRepeticion').prop('disabled', false);
+                $('#fechaFinalizacionField').prop('hidden', false);
 
+
+            } else {
+                $('#selectRepeticion').prop('disabled', true);
+                $('#fechaFinalizacionField').prop('hidden', true);
+                $('#id_fechaFinalizacion').val('');
+            }
+        });
+
+        $('#customCheckbox1').ready(function () {
+            if ($('#customCheckbox1').prop('checked')) {
+                $('#fechaFinalizacionField').prop('hidden', false);
+            } else {
+                $('#fechaFinalizacionField').prop('hidden', true);
+            }
+        });
 
 
         // Verifica fechas de finalización que no sea menor que fecha de notificacion
-        // La librería daterangepicker (no datetimepicker, ojo) no soporta chequeos dinámicos. Una basura.
+        // La librería daterangepicker (no datetimepicker, ¡ojo!) no soporta chequeos dinámicos. Una basura.
         $("#formAgenda").submit(function (e) {
             e.preventDefault();
-
             strFechaNotif = $('#id_fechaNotificacion')[0].value.split('-');
             strFechaFinal = $('#id_fechaFinalizacion')[0].value.split('-');
             fechaNotif = new Date(strFechaNotif[2], strFechaNotif[1] - 1, strFechaNotif[0]);
             fechaFinal = new Date(strFechaFinal[2], strFechaFinal[1] - 1, strFechaFinal[0]);
-
-            if(fechaFinal < fechaNotif){
+            if (fechaFinal < fechaNotif) {
                 $('#errorFechas').prop('hidden', false);
-            }else{
+            } else {
                 document.getElementById('formAgenda').submit();
             }
-
         });
     </script>
-
-
-
-
 {% endblock %}
 
 

@@ -31,7 +31,6 @@ class GestionEventosForm(ModelForm):
             'data-target': '#fechaFinalizacion',
             'data-toggle': 'datetimepicker',
             'autocomplete': 'off',
-            # 'data-format': 'DD-MM-yyyy',
         })
     )
 
@@ -47,8 +46,6 @@ class GestionEventosForm(ModelForm):
                     'placeholder': 'Describa su evento',
                     'rows': '3',
                     'class': 'form-control',
-
-                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
 
@@ -89,7 +86,6 @@ class GestionTiposEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['nombre'].widget.attrs['autofocus'] = True
-
 
     class Meta:
         model = tiposEvento
@@ -135,8 +131,8 @@ class GestionTiposEventosForm(ModelForm):
                 data['error'] = str(e)
         else:
             data['error'] = form.errors
-        print("esto es data " + str(data))
         return data
+
 
 class GestionNotifEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
