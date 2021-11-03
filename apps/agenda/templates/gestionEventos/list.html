@@ -268,7 +268,11 @@
                         {%  if evento.estado %}
                             {
                                 id: "{{ evento.id }}",
+                            {% if evento.resuelto %}
+                                title: "{{ evento.tipoEvento }} (resuelto)" ,
+                            {% else %}
                                 title: "{{ evento.tipoEvento }}",
+                            {% endif %}
                                 {% if evento.repeticion %}
                                     rrule: {
                                         freq: "{{ evento.repeticion }}",
@@ -375,8 +379,10 @@
 
                     if (data.resueltoPor) {
                         document.getElementById('modal_resuelto_por').innerHTML = data.resueltoPor;
+                        document.getElementById('btnMod').setAttribute('class', 'btn btn-warning btn-flat btn-block disabled')
                     } else {
                         document.getElementById('modal_resuelto_por').innerHTML = "Aún no fué resuelto";
+                        document.getElementById('btnMod').setAttribute('class', 'btn btn-warning btn-flat btn-block')
                     }
                 }
             });
