@@ -129,8 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'
 
-# TIME_ZONE = 'UTC'
-TIME_ZONE = 'America/Buenos_Aires'
+TIME_ZONE = 'UTC'
+# TIME_ZONE = 'America/Buenos_Aires'
 
 USE_I18N = True
 

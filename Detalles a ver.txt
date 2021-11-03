@@ -19,6 +19,12 @@ AGREGAR LOS NETOS IVA Y PERCEPCIONES
 
 --------------------------------------------------------------------------------------------------------------------
 
+
+* USUARIOS AGREGAR CAMPO ESTADO EN EL LISTVIEW, MODIFICAR DELETE PARA QUE CAMBIE EL ESTADO, CHEQUEAR QUE NO SE PUEDA LOGUEAR EL USUARIO
+
+
+--------------------------------------------------------------------------------------------------------------------
+
 *AUDITORIA sobre:
 PRODUCTOS                   OK
 SERVICIOS                   OK
@@ -30,6 +36,7 @@ PRESUPUESTOS                Dejar por ultimo
 PLANIFICACIONES             Dejar por ultimo
 SOLICITUD DE PEDIDOS        Dejar por ultimo
 
+agregar en el detalle los usuarios que realizaron el detalle
 --------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE

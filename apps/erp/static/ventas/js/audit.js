@@ -272,11 +272,11 @@ $(function () {
                             orderable: false,
                             render: function (data, type, row) {
                                 if (row.history_type == '+') {
-                                    return 'Creación'
+                                    return 'Ahora'
                                 } else if (row.history_type == '~') {
                                     return 'Actualización'
                                 } else if (row.history_type == '-') {
-                                    return 'Eliminación'
+                                    return 'Antes'
                                 }
                             }
                         },
@@ -339,11 +339,11 @@ $(function () {
                             orderable: false,
                             render: function (data, type, row) {
                                 if (row.history_type == '+') {
-                                    return 'Creación'
+                                    return 'Ahora'
                                 } else if (row.history_type == '~') {
                                     return 'Actualización'
                                 } else if (row.history_type == '-') {
-                                    return 'Eliminación'
+                                    return 'Antes'
                                 }
                             }
                         },
