@@ -37,6 +37,7 @@ PLANIFICACIONES             Dejar por ultimo
 SOLICITUD DE PEDIDOS        Dejar por ultimo
 
 agregar en el detalle los usuarios que realizaron el detalle
+resolver como seccionar y ver el estado anterior y el estado actual (Con fechas o con el ID como venia trabajando)
 --------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
