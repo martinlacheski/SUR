@@ -15,15 +15,13 @@ python manage.py populate_history --auto
 
 * EN REPORTES AGREGAR CORTES DE CONTROL POR CLIENTE O POR MODELO, POR EJ
 
-AGREGAR LOS NETOS IVA Y PERCEPCIONES
-
 --------------------------------------------------------------------------------------------------------------------
-
 
 * USUARIOS AGREGAR CAMPO ESTADO EN EL LISTVIEW, MODIFICAR DELETE PARA QUE CAMBIE EL ESTADO, CHEQUEAR QUE NO SE PUEDA LOGUEAR EL USUARIO
 
-
 --------------------------------------------------------------------------------------------------------------------
+
+* Agregar un campo para obtener el usuario de la edicion anterior, a fin de representar en el reporte visual
 
 *AUDITORIA sobre:
 PRODUCTOS                   OK

@@ -226,6 +226,7 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                 for i in DetalleProductosVenta.history.filter(venta_id=venta, history_date__range=[tiempo_inicial,
                                                                                                    tiempo_margen]).order_by(
                     'producto__descripcion'):
+                    print(i.history_user.username)
                     detalle = {
                         'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
                         'subtotal': i.subtotal, 'history_type': i.history_type, 'usuario': i.history_user.username,
