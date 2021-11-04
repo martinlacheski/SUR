@@ -34,6 +34,12 @@
     <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
     <!-- Archivo JS -->
     <script src="{% static 'ventas/js/audit.js' %}"></script>
+    <!-- Estilo renglones -->
+    <style>
+        .highlight {
+            background: lightgrey;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -184,11 +190,12 @@
                                         <tr>
                                             <th scope="col" style="width: 5%;">ID</th>
                                             <th scope="col" style="width: 15%;">Fecha y Hora</th>
-                                            <th scope="col" style="width: 10%;">Acción</th>
                                             <th scope="col" style="width: 40%;">Producto</th>
                                             <th scope="col" style="width: 10%;">Importe</th>
-                                            <th scope="col" style="width: 10%;">Cantidad</th>
-                                            <th scope="col" style="width: 10%;">Subtotal</th>
+                                            <th scope="col" style="width: 5%;">Cantidad</th>
+                                            <th scope="col" style="width: 8%;">Subtotal</th>
+                                            <th scope="col" style="width: 7%;">Estado</th>
+                                            <th scope="col" style="width: 10%;">Usuario</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -208,11 +215,12 @@
                                         <tr>
                                             <th scope="col" style="width: 5%;">ID</th>
                                             <th scope="col" style="width: 15%;">Fecha y Hora</th>
-                                            <th scope="col" style="width: 10%;">Acción</th>
                                             <th scope="col" style="width: 40%;">Servicio</th>
                                             <th scope="col" style="width: 10%;">Importe</th>
-                                            <th scope="col" style="width: 10%;">Cantidad</th>
-                                            <th scope="col" style="width: 10%;">Subtotal</th>
+                                            <th scope="col" style="width: 5%;">Cantidad</th>
+                                            <th scope="col" style="width: 8%;">Subtotal</th>
+                                            <th scope="col" style="width: 7%;">Estado</th>
+                                            <th scope="col" style="width: 10%;">Usuario</th>
                                         </tr>
                                         </thead>
                                         <tbody>

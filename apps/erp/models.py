@@ -2,7 +2,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.forms import model_to_dict
 from simple_history.models import HistoricalRecords
-from simple_history.signals import pre_create_historical_record
+from simple_history.signals import pre_create_historical_record, post_create_historical_record
 
 from apps.geografico.models import Localidades
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
@@ -322,22 +322,6 @@ class Ventas(models.Model):
         ordering = ['fecha', 'id']
 
 
-# Clase Abstracta para obtener el ID de la ultima Venta en History
-class HistoryVentas(models.Model):
-    """
-    Modelo abstracto para ver el registro del historial de Ventas y obtener el ultimo registro de Venta ID
-    """
-    venta_history_id = models.PositiveIntegerField(default=id)
-
-    @receiver(pre_create_historical_record)
-    def pre_create_historical_record_callback(sender, **kwargs):
-        id = Ventas.history.all().first().history_id + 1
-
-
-    class Meta:
-        abstract = True
-
-
 # Detalle de Productos de la venta
 class DetalleProductosVenta(models.Model):
     venta = models.ForeignKey(Ventas, models.DO_NOTHING)
@@ -345,8 +329,7 @@ class DetalleProductosVenta(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    # history = HistoricalRecords()
-    history = HistoricalRecords(bases=[HistoryVentas,])
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -371,8 +354,7 @@ class DetalleServiciosVenta(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    # history = HistoricalRecords()
-    history = HistoricalRecords(bases=[HistoryVentas,])
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.servicio.descripcion

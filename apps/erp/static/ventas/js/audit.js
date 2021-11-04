@@ -200,8 +200,6 @@ $(function () {
                         clienteOld.innerHTML = 'Valor anterior: ' + clienteOld.innerHTML
                         $("#modalCondicionOld").removeAttr("hidden");
                     }
-                    console.log(condicion.val)
-                    console.log(condicionOld.innerHTML)
                     if (condicion.val() !== condicionOld.innerHTML) {
                         condicionOld.innerHTML = 'Valor anterior: ' + condicionOld.innerHTML
                         $("#modalCondicionOld").removeAttr("hidden");
@@ -240,18 +238,26 @@ $(function () {
                     //info: false,
                     responsive: true,
                     lengthMenu: [25, 50, 75, 100],
-                    order: [0, 'asc'],
+                    order: [2, 'asc'],
                     autoWidth: false,
                     destroy: true,
                     data: productos,
+                    //Agregamos el Corte de Control para visualizar el estado anterior
+                    createdRow: function (row, data, dataIndex) {
+                        console.log(data.history_type);
+                        if (data.history_type === "-") {
+                            $(row).addClass("highlight");
+                        }
+                    },
                     columns: [
                         {"data": "history_id"},
                         {"data": "history_date"},
-                        {"data": "history_type"},
                         {"data": "producto"},
                         {"data": "precio"},
                         {"data": "cantidad"},
                         {"data": "subtotal"},
+                        {"data": "history_type"},
+                        {"data": "usuario"},
                     ],
                     columnDefs: [
                         {
@@ -267,31 +273,35 @@ $(function () {
 
                         },
                         {
-                            targets: [2],
-                            class: 'text-center',
-                            orderable: false,
-                            render: function (data, type, row) {
-                                if (row.history_type == '+') {
-                                    return 'Ahora'
-                                } else if (row.history_type == '~') {
-                                    return 'Actualización'
-                                } else if (row.history_type == '-') {
-                                    return 'Antes'
-                                }
-                            }
-                        },
-                        {
-                            targets: [-4, -2],
+                            targets: [-6, -4],
                             class: 'text-center',
                             orderable: false,
                         },
                         {
-                            targets: [-3, -1],
+                            targets: [-5, -3],
                             class: 'text-right',
                             orderable: false,
                             render: function (data, type, row) {
                                 return '$' + parseFloat(data).toFixed(2);
                             }
+                        },
+                        {
+                            targets: [-2],
+                            class: 'text-center',
+                            orderable: false,
+                            render: function (data, type, row) {
+                                if (row.history_type == '+') {
+                                    return 'Actual'
+                                } else if (row.history_type == '~') {
+                                    return 'Actualización'
+                                } else if (row.history_type == '-') {
+                                    return 'Anterior'
+                                }
+                            },
+                        },
+                        {
+                            targets: [-1],
+                            class: 'text-center',
                         },
                     ],
                     initComplete: function (settings, json) {
@@ -307,18 +317,26 @@ $(function () {
                     //info: false,
                     responsive: true,
                     lengthMenu: [25, 50, 75, 100],
-                    order: [0, 'asc'],
+                    order: [2, 'asc'],
                     autoWidth: false,
                     destroy: true,
                     data: servicios,
+                    //Agregamos el Corte de Control para visualizar el estado anterior
+                    createdRow: function (row, data, dataIndex) {
+                        console.log(data.history_type);
+                        if (data.history_type === "-") {
+                            $(row).addClass("highlight");
+                        }
+                    },
                     columns: [
                         {"data": "history_id"},
                         {"data": "history_date"},
-                        {"data": "history_type"},
                         {"data": "servicio"},
                         {"data": "precio"},
                         {"data": "cantidad"},
                         {"data": "subtotal"},
+                        {"data": "history_type"},
+                        {"data": "usuario"},
                     ],
                     columnDefs: [
                         {
@@ -334,31 +352,35 @@ $(function () {
 
                         },
                         {
-                            targets: [2],
-                            class: 'text-center',
-                            orderable: false,
-                            render: function (data, type, row) {
-                                if (row.history_type == '+') {
-                                    return 'Ahora'
-                                } else if (row.history_type == '~') {
-                                    return 'Actualización'
-                                } else if (row.history_type == '-') {
-                                    return 'Antes'
-                                }
-                            }
-                        },
-                        {
-                            targets: [-4, -2],
+                            targets: [-6, -4],
                             class: 'text-center',
                             orderable: false,
                         },
                         {
-                            targets: [-3, -1],
-                            class: 'text-center',
+                            targets: [-5, -3],
+                            class: 'text-right',
                             orderable: false,
                             render: function (data, type, row) {
                                 return '$' + parseFloat(data).toFixed(2);
                             }
+                        },
+                        {
+                            targets: [-2],
+                            class: 'text-center',
+                            orderable: false,
+                            render: function (data, type, row) {
+                                if (row.history_type == '+') {
+                                    return 'Actual'
+                                } else if (row.history_type == '~') {
+                                    return 'Actualización'
+                                } else if (row.history_type == '-') {
+                                    return 'Anterior'
+                                }
+                            },
+                        },
+                        {
+                            targets: [-1],
+                            class: 'text-center',
                         },
                     ],
                     initComplete: function (settings, json) {
