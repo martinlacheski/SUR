@@ -14,6 +14,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from django.db.models import Count
 from apps.usuarios.models import Usuarios
 from apps.bot_telegram.logicaBot import porcentajeTrabajo
+from apps.usuarios.models import TiposUsuarios
 
 bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 
@@ -65,15 +66,18 @@ def job(t_supervisar):
                     bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario,
                                      text="🔴 Por falta de respuesta he reasignado tu trabajo Nro° " + str(t.id) + ".")
                 reasignacionTrabajo(t, segTrab)
-                titulo = "Re-asignación de trabajo"
-                descripcion = "El trabajo Nro° " + str(t.id) + " se re-asignó desde el usuario " +\
-                              str(segTrab.inicialUserAsig.username) + " al usuario " + str(segTrab.ultUserAsig.username) +\
-                              " concorde a los criterios de re-asgnación."
+                titulo = "Cambio de asignación de Trabajo"
+                descripcion = "El trabajo Nro° " + str(t.id) + " originalmente responsabilidad del usuario " +\
+                              str(segTrab.inicialUserAsig.username) + ", fué re-asignado al usuario  " +\
+                              str(segTrab.ultUserAsig.username) + "."
                 notificarSistema(titulo, descripcion)
             else:
                 print("[fuera de if] Se notificó " + str(segTrab.cantVecesNotif_dia) + " veces")
                 # Usamos el try en caso de que se quiera evaluar un usuario NONE (trabajo express)
-                print("El usuario asignado a este trabajo es: " + str(t.usuarioAsignado.username))
+                try:
+                    print("El usuario asignado a este trabajo es: " + str(t.usuarioAsignado.username))
+                except AttributeError:
+                    print("El usuario asignado a este trabajo es un NONE")
                 try:
                     # Si el usuario tiene chatId, armamos msj con botones y enviamos.
                     if t.usuarioAsignado.chatIdUsuario:
@@ -100,8 +104,8 @@ def job(t_supervisar):
                         if segTrab.notif_por_sist < 1:
                             titulo = "Aviso de trabajo pendiente fallido"
                             descripcion = "No se pudo notificar al usuario " + str(t.usuarioAsignado.username) + " que" \
-                                          " su trabajo Nroª " + str(t.id) + " se encuentra estancado debido a que el usuario" \
-                                                                            " no está registrado con el BOT."
+                                          " su trabajo Nroª " + str(t.id) + " se encuentra atrasado debido a que el mismo" \
+                                          " no está registrado con el BOT."
                             notificarSistema(titulo, descripcion)
                             segTrab.notif_por_sist += 1
                             segTrab.save()
@@ -110,10 +114,10 @@ def job(t_supervisar):
                 except AttributeError:
                     print("Como era un usuario NONE, notificamos a administración")
                     titulo = "Trabajo atrasado sin usuario asignado"
-                    descripcion = "El trabajo Nro° " + str(t.id) + " se encuentra fuera del periodo asignado " \
-                                                                   "según su prioridad  y no tiene un usuario asignado."
+                    descripcion = "El trabajo Nro° " + str(t.id) + " se encuentra atrasado " \
+                                  "según su prioridad y no tiene un usuario asignado."
                     notificarSistema(titulo, descripcion)
-        # Si la respuesta fué que faltan repuestos, se notifica a la administración
+        # Si la respuesta fué que faltan repuestos, se notifica a la administración (esto se encuetnra en telegram_bot.py)
 
 
 
@@ -132,24 +136,12 @@ def mensaje(t):
 #               TERCER CRITERIO:    De manera aleatoria, habiendose evaluado los criterios 1 y 2,
 #                                   se toma un trabajador de manera aleatoria
 
+
 # Aplica los 3 diferentes criterios donde cada criterio tiene en cuenta el anterior.
 def reasignacionTrabajo(trabajo, segTrabajo):
 
-    # Traemos los empleados a evaluar realizando un group by de los que ya tienen trabajos.
-    # No incluimos al trabajador que actualmente está encargado del trabajo
-    estados = EstadoParametros.objects.last()
-    estados_filter = [estados.estadoEspecial.id,
-                      estados.estadoInicial.id,
-                      estados.estadoPlanificado.id]
-    empAEvaluar = list(Trabajos.objects.exclude(usuarioAsignado=trabajo.usuarioAsignado). \
-        values('usuarioAsignado').annotate(count=Count('id')). \
-        order_by(). \
-        filter(estadoTrabajo__in=estados_filter))
-    print("Emp iniciales a evaluar: " + str(empAEvaluar))
-    for emp in empAEvaluar:
-        if not emp['usuarioAsignado']:
-            empAEvaluar.remove(emp)
-    print("Emp sin none a evaluar: " + str(empAEvaluar))
+    # Elección de usuarios
+    empAEvaluar = eleccionUsuarios(trabajo.usuarioAsignado)
     # Si unicamente existe un usuario aparte del que ya tiene asignado el trabajo, se lo damos a ese.
     if len(empAEvaluar) == 1:
         print("Unicamente existe un user aparte del que ya está asignado")
@@ -164,7 +156,7 @@ def reasignacionTrabajo(trabajo, segTrabajo):
         print("no hay emps para asignar")
         titulo = "Trabajo atrasado sin usuario al cual asignar."
         descripcion = "El trabajo Nro° " + str(trabajo.id) + " se encuentra atrasado" \
-                                                             "según su prioridad y no hay usuario a quien re-asignarselo."
+                      "según su prioridad y no hay usuario a quien re-asignarselo."
         notificarSistema(titulo, descripcion)
 
     # Si hay candidatos, evaluamos
@@ -201,13 +193,11 @@ def reasignacionTrabajo(trabajo, segTrabajo):
             print("Empleados seleccionados: " + str(empSeleccionados))
             if not eleccionUnitaria(empSeleccionados, segTrabajo):      # Tercer criterio
                 print("tercer criterio")
-                print(empSeleccionados)
-                for emp in empSeleccionados:
-                    print(emp)
-                    if not emp['usuarioAsignado']:# (nunca se le asigna un trabajo a un emp NULL)
-                        empSeleccionados = emp
-                        print("nos vamos a eleccionUnitaria")
-                        eleccionUnitaria(empSeleccionados, segTrabajo)
+                listEmpSel = []
+                empSeleccionado = random.choice(empSeleccionados)
+                listEmpSel.append(empSeleccionado)
+                eleccionUnitaria(listEmpSel, segTrabajo)
+
 
 
 # Realiza una sumatoria del avance total de todos los trabajos de cada empleado.
@@ -224,18 +214,17 @@ def avanceTotalizado(empleado):
 
 # Encargada de efectivamente realizar la re-asiganción y de llamar al notificador.
 def eleccionUnitaria(empSeleccionados, segTrabajo):
+    print(len(empSeleccionados))
+    print(empSeleccionados)
     if len(empSeleccionados) == 1:
-        if not (empSeleccionados[0]['usuarioAsignado']):
-            print("No puede ser un emp NONE")
-            return False
-        else:
-            nuevoUserAsig = Usuarios.objects.get(pk=empSeleccionados[0]['usuarioAsignado'])
-            segTrabajo.ultUserAsig = nuevoUserAsig
-            segTrabajo.save()
-            trab = Trabajos.objects.get(pk=segTrabajo.trabajo.id)
-            trab.usuarioAsignado = Usuarios.objects.get(pk=nuevoUserAsig.id)
-            trab.save()
-            msjNotificarSistema(nuevoUserAsig, trab, segTrabajo)
+        nuevoUserAsig = Usuarios.objects.get(pk=empSeleccionados[0]['usuarioAsignado'])
+        print("Nuevo user asignado para trabajo " + str(segTrabajo.trabajo.id) + " es " + str(nuevoUserAsig))
+        segTrabajo.ultUserAsig = nuevoUserAsig
+        segTrabajo.save()
+        print("Trabajo " + str(segTrabajo.trabajo.id) + "re-asignado desde user " + str(segTrabajo.inicialUserAsig) + " a user " + str(segTrabajo.ultUserAsig))
+        trab = Trabajos.objects.get(pk=segTrabajo.trabajo.id)
+        trab.usuarioAsignado = Usuarios.objects.get(pk=nuevoUserAsig.id)
+        trab.save()
         return True
     else:
         return False
@@ -248,4 +237,20 @@ def msjNotificarSistema(nuevoUser, trabajo, segTrabajo):
     descripcion = "El trabajo Nro° " + str(trabajo.id) + " originalmente responsabilidad del usuario " \
                   + str(oldUser.username) + ", fué re-asignado al usuario  " + str(nuevoUser.username) + "."
     notificarSistema(titulo, descripcion)
+
+
+# Obtiene todos los usuarios que pueden realizar trabajos y luego vé cuantos trabajos tiene asignad ocada uno
+def eleccionUsuarios(userTrabajo):
+    empsAEvaluar = []
+    tiposUser = TiposUsuarios.objects.filter(realizaTrabajos=True)
+    users = Usuarios.objects.filter(tipoUsuario__in=tiposUser).exclude(pk=userTrabajo.id)
+    estados = EstadoParametros.objects.last()
+    estados_filter = [estados.estadoEspecial.id, estados.estadoInicial.id, estados.estadoPlanificado.id]
+    for u in users:
+        t_asig = Trabajos.objects.filter(usuarioAsignado=u, estadoTrabajo__in=estados_filter)
+        dict_users = {'usuarioAsignado': str(u.id), 'count': len(t_asig), }
+        empsAEvaluar.append(dict_users)
+    print(empsAEvaluar)
+    return empsAEvaluar
+
 

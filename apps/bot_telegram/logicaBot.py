@@ -255,8 +255,11 @@ def generarReporte(eleccion):
 def almacenarRespuesta(respuesta):
     trabajo = Trabajos.objects.get(pk=respuesta['trabajo'])
     segTrabajo = seguimientoTrabajos.objects.get(trabajo=trabajo)
-    if segTrabajo.respuestaUser != 'Postergar':
-        respuesta_bot = "Ya registraste una respuesta el día de hoy."
+    if segTrabajo.respuestaUser:
+        if segTrabajo.respuestaUser == 'Postergar':
+            respuesta_bot = "👍 Respuesta registrada - " + str(respuesta['respuesta'])
+        else:
+            respuesta_bot = "Ya registraste una respuesta el día de hoy para este trabajo."
     else:
         segTrabajo.fechaRespuesta = timezone.now().today()
         segTrabajo.respuestaUser = respuesta['respuesta']
