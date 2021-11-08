@@ -375,8 +375,6 @@
             });
         }
 
-
-
         const chatSocket = new WebSocket(
             'ws://'
             + window.location.host
@@ -396,11 +394,6 @@
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
-
-        // no me interesa por el momento.
-        // chatSocket.send(JSON.stringify({
-        //    'message': message
-        // };
     </script>
     </body>
 {% endblock %}

@@ -30,6 +30,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                  <!-- Agenda -->
+                {% if perms.notificaciones.view_notificaciones %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'notificaciones:listNotificacionesCompleta' %}" class="nav-link">
                         <i class="far fa-bell nav-icon"></i>
@@ -38,7 +39,9 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
+                {% if perms.agenda.add_eventosagenda %}
                 <!-- Agenda -->
                 <li class="nav-item has-treeview">
                     <a href="{% url 'agenda:dashboard' %}" class="nav-link">
@@ -48,18 +51,22 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Clientes -->
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:clientes_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-users"></i>
-                        <p>
-                            Clientes
-                        </p>
-                    </a>
-                </li>
+                {% if perms.erp.view_clientes %}
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:clientes_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Clientes
+                            </p>
+                        </a>
+                    </li>
+                {% endif %}
 
                 <!-- Proveedores -->
+                {% if perms.erp.view_proveedores %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'erp:proveedores_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-people-carry"></i>
@@ -68,8 +75,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Compras -->
+                {% if perms.erp.view_compras %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'erp:compras_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-pallet"></i>
@@ -78,8 +87,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Ventas -->
+                {% if perms.erp.view_ventas %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'erp:ventas_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-shopping-cart"></i>
@@ -88,8 +99,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Productos -->
+                {% if perms.erp.view_productos %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'erp:productos_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-dolly"></i>
@@ -98,8 +111,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Servicios -->
+                {% if perms.erp.view_servicios %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'erp:servicios_list' %}" class="nav-link">
                         <i class="fas fa-wrench nav-icon"></i>
@@ -108,8 +123,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Presupuestos -->
+                {% if perms.presupuestos.view_presupuestos %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'presupuestos:presupuestos_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-tasks"></i>
@@ -118,8 +135,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Presupuestos Plantilla -->
+                {% if perms.presupuestos.view_plantillapresupuestos %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
                         <i class="nav-icon fas fa-tasks"></i>
@@ -128,8 +147,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Trabajos -->
+                {% if perms.trabajos.view_trabajos %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'trabajos:trabajos_list' %}" class="nav-link">
                         <i class="nav-icon far fa-list-alt"></i>
@@ -138,8 +159,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Trabajos Express -->
+                {% if perms.trabajos.add_trabajos %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'trabajos:trabajos_create_express' %}" class="nav-link">
                         <i class="nav-icon fas fa-clipboard-check"></i>
@@ -148,8 +171,10 @@
                         </p>
                     </a>
                 </li>
+                {% endif %}
 
                 <!-- Planificacion -->
+                {% if perms.trabajos.view_planificacionessemanales %}
                 <li class="nav-item has-treeview">
                     <a href="{% url 'trabajos:planificaciones_list' %}" class="nav-link">
                         <i class="nav-icon far fa-calendar-check"></i>
@@ -158,10 +183,13 @@
                         </p>
                     </a>
                 </li>
+                {%  endif %}
 
                 <!-- Pedidos -->
+                {% if perms.erp.view_pedidossolicitud %}
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
+
                         <i class="nav-icon fas fa-clipboard-list"></i>
                         <p>
                             Pedidos
@@ -185,8 +213,10 @@
                         </li>
                     </ul>
                 </li>
+                {% endif %}
 
                 <!-- Parametros -->
+
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-cogs"></i>
