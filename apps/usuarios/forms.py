@@ -171,7 +171,7 @@ class UsuariosForm(ModelForm):
                 }
             ),
         }
-        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff']
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff', 'chatIdUsuario']
 
     def save(self, commit=True):
         data = {}

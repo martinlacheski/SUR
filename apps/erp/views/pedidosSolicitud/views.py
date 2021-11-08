@@ -69,6 +69,7 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
             action = request.POST['action']
             if action == 'get_productos_pedidos':
                 data = []
+                # Acá agarra los objetos con el stock minimo
                 for producto in Productos.objects.all():
                     if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
                         item = producto.toJSON()
@@ -409,6 +410,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                 producto = Productos.objects.get(id=request.POST['pk'])
                 data = producto.costo
             elif action == 'confirm':
+                #Acá hay que ver (confirm)
                 with transaction.atomic():
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     # Obtenemos la Solicitud de Pedido que se esta editando
@@ -439,6 +441,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                     # Devolvemos en Data la ID de la Solicitud de Pedido para poder generar la Boleta
                     data = {'id': pedido.id}
                     data['redirect'] = self.url_redirect
+                # Acá lógica de generar el link y enviar el correo
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:

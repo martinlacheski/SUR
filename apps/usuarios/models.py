@@ -42,7 +42,7 @@ class Usuarios(AbstractUser):
     telefono = models.CharField(max_length=100, verbose_name='Teléfono', null=True, blank=True)
     tipoUsuario = models.ForeignKey(TiposUsuarios, models.DO_NOTHING, verbose_name='Tipo de Usuario', null=True, blank=True)
     imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
-    chatIdUsuario = models.IntegerField(blank=True, null=True)
+    chatIdUsuario = models.IntegerField(blank=True, null=True, default=0)
 
 
     def toJSON(self):

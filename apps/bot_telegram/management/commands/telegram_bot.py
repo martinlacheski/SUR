@@ -223,7 +223,7 @@ class Command(BaseCommand):
                                                   mensaje['planifHasta'] + "\n\n" + mensaje['mensaje'],
                                             chat_id=usuario.chatIdUsuario)
                         if mensaje['tipo'] == "trabajosDia":
-                            bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Estado de trabajos del día de" 
+                            bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Nuevos trabajos ingresados" 
                                                   " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
                                              chat_id=usuario.chatIdUsuario)
                     else:
