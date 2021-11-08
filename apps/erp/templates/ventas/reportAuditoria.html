@@ -96,6 +96,9 @@
         {% if usuarioAuditoria %}
             Usuario: <b> {{ usuarioAuditoria }}</b>
         {% endif %}
+        {% if cliente %}
+            Cliente: <b> {{ cliente }}</b>
+        {% endif %}
         {% if accion %}
             Tipo de acción: <b> {{ accion }}</b>
         {% endif %}
@@ -128,7 +131,7 @@
             <tr>
                 <td class="text-center">{{ det.history_id }}</td>
                 <td class="text-center">{{ det.history_date }}</td>
-                <td class="text-center">{{ det.id }}</td>
+                <td class="text-center">{{ det.venta_id }}</td>
                 <td class="text-center">{{ det.cliente }}</td>
                 <td class="text-center">{{ det.condicionVenta }}</td>
                 <td class="text-center">{{ det.medioPago }}</td>

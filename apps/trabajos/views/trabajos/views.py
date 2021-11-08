@@ -350,6 +350,12 @@ class TrabajosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                     usuario = reporte['usuario']
                 except Exception as e:
                     pass
+                # Obtenemos el cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
                 # Obtenemos la accion si esta filtrada
                 accion = ""
                 try:
@@ -387,6 +393,7 @@ class TrabajosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                         'fin': fin,
                         'trabajos': trabajos,
                         'usuarioAuditoria': usuario,
+                        'cliente': cliente,
                         'usuario': request.user,
                     }
                     # Generamos el render del contexto
