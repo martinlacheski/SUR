@@ -1,4 +1,4 @@
-var tablaVentas;
+var tablaTrabajos;
 //Creamos variables auxiliares para el reporte
 var fechaInicio = '';
 var fechaFin = '';
@@ -7,17 +7,17 @@ var checkCanceladas = true;
 var reporte = {
     items: {
         //Filtros
-        venta: '',
+        cliente: '',
         accion: '',
         usuario: '',
         fechaDesde: '',
         fechaHasta: '',
-        //detalle de ventas
-        ventas: [],
+        //detalle de trabajos
+        trabajos: [],
     },
 };
 $(function () {
-    tablaVentas = $('#data').DataTable({
+    tablaTrabajos = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
         destroy: true,
@@ -36,9 +36,9 @@ $(function () {
         columns: [
             {"data": "history_id"},
             {"data": "history_date"},
-            {"data": "venta_id"},
+            {"data": "trabajo_id"},
             {"data": "cliente"},
-            {"data": "trabajo"},
+            {"data": "modelo"},
             {"data": "history_type"},
             {"data": "history_user"},
             {"data": "history_id"}, //va duplicado algun campo por la botonera
@@ -145,16 +145,16 @@ $(function () {
                 });
             });
             //Actualizamos la tabla
-            tablaVentas.draw();
+            tablaTrabajos.draw();
         }
     });
     $('#data tbody')
         .on('click', 'a[rel="detalleMovimiento"]', function () {
             //Asignamos a una variable el renglon que necesitamos
-            var tr = tablaVentas.cell($(this).closest('td, li')).index();
+            var tr = tablaTrabajos.cell($(this).closest('td, li')).index();
             renglon = tr.row;
             //Asignamos a una variable el movimiento en base al renglon
-            var audit = tablaVentas.row(tr.row).data();
+            var audit = tablaTrabajos.row(tr.row).data();
             //Realizamos el AJAX para buscar el DETALLE DE LA AUDITORIA
             $.ajax({
                 url: window.location.pathname,
@@ -162,7 +162,7 @@ $(function () {
                 data: {
                     'action': 'view_movimiento',
                     'pk': audit.history_id,
-                    'venta_id': audit.venta_id,
+                    'trabajo_id': audit.trabajo_id,
                 },
                 dataType: 'json',
                 headers: {
@@ -172,8 +172,7 @@ $(function () {
                 var dato = data[0];
                 //Cargamos los datos del Producto y mostramos en el modal con las modificaciones
                 var cliente = $('#modalCliente').val(dato.cliente);
-                var condicion = $('#modalCondicion').val(dato.condicionVenta);
-                var medioPago = $('#modalMedioPago').val(dato.medioPago);
+                var modelo = $('#modalModelo').val(dato.modelo);
                 var fecha = $('#modalFecha').val(moment(moment(dato.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));
                 var subtotal = $('#modalSubtotal').val(dato.subtotal);
                 var iva = $('#modalIva').val(dato.iva);
@@ -182,10 +181,8 @@ $(function () {
                 if (audit.history_type === '~') {
                     var clienteOld = document.getElementById('modalClienteOld');
                     clienteOld.innerHTML = dato.clienteOld;
-                    var condicionOld = document.getElementById('modalCondicionOld');
-                    condicionOld.innerHTML = dato.condicionVentaOld;
-                    var medioPagoOld = document.getElementById('modalMedioPagoOld');
-                    medioPagoOld.innerHTML = dato.medioPagoOld;
+                    var modeloOld = document.getElementById('modalModeloOld');
+                    modeloOld.innerHTML = dato.modeloOld;
                     var fechaOld = document.getElementById('modalFechaOld');
                     fechaOld.innerHTML = moment(moment(dato.fechaOld), 'YYYY-MM-DD').format('DD-MM-YYYY');
                     var subtotalOld = document.getElementById('modalSubtotalOld');
@@ -199,14 +196,6 @@ $(function () {
                     if (cliente.val() !== clienteOld.innerHTML) {
                         clienteOld.innerHTML = 'Valor anterior: ' + clienteOld.innerHTML
                         $("#modalClienteOld").removeAttr("hidden");
-                    }
-                    if (condicion.val() !== condicionOld.innerHTML) {
-                        condicionOld.innerHTML = 'Valor anterior: ' + condicionOld.innerHTML
-                        $("#modalCondicionOld").removeAttr("hidden");
-                    }
-                    if (medioPago.val() !== medioPagoOld.innerHTML) {
-                        medioPagoOld.innerHTML = 'Valor anterior: ' + medioPagoOld.innerHTML
-                        $("#modalMedioPagoOld").removeAttr("hidden");
                     }
                     if (fecha.val() !== fechaOld.innerHTML) {
                         fechaOld.innerHTML = 'Valor anterior: ' + fechaOld.innerHTML
@@ -403,12 +392,12 @@ $(function () {
             }).fail(function (jqXHR, textStatus, errorThrown) {
             }).always(function (data) {
             });
-            $('#modalVenta').modal('show');
+            $('#modalTrabajo').modal('show');
         });
 //Al cerrar el Modal de Movimiento reseteamos los valores del formulario
-    $('#modalVenta').on('hidden.bs.modal', function (e) {
+    $('#modalTrabajo').on('hidden.bs.modal', function (e) {
         //Reseteamos los input del Modal
-        $('#formVenta').trigger('reset');
+        $('#formTrabajo').trigger('reset');
         $('.spanForm').attr("hidden", true);
     });
 //------------------------------------FILTROS----------------------------------------//
@@ -441,7 +430,7 @@ $(function () {
             }
         );
         //Actualizamos la tabla
-        tablaVentas.draw();
+        tablaTrabajos.draw();
     });
 //Aplicamos Filtro de Productos
     $('.selectCliente').on('change', function () {
@@ -461,7 +450,7 @@ $(function () {
                 }
             );
             //Actualizamos la tabla
-            tablaVentas.draw();
+            tablaTrabajos.draw();
         }
     });
 //Aplicamos Filtro de Accion
@@ -482,7 +471,7 @@ $(function () {
                 }
             );
             //Actualizamos la tabla
-            tablaVentas.draw();
+            tablaTrabajos.draw();
         }
     });
 //Aplicamos Filtro de Usuarios
@@ -503,7 +492,7 @@ $(function () {
                 }
             );
             //Actualizamos la tabla
-            tablaVentas.draw();
+            tablaTrabajos.draw();
         }
     });
 
@@ -511,7 +500,7 @@ $(function () {
     $('.btnResetFilters').on('click', function () {
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaVentas.draw();
+        tablaTrabajos.draw();
         $('.selectCliente').val(null).trigger('change');
         $('.selectUsuario').val(null).trigger('change');
         $('.selectAccion').val(null).trigger('change');
@@ -534,12 +523,12 @@ $(function () {
             dataAuditoria[i].history_date = moment(moment(dataAuditoria[i].history_date, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
         }
         //Asignamos las variables a la estructura
-        reporte.items.venta = $('select[name="selectVenta"]').val();
+        reporte.items.cliente = $('select[name="selectCliente"]').val();
         reporte.items.accion = $('select[name="selectAccion"]').val();
         reporte.items.usuario = $('select[name="selectUsuario"]').val();
         reporte.items.fechaDesde = fechaInicio;
         reporte.items.fechaHasta = fechaFin;
-        reporte.items.ventas = dataAuditoria;
+        reporte.items.trabajos = dataAuditoria;
         var parameters = new FormData();
         //Pasamos la accion
         parameters.append('action', 'create_reporte');

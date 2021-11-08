@@ -1,6 +1,7 @@
 from django.db import models
 
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 from apps.erp.models import Clientes, Productos, Servicios
 from apps.parametros.models import Modelos, Prioridades, Estados
@@ -24,6 +25,7 @@ class Trabajos(models.Model):
     estadoTrabajo = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Estado Trabajo', blank=True, null=True)
     fichaTrabajo = models.CharField(max_length=20, verbose_name='Ficha de Trabajo Asociada', blank=True, null=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name()
@@ -82,6 +84,7 @@ class DetalleProductosTrabajo(models.Model):
     estado = models.BooleanField(default=False)
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
     fechaDetalle = models.DateTimeField(blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -118,6 +121,7 @@ class DetalleServiciosTrabajo(models.Model):
     estado = models.BooleanField(default=False)
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
     fechaDetalle = models.DateTimeField(blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.servicio.descripcion

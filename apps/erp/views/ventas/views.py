@@ -162,7 +162,7 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
 
 
 class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = Productos
+    model = Ventas
     template_name = 'ventas/audit.html'
     permission_required = 'erp.view_ventas'
 
@@ -191,7 +191,7 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                 data = []
                 mov = Ventas.history.get(history_id=request.POST['pk'])
                 tiempo_inicial = mov.history_date
-                tiempo_margen = tiempo_inicial + datetime.timedelta(seconds=1)
+                tiempo_margen = tiempo_inicial + datetime.timedelta(seconds=2)
                 movAnt = mov.prev_record
                 try:
                     usuario = mov.history_user.username
@@ -226,7 +226,6 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                 for i in DetalleProductosVenta.history.filter(venta_id=venta, history_date__range=[tiempo_inicial,
                                                                                                    tiempo_margen]).order_by(
                     'producto__descripcion'):
-                    print(i.history_user.username)
                     detalle = {
                         'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
                         'subtotal': i.subtotal, 'history_type': i.history_type, 'usuario': i.history_user.username,
@@ -245,6 +244,7 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                     detalle_servicios.append(detalle)
                 item['detalle_servicios'] = detalle_servicios
                 data.append(item)
+            # Creamos el REPORTE
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)

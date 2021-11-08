@@ -15,6 +15,7 @@ urlpatterns = [
     path('trabajos/deliver/<int:pk>/', TrabajosDeliverView.as_view(), name='trabajos_deliver'),
     path('trabajos/delete/<int:pk>/', TrabajosDeleteView.as_view(), name='trabajos_delete'),
     path('trabajos/pdf/<int:pk>/', TrabajosPdfView.as_view(), name='trabajos_pdf'),
+    path('trabajos/audit/', TrabajosAuditListView.as_view(), name='trabajos_audit'),
     # Planificacion de Trabajos
     path('planificaciones/list/', PlanificacionesSemanalesListView.as_view(), name='planificaciones_list'),
     path('planificaciones/add/', PlanificacionesSemanalesCreateView.as_view(), name='planificaciones_create'),
