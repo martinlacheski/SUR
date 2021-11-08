@@ -2,6 +2,7 @@ from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMult
     CheckboxInput
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
+from django.contrib.auth.models import Group
 
 
 class TiposUsuariosForm(ModelForm):
@@ -39,6 +40,37 @@ class TiposUsuariosForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+class GruposUsuariosForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Group
+        fields = ['name']
+        widgets = {
+            'name': TextInput(
+                attrs={
+                    'placeholder': 'Ingrese un nombre',
+                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
+                    'style': 'text-transform: uppercase',
+                }
+            )
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
 
 
 class UsuariosForm(ModelForm):

@@ -37,7 +37,7 @@ ASGI_APPLICATION = 'config.asgi.application'
 # Application definition
 
 INSTALLED_APPS = [
-    'channels',
+    'channels',             # si o si tienen que ir primero. Relacionado a documentación
     'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
