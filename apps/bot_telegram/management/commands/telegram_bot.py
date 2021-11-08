@@ -62,12 +62,14 @@ def notificarCliente(trabajo):
     reply_markup = InlineKeyboardMarkup(keyboard)
     bot.send_message(chat_id=cliente.chatIdCliente, text="Opciones:\n", reply_markup=reply_markup)
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 
         #       *** REGISTRO USUARIO ***
         def registroUsuario(update, context):
+            # Comprobamos si un usuario trata de registrarse como cliente.
             if check_chatid_cliente(update.message.from_user.id):
                 update.message.reply_text("🛑 No podes registrar tu cuenta de esta manera.")
             else:
@@ -87,8 +89,7 @@ class Command(BaseCommand):
                         if user.check_password(password):
                             update.message.reply_text("👌 ¡Todo correcto! Ya podes interactuar conmigo\n\n"
                                                       "⚠ Por una cuestión de seguridad, me tomé el "
-                                                      "trabajo de borrar el msj en donde pones tu contraseña.\n\n"
-                                                      "🧠 Esta es mi lista de comandos y lo que soy capaz de hacer: ")
+                                                      "trabajo de borrar el msj en donde pones tu contraseña.\n\n")
                             # TO-do acá van las funcionalidades que hará el bot para los usuarios registrados
                             bot.delete_message(update.message.chat.id, update.message.message_id)
                             user.chatIdUsuario = int(update.message.from_user.id)
@@ -97,7 +98,7 @@ class Command(BaseCommand):
                             update.message.reply_text("🚫 Usuario o contraseña incorrecta.\n\n"
                                                       "👍 Volvé a ingresar el comando y asegurate que ambos datos esten"
                                                       " escritos correctamente.")
-                    except:
+                    except ObjectDoesNotExist:
                         update.message.reply_text("🚫 Usuario o contraseña incorrecta.\n\n"
                                                   "👍 Volvé a ingresar el comando y asegurate que ambos datos esten"
                                                   " escritos correctamente.")
@@ -227,7 +228,7 @@ class Command(BaseCommand):
                                                   " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
                                              chat_id=usuario.chatIdUsuario)
                     else:
-                        # Bloque ejecutado por proc auto de asiganción de trabajos
+                        # Bloque ejecutado por proc auto de asiganción de trabajos (guarda la respuesta del user)
                         resp_to_dict = ast.literal_eval(query.data)
                         t = Trabajos.objects.get(pk=resp_to_dict['trabajo'])
                         seg = seguimientoTrabajos.objects.get(trabajo=t)
@@ -242,7 +243,7 @@ class Command(BaseCommand):
 
 
                 except ObjectDoesNotExist:
-                    print("no está registrado")
+                    print("no estas registrado")
 
         # Procesa los mensajes que NO son comandos.
         def respuestaDefault(update, context):

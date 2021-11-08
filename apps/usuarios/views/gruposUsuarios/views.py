@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -52,17 +53,23 @@ class GruposUsuariosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMix
 
     def post(self, request, *args, **kwargs):
         data = {}
-        # Creación de objeto grupo
-        nuevoGrupo = Group()
-        nuevoGrupo.name = request.POST['name'].upper()
-        # Importante guardar únicamente con su nombre.
-        nuevoGrupo.save()
-        # Una vez guardado, le agregamos sus permisos.
-        for p in request.POST.getlist('permisos'):
-            p_Obj = Permission.objects.get(codename=p)
-            nuevoGrupo.permissions.add(p_Obj)
-        nuevoGrupo.save()
-        data['redirect'] = self.url_redirect
+        try:
+            grupo = Group.objects.get(name=request.POST['name'].upper())
+            data['error'] = "Ya existe un grupo con este nombre"
+        except ObjectDoesNotExist:
+            # Creación de objeto grupo
+            nuevoGrupo = Group()
+            nuevoGrupo.name = request.POST['name'].upper()
+
+            # Importante guardar únicamente con su nombre.
+            nuevoGrupo.save()
+
+            # Una vez guardado, le agregamos sus permisos.
+            for p in request.POST.getlist('permisos'):
+                p_Obj = Permission.objects.get(codename=p)
+                nuevoGrupo.permissions.add(p_Obj)
+            nuevoGrupo.save()
+            data['redirect'] = self.url_redirect
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -91,17 +98,23 @@ class GruposUsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMix
         try:
             action = request.POST['action']
             if action == 'edit':
-                self.object.name = request.POST['name']
-                self.object.save()
-                self.object.permissions.clear()
+                try:
+                    grupo = Group.objects.get(name=request.POST['name'].upper())
+                    data['error'] = "Ya existe un grupo con este nombre"
+                except ObjectDoesNotExist:
+                    # Garda grupo SOLAMENTE con su nombre.
+                    self.object.name = request.POST['name']
+                    self.object.save()
 
-                for p in request.POST.getlist('permisos'):
-                    p_Obj = Permission.objects.get(codename=p)
-                    self.object.permissions.add(p_Obj)
-                self.object.save()
-                #request.POST.getlist('permisos'))
-                #data = form.save()
-                data['redirect'] = self.url_redirect
+                    # Elimina todos sus permisos
+                    self.object.permissions.clear()
+
+                    # Los crea nuevamente.
+                    for p in request.POST.getlist('permisos'):
+                        p_Obj = Permission.objects.get(codename=p)
+                        self.object.permissions.add(p_Obj)
+                    self.object.save()
+                    data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado ninguna opción'
         except Exception as e:
@@ -133,10 +146,6 @@ class GruposUsuariosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMix
         if action == 'delete':
             data = {}
             try:
-                # Charlar qué debería pasar acá.
-                # Actualmente cuando se elimina un grupo, se eliminan sus permisos. Si había un user asociado, ese user queda
-                # "huerfano" de grupo y no tiene ningun permiso.
-                # Se debería hacer un control manual.
                 self.object.delete()
                 data['redirect'] = self.url_redirect
                 data['check'] = 'ok'
