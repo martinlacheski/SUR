@@ -394,5 +394,33 @@
             console.error('Chat socket closed unexpectedly');
         };
     </script>
+    <script>
+        {% if messages %}
+            var html = '<p>';
+            {% for message in messages %}
+                html += '{{ message }}<br>';
+            {% endfor %}
+            html += '</p>';
+            $.confirm({
+                theme: 'material',
+                title: 'Error!',
+                icon: 'fa fa-exclamation-circle',
+                content: html,
+                columnClass: 'small',
+                typeAnimated: true,
+                cancelButtonClass: 'btn-primary',
+                draggable: true,
+                dragWindowBorder: false,
+                buttons: {
+                    danger: {
+                        text: "Cerrar",
+                        btnClass: 'btn-red',
+                        action: function () {
+                        }
+                    },
+                }
+            });
+        {% endif %}
+    </script>
     </body>
 {% endblock %}

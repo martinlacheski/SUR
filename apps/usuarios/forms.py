@@ -27,6 +27,8 @@ class GruposUsuariosForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
+                # PASAMOS A MAYUSCULAS LOS CAMPOS PARA GUARDAR EN LA BD
+                self.cleaned_data['name'] = self.cleaned_data['name'].upper()
                 form.save()
             else:
                 data['error'] = form.errors

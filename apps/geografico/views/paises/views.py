@@ -3,7 +3,6 @@ from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.shortcuts import render
 
 from apps.geografico.forms import PaisesForm
 from apps.geografico.models import Paises

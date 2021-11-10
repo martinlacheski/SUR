@@ -41,7 +41,7 @@ class Provincias(models.Model):
         return item
 
     class Meta:
-        unique_together = [['pais', 'nombre']]
+        unique_together = ['pais', 'nombre']
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
         db_table = 'geografico_provincias'
@@ -74,7 +74,7 @@ class Localidades(models.Model):
         return item
 
     class Meta:
-        unique_together = [['pais', 'provincia', 'nombre']]
+        unique_together = ['pais', 'provincia', 'nombre']
         verbose_name = 'Localidad'
         verbose_name_plural = 'Localidades'
         db_table = 'geografico_localidades'
