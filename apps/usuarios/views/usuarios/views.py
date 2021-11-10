@@ -125,7 +125,8 @@ class UsuariosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, De
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            self.object.delete()
+            self.object.is_active = False
+            self.object.save()
             data['redirect'] = self.url_redirect
             data['check'] = 'ok'
         except Exception as e:

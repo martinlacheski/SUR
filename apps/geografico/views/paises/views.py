@@ -1,4 +1,5 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -39,32 +40,36 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
         return context
 
 
-class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
+class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView, AccessMixin):
     model = Paises
     form_class = PaisesForm
     template_name = 'paises/create.html'
     success_url = reverse_lazy('geografico:paises_list')
     permission_required = 'geografico.add_paises'
     url_redirect = success_url
+    raise_exception = True
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        data = {}
         try:
-            action = request.POST['action']
-            if action == 'add':
-                form = self.get_form()
-                data = form.save()
-                print("mmmm")
-                data['redirect'] = self.url_redirect
-            else:
-                data['error'] = 'No ha ingresado a ninguna opción'
-        except Exception as e:
-            print("ex")
-            data['error'] = str(e)
-        return JsonResponse(data)
+            data = {}
+            try:
+                action = request.POST['action']
+                if action == 'add':
+                    form = self.get_form()
+                    data = form.save()
+                    print("mmmm")
+                    data['redirect'] = self.url_redirect
+                else:
+                    data['error'] = 'No ha ingresado a ninguna opción'
+            except Exception as e:
+                print("ex")
+                data['error'] = str(e)
+            return JsonResponse(data)
+        except PermissionDenied:
+            print("no tiene permiso")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
