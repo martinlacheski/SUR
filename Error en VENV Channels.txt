@@ -1,4 +1,12 @@
+----------------------------------
+Instalar desde la terminal:
+----------------------------------
+
+sudo apt install redis-server
+
+----------------------------------
 Channels init
+----------------------------------
 
 __version__ = "3.0.4"
 
@@ -12,7 +20,9 @@ except ModuleNotFoundError:
 
 DEFAULT_CHANNEL_LAYER = "default"
 
+----------------------------------
 channels exceptions
+----------------------------------
 
 class RequestAborted(Exception):
     """

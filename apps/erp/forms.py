@@ -1,7 +1,7 @@
 from django.forms import ModelForm, TextInput, Select, EmailInput, DateInput, DateTimeInput, CheckboxInput
 
 from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras, \
-    PedidosSolicitud
+    PedidosSolicitud, PedidoSolicitudProveedor
 
 
 class CategoriasForm(ModelForm):
@@ -579,3 +579,26 @@ class PedidosSolicitudForm(ModelForm):
             }),
         }
         exclude = ['estado']
+
+
+class PedidoSolicitudProveedorForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = PedidoSolicitudProveedor
+        fields = '__all__'
+        widgets = {
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
