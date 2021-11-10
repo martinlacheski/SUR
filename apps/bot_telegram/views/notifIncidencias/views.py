@@ -23,7 +23,7 @@ class notifIncidentesUsersListView(LoginRequiredMixin, ValidatePermissionRequire
                 # Solamente mostramos usuarios que tengan chatID
                 for i in notifIncidentesUsuarios.objects.all():
                     data.append(i.toJSON())
-                print(data)
+
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

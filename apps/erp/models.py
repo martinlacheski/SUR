@@ -1,8 +1,6 @@
 from django.db import models
-from django.dispatch import receiver
 from django.forms import model_to_dict
 from simple_history.models import HistoricalRecords
-from simple_history.signals import pre_create_historical_record, post_create_historical_record
 
 from apps.geografico.models import Localidades
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
@@ -27,6 +25,7 @@ class Clientes(models.Model):
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True, blank=True,
                                        verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    history = HistoricalRecords()
     
     def __str__(self):
         return self.razonSocial
@@ -74,6 +73,7 @@ class Proveedores(models.Model):
     tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.razonSocial
@@ -112,6 +112,7 @@ class Proveedores(models.Model):
 class Categorias(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -137,6 +138,7 @@ class Subcategorias(models.Model):
     categoria = models.ForeignKey(Categorias, models.DO_NOTHING, verbose_name='Categoría')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -385,6 +387,7 @@ class Compras(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estadoCompra = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_sale()
@@ -414,6 +417,7 @@ class DetalleProductosCompra(models.Model):
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -439,6 +443,7 @@ class PedidosSolicitud(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default="", blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_sale()
@@ -467,6 +472,7 @@ class DetallePedidoSolicitud(models.Model):
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion

@@ -62,7 +62,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="bg-light color-palette pt-4 pb-4 pl-4 ml-5 mr-5 pr-4">
-                             <p id="pDescripcionNotif"></p>
+                            <p id="pDescripcionNotif"></p>
                         </div>
                     </div>
                     <div class="row">
@@ -79,103 +79,103 @@
     </div>
 
 
-    <script src="{% static 'lib/adminlte-3.1.0/plugins/toastr/toastr.min.js' %}"> </script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/toastr/toastr.min.js' %}"></script>
     <script>
-{#        getToken(name)#}
-{##}
-{#        function nuevasNotif() {#}
-{#            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-white navbar-light')#}
-{#            $.ajax({#}
-{#                url: '/agenda/list/',#}
-{#                type: 'POST',#}
-{#                dataType: 'json',#}
-{#                data: {#}
-{#                    'csrfmiddlewaretoken': csrftoken,#}
-{#                    'action': 'prueba2',#}
-{#                    'user': "{{ request.user.id }}",#}
-{#                },#}
-{#                success: function (data) {#}
-{#                    console.log("RESPUESTA" + data)#}
-{#                    //limpiarNotif();#}
-{#                    //limpiarIcon();#}
-{##}
-{#                    // Vemos si hay nuevos ev para notificar#}
-{#                    listaNotif.innerHTML = '';#}
-{#                    for (let prop in data){#}
-{#                        console.log(data)#}
-{#                        // Notificaciones que, valga al redundancia, van a ser notificadas#}
-{#                        if (data[prop][0] === 'notificar') {#}
-{#                            console.log("hola");#}
-{#                            console.log(data[prop][0]);#}
-{#                            toastr.info('¡Tiene nuevas notificaciónes!');#}
-{#                            agregarNotifPendiente(prop, data[prop][1]);#}
-{#                            mostrarIcon();#}
-{#                        }#}
-{#                        // Notificaciones que solo van a ser agregadas a la lista porque ya se vieron#}
-{#                        else if (data[prop][0] === 'no_notificar'){#}
-{#                            agregarNotif(prop, data[prop][1]);#}
-{#                        }#}
-{#                        // Notificaciones que se notificaron pero el user no vió aún#}
-{#                        else if (data[prop][0] === 'no_notificar_pendiente'){#}
-{#                            agregarNotifPendiente(prop, data[prop][1]);#}
-{#                            mostrarIcon();#}
-{#                        }#}
-{#                        else if (data[prop][0] === 'notificar_heavy') {#}
-{#                            console.log("hola");#}
-{#                            toastr.error('¡Tiene una nueva notificación URGENTE!');#}
-{#                            agregarNotifUrgente(prop, data[prop][1]);#}
-{#                            mostrarIcon();#}
-{#                        }#}
-{##}
-{#                    }#}
-{#                }#}
-{##}
-{#            });#}
-{#        }#}
+        {#        getToken(name)#}
+        {##}
+        {#        function nuevasNotif() {#}
+        {#            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-white navbar-light')#}
+        {#            $.ajax({#}
+        {#                url: '/agenda/list/',#}
+        {#                type: 'POST',#}
+        {#                dataType: 'json',#}
+        {#                data: {#}
+        {#                    'csrfmiddlewaretoken': csrftoken,#}
+        {#                    'action': 'prueba2',#}
+        {#                    'user': "{{ request.user.id }}",#}
+        {#                },#}
+        {#                success: function (data) {#}
+        {#                    console.log("RESPUESTA" + data)#}
+        {#                    //limpiarNotif();#}
+        {#                    //limpiarIcon();#}
+        {##}
+        {#                    // Vemos si hay nuevos ev para notificar#}
+        {#                    listaNotif.innerHTML = '';#}
+        {#                    for (let prop in data){#}
+        {#                        console.log(data)#}
+        {#                        // Notificaciones que, valga al redundancia, van a ser notificadas#}
+        {#                        if (data[prop][0] === 'notificar') {#}
+        {#                            console.log("hola");#}
+        {#                            console.log(data[prop][0]);#}
+        {#                            toastr.info('¡Tiene nuevas notificaciónes!');#}
+        {#                            agregarNotifPendiente(prop, data[prop][1]);#}
+        {#                            mostrarIcon();#}
+        {#                        }#}
+        {#                        // Notificaciones que solo van a ser agregadas a la lista porque ya se vieron#}
+        {#                        else if (data[prop][0] === 'no_notificar'){#}
+        {#                            agregarNotif(prop, data[prop][1]);#}
+        {#                        }#}
+        {#                        // Notificaciones que se notificaron pero el user no vió aún#}
+        {#                        else if (data[prop][0] === 'no_notificar_pendiente'){#}
+        {#                            agregarNotifPendiente(prop, data[prop][1]);#}
+        {#                            mostrarIcon();#}
+        {#                        }#}
+        {#                        else if (data[prop][0] === 'notificar_heavy') {#}
+        {#                            console.log("hola");#}
+        {#                            toastr.error('¡Tiene una nueva notificación URGENTE!');#}
+        {#                            agregarNotifUrgente(prop, data[prop][1]);#}
+        {#                            mostrarIcon();#}
+        {#                        }#}
+        {##}
+        {#                    }#}
+        {#                }#}
+        {##}
+        {#            });#}
+        {#        }#}
         {#function agregarNotif(id_evento, tipo_evento){#}
         {#    var listaNotif = document.getElementById("listaNotif");#}
         {#    var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" eventoRef='+'"'+ id_evento+'"' +'class="elementoNotificacion dropdown-item"><i class="fas fa-bell mr-2"></i>¡Recuerde! Evento de tipo ' + tipo_evento + '</a>';#}
         {#    listaNotif.insertAdjacentHTML('afterbegin', notifElement);#}
         {# } #}
-{##}
-{#        function agregarNotifUrgente(id_evento, tipo_evento){#}
-{#            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand bg-danger color-palette navbar-light');#}
-{#            var listaNotif = document.getElementById("listaNotif");#}
-{#            var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" eventoRef='+'"'+ id_evento+'"' +'class="elementoNotificacion bg-danger color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Recuerde! Evento de tipo ' + tipo_evento + '</a>';#}
-{#            listaNotif.insertAdjacentHTML('afterbegin', notifElement);#}
-{#        }#}
-{##}
-{#        function agregarNotifPendiente(id_evento, tipo_evento){#}
-{#            var listaNotif = document.getElementById("listaNotif");#}
-{#            var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" eventoRef='+'"'+ id_evento+'"' +'class="elementoNotificacion bg-info color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Recuerde! Evento de tipo ' + tipo_evento + '</a>';;#}
-{#            listaNotif.insertAdjacentHTML('afterbegin', notifElement);#}
-{#        }#}
-{##}
-{#        function limpiarNotif() {#}
-{#            var listaNotif = document.getElementById("listaNotif");#}
-{#            listaNotif.innerHTML = '';#}
-{#            var defaultElement = '<div class="dropdown-divider"></div> <a class="dropdown-item"><i class="fas fa-bell mr-2"></i>No hay nuevas notificaciones</a>';#}
-{#            listaNotif.insertAdjacentHTML('afterbegin', defaultElement);#}
-{#        }#}
-{##}
-{#        function limpiarIcon(){#}
-{#            var iconNotif = document.getElementById("iconNotifID");#}
-{#            iconNotif.innerHTML = '';#}
-{#        }#}
-{##}
-{#        function mostrarIcon (){#}
-{#            var iconNotif = document.getElementById("iconNotifID");#}
-{#            iconNotif.innerHTML = '';#}
-{#            var iconElement = '<i class="fas fa-exclamation"></i>'#}
-{#            iconNotif.insertAdjacentHTML('afterbegin', iconElement);#}
-{#        }#}
-{##}
-{#        // var actualizador = setInterval(nuevasNotif, 10000);#}
-{##}
-{#        // Ejecutamos la funcion cada vez que le página se actualiza#}
-{#        $(document).ready(function() {#}
-{#            nuevasNotif();#}
-{#        })#}
+        {##}
+        {#        function agregarNotifUrgente(id_evento, tipo_evento){#}
+        {#            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand bg-danger color-palette navbar-light');#}
+        {#            var listaNotif = document.getElementById("listaNotif");#}
+        {#            var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" eventoRef='+'"'+ id_evento+'"' +'class="elementoNotificacion bg-danger color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Recuerde! Evento de tipo ' + tipo_evento + '</a>';#}
+        {#            listaNotif.insertAdjacentHTML('afterbegin', notifElement);#}
+        {#        }#}
+        {##}
+        {#        function agregarNotifPendiente(id_evento, tipo_evento){#}
+        {#            var listaNotif = document.getElementById("listaNotif");#}
+        {#            var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" eventoRef='+'"'+ id_evento+'"' +'class="elementoNotificacion bg-info color-palette dropdown-item"><i class="fas fa-bell mr-2"></i>¡Recuerde! Evento de tipo ' + tipo_evento + '</a>';;#}
+        {#            listaNotif.insertAdjacentHTML('afterbegin', notifElement);#}
+        {#        }#}
+        {##}
+        {#        function limpiarNotif() {#}
+        {#            var listaNotif = document.getElementById("listaNotif");#}
+        {#            listaNotif.innerHTML = '';#}
+        {#            var defaultElement = '<div class="dropdown-divider"></div> <a class="dropdown-item"><i class="fas fa-bell mr-2"></i>No hay nuevas notificaciones</a>';#}
+        {#            listaNotif.insertAdjacentHTML('afterbegin', defaultElement);#}
+        {#        }#}
+        {##}
+        {#        function limpiarIcon(){#}
+        {#            var iconNotif = document.getElementById("iconNotifID");#}
+        {#            iconNotif.innerHTML = '';#}
+        {#        }#}
+        {##}
+        {#        function mostrarIcon (){#}
+        {#            var iconNotif = document.getElementById("iconNotifID");#}
+        {#            iconNotif.innerHTML = '';#}
+        {#            var iconElement = '<i class="fas fa-exclamation"></i>'#}
+        {#            iconNotif.insertAdjacentHTML('afterbegin', iconElement);#}
+        {#        }#}
+        {##}
+        {#        // var actualizador = setInterval(nuevasNotif, 10000);#}
+        {##}
+        {#        // Ejecutamos la funcion cada vez que le página se actualiza#}
+        {#        $(document).ready(function() {#}
+        {#            nuevasNotif();#}
+        {#        })#}
     </script>
 
     <script>
@@ -212,28 +212,28 @@
         {#            document.getElementById('modal_descripción_notif').innerHTML = data.descripcion;#}
         {##}
         {#            // var usuariosAsoc = "";#}
-                    {#// Procesamos usuarios asociados para convertir en string agradable#}
-                    {#for (let i = 0; i <= data.userAsoc.length-1; i++){#}
-                    {#    usuariosAsoc += data.userAsoc[i] + ",";#}
-                    {# } #}
+        {#// Procesamos usuarios asociados para convertir en string agradable#}
+        {#for (let i = 0; i <= data.userAsoc.length-1; i++){#}
+        {#    usuariosAsoc += data.userAsoc[i] + ",";#}
+        {# } #}
         {##}
         {##}
         {#            document.getElementById('modal_fecha_notif_notif').innerHTML = data.fechaNotif;#}
         {##}
-                    {#// Procesamos repetición para string agradable en español#}
-                    {#switch(data.repeticion) {#}
-                    {#    case 'daily':#}
-                    {#        data.repeticion = 'Diaria';#}
-                    {#        break;#}
-                    {#    case 'weekly':#}
-                    {#        data.repeticion = 'Semanal';#}
-                    {#        break;#}
-                    {#    case 'monthly':#}
-                    {#        data.repeticion = 'Mensual';#}
-                    {#        break;#}
-                    {#    default:#}
-                    {#        data.repeticion = 'Única';#}
-                    {# }#}
+        {#// Procesamos repetición para string agradable en español#}
+        {#switch(data.repeticion) {#}
+        {#    case 'daily':#}
+        {#        data.repeticion = 'Diaria';#}
+        {#        break;#}
+        {#    case 'weekly':#}
+        {#        data.repeticion = 'Semanal';#}
+        {#        break;#}
+        {#    case 'monthly':#}
+        {#        data.repeticion = 'Mensual';#}
+        {#        break;#}
+        {#    default:#}
+        {#        data.repeticion = 'Única';#}
+        {# }#}
         {##}
         {#            // Procesamos canales de notificacion para convertir en string agradable#}
         {#            let notifMsj = "";#}
@@ -258,7 +258,7 @@
     <script>
         /*   Marca que un evento ha sido cumplido lo que implica que
              el mismo no será notificado nuevamente.       */
-        $('#btnCumplido').on('click', function(){
+        $('#btnCumplido').on('click', function () {
 
             $.ajax({
                 url: '/agenda/list/',
@@ -267,7 +267,7 @@
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'evento_cumplido',
-                    'pk':this.getAttribute("evento_id"),
+                    'pk': this.getAttribute("evento_id"),
                     'user': "{{ request.user.id }}",
                 },
             });
@@ -282,7 +282,7 @@
 
     <script>
 
-        function detalleNotif (elemento) {
+        function detalleNotif(elemento) {
             $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-light');
             elemento.setAttribute("class", "elementoNotificacion dropdown-item"); // sacamos su color (rojo o azul)
             $.ajax({
@@ -311,39 +311,39 @@
             });
         }
 
-        function agregarNotif(titulo, estado, id_notif){
+        function agregarNotif(titulo, estado, id_notif) {
             var listaNotif = document.getElementById("listaNotif");
-            if (estado === 'pendiente'){
-                var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" ' +
-                                   'notif_ref='+'"'+ id_notif+'"' +
-                                   'class="elementoNotificacion bg-info color-palette dropdown-item">' +
-                                   '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>'+
-                                   '<div class="dropdown-divider"></div>';
+            if (estado === 'pendiente') {
+                var notifElement = '<div class="dropdown-divider"></div>' + '<a onclick="detalleNotif(this)" ' +
+                    'notif_ref=' + '"' + id_notif + '"' +
+                    'class="elementoNotificacion bg-info color-palette dropdown-item">' +
+                    '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
+                    '<div class="dropdown-divider"></div>';
             }
-            if (estado === 'vista'){
-                var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" ' +
-                                   'notif_ref='+'"'+ id_notif+'"' +
-                                   'class="elementoNotificacion dropdown-item">' +
-                                   '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
-                                   '<div class="dropdown-divider"></div>';
+            if (estado === 'vista') {
+                var notifElement = '<div class="dropdown-divider"></div>' + '<a onclick="detalleNotif(this)" ' +
+                    'notif_ref=' + '"' + id_notif + '"' +
+                    'class="elementoNotificacion dropdown-item">' +
+                    '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
+                    '<div class="dropdown-divider"></div>';
             }
-            if (estado == 'urgente'){
-                var notifElement = '<div class="dropdown-divider"></div>'+'<a onclick="detalleNotif(this)" ' +
-                                   'notif_ref='+'"'+ id_notif+'"' +
-                                   'class="elementoNotificacion bg-danger color-palette dropdown-item">' +
-                                   '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
-                                   '<div class="dropdown-divider"></div>';
+            if (estado == 'urgente') {
+                var notifElement = '<div class="dropdown-divider"></div>' + '<a onclick="detalleNotif(this)" ' +
+                    'notif_ref=' + '"' + id_notif + '"' +
+                    'class="elementoNotificacion bg-danger color-palette dropdown-item">' +
+                    '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
+                    '<div class="dropdown-divider"></div>';
                 $('#navPrincipal').attr('class', 'main-header navbar navbar-expand bg-danger color-palette navbar-light');
             }
             listaNotif.insertAdjacentHTML('afterbegin', notifElement);
         }
 
         // Usado para debug. Se va luego
-        $(document).ready( function () {
+        $(document).ready(function () {
             updateNotificaciones();
         });
 
-        function updateNotificaciones(){
+        function updateNotificaciones() {
             var listaNotif = document.getElementById("listaNotif")
             var iconNotif = document.getElementById("iconNotifID");
             var cantNotif = 0;
@@ -357,18 +357,17 @@
                     'action': 'update_notifs',
                 },
                 success: function (data) {
-                    console.log(typeof(data));
                     listaNotif.innerHTML = '';
-                    for (const n in data){
+                    for (const n in data) {
                         agregarNotif(data[n].titulo, data[n].estado, data[n].id);
-                        if (data[n].estado === 'pendiente' || data[n].estado === 'urgente'){
+                        if (data[n].estado === 'pendiente' || data[n].estado === 'urgente') {
                             cantNotif += 1
                         }
                     }
-                    if (cantNotif === 0){
+                    if (cantNotif === 0) {
                         iconNotif.innerHTML = "";
                     } else {
-                         iconNotif.innerHTML = cantNotif;
+                        iconNotif.innerHTML = cantNotif;
                     }
                     cantNotif = 0;
                 }
@@ -383,7 +382,7 @@
         console.log(chatSocket);
 
         // recibe mensajes
-        chatSocket.onmessage = function(e) {
+        chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
             toastr.info('¡Tiene nuevas notificaciónes!');
             updateNotificaciones();
@@ -391,7 +390,7 @@
         };
 
         // Me interesa pero para mantener el socket siempre abierto.
-        chatSocket.onclose = function(e) {
+        chatSocket.onclose = function (e) {
             console.error('Chat socket closed unexpectedly');
         };
     </script>

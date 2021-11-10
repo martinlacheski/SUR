@@ -45,12 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<<<< Temporary merge branch 1
-
-    #Librerias
-=========
     # Librerias
->>>>>>>>> Temporary merge branch 2
     'widget_tweaks',
     'django.contrib.humanize',
     'simple_history',
@@ -136,12 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-<<<<<<<<< Temporary merge branch 1
-
 #LANGUAGE_CODE = 'en-us'
-=========
-# LANGUAGE_CODE = 'en-us'
->>>>>>>>> Temporary merge branch 2
 LANGUAGE_CODE = 'es-ar'
 
 # TIME_ZONE = 'UTC'

@@ -1,4 +1,6 @@
 from django.db import models
+from simple_history.models import HistoricalRecords
+
 from apps.usuarios.models import Usuarios
 from django.forms import model_to_dict
 
@@ -12,6 +14,7 @@ class notificacionesGenerales(models.Model):
 	descripcion = models.CharField(max_length=254)
 	enviadoAUser = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario al que se le envió la notif')
 	fechaRevisionUser = models.DateTimeField(blank=True, null=True)
+	history = HistoricalRecords()
 
 	def toJSON(self):
 		item = model_to_dict(self)

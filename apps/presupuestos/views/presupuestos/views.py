@@ -22,7 +22,7 @@ from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
-from apps.usuarios.models import TiposUsuarios, Usuarios
+from apps.usuarios.models import Usuarios
 from config import settings
 
 from weasyprint import HTML, CSS

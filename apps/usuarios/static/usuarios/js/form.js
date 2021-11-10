@@ -71,7 +71,6 @@ $(function () {
     $("#first_name").validate();
     $("#last_name").validate();
     $("#cuil").validate();
-    $("#tipoUsuario").validate();
     $("#legajo").validate();
     $("#fechaIngreso").validate();
     $("#localidad").validate();

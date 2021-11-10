@@ -152,6 +152,7 @@ class PlanificacionesSemanales(models.Model):
     fechaInicio = models.DateField(verbose_name='Fecha de Inicio')
     fechaFin = models.DateField(verbose_name='Fecha de Fin')
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name
@@ -177,6 +178,7 @@ class DetallePlanificacionesSemanales(models.Model):
     planificacion = models.ForeignKey(PlanificacionesSemanales, models.DO_NOTHING)
     trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING)
     orden = models.PositiveIntegerField(default=0)
+    history = HistoricalRecords()
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['planificacion'])

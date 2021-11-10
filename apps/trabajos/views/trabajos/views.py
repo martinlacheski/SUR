@@ -24,7 +24,7 @@ from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlan
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
-from apps.usuarios.models import Usuarios, TiposUsuarios
+from apps.usuarios.models import Usuarios
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -582,9 +582,8 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 data = []
                 # Asigno a una variable los parametros de estados y de tipos de usuarios
                 estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
                 # Obtenemos los usuarios von esos filtros
-                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                usuarios = Usuarios.objects.all()
                 try:
                     # asignamos a una variable una cantidad alta de trabajos pendientes
                     cant = 1000000

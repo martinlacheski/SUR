@@ -127,17 +127,31 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-4 mb-4">
-                        <label>Tipo de Usuario:</label>
-                        <br>
-                        {{ form.tipoUsuario|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                    </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-5 mb-3">
                         <label>Grupos:</label>
                         <br>
                         {{ form.groups|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-1 mb-3">
+
+                    </div>
+                    <div class="col-3 mb-3">
+                        <label class="mb-4"></label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            {{ form.is_superuser }}
+                            <label class="custom-control-label" for="id_is_superuser">¿Es Superusuario?</label>
+                        </div>
+                    </div>
+                    <div class="col-3 mb-3">
+                        <label class="mb-4"></label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            {{ form.is_active }}
+                            <label class="custom-control-label" for="id_is_active">¿Está Activo?</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
                         <label>Imagen:</label>
                         <div id="imagen" name="imagen">
                             {{ form.imagen|attr:'width: 100%' }}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 from apps.geografico.models import Localidades
 from config.settings import MEDIA_URL, STATIC_URL
@@ -8,6 +9,7 @@ from config.settings import MEDIA_URL, STATIC_URL
 class TiposIVA(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     iva = models.DecimalField(default=21, max_digits=9, decimal_places=2, verbose_name='Porcentaje')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -30,6 +32,7 @@ class TiposIVA(models.Model):
 
 class CondicionesIVA(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -53,6 +56,7 @@ class CondicionesIVA(models.Model):
 class TiposPercepciones(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     percepcion = models.DecimalField(default=0, max_digits=9, decimal_places=2, verbose_name='Porcentaje')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -75,6 +79,7 @@ class TiposPercepciones(models.Model):
 
 class CondicionesPago(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -97,6 +102,7 @@ class CondicionesPago(models.Model):
 
 class MediosPago(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -119,6 +125,7 @@ class MediosPago(models.Model):
 
 class TiposComprobantes(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -141,6 +148,7 @@ class TiposComprobantes(models.Model):
 
 class Marcas(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -165,6 +173,7 @@ class Modelos(models.Model):
     marca = models.ForeignKey(Marcas, models.DO_NOTHING, verbose_name='Marca')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
     descripcion = models.CharField(max_length=254, verbose_name='Descripcion', null=True, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -195,6 +204,7 @@ class Modelos(models.Model):
 class Estados(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     orden = models.PositiveIntegerField(default=0)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -229,6 +239,7 @@ class EstadoParametros(models.Model):
                                         related_name='estadoEntregado')
     estadoCancelado = models.ForeignKey(Estados, models.DO_NOTHING, verbose_name='Trabajo Cancelado',
                                         related_name='estadoCancelado')
+    history = HistoricalRecords()
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -268,6 +279,7 @@ class EstadoParametros(models.Model):
 class Prioridades(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     plazoPrioridad = models.PositiveIntegerField(default=0, verbose_name='Días de PLazo')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -306,6 +318,7 @@ class Empresa(models.Model):
     cbu = models.CharField(max_length=22, verbose_name='Clave CBU/CVU', null=True, blank=True)
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
     nroCuenta = models.CharField(max_length=100, verbose_name='Número de Cuenta', null=True, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.razonSocial
