@@ -1,0 +1,40 @@
+Para cargar los registros de Auditoria
+python manage.py populate_history --auto
+
+--------------------------------------------------------------------------------------------------------------------
+
+*PEDIDOS - TERMINAR
+
+* Resolver la forma de generar los detalles de las cotizaciones de los proveedores
+
+--------------------------------------------------------------------------------------------------------------------
+
+* USUARIOS AGREGAR CAMPO ESTADO EN EL LISTVIEW, MODIFICAR DELETE PARA QUE CAMBIE EL ESTADO, CHEQUEAR QUE NO SE PUEDA LOGUEAR EL USUARIO
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Agregar un campo para obtener el usuario de la edicion anterior, a fin de representar en el reporte visual
+
+*AUDITORIA sobre:
+PRODUCTOS                   OK
+SERVICIOS                   OK
+VENTAS                      OK
+TRABAJOS                    OK
+EVENTOS DE AGENDA
+COMPRAS                     Dejar por ultimo
+PRESUPUESTOS                Dejar por ultimo
+PLANIFICACIONES             Dejar por ultimo
+SOLICITUD DE PEDIDOS        Dejar por ultimo
+
+Agregar ID de venta y de trabajo en el MODAL
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
+
+*ESTADISTICAS
+
+*GRUPOS DE USUARIOS         *ROLES Y PERMISOS           --- OK
+
+
+

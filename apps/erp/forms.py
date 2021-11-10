@@ -1,8 +1,7 @@
-from datetime import datetime
+from django.forms import ModelForm, TextInput, Select, EmailInput, DateInput, DateTimeInput, CheckboxInput
 
-from django.forms import ModelForm, TextInput, Select, BooleanField, EmailInput, DateInput
-
-from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras
+from apps.erp.models import Categorias, Subcategorias, Productos, Servicios, Clientes, Proveedores, Ventas, Compras, \
+    PedidosSolicitud
 
 
 class CategoriasForm(ModelForm):
@@ -106,42 +105,42 @@ class ProductosForm(ModelForm):
             }),
             'descripcion': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una descripción',
+                    'placeholder': 'Ingrese descripción',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'abreviatura': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una abreviatura',
+                    'placeholder': 'Ingrese abreviatura',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigo': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de producto',
+                    'placeholder': 'Ingrese código producto',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigoBarras1': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de Barras',
+                    'placeholder': 'Ingrese código de Barras',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigoBarras2': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de Barras',
+                    'placeholder': 'Ingrese código de Barras',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'codigoProveedor': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código de proveedor',
+                    'placeholder': 'Ingrese código proveedor',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -152,14 +151,14 @@ class ProductosForm(ModelForm):
             }),
             'ubicacion': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese una ubicación de producto',
+                    'placeholder': 'Ingrese ubicación producto',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
             ),
             'observaciones': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese unas observaciones',
+                    'placeholder': 'Ingrese observaciones',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }
@@ -182,6 +181,18 @@ class ProductosForm(ModelForm):
             'precioVenta': TextInput(attrs={
                 'class': 'form-control',
             }),
+            'esInsumo': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
+            'descuentaStock': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
         }
 
     def save(self, commit=True):
@@ -228,6 +239,9 @@ class ServiciosForm(ModelForm):
                 'class': 'form-control',
             }),
             'precioVenta': TextInput(attrs={
+                'class': 'form-control',
+            }),
+            'esfuerzo': TextInput(attrs={
                 'class': 'form-control',
             }),
         }
@@ -286,12 +300,12 @@ class ClientesForm(ModelForm):
             ),
             'telefono': TextInput(
                 attrs={
-                    'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
+                    'placeholder': 'INGRESE NÚMERO DE TELÉFONO',
                 }
             ),
             'email': EmailInput(
                 attrs={
-                    'placeholder': 'INGRESE UN CORREO ELECTRÓNICO VÁLIDO',
+                    'placeholder': 'INGRESE CORREO ELECTRÓNICO VÁLIDO',
                     'style': 'width: 100%'
                 }
             ),
@@ -374,12 +388,12 @@ class ProveedoresForm(ModelForm):
             ),
             'telefono': TextInput(
                 attrs={
-                    'placeholder': 'INGRESE UN NÚMERO DE TELÉFONO',
+                    'placeholder': 'INGRESE NÚMERO DE TELÉFONO',
                 }
             ),
             'email': EmailInput(
                 attrs={
-                    'placeholder': 'INGRESE UN CORREO ELECTRÓNICO VÁLIDO',
+                    'placeholder': 'INGRESE CORREO ELECTRÓNICO VÁLIDO',
                     'style': 'width: 100%'
                 }
             ),
@@ -525,3 +539,43 @@ class ComprasForm(ModelForm):
             }),
         }
         exclude = ['usuario']
+
+
+class PedidosSolicitudForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = PedidosSolicitud
+        fields = '__all__'
+        widgets = {
+            'fecha': DateInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'fechaLimite': DateTimeInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fechaLimite',
+                    'data-target': '#fechaLimite',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
+        exclude = ['estado']

@@ -11,3 +11,24 @@
         <script src="{% static 'modelos/js/form.js' %}"></script>
     {% endblock %}
 {% endblock %}
+{% block fields %}
+    <div class="row">
+        <div class="form-group col-6 mb-3">
+            <label>Marca:</label>
+            {{ form.marca|add_class:'form-control select2'|attr:'autocomplete:off'|attr:'required:true' }}
+        </div>
+        <div class="form-group col-6 mb-3">
+            <label>Nombre:</label>
+            <div class="col-12" class="form-control">
+                {{ form.nombre|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-12 mb-3">
+            <label>Descripción:</label>
+            {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+        </div>
+
+    </div>
+{% endblock %}

@@ -57,10 +57,12 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
             if action == 'add':
                 form = self.get_form()
                 data = form.save()
+                print("mmmm")
                 data['redirect'] = self.url_redirect
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
+            print("ex")
             data['error'] = str(e)
         return JsonResponse(data)
 

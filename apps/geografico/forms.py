@@ -43,7 +43,7 @@ class ProvinciasForm(ModelForm):
         fields = '__all__'
         widgets = {
             'pais': Select(attrs={
-                'class': 'form-control select2',
+                'class': 'form-select form-control select2',
                 'style': 'width: 100%'
             }),
             'nombre': TextInput(

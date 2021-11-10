@@ -9,14 +9,11 @@
               rel="stylesheet"/>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
         <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
-
         <!-- JQuery-Validation -->
         <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
-
         <!-- Bootstrap Touchspin -->
         <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
         <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
-
         <!-- archivo JS -->
         <script src="{% static 'productos/js/form.js' %}"></script>
     {% endblock %}
@@ -38,7 +35,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="col-6 mb-6">
+                    <div class="col-6 mb-3">
                         <label>Categoría:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectCategoria" id="selectCategoria"
@@ -47,7 +44,6 @@
                                 {% for c in categorias %}
                                     <option value={{ c.id }}>{{ c.nombre }}</option>
                                 {% endfor %}
-
                             </select>
                             <div class="input-group-append">
                                 <button class="btn btn-success btn-flat btnAddCategoria" type="button">
@@ -56,8 +52,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 mb-6">
-                        <label>Subcategoría:</label>
+                    <div class="col-6 mb-3">
+                        <label>(*) Subcategoría:</label>
                         <div class="input-group">
                             {{ form.subcategoria|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
                             <div class="input-group-append">
@@ -69,8 +65,8 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-6">
-                        <label>Descripción:</label>
+                    <div class="col-6 mb-3">
+                        <label>(*) Descripción:</label>
                         <br>
                         {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
@@ -96,54 +92,47 @@
                         <br>
                         {{ form.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-3 mb-3">
-                        <label>Código de Barras 2:</label>
-                        <br>
-                        {{ form.codigoBarras2|add_class:'form-control'|attr:'autocomplete:off' }}
-                    </div>
                 </div>
-
                 <div class="row">
                     <div class="col-3 mb-3">
                         <label>Stock Real:</label>
                         <br>
-                        <div class="col-12" class="input-group-text" id="stockReal">
+                        <div class="col-12 mb-3" class="input-group-text" id="stockReal">
                             {{ form.stockReal|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-3 mb-3">
                         <label>Stock Mínimo:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="stockMinimo">
+                        <div class="col-12 mb-3" class="form-control" id="stockMinimo">
                             {{ form.stockMinimo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-3 mb-3">
                         <label>Pedido Reposición:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="reposicion">
+                        <div class="col-12 mb-3" class="form-control" id="reposicion">
                             {{ form.reposicion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-3 mb-3">
                         <label>Precio de Costo:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="costo" name="costo">
+                        <div class="col-12 mb-3" class="form-control" id="costo" name="costo">
                             {{ form.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-3 mb-3">
                         <label>Margen de Utilidad:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="utilidad" name="utilidad">
+                        <div class="col-12 mb-3" class="form-control" id="utilidad" name="utilidad">
                             {{ form.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                     <div class="col-3 mb-3">
-                        <label>Tipo de IVA:</label>
+                        <label>(*) Tipo de IVA:</label>
                         <br>
                         {{ form.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
@@ -151,7 +140,7 @@
                     <div class="col-3 mb-3">
                         <label>Precio de Venta:</label>
                         <br>
-                        <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
+                        <div class="col-12 mb-3" class="form-control" id="precioVenta" name="precioVenta">
                             {{ form.precioVenta|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
@@ -168,22 +157,29 @@
                         <br>
                         {{ form.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-1 mb-1">
+                    <div class="col-1 mb-3">
                         <label> </label>
                         <br>
 
                     </div>
+                    <div class="col-2 mb-3">
+                        <label class="mb-4"></label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            {{ form.esInsumo }}
+                            <label class="custom-control-label" for="id_realizaTrabajos">¿Es Insumo?</label>
+                        </div>
+                    </div>
                     <div class="col-3 mb-3">
-                        <label>¿Es Insumo?: </label>
-                        <br>
-                        <div class="col-4" class="form-control-sm" id="esInsumo" name="esInsumo">
-                            {{ form.esInsumo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        <label class="mb-4"></label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            {{ form.descuentaStock }}
+                            <label class="custom-control-label" for="id_descuentaStock">¿Descuenta Stock?</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-6 mb-6">
+                    <div class="col-6 mb-3">
                         <label>Imagen:</label>
                         {{ form.imagen }}
                     </div>

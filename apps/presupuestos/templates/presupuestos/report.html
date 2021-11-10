@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Presupuestos</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+            font-size: 13px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 250px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+        {#meta[author] { string-set: author attr(author); }#}
+        meta[author] {
+            string-set: {{ usuario }};
+        }
+
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="name-company text-center">Reporte de Presupuestos</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
+        </div>
+        <div class="col-1">
+            {#<h1 class="name-company">{{ empresa.nombre }}</h1>#}
+        </div>
+        <div class="col-6">
+            <p class="text-right">
+                <b>Fecha y Hora:</b> {{ fecha|date:'d-m-Y H:m' }}<br>
+
+                <b>Usuario:</b> {{ usuario }}<br>
+            </p>
+        </div>
+    </div>
+    <h5 class="text-uppercase font-weight-bold text-left">
+        Filtros aplicados: <br>
+    </h5>
+    <p>
+        {% if cliente %}
+            Cliente: <b> {{ cliente }}</b>
+        {% endif %}
+        {% if inicio %}
+            Presupuestos Desde: <b> {{ inicio }} </b>
+        {% endif %}
+        {% if fin %}
+            hasta <b> {{ fin }} </b>
+        {% endif %}
+        <br>
+        {% if soloConfirmados %}
+            <b>Filtrados los Presupuestos No Confirmados.</b>
+        {% endif %}
+        {% if cancelados %}
+            <b>Filtrados los Presupuestos Cancelados.</b>
+        {% endif %}
+    <h4 class="text-uppercase font-weight-bold text-left">
+        Detalle: <br>
+    </h4>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 25%;">Cliente</th>
+            <th class="text-center" style="width: 5%;">ID</th>
+            <th class="text-center" style="width: 12%;">Estado</th>
+            <th class="text-center" style="width: 8%;">Fecha</th>
+            <th class="text-center" style="width: 15%;">Marca</th>
+            <th class="text-center" style="width: 25%;">Modelo</th>
+            <th class="text-center" style="width: 10%;">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in presupuestos %}
+            <tr>
+                {% if det.estado == True %}
+                    <td class="text-center"> {{ det.cliente.razonSocial }}</td>
+                    <td class="text-center"> {{ det.id }}</td>
+                    <td class="text-center"> Confirmado</td>
+                    <td class="text-right"> {{ det.fecha }}</td>
+                    <td class="text-center"> {{ det.modelo.marca.nombre }}</td>
+                    <td class="text-center"> {{ det.modelo.nombre }}</td>
+                    <td class="text-right">$ {{ det.total|intcomma|localize }}</td>
+                {% elif det.estado == False %}
+                    <td class="text-center"><b style="color:red;"> {{ det.cliente.razonSocial }}</b></td>
+                    <td class="text-center"><b style="color:red;"> {{ det.id }}</b></td>
+                    <td class="text-center"><b style="color:red;"> Cancelado</b></td>
+                    <td class="text-right"><b style="color:red;"> {{ det.fecha }}</b></td>
+                    <td class="text-center"><b style="color:red;"> {{ det.modelo.marca.nombre }}</b></td>
+                    <td class="text-center"><b style="color:red;"> {{ det.modelo.nombre }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.total|intcomma|localize }}</b></td>
+                {% else %}
+                    <td class="text-center"><b style="color:red;"> {{ det.cliente.razonSocial }}</b></td>
+                    <td class="text-center"><b style="color:red;"> {{ det.id }}</b></td>
+                    <td class="text-center"><b style="color:red;"> No Confirmado</b></td>
+                    <td class="text-right"><b style="color:red;"> {{ det.fecha }}</b></td>
+                    <td class="text-center"><b style="color:red;"> {{ det.modelo.marca.nombre }}</b></td>
+                    <td class="text-center"><b style="color:red;"> {{ det.modelo.nombre }}</b></td>
+                    <td class="text-right"><b style="color:red;">$ {{ det.total|intcomma|localize }}</b></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-uppercase text-right">
+        Subtotal: <b>$ {{ subtotal|intcomma|localize }}</b><br>
+        IVA: <b>$ {{ iva|intcomma|localize }}</b><br>
+        Percepciones: <b>$ {{ percepcion|intcomma|localize }}</b><br>
+        Total: <b>$ {{ total|intcomma|localize }}</b><br>
+    </p>
+    <p style="font-size:13px;" class="text-uppercase text-right">
+        Son Pesos: <b> {{ enLetras }}</b><br>
+    </p>
+    {% if not soloConfirmados %}
+        <b>Aclaración:</b> En caso de existir, los presupuestos no confirmados no influyen en los totales<br>
+    {% endif %}
+    {% if not cancelados %}
+        <b>Aclaración:</b> En caso de existir, los presupuestos cancelados no influyen en los totales<br>
+    {% endif %}
+</div>
+</body>
+</html>

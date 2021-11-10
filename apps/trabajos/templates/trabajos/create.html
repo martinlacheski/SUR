@@ -1,0 +1,1161 @@
+{% extends 'body.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+        <!-- Datatables -->
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+        <link rel="stylesheet"
+              href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+        <!-- Jquery UI -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+        <!-- Select2 -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+              rel="stylesheet"/>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
+        <!-- Moment -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment.min.js' %}"></script>
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+        <!-- Tempus Dominus -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}"
+              rel="stylesheet"/>
+        <!-- JQuery-Validation -->
+        <script src="{% static 'lib/adminlte-3.1.0/plugins/jquery-validation/jquery.validate.js' %}"></script>
+        <!-- Bootstrap Touchspin -->
+        <link href="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}" rel="stylesheet"/>
+        <script src="{% static 'lib/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+        <!-- archivo JS -->
+        <script src="{% static 'trabajos/js/form.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+{% block content %}
+    <form id="trabajoForm" method="post" action="." enctype="multipart/form-data">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' or action == 'express' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="{{ action }}">
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label>(*) Cliente:</label>
+                        <div class="input-group">
+                            {% if action == 'add' or action == 'express' %}
+                                {{ form.cliente }}
+                                <div class="input-group-append">
+                                    <button class="btn btn-success btn-flat btnAddCliente" type="button">
+                                        <i class="fas fa-user-plus"></i>
+                                    </button>
+                                </div>
+                            {% else %}
+                                {{ form.cliente|attr:'disabled:true' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group col-2">
+                    </div>
+                    <div class="form-group col-2">
+                        <label>(*) Fecha de Entrada:</label>
+                        <div class="col-12" id="fechaEntrada" data-target-input="nearest">
+                            {% if action == 'add' or action == 'express' %}
+                                {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% else %}
+                                {{ form.fechaEntrada|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled:true' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group col-2">
+                        <label>Fecha de Salida:</label>
+                        <div class="col-12" id="fechaSalida" data-target-input="nearest">
+                            {{ form.fechaSalida|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-3">
+                        <label>Marca:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectMarca" id="selectMarca"
+                                    {% if action == 'add' or action == 'express' %}
+                                    aria-label="selectMarca">
+                                            <option value="">---------</option>
+                                            {% for m in marcas %}
+                                                <option value={{ m.id }}>{{ m.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        aria-label="selectMarca" disabled>
+                                        disabled </select>
+                                    {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        <label>(*) Modelo:</label>
+                        <div class="input-group">
+                            {% if action == 'add' or action == 'express' %}
+                                {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%' }}
+                            {% else %}
+                                {{ form.modelo|add_class:'form-control selectModelo'|attr:'required:true'|attr:'style:100%'|attr:'disabled:true' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group col-6">
+                        <label>Plantilla:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
+                                    {% if action == 'add' or action == 'express' %}
+                                    name="selectPlantilla" aria-label="selectPlantilla">
+                                            <option value="">---------</option>
+                                        </select>
+                                    {% else %}
+                                        name="selectPlantilla" aria-label="selectPlantilla" disabled>
+                                        </select>
+                                    {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-9">
+                        <div class="form-group">
+                            <label>Observaciones:</label>
+                            <br>
+                            {{ form.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                    <div class="form-group col-3">
+                        <div class="form-group">
+                            <label>Estado del Trabajo:</label>
+                            <br>
+                            {{ form.estadoTrabajo|add_class:'form-control'|attr:'disabled' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label>(*) Prioridad:</label>
+                            <br>
+                            {{ form.prioridad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            {% if action != 'express' %}
+                                <label>(*) Usuario Asignado:</label>
+                                <br>
+                                {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            {% if action != 'express' %}
+                                <label>Ficha de Trabajo:</label>
+                                <br>
+                                {{ form.fichaTrabajo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <hr>
+                        <div class="card card-secondary">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Buscador de productos:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="searchProductos"
+                                               placeholder="Ingrese una descripción de producto" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
+                                        class="fas fa-search"></i> Buscar todos
+                                </button>
+                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddProducto"><i
+                                        class="fas fa-plus"></i> Agregar Producto
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                    <i class="fas fa-trash"></i> Eliminar todos
+                                </button>
+                                <hr>
+                                <table class="table table-bordered" id="tablaProductos">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 7%;">Eliminar</th>
+                                        <th scope="col" style="width: 40%;">Producto</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                        <th scope="col" style="width: 7%;">Actualizar</th>
+                                        <th scope="col" style="width: 7%;">Obs.</th>
+                                        <th scope="col" style="width: 7%;">Utilizado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card card-secondary">
+                            <div class="card-header">
+                                <h3 class="card-title"><i class="fas fa-wrench"></i> Detalle de servicios</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>Buscador de servicios:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="searchServicios"
+                                               placeholder="Ingrese una descripción de servicio" autocomplete="off">
+                                        <span class="input-group-append">
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchServicios"><i
+                                                class="fas fa-times"></i></button>
+                                      </span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchServicios"><i
+                                        class="fas fa-search"></i> Buscar todos
+                                </button>
+                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddServicio"><i
+                                        class="fas fa-plus"></i> Agregar Servicio
+                                </button>
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
+                                    <i class="fas fa-trash"></i> Eliminar todos
+                                </button>
+                                <hr>
+                                <table class="table table-bordered" id="tablaServicios">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 7%;">Eliminar</th>
+                                        <th scope="col" style="width: 40%;">Servicio</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                        <th scope="col" style="width: 7%;">Actualizar</th>
+                                        <th scope="col" style="width: 7%;">Obs.</th>
+                                        <th scope="col" style="width: 7%;">Realizado</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card card-secondary">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col-2">
+                                        <label>Subtotal Productos:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            <input type="text" class="form-control" name="subtotalProductos"
+                                                   autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label>Subtotal Servicios:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            <input type="text" class="form-control" name="subtotalServicios"
+                                                   autocomplete="off" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-1">
+
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label>IVA:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.iva }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label>Percepción:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.percepcion }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-1">
+
+                                    </div>
+                                    <div class="form-group col-2">
+                                        <label>Total a pagar:</label>
+                                        <div class="input-group">
+                                            <div class="input-group-append">
+                                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                                </div>
+                                            </div>
+                                            {{ form.total }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    {% if action == 'deliver' %}
+                        <div class="row">
+                            <div class="form-group col-3">
+                                <label>(*) Condición:</label>
+                                <div class="input-group">
+                                    <select class="form-select form-control select2 selectCondicionPago"
+                                            id="selectCondicionPago" name="selectCondicionPago"
+                                            aria-label="selectCondicionPago" required>
+                                        <option value="">---------</option>
+                                        {% for c in condicionesPago %}
+                                            <option value={{ c.id }}>{{ c.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group col-3">
+                                <label>(*) Medio de pago:</label>
+                                <div class="input-group">
+                                    <select class="form-select form-control select2 selectMedioPago"
+                                            id="selectMedioPago" name="selectMedioPago" aria-label="selectMedioPago"
+                                            required>
+                                        <option value="">---------</option>
+                                        {% for m in mediosPago %}
+                                            <option value={{ m.id }}>{{ m.nombre }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary btn-flat">
+                        {% if action == 'add' or action == 'express' %}
+                            <i class="fas fa-save"></i> Guardar registro
+                        {% elif action == 'edit' %}
+                            <i class="fas fa-save"></i> Guardar registro
+                        {% elif action == 'confirm' %}
+                            <i class="fas fa-save"></i> Finalizar trabajo
+                        {% elif action == 'deliver' %}
+                            <i class="fas fa-save"></i> Entregar trabajo
+                        {% endif %}
+                    </button>
+                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- Modal Marca -->
+    <div class="modal fade" id="modalMarca" tabindex="-1" role="dialog" aria-labelledby="modalMarca"
+         aria-hidden="true">
+        <form id="formMarca" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-boxes"></i> Crear una Marca</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for field in formMarca.visible_fields %}
+                            <div class="form-group">
+                                <label for="">{{ field.label }}:</label>
+                                {{ field|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListMarca" class="alert-danger col-12"></ul>
+                        {#Boton SUBMIT#}
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Marca
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Modelo -->
+    <div class="modal fade" id="modalModelo" tabindex="-1" role="dialog" aria-labelledby="modalModelo"
+         aria-hidden="true">
+        <form id="formModelo" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-box"></i> Crear un Modelo</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group" id="MarcaFormSub">
+                            <label for="Marca">Marca:</label>
+                            {{ formModelo.marca|add_class:'form-control MarcaFormSub' }}
+                        </div>
+                        <div class="form-group">
+                            <label for="Modelo">Nombre:</label>
+                            {{ formModelo.nombre|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                        <div class="form-group">
+                            <label for="Modelo">Descripción:</label>
+                            {{ formModelo.descripcion|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListModelo" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Modelo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal CLIENTE -->
+    <div class="modal fade" id="modalCliente" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formCliente" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-user-plus"></i> Crear un Cliente</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>(*) Razón Social:</label>
+                                    <br>
+                                    {{ formCliente.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6 mb-6">
+                                    <label>(*) Condición frente al IVA:</label>
+                                    <br>
+                                    {{ formCliente.condicionIVA|add_class:'form-control condicionIvaFormCliente'|attr:'required:true' }}
+                                </div>
+                                <div class="form-group col-6 mb-6">
+                                    <label>(*) Cuil - Cuit:</label>
+                                    <br>
+                                    <div class="col-12" class="form-control" id="cuil" name="cuil"
+                                         onkeypress="return isNumberKey(event)">
+                                        {{ formCliente.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        <span hidden id="errorCuit" style="color: red;">CUIL no válido </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6 mb-6">
+                                <label>(*) Localidad:</label>
+                                <br>
+                                {{ formCliente.localidad|add_class:'form-control localidadFormCliente'|attr:'required:true' }}
+                            </div>
+                            <div class="form-group col-6 mb-6">
+                                <label>(*) Dirección:</label>
+                                <div class="col-12" class="form-control" id="direccion" name="direccion">
+                                    {{ formCliente.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6 mb-6">
+                                <label>Dirección de email:</label>
+                                <br>
+                                <div class="input-group" type="email" class="form-control" id="email" name="email">
+                                    {{ formCliente.email|add_class:'form-control'|attr:'autocomplete:off' }}
+                                    <span hidden id="errorEmail"
+                                          style="color: red;">Dirección de correo electrónico no válido </span>
+                                </div>
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>(*) Teléfono:</label>
+                                <div class="col-12" class="form-control" id="telefono" name="telefono"
+                                     onkeypress="return isNumberKey(event)"
+                                     autocomplete="off" required>
+                                    {{ formCliente.telefono|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6 mb-6">
+                                <label>CBU - CVU:</label>
+                                <br>
+                                <div class="input-group" type="text" class="form-control" id="cbu" name="cbu">
+                                    {{ formCliente.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>Alias:</label>
+                                <div class="col-12" class="form-control" id="alias" name="alias">
+                                    {{ formCliente.alias|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-6 mb-4">
+                                <label>(*) Condición de Pago:</label>
+                                <br>
+                                {{ formCliente.condicionPago|add_class:'form-control condicionPagoFormCliente'|attr:'required:true' }}
+                            </div>
+                            <div class="col-6 mb-6">
+                                <label>(*) Tipo de Percepción:</label>
+                                <div class="input-group">
+                                    {{ formCliente.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-2 mb-2">
+                                <label>¿Cuenta Corriente?:</label>
+                                <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>Límite:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
+                                    {{ formCliente.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-4 mb-4">
+                                <label>Plazo:</label>
+                                <br>
+                                <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
+                                    {{ formCliente.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormCliente" name="errorListFormCliente" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" id="btnAddCliente"
+                                class="btn btn-primary btn-block btnAddCliente btn-flat">
+                            <i class="fas fa-save"></i> Guardar Cliente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal PRODUCTO -->
+    <div class="modal fade" id="modalProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-plus"></i> Crear un Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="input-group">
+                                    <div class="col-6 mb-3">
+                                        <label>Categoría:</label>
+                                        <div class="input-group">
+                                            <select class="form-select form-control select2 selectCategoria"
+                                                    id="selectCategoria"
+                                                    aria-label="selectCategorias">
+                                                <option value="">---------</option>
+                                                {% for c in categorias %}
+                                                    <option value={{ c.id }}>{{ c.nombre }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label>(*) Subcategoría:</label>
+                                        <br>
+                                        {{ formProducto.subcategoria|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6 mb-6">
+                                    <label>(*) Descripción:</label>
+                                    <br>
+                                    {{ formProducto.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                                <div class="form-group col-3 mb-3">
+                                    <label>Abreviatura:</label>
+                                    <br>
+                                    {{ formProducto.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Código:</label>
+                                <br>
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código Proveedor:</label>
+                                {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Código de Barras 1:</label>
+                                <br>
+                                {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockReal|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Stock Mínimo:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.stockMinimo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="form-group col-3 mb-3">
+                                <label>Pedido Reposición:</label>
+                                <div class="col-12" onkeypress="return isNumberKey(event)">
+                                    {{ formProducto.reposicion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="costo" name="costo">
+                                    {{ formProducto.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Margen de Utilidad:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="utilidad" name="utilidad">
+                                    {{ formProducto.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>(*) Tipo de IVA:</label>
+                                <br>
+                                {{ formProducto.iva|add_class:'form-control ivaProducto'|attr:'autocomplete:off'|attr:'required:true' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="precioVenta" name="precioVenta">
+                                    {{ formProducto.precioVenta|add_class:'form-control precioVenta'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Ubicacion Física:</label>
+                                <br>
+                                {{ formProducto.ubicacion|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Observaciones:</label>
+                                <br>
+                                {{ formProducto.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                            <div class="col-1 mb-3">
+                                <label> </label>
+                                <br>
+                            </div>
+                            <div class="col-2 mb-3">
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.esInsumo }}
+                                    <label class="custom-control-label" for="id_esInsumo">¿Es Insumo?</label>
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label class="mb-4"></label>
+                                <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                    {{ formProducto.descuentaStock }}
+                                    <label class="custom-control-label" for="id_descuentaStock">¿Descuenta
+                                        Stock?</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-6">
+                                <label>Imagen:</label>
+                                {{ formProducto.imagen }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormProducto" name="errorListFormProducto" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" id="btnAddProducto"
+                                class="btn btn-primary btn-block btnAddProducto btn-flat">
+                            <i class="fas fa-save"></i> Guardar Producto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Servicios -->
+    <div class="modal fade" id="modalServicio" tabindex="-1" role="dialog" aria-labelledby="modalServicio"
+         aria-hidden="true">
+        <form id="formServicio" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-wrench"></i> Crear un Servicio</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-9 mb-9">
+                                <label>(*) Descripción:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="descripcionServicio"
+                                     name="descripcionServicio">
+                                    {{ formServicio.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>(*) Código:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="codigoServicio" name="codigoServicio">
+                                    {{ formServicio.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="costoServicio" name="costoCosto">
+                                    {{ formServicio.costo|add_class:'form-control costoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>(*) Tipo de IVA:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="ivaServicio" name="ivaServicio">
+                                    {{ formServicio.iva|add_class:'form-control ivaServicio'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="precioVentaServicio"
+                                     name="precioVentaServicio">
+                                    {{ formServicio.precioVenta|add_class:'form-control precioVentaServicio'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
+                                </div>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Esfuerzo:</label>
+                                <br>
+                                <div class="col-12" class="form-control" id="esfuerzoServicio"
+                                     name="esfuerzoServicio">
+                                    {{ formServicio.esfuerzo|add_class:'form-control esfuerzoServicio'|attr:'autocomplete:off'|attr:'required:true' }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-6">
+                                <label>Imagen:</label>
+                                <div class="col-12" class="form-control" id="imagenServicio" name="imagenServicio">
+                                    {{ formServicio.imagen }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        {#Mensaje de error#}
+                        <ul id="errorListFormServicio" class="alert-danger col-12"></ul>
+                        {#Botones#}
+                        <button type="submit" class="btn btn-primary btn-block btn-flat">
+                            <i class="fas fa-save"></i> Guardar Servicio
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Buscar PRODUCTOS -->
+    <div class="modal fade" id="modalSearchProductos" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <b><i class="fas fa-search"></i> Búsqueda de Productos</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover" id="tablaSearchProductos">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 30%;">Subcategoría</th>
+                            <th scope="col" style="width: 40%;">Producto</th>
+                            <th scope="col" style="width: 10%;">Stock</th>
+                            <th scope="col" style="width: 10%;">Precio</th>
+                            <th scope="col" style="width: 10%;">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Buscar SERVICIOS -->
+    <div class="modal fade" id="modalSearchServicios" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        <b><i class="fas fa-search"></i> Búsqueda de Servicios</b>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-bordered table-hover" id="tablaSearchServicios">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="width: 80%;">Servicio</th>
+                            <th scope="col" style="width: 10%;">Precio</th>
+                            <th scope="col" style="width: 10%;">Opciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Actualizar PRECIO PRODUCTO -->
+    <div class="modal fade" id="modalPrecioProducto" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formPrecioProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Actualizar Precio Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idProductoUpdate" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-6">
+                                    <label>Subcategoría:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="actualizarSubcategoriaProducto"
+                                           readonly>
+                                </div>
+                                <div class="form-group col-6 mb-6">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="actualizarDescripcionProducto"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-3 mb-3">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarCostoProducto"
+                                       autocomplete="off">
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Margen de Utilidad:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarUtilidadProducto"
+                                       autocomplete="off">
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Tipo de IVA:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarIvaProducto" readonly>
+                            </div>
+                            <div class="col-3 mb-3">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarPrecioVentaProducto"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformPrecioProducto" name="errorListformPrecioProducto"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnAddProducto"
+                                    class="btn btn-primary btn-block btnEditProducto btn-flat">
+                                <i class="fas fa-edit"></i> Actualizar Precio Producto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Actualizar PRECIO SERVICIO -->
+    <div class="modal fade" id="modalPrecioServicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formPrecioServicio" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Actualizar Precio Servicio</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idServicioUpdate" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="actualizarDescripcionServicio"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-4">
+                                <label>Precio de Costo:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarCostoServicio"
+                                       autocomplete="off">
+                            </div>
+                            <div class="col-4">
+                                <label>Tipo de IVA:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarIvaServicio" readonly>
+                            </div>
+                            <div class="col-4">
+                                <label>Precio de Venta:</label>
+                                <br>
+                                <input type="text" class="form-control" name="actualizarPrecioVentaServicio"
+                                       autocomplete="off" readonly disabled>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformPrecioServicio" name="errorListformPrecioServicio"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnAddProducto"
+                                    class="btn btn-primary btn-block btnEditServicio btn-flat">
+                                <i class="fas fa-edit"></i> Actualizar Precio Servicio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Observaciones Productos -->
+    <div class="modal fade" id="modalObservacionesProducto" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formObservacionesProducto" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Observación sobre el Producto</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idObservacionProductoUpdate" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="observacionDescripcionProducto"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Observaciones:</label>
+                                <br>
+                                <input style="text-transform: uppercase;" type="text" class="form-control"
+                                       name="observacionProducto"
+                                       autocomplete="off" placeholder="INGRESE UNAS OBSERVACIONES">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformObservacionesProducto" name="errorListformObservacionesProducto"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnObservacionesProducto"
+                                    class="btn btn-primary btn-block btnObservacionesProducto btn-flat">
+                                <i class="fas fa-edit"></i> Ingresar Observación Producto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Observaciones Servicios -->
+    <div class="modal fade" id="modalObservacionesServicio" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <form id="formObservacionesServicio" enctype="multipart/form-data" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">
+                            <b><i class="fas fa-edit"></i> Observación sobre el Servicio</b>
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="idObservacionServicio" value="">
+                        <div class="row">
+                            <div class="input-group">
+                                <div class="form-group col-12">
+                                    <label>Descripción:</label>
+                                    <br>
+                                    <input type="text" class="form-control" name="observacionDescripcionServicio"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <label>Observaciones:</label>
+                                <br>
+                                <input style="text-transform: uppercase;" type="text" class="form-control"
+                                       name="observacionServicio"
+                                       autocomplete="off" placeholder="INGRESE UNAS OBSERVACIONES">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {#Mensaje de error#}
+                            <ul id="errorListformObservacionesServicio" name="errorListformObservacionesServicio"
+                                class="alert-danger col-12"></ul>
+                            {#Botones#}
+                            <button type="submit" id="btnObservacionesServicio"
+                                    class="btn btn-primary btn-block btnObservacionesServicio btn-flat">
+                                <i class="fas fa-edit"></i> Ingresar Observación Servicio
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

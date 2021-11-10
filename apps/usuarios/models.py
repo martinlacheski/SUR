@@ -11,6 +11,7 @@ from config.settings import MEDIA_URL, STATIC_URL
 #   Clase Tipos de Usuarios
 class TiposUsuarios(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    realizaTrabajos = models.BooleanField(default=False, verbose_name='¿Realiza trabajos?')
 
     def __str__(self):
         return self.nombre
@@ -35,17 +36,18 @@ class TiposUsuarios(models.Model):
 class Usuarios(AbstractUser):
     legajo = models.CharField(max_length=10, null=True, blank=True, verbose_name='Legajo', unique=True)
     fechaIngreso = models.DateField(verbose_name='Fecha de Ingreso', null=True, blank=True)
-    cuil = models.CharField(max_length=11, verbose_name='Cuil', null=True, blank=True)
+    cuil = models.CharField(max_length=11, verbose_name='Cuil', null=True, blank=True, unique=True)
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad', null=True, blank=True)
     direccion = models.CharField(max_length=100, verbose_name='Dirección', null=True, blank=True)
     telefono = models.CharField(max_length=100, verbose_name='Teléfono', null=True, blank=True)
     tipoUsuario = models.ForeignKey(TiposUsuarios, models.DO_NOTHING, verbose_name='Tipo de Usuario', null=True, blank=True)
     imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
 
+
     def toJSON(self):
-        item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups'])
+        item = model_to_dict(self, exclude=['password', 'user_permissions', 'last_login', 'date_joined', 'groups', 'fechaIngreso'])
         try:
-            item['fechaIngreso'] = self.fechaIngreso.strftime('%dd/%MM/%yyyy')
+            item['fechaIngreso'] = self.fechaIngreso.strftime('%dd-%MM-%yyyy')
         except:
             pass
         try:

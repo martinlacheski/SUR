@@ -16,6 +16,7 @@ $(function () {
         columns: [
             {"data": "marca.nombre"},
             {"data": "nombre"},
+            {"data": "descripcion"},
             {"data": "nombre"}, //va duplicado algun campo por la botonera
         ],
         columnDefs: [

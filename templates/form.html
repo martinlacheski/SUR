@@ -3,10 +3,10 @@
 {% load static %}
 {% block head %}
     {% block head_form %}
-
     {% endblock %}
 {% endblock %}
 {% block content %}
+
     <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
         <div class="card card-default">
             <div class="card-header">
@@ -22,12 +22,14 @@
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
-                {% for field in form.visible_fields %}
-                    <div class="form-group">
-                        <label for="email">{{ field.label }}:</label>
-                        {{ field| add_class:'form-control'|attr:'autocomplete:off' }}
-                    </div>
-                {% endfor %}
+                {% block fields %}
+                    {% for field in form.visible_fields %}
+                        <div class="form-group">
+                            <label for="email">{{ field.label }}:</label>
+                            {{ field| add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    {% endfor %}
+                {% endblock %}
             </div>
             <div class="card-footer">
                 {#Mensaje de error#}
@@ -54,7 +56,8 @@
                 errorList.appendChild(li);
                 $.each(obj, function (key, value) {
                     var li = document.createElement("li");
-                    li.innerText = value;
+
+                    li.innerText = key + ': ' + value;
                     errorList.appendChild(li);
                 });
             } else {
@@ -66,7 +69,6 @@
                 errorList.appendChild(li);
             }
         }
-
         //Llamamos a la funcion de Token
         getToken(name);
         //Hacemos el envio del Formulario mediante AJAX

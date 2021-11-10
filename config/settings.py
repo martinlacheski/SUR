@@ -29,7 +29,8 @@ SECRET_KEY = 'django-insecure-gkq$j64h%z-0uoq35u+)5oow6khuw1*f96i_88=d^go6)v$tp+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -41,16 +42,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #Librerias
+    # Librerias
     'widget_tweaks',
-    #Aplicaciones
+    'django.contrib.humanize',
+    'simple_history',
+    # Aplicaciones
     'apps.parametros',
     'apps.login',
     'apps.home',
     'apps.geografico',
-
     'apps.usuarios',
     'apps.erp',
+    'apps.presupuestos',
+    'apps.trabajos',
     'apps.agenda'
 ]
 
@@ -62,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Para las pistas de auditoria. Completar el historia de usuario automaticamente
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -69,8 +75,8 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        #'DIRS': [],
-        #Reemplazamos por el siguiente
+        # 'DIRS': [],
+        # Reemplazamos por el siguiente
         'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -89,13 +95,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-CRONJOBS = [('* * * * *', 'apps.agenda.cron.cron_prueba')]
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': BASE_DIR / 'db.sqlite3',
-        #Reemplazamos por lo siguiente:
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        # Reemplazamos por lo siguiente:
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
@@ -124,8 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'
 
-#TIME_ZONE = 'UTC'
-TIME_ZONE = 'America/Buenos_Aires'
+TIME_ZONE = 'UTC'
+# TIME_ZONE = 'America/Buenos_Aires'
 
 USE_I18N = True
 
@@ -138,7 +143,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-#Carpeta de archivos estaticos
+# Carpeta de archivos estaticos
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 
 STATICFILES_DIRS = [
@@ -151,16 +156,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # Base url de los archivos
 MEDIA_URL = '/media/'
 
-#Redireccion al Login Correcto
+# Redireccion al Login Correcto
 LOGIN_REDIRECT_URL = '/home/'
 
-#Redireccion al logout
+# Redireccion al logout
 LOGOUT_REDIRECT_URL = '/login/'
 
-#Direccion de Login
+# Direccion de Login
 LOGIN_URL = '/login/'
 
-#Extension Modelo Abstracto Usuarios
+# Extension Modelo Abstracto Usuarios
 AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 # Default primary key field type
@@ -168,4 +173,12 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Necesarios
+APSCHEDULER_DATETIME_FORMAT = "%d-%m-%Y %H:%M:%S"
+APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
+DJANGO_SETTINGS_MODULE = 'config.settings'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
+]

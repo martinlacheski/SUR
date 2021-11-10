@@ -3,6 +3,7 @@ from django.urls import path
 from apps.parametros.views.condicionesIVA.views import *
 from apps.parametros.views.condicionesPago.views import *
 from apps.parametros.views.empresa.views import *
+from apps.parametros.views.estadoParametros.views import *
 from apps.parametros.views.mediosPago.views import *
 from apps.parametros.views.estados.views import *
 from apps.parametros.views.marcas.views import *
@@ -63,8 +64,13 @@ urlpatterns = [
     #Estados de Trabajos
     path('estados-trabajo/list/', EstadosListView.as_view(), name='estados_list'),
     path('estados-trabajo/add/', EstadosCreateView.as_view(), name='estados_create'),
+    path('estados-trabajo/order/', EstadosOrderView.as_view(), name='estados_order'),
     path('estados-trabajo/update/<int:pk>/', EstadosUpdateView.as_view(), name='estados_update'),
     path('estados-trabajo/delete/<int:pk>/', EstadosDeleteView.as_view(), name='estados_delete'),
+    #Estados de Trabajos Parametros
+    path('estados-trabajo-parametros/list/', EstadoParametrosListView.as_view(), name='estadosParametros_list'),
+    path('estados-trabajo-parametros/add/', EstadoParametrosCreateView.as_view(), name='estadosParametros_create'),
+    path('estados-trabajo-parametros/update/<int:pk>/', EstadoParametrosUpdateView.as_view(), name='estadosParametros_update'),
     #Prioridades de Trabajos
     path('prioridades-trabajos/list/', PrioridadesListView.as_view(), name='prioridades_list'),
     path('prioridades-trabajos/add/', PrioridadesCreateView.as_view(), name='prioridades_create'),

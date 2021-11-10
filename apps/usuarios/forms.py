@@ -1,4 +1,5 @@
-from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput
+from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput, \
+    CheckboxInput
 
 from apps.usuarios.models import TiposUsuarios, Usuarios
 
@@ -10,13 +11,19 @@ class TiposUsuariosForm(ModelForm):
 
     class Meta:
         model = TiposUsuarios
-        fields = ['nombre']
+        fields = ['nombre', 'realizaTrabajos']
         widgets = {
             'nombre': TextInput(
                 attrs={
                     'placeholder': 'Ingrese un nombre',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
+                }
+            ),
+            'realizaTrabajos': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
                 }
             ),
         }
@@ -140,18 +147,13 @@ class UsuariosForm(ModelForm):
         try:
             if form.is_valid():
                 pwd = self.cleaned_data['password']
-
                 u = form.save(commit=False)
-
                 # PASAMOS A MAYUSCULAS LOS CAMPOS PARA GUARDAR EN LA BD
                 self.cleaned_data['first_name'] = self.cleaned_data['first_name'].upper()
                 self.cleaned_data['last_name'] = self.cleaned_data['last_name'].upper()
                 self.cleaned_data['direccion'] = self.cleaned_data['direccion'].upper()
-
-
                 if u.pk is None:
                     u.set_password(pwd)
-
                     #llamamos al metodo en models para pasar a mayusculas antes de guardar
                     u.saveCreate()
                     #u.save()
@@ -159,18 +161,16 @@ class UsuariosForm(ModelForm):
                     user = Usuarios.objects.get(pk=u.pk)
                     if user.password != pwd:
                         u.set_password(pwd)
-
                     #Utilizamos el SAVE convencional, porque el paso a mayuscula viene de la VIEW
                     u.save()
-
                 # limpiar los grupos que tiene el usuario
                 u.groups.clear()
-
                 # cargar los grupos que tiene el usuario
                 for g in self.cleaned_data['groups']:
                     u.groups.add(g)
             else:
                 data['error'] = form.errors
+                # print(form.errors)
         except Exception as e:
             data['error'] = str(e)
         return data

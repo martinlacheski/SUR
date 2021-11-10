@@ -20,7 +20,7 @@ $(function () {
             errorList.appendChild(li);
             $.each(obj, function (key, value) {
                 var li = document.createElement("li");
-                li.innerText = value;
+                li.innerText = key + ': ' + value;
                 errorList.appendChild(li);
             });
         } else {
@@ -39,11 +39,19 @@ $(function () {
     //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
         e.preventDefault();
+        var parameters = new FormData(this);
+        //Agregamos la Fecha
+        parameters.append('fechaIngreso', moment($('input[name="fechaIngreso"]').val(), 'DD-MM-YYYY').format('YYYY-MM-DD'));
+        parameters.append('action', $('input[name="action"]').val());
+
         $.ajax({
             url: window.location.href,
             type: 'POST',
-            data: new FormData(this),
+            data: parameters,
             dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
             processData: false,
             contentType: false,
             success: function (data) {
@@ -51,6 +59,7 @@ $(function () {
                     location.replace(data.redirect);
                 } else {
                     message_error(data.error);
+
                 }
             }
         });
@@ -82,6 +91,27 @@ $(function () {
             btn.disabled = false;
         }
     });
+
+    //Validamos CUIT CORRECTO
+    $("#cuil").on('focusout', function (e) {
+        var btn = document.getElementById('btnAdd');
+        if ($('input[name="cuil"]').val().lenght == 0 || !$('input[name="cuil"]').val()) {
+            //cuil vacio
+            $('#errorCuit').attr("hidden", "");
+            btn.disabled = false;
+        } else {
+            var check = isValidCuit($('input[name="cuil"]').val());
+            if (check == false) {
+                //alert('Dirección de correo electrónico no válido');
+                $("#errorCuit").removeAttr("hidden");
+                btn.disabled = true;
+                $("#cuil").focus();
+            } else {
+                $('#errorCuit').attr("hidden", "");
+                btn.disabled = false;
+            }
+        }
+    });
 });
 //agregar al campo numerico lo siguiente
 //onkeypress="return isNumberKey(event)"
@@ -97,3 +127,27 @@ function isValidEmail(mail) {
     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,4})+$/.test(mail);
 }
 
+//Funcion para validar que el CUIT sea válido
+function isValidCuit(cuit) {
+    //si el largo del cuit es incorrecto salir de la funcion
+    if (cuit.length != 11) return 0;
+    var rv = false;
+    var resultado = 0;
+    var cuit_nro = cuit.replace("-", "");
+    var codes = "6789456789";
+    var cuit_long = parseInt(cuit_nro);
+    var verificador = parseInt(cuit_nro[cuit_nro.length - 1]);
+    var x = 0;
+    while (x < 10) {
+        var digitoValidador = parseInt(codes.substring(x, x + 1));
+        if (isNaN(digitoValidador)) digitoValidador = 0;
+        var digito = parseInt(cuit_nro.substring(x, x + 1));
+        if (isNaN(digito)) digito = 0;
+        var digitoValidacion = digitoValidador * digito;
+        resultado += digitoValidacion;
+        x++;
+    }
+    resultado = resultado % 11;
+    rv = (resultado == verificador);
+    return rv;
+}

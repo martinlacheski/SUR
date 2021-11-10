@@ -48,5 +48,78 @@
     {% block javascript %}
 
     {% endblock %}
+
+    <!-- modal de detalle -->
+    <div class="modal fade" id="modal-lg-eventos-notif" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Detalle de Evento</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2 row">
+                        <div class="col-6">
+                            <strong>TIPO EVENTO </strong>
+                            <i>
+                                <p id="modal_tipo_evento_notif"></p>
+                            </i>
+                            <strong>DESCRIPCIÓN </strong>
+                            <i>
+                                <p id="modal_descripción_notif"></p>
+                            </i>
+                        </div>
+                        <div class="col-6">
+                            <strong>FECHA DE NOTIFICACIÓN </strong>
+                            <i>
+                                <p id="modal_fecha_notif_notif"></p>
+                            </i>
+                            <strong>NOTIFICADO MEDIANTE </strong>
+                            <i>
+                                <p id="modal_mediante_notif"></p>
+                            </i>
+                            {#                            <strong>REPETICIÓN</strong>#}
+                            {#                            <i>#}
+                            {#                                <p id="modal_repeticion_notif"></p>#}
+                            {#                            </i>#}
+                        </div>
+                        <div class="col-6">
+                            {#                            <strong>USUARIOS ASOCIADOS </strong>#}
+                            {#                            <i>#}
+                            {#                                <p id="modal_user_asoc_notif"></p>#}
+                            {#                            </i>#}
+                        </div>
+                        <div class="col-6">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <!-- cambiar a dubmit dsp -->
+                            <button type="button" id="btnCumplido" evento_id=""
+                                    class="btn btn-success btn-flat btn-block">
+                                <i class="fas fa-check"></i> ¡Evento cumplido!
+                            </button>
+                        </div>
+
+                        <div class="col-4">
+                            <button type="button" id="btnDel" evento_id="" data-toggle="modal"
+                                    data-target="#deleteModal" class="btn btn-info btn-flat btn-block">
+                                <i class="fab fa-telegram-plane"></i> Recordar por Telegram
+                            </button>
+                        </div>
+
+                        <div class="col-4">
+                            <button type="button" data-dismiss="modal" class="btn btn-warning btn-flat btn-block">
+                                <i class="fas fa-times-circle"></i> Descartar Notificación
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </body>
 {% endblock %}
