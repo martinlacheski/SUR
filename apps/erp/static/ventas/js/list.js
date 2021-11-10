@@ -276,6 +276,7 @@ $(function () {
             });
             $('#modalDetalle').modal('show');
         });
+
 //------------------------------------FILTROS----------------------------------------//
     //Mostramos los Filtros
     $('.showFilters').on('click', function () {

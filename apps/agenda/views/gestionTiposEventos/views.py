@@ -2,10 +2,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
-from django.db import transaction
 from apps.agenda.forms import *
 from apps.agenda.models import tiposEvento
 from apps.mixins import ValidatePermissionRequiredMixin
+from django.core.exceptions import *
 
 class TiposEventosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
     model = tiposEvento
@@ -60,21 +60,37 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
     def post(self, request, *args, **kwargs):
         data = {}
         datos = {}
+        print(request.POST['nombre'])
         try:
-            form = self.get_form()
-            print(form.declared_fields)
-            data = form.save()
-            data['redirect'] = self.url_redirect
-
-            for user in request.POST.getlist('usuarios'):
-                notifUsersObj = notificacionUsuarios()
-                notifUsersObj.tipoEvento = data['obj']
-                notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
-                notifUsersObj.save()
-            del data['obj']
+            try:
+                nombre = request.POST['nombre']
+                tipoEv = tiposEvento.objects.get(nombre=nombre.upper(), estado=0)
+                notifUsers = notificacionUsuarios.objects.filter(tipoEvento=tipoEv.id)
+                notifUsers.delete()
+                for user in request.POST.getlist('usuarios'):
+                    notifUsersObj = notificacionUsuarios()
+                    notifUsersObj.tipoEvento = tipoEv
+                    notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
+                    notifUsersObj.save()
+                tipoEv.estado = True
+                tipoEv.save()
+                data['redirect'] = self.url_redirect
+                return JsonResponse(data)
+            except ObjectDoesNotExist:
+                form = self.get_form()
+                data = form.save()
+                data['redirect'] = self.url_redirect
+                for user in request.POST.getlist('usuarios'):
+                    notifUsersObj = notificacionUsuarios()
+                    notifUsersObj.tipoEvento = data['obj']
+                    notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
+                    notifUsersObj.save()
+                del data['obj']
+                return JsonResponse(data)
         except Exception as e:
             datos['error'] = str(e)
         return JsonResponse(data)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Crear un Tipo de Evento'
@@ -100,12 +116,26 @@ class TiposEventosEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def post(self, request, *args, **kwargs):
         data = {}
+        datos = {}
         try:
             form = self.get_form()
-            form.save()
-            data['redirect'] = self.success_url
+            data = form.save()
+            data['redirect'] = self.url_redirect
+
+            # Eliminamos anterior asignación de usuarios.
+            notifUsersObj_old = notificacionUsuarios.objects.filter(tipoEvento=data['obj'])
+            notifUsersObj_old.delete()
+
+            # Cargamos nueva asignación
+            for user in request.POST.getlist('usuarios'):
+                notifUsersObj = notificacionUsuarios()
+                notifUsersObj.tipoEvento = data['obj']
+                notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
+                notifUsersObj.save()
+            del data['obj']
+
         except Exception as e:
-            data['error'] = str(e)
+            datos['error'] = str(e)
         return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
@@ -134,14 +164,20 @@ class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         action = request.POST['action']
         if action == 'delete':
             try:
-                N_users = notificacionUsuarios.objects.filter(tipoEvento=self.object.id)
-                for n in N_users:
-                    print(n)
-                tipoEV = tiposEvento.objects.get(pk=self.object.id)
-                tipoEV.estado = False
-                tipoEV.save()
-                data['redirect'] = self.url_redirect
-                data['check'] = 'ok'
+                evAsoc = eventosAgenda.objects.filter(tipoEvento=self.object.id)
+                if evAsoc:
+                    data['error'] = "No se puede eliminar. Existen eventos asociados a este tipo de evento"
+                    return JsonResponse(data)
+                else:
+                    N_users = notificacionUsuarios.objects.filter(tipoEvento=self.object.id)
+                    for n in N_users:
+                        n.estado = False
+                        n.save()
+                    tipoEV = tiposEvento.objects.get(pk=self.object.id)
+                    tipoEV.estado = False
+                    tipoEV.save()
+                    data['redirect'] = self.url_redirect
+                    data['check'] = 'ok'
             except Exception as e:
                 data['error'] = str(e)
         return JsonResponse(data)
@@ -152,3 +188,4 @@ class TiposEventosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         context['entity'] = 'Tipos de evento'
         context['list_url'] = reverse_lazy('agenda:tiposEventoList')
         return context
+

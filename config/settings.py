@@ -31,10 +31,13 @@ DEBUG = True
 
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 ALLOWED_HOSTS = ["*"]
+ASGI_APPLICATION = 'config.asgi.application'
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',             # si o si tienen que ir primero. Relacionado a documentación
     'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,7 +45,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+<<<<<<<<< Temporary merge branch 1
+
+    #Librerias
+=========
     # Librerias
+>>>>>>>>> Temporary merge branch 2
     'widget_tweaks',
     'django.contrib.humanize',
     'simple_history',
@@ -55,7 +63,9 @@ INSTALLED_APPS = [
     'apps.erp',
     'apps.presupuestos',
     'apps.trabajos',
-    'apps.agenda'
+    'apps.agenda',
+    'apps.bot_telegram',
+    'apps.notif_channel',
 ]
 
 MIDDLEWARE = [
@@ -126,11 +136,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
+<<<<<<<<< Temporary merge branch 1
+
 #LANGUAGE_CODE = 'en-us'
+=========
+# LANGUAGE_CODE = 'en-us'
+>>>>>>>>> Temporary merge branch 2
 LANGUAGE_CODE = 'es-ar'
 
-TIME_ZONE = 'UTC'
-# TIME_ZONE = 'America/Buenos_Aires'
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 
 USE_I18N = True
 
@@ -173,12 +188,28 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+CRONJOBS = [
+    ('0 8 * * *', 'apps.bot_telegram.cron.rastreoTrabajos')
+]
+
+
+# Probablemente innecesarios. Si joden, chau
+#DATE_FORMAT = '%d-%m-%y'
+# DATE_INPUT_FORMATS = '%d-%m-%Y'
+# DATETIME_INPUT_FORMATS = ['%d/%m/%Y %H:%M:%S']
+
 # Necesarios
 APSCHEDULER_DATETIME_FORMAT = "%d-%m-%Y %H:%M:%S"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
 DJANGO_SETTINGS_MODULE = 'config.settings'
 
-CRONJOBS = [
-    ('*/1 * * * *', 'apps.agenda.cron.scheduler_eventos')
-]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
