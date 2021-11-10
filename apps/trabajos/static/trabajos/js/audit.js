@@ -171,6 +171,7 @@ $(function () {
             }).done(function (data) {
                 var dato = data[0];
                 //Cargamos los datos del Producto y mostramos en el modal con las modificaciones
+                var idTrabajo = $('#modalId').val(dato.trabajo_id);
                 var cliente = $('#modalCliente').val(dato.cliente);
                 var modelo = $('#modalModelo').val(dato.modelo);
                 var fecha = $('#modalFecha').val(moment(moment(dato.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));

@@ -171,6 +171,7 @@ $(function () {
             }).done(function (data) {
                 var dato = data[0];
                 //Cargamos los datos del Producto y mostramos en el modal con las modificaciones
+                var idVenta = $('#modalId').val(dato.venta_id);
                 var cliente = $('#modalCliente').val(dato.cliente);
                 var condicion = $('#modalCondicion').val(dato.condicionVenta);
                 var medioPago = $('#modalMedioPago').val(dato.medioPago);
