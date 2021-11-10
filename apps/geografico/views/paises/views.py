@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 from django.core.exceptions import PermissionDenied
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.shortcuts import render
 
 from apps.geografico.forms import PaisesForm
 from apps.geografico.models import Paises
@@ -12,10 +13,15 @@ from apps.mixins import ValidatePermissionRequiredMixin
 class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
     model = Paises
     template_name = 'paises/list.html'
+    redirect_template = ''
     permission_required = 'geografico.view_paises'
+    success_url = reverse_lazy('agenda:dashboard')
 
     def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+        if request.user.has_perm(self.permission_required):
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            return HttpResponse("No tenés permiso para realizar esta acción")
 
     def post(self, request):
         data = {}
@@ -30,6 +36,7 @@ class PaisesListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,12 +67,10 @@ class PaisesCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 if action == 'add':
                     form = self.get_form()
                     data = form.save()
-                    print("mmmm")
                     data['redirect'] = self.url_redirect
                 else:
                     data['error'] = 'No ha ingresado a ninguna opción'
             except Exception as e:
-                print("ex")
                 data['error'] = str(e)
             return JsonResponse(data)
         except PermissionDenied:
