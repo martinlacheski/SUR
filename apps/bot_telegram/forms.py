@@ -10,7 +10,7 @@ class gestionNotifIncidenciasForm(ModelForm):
 
 
     class Meta:
-        model = notifIncidentesUsuarios
+        model = notifUsuariosBot
         fields = ['usuario_id']
 
         widgets = {

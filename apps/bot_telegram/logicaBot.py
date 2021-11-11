@@ -23,6 +23,29 @@ import ast
 
 # ***   CLIENTES ***
 
+def validarCUITCUIL(cuit):
+    if (not cuit):
+        return False
+    if (len(cuit) != 13):
+        return False
+    rv = False
+    resultado = 0
+    cuit_nro = cuit.replace("-", "")
+    codes = "6789456789"
+    cuit_long = int(cuit_nro)
+    verificador = int(cuit_nro[len(cuit_nro)-1])
+    x = 0
+    while x < 10:
+        digitoValidador = codes[x]
+        digito = cuit_nro[x]
+        if digitoValidador and digito:
+            digitoValidacion = int(digitoValidador) * int(digito)
+            resultado += digitoValidacion
+        x = x + 1
+    resultado = resultado % 11
+    rv = (resultado == verificador)
+    return rv
+
 #   Chequea si el cliente ya registrado se quiere registrar como usuario. (no va a poder)
 def check_chatid_user(chat_id):
     usuarios = Usuarios.objects.all()
@@ -273,19 +296,20 @@ def almacenarRespuesta(respuesta):
 
 # Registra suceso en donde un cliente se quiere registrar pero su cuit/cuil no está en el sistema.
 def clienteNoRegistrado(cuil_cuit, username, nombre):
-    logIncidente = registroBotIncidencias()
-    logIncidente.fechaSuceso = timezone.now().date()
-    logIncidente.observacion = "Cliente con username " + str(username) + " y nombre " + str(nombre) + " ingresó " \
-                               "su CUIT/CUIL " + cuil_cuit + " mediante Télegram pero el mismo no está" \
-                               " registrado en el sistema."
-    logIncidente.save()
+    titulo = "Registro de cliente no existoso"
+    desc = "Cliente con username " + str(username) + " y nombre " + str(nombre) + " ingresó " \
+           "su CUIT/CUIL " + cuil_cuit + " mediante Télegram pero el mismo no está" \
+           " registrado en el sistema."
+    notificarSistema(titulo, desc)
+    return True
 
 # Registra suceso en donde una persona cualquiera, sin usar comandos, quiere interactuar con el bot. (no puede)
 # TO-DO, hay que poner una zona horaria a la basura esta
 def personaNoRegistrada(username, nombre):
-    logIncidente = registroBotIncidencias()
-    logIncidente.fechaSuceso = timezone.now().date()
-    logIncidente.observacion = "Persona  con username " + str(username) + " y nombre " + str(nombre) + " le mandó " \
-                               "un mensaje al bot sin estar registrada como usuario o como cliente."
-    logIncidente.save()
+    # logIncidente = registroBotIncidencias()
+    # logIncidente.fechaSuceso = timezone.now().date()
+    # logIncidente.observacion = "Persona  con username " + str(username) + " y nombre " + str(nombre) + " le mandó " \
+    #                            "un mensaje al bot sin estar registrada como usuario o como cliente."
+    # logIncidente.save()
+    return True
 

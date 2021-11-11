@@ -895,6 +895,7 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     except Exception as e:
                         data['error'] = str(e)
                     trabajo.save()
+                    notificarCliente(trabajo)
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleproductostrabajo_set.all().delete()
                     # Volvemos a cargar los productos al Detalle

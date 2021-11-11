@@ -2,6 +2,8 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from django.contrib.auth.models import Group, Permission
+
 
 
 # Telegram
@@ -122,11 +124,9 @@ class Command(BaseCommand):
                                                    "Luego enviá el mensaje\."
                                               ,parse_mode=telegram.ParseMode.MARKDOWN_V2)
                 elif len(context.args) == 1:
-                    cuil_cuit = context.args[0]
-
                     # Chequeamos que el cuil/cuit esté correcto
-                    # TO-DO acá debe ir comprobación de CUIL con calculadora
-                    if cuil_cuit.isdigit() and len(cuil_cuit) == 11:
+                    cuil_cuit = context.args[0]
+                    if validarCUITCUIL(cuil_cuit):
                         try:
                             cliente = Clientes.objects.get(cuil=cuil_cuit)
                             cliente.chatIdCliente = int(update.message.from_user.id)
@@ -143,11 +143,12 @@ class Command(BaseCommand):
                             update.message.reply_text("Mmm, esto es raro 🤔 \n\n"
                                                       "No te encontramos registrado como cliente."
                                                       " Este inconveniente será reportado!\n")
+                            # Notificamos por sistema
                             clienteNoRegistrado(cuil_cuit, update.message.from_user.username,
-                                                update.message.from_user.first_name)  # Registramos el incidente
+                                                update.message.from_user.first_name)
 
-                            # Se lo notificamos a todos los usuarios seteados que tengan chatID
-                            usersToNotif = notifIncidentesUsuarios.objects.all()
+                            # Notificamos por telegram
+                            usersToNotif = notifUsuariosBot.objects.all()
                             for user in usersToNotif:
                                 if user.usuario_id.chatIdUsuario:
                                     bot.send_message(text="Hola! 😌\nTe informo que un cliente intentó registrarse y "
@@ -157,8 +158,7 @@ class Command(BaseCommand):
                                                            str(update.message.from_user.first_name),
                                                            chat_id=user.usuario_id.chatIdUsuario)
                     else:
-                        update.message.reply_text("CUIL/CUIT ingresado contiene letras o no tiene una"
-                                                  " longitud de 11 caracteres")
+                        update.message.reply_text("CUIL/CUIT ingresado no es válido. Intentá nuevamente")
                 elif len(context.args) != 0 and len(context.args) != 1:
                     update.message.reply_text(text="No ingresaste bien el comando 😅\nRecordá que tiene que ser similar "
                                                    "a\n\n ``` /registroCliente 20346735739 ``` "
@@ -178,7 +178,7 @@ class Command(BaseCommand):
                     query.edit_message_text(text="👍 Tu respuesta ha sido registrada y notificada al personal"
                                                  " de SUR EXPRESS")
                     # Avisamos a los administradores por télegram
-                    usersToNotif = notifIncidentesUsuarios.objects.all()
+                    usersToNotif = notifUsuariosBot.objects.all()
                     mensaje = estado_retiro['respuesta_bot']
                     for user in usersToNotif:
                         if user.usuario_id.chatIdUsuario:
@@ -194,40 +194,41 @@ class Command(BaseCommand):
             except ObjectDoesNotExist:
                 try:
                     usuario = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
-                    opciones = ['ventasDia', 'comprasDia', 'trabajosPlanif', 'trabajosDia']
-                    # Bloque ejecutado si se trata de proc automatizado de consulta gerencial
-                    if query.data in opciones:
-                        #TO - DO: acá solamente usuarios gerenciales pueden acceder
-                        mensaje = generarReporte(query.data)
-                        hoy = timezone.now().date()
-                        print(str(hoy.strftime('%d\-%m\-%Y')))
-                        if mensaje['tipo'] == 'venta':
-                            bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
-                                                    str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
-                                                  "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
-                                                  "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
-                                                  "``` Total servicios\: \$``` " + str(int(mensaje['totalServicios'])) + " pesos\n" +
-                                                  "``` Cant\. ventas\: ``` " + str(int(mensaje['cantVentas'])) + "\n",
-                                                    parse_mode=telegram.ParseMode.MARKDOWN_V2,
-                                                    chat_id=usuario.chatIdUsuario)
-                        if mensaje['tipo'] == "compra":
-                            bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬇ Compras al día de la fecha " +
-                                                  str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
-                                                  "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
-                                                  "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
-                                                  "``` Cant\. compras\: ``` " + str(int(mensaje['cantCompras'])) + "\n",
-                                             parse_mode=telegram.ParseMode.MARKDOWN_V2,
-                                             chat_id=usuario.chatIdUsuario)
-                        if mensaje['tipo'] == "trabajosPlanif":
-                            bot.send_message(text="Este es el reporte que solicitaste!\n\n 📅 Estado de trabajos para"
-                                                  " planificación desde " + mensaje['planifDesde'] + " hasta " +
-                                                  mensaje['planifHasta'] + "\n\n" + mensaje['mensaje'],
-                                            chat_id=usuario.chatIdUsuario)
-                        if mensaje['tipo'] == "trabajosDia":
-                            bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Nuevos trabajos ingresados" 
-                                                  " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
-                                             chat_id=usuario.chatIdUsuario)
-                    else:
+                    if usuario.has_perm('notificaciones.view_notificacionesgenerales'):
+                        opciones = ['ventasDia', 'comprasDia', 'trabajosPlanif', 'trabajosDia']
+                        # Bloque ejecutado si se trata de proc automatizado de consulta gerencial
+                        if query.data in opciones:
+                            #TO - DO: acá solamente usuarios gerenciales pueden acceder
+                            mensaje = generarReporte(query.data)
+                            hoy = timezone.now().date()
+                            print(str(hoy.strftime('%d\-%m\-%Y')))
+                            if mensaje['tipo'] == 'venta':
+                                bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬆ Ventas al día de la fecha " +
+                                                        str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
+                                                      "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
+                                                      "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
+                                                      "``` Total servicios\: \$``` " + str(int(mensaje['totalServicios'])) + " pesos\n" +
+                                                      "``` Cant\. ventas\: ``` " + str(int(mensaje['cantVentas'])) + "\n",
+                                                        parse_mode=telegram.ParseMode.MARKDOWN_V2,
+                                                        chat_id=usuario.chatIdUsuario)
+                            if mensaje['tipo'] == "compra":
+                                bot.send_message(text="Este es el reporte que solicitaste\!\n\n ⬇ Compras al día de la fecha " +
+                                                      str(hoy.strftime('%d\-%m\-%Y')) + "\n\n"
+                                                      "``` TOTAL\: \$``` " + str(int(mensaje['totalDia'])) + " pesos\n" +
+                                                      "``` Total productos\: \$``` " + str(int(mensaje['totalProductos'])) + " pesos\n" +
+                                                      "``` Cant\. compras\: ``` " + str(int(mensaje['cantCompras'])) + "\n",
+                                                 parse_mode=telegram.ParseMode.MARKDOWN_V2,
+                                                 chat_id=usuario.chatIdUsuario)
+                            if mensaje['tipo'] == "trabajosPlanif":
+                                bot.send_message(text="Este es el reporte que solicitaste!\n\n 📅 Estado de trabajos para"
+                                                      " planificación desde " + mensaje['planifDesde'] + " hasta " +
+                                                      mensaje['planifHasta'] + "\n\n" + mensaje['mensaje'],
+                                                chat_id=usuario.chatIdUsuario)
+                            if mensaje['tipo'] == "trabajosDia":
+                                bot.send_message(text="Este es el reporte que solicitaste!\n\n 🛠️ Nuevos trabajos ingresados" 
+                                                      " hoy " + str(hoy.strftime('%d-%m-%Y')) + "\n\n" + mensaje['mensaje'],
+                                                 chat_id=usuario.chatIdUsuario)
+                    if query.data not in opciones:
                         # Bloque ejecutado por proc auto de asiganción de trabajos (guarda la respuesta del user)
                         resp_to_dict = ast.literal_eval(query.data)
                         t = Trabajos.objects.get(pk=resp_to_dict['trabajo'])
@@ -240,10 +241,8 @@ class Command(BaseCommand):
                                           " faltan repuestos para el trabajo Nro° " + str(t.id) + "."
                             notificarSistema(titulo, descripcion)
                         query.edit_message_text(text=response)
-
-
                 except ObjectDoesNotExist:
-                    print("no estas registrado")
+                    bot.send_message(text="No podes interactuar conmigo, No estás registrado.", chat_id=usuario.chatIdUsuario)
 
         # Procesa los mensajes que NO son comandos.
         def respuestaDefault(update, context):
@@ -262,15 +261,15 @@ class Command(BaseCommand):
                     personaNoRegistrada(update.message.from_user.username, update.message.from_user.first_name)
 
             # palabras que puede usar un user
-            if esUser:
+            if esUser and user_gerencial.has_perm('notificaciones.view_notificacionesgenerales'):
                 if msjRecibido == 'REPORTAME':
                     botones = armarBotonesConsulta()
-                    bot.send_message(chat_id=user_gerencial.chatIdUsuario, text="📈 Estos son los "
-                                     "reportes que tengo disponibles para vos\n", reply_markup=botones)
+                    bot.send_message(chat_id=user_gerencial.chatIdUsuario,
+                                     text="📈 Estos son los reportes que tengo disponibles para vos\n", reply_markup=botones)
                 else:
                     update.message.reply_text(text=str(user_gerencial.username) + " no entendí lo que dijiste 🤨\n"
-                                              "Recordá que únicamente respondo a la palabra:\n\n ```reportame``` \n\n"
-                                              " la cual tenes que enviar en un único mensaje\.",
+                                               "Recordá que únicamente respondo a la palabra:\n\n ```reportame``` \n\n"
+                                                " la cual tenes que enviar en un único mensaje\.",
                                               parse_mode=telegram.ParseMode.MARKDOWN_V2)
 
             # Palabras que puede usar un cliente
