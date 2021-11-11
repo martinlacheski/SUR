@@ -1514,7 +1514,14 @@ $(function () {
         maxboostedstep: 10,
         postfix: '$'
     });
-
+    $(".esfuerzoServicio").TouchSpin({
+        min: 0,
+        max: 100,
+        step: 1,
+        boostat: 5,
+        maxboostedstep: 10,
+        postfix: '%'
+    });
     //Al cerrar el Modal de Servicios reseteamos los valores del formulario
     $('#modalServicio').on('hidden.bs.modal', function (e) {
         //Reseteamos los input del Modal

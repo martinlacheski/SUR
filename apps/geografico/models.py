@@ -1,10 +1,12 @@
 from django.db import models
 
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 
 class Paises(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -28,6 +30,7 @@ class Paises(models.Model):
 class Provincias(models.Model):
     pais = models.ForeignKey(Paises, models.DO_NOTHING, verbose_name='Pais')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -38,7 +41,7 @@ class Provincias(models.Model):
         return item
 
     class Meta:
-        unique_together = [['pais', 'nombre']]
+        unique_together = ['pais', 'nombre']
         verbose_name = 'Provincia'
         verbose_name_plural = 'Provincias'
         db_table = 'geografico_provincias'
@@ -55,6 +58,7 @@ class Localidades(models.Model):
     provincia = models.ForeignKey(Provincias, models.DO_NOTHING, verbose_name='Provincia')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
     codigo_postal = models.CharField(max_length=10, verbose_name='Código Postal')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name()
@@ -70,7 +74,7 @@ class Localidades(models.Model):
         return item
 
     class Meta:
-        unique_together = [['pais', 'provincia', 'nombre']]
+        unique_together = ['pais', 'provincia', 'nombre']
         verbose_name = 'Localidad'
         verbose_name_plural = 'Localidades'
         db_table = 'geografico_localidades'

@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 from apps.geografico.models import Localidades
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, TiposPercepciones, \
@@ -21,9 +22,11 @@ class Clientes(models.Model):
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
     tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
-    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2,  null=True, blank=True, verbose_name='Límite de Cuenta Corriente')
-    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
-    chatIdCliente = models.IntegerField(blank=True, null=True)
+    limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True, blank=True,
+                                       verbose_name='Límite de Cuenta Corriente')
+    plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    history = HistoricalRecords()
+    
     def __str__(self):
         return self.razonSocial
 
@@ -69,7 +72,8 @@ class Proveedores(models.Model):
     alias = models.CharField(max_length=100, verbose_name='Alias', null=True, blank=True)
     tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
-    plazoCtaCte = models.PositiveIntegerField(default=0,verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.razonSocial
@@ -108,6 +112,7 @@ class Proveedores(models.Model):
 class Categorias(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -133,6 +138,7 @@ class Subcategorias(models.Model):
     categoria = models.ForeignKey(Categorias, models.DO_NOTHING, verbose_name='Categoría')
     nombre = models.CharField(max_length=100, verbose_name='Nombre')
     abreviatura = models.CharField(max_length=25, verbose_name='Abreviatura')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -165,8 +171,10 @@ class Productos(models.Model):
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     abreviatura = models.CharField(max_length=30, null=True, blank=True, verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo', unique=True)
-    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor', unique=True)
-    codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1', unique=True)
+    codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor',
+                                       unique=True)
+    codigoBarras1 = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Barras 1',
+                                     unique=True)
     stockReal = models.IntegerField(default=0, verbose_name='Stock Real')
     stockMinimo = models.PositiveIntegerField(default=0, verbose_name='Stock Mínimo')
     reposicion = models.PositiveIntegerField(default=0, verbose_name='Pedido Reposición')
@@ -179,6 +187,7 @@ class Productos(models.Model):
     observaciones = models.CharField(max_length=100, null=True, blank=True, verbose_name='Observaciones')
     esInsumo = models.BooleanField(default=False, verbose_name='¿Es Insumo?')
     descuentaStock = models.BooleanField(default=True, verbose_name='¿Descuenta Stock?')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name()
@@ -247,6 +256,7 @@ class Servicios(models.Model):
     precioVenta = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, verbose_name='Precio de Venta')
     esfuerzo = models.PositiveIntegerField(default=20, verbose_name='Esfuerzo')
     imagen = models.ImageField(upload_to='servicios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.descripcion
@@ -290,6 +300,7 @@ class Ventas(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estadoVenta = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         # return self.cliente.razonSocial
@@ -312,6 +323,7 @@ class Ventas(models.Model):
         db_table = 'erp_ventas'
         ordering = ['fecha', 'id']
 
+
 # Detalle de Productos de la venta
 class DetalleProductosVenta(models.Model):
     venta = models.ForeignKey(Ventas, models.DO_NOTHING)
@@ -319,6 +331,7 @@ class DetalleProductosVenta(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -333,7 +346,9 @@ class DetalleProductosVenta(models.Model):
     class Meta:
         verbose_name = 'Detalle de Venta - Productos'
         verbose_name_plural = 'Detalle de Ventas - Productos'
+        db_table = 'erp_ventas_detalle_productos'
         ordering = ['id']
+
 
 # Detalle de Servicios de la venta
 class DetalleServiciosVenta(models.Model):
@@ -342,6 +357,7 @@ class DetalleServiciosVenta(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.servicio.descripcion
@@ -356,6 +372,7 @@ class DetalleServiciosVenta(models.Model):
     class Meta:
         verbose_name = 'Detalle de Venta - Servicios'
         verbose_name_plural = 'Detalle de Ventas - Servicios'
+        db_table = 'erp_ventas_detalle_servicios'
         ordering = ['id']
 
 
@@ -372,6 +389,7 @@ class Compras(models.Model):
     percepcion = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estadoCompra = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_sale()
@@ -401,6 +419,7 @@ class DetalleProductosCompra(models.Model):
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -415,6 +434,7 @@ class DetalleProductosCompra(models.Model):
     class Meta:
         verbose_name = 'Detalle de Compra'
         verbose_name_plural = 'Detalle de Compras'
+        db_table = 'erp_compras_detalle'
         ordering = ['id']
 
 
@@ -426,9 +446,10 @@ class PedidosSolicitud(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default="", blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
-        return self.get_full_sale()
+        return str(self.id)
 
     def get_full_sale(self):
         return '{} - {}'.format(self.fecha, self.estado)
@@ -454,7 +475,7 @@ class DetallePedidoSolicitud(models.Model):
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -473,4 +494,116 @@ class DetallePedidoSolicitud(models.Model):
     class Meta:
         verbose_name = 'Detalle de Solicitud de Pedido'
         verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
+        db_table = 'erp_pedidos_solicitud_detalle'
+        ordering = ['id']
+
+
+
+#   Clase Solicitudo de Pedidos completado por Proveedores
+class PedidoSolicitudProveedor(models.Model):
+    pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    enviado = models.DateTimeField(verbose_name='Fecha y Hora de envío correo electrónico')
+    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario')
+    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario')
+
+    def __str__(self):
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return '{} - {}'.format(self.pedidoSolicitud, self.proveedor)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
+        item['proveedor'] = self.proveedor.toJSON()
+        item['subtotal'] = format(self.subtotal, '.2f')
+        item['iva'] = format(self.iva, '.2f')
+        item['total'] = format(self.total, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Solicitud de Pedido Proveedor'
+        verbose_name_plural = 'Solicitudes de Pedidos Proveedor'
+        db_table = 'erp_pedidos_solicitud_proveedor'
+        ordering = ['id']
+
+
+class DetallePedidoSolicitudProveedor(models.Model):
+    pedidoSolicitudProveedor = models.ForeignKey(PedidoSolicitudProveedor, models.DO_NOTHING)
+    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['pedidoSolicitudProveedor'])
+        item['producto'] = self.producto.toJSON()
+        item['costo'] = format(self.costo, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Solicitud de Pedido'
+        verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
+        db_table = 'erp_pedidos_solicitud_proveedor_detalle'
+        ordering = ['id']
+
+
+#   Clase Pedidos
+class Pedidos(models.Model):
+    pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
+    fecha = models.DateField(verbose_name='Fecha')
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    estado = models.BooleanField(default="", blank=True, null=True)
+
+    def __str__(self):
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return '{} - {}'.format(self.pedidoSolicitud, self.fecha)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+        db_table = 'erp_pedidos'
+        ordering = ['id']
+
+
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedidos, models.DO_NOTHING)
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
+    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['pedido'])
+        item['proveedor'] = self.proveedor.toJSON()
+        item['producto'] = self.producto.toJSON()
+        item['costo'] = format(self.costo, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Pedido'
+        verbose_name_plural = 'Detalle de Pedidos'
+        db_table = 'erp_pedidos_detalle'
         ordering = ['id']

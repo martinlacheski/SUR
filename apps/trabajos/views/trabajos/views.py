@@ -24,7 +24,7 @@ from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlan
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
-from apps.usuarios.models import Usuarios, TiposUsuarios
+from apps.usuarios.models import Usuarios
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -47,7 +47,6 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             if action == 'searchdata':
                 data = []
                 for i in Trabajos.objects.all():
-
                     # Obtenemos el estado de avance por cada trabajo
                     totalEsfuerzo = 0
                     esfuerzoTrabRealizados = 0
@@ -64,6 +63,10 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                     # Redondeamos para tener solo 2 decimales
                     porcentaje = round(round(porcentaje, 2) * 100, 2)
                     item = i.toJSON()
+                    if i.usuarioAsignado:
+                        item['asignado'] = i.usuarioAsignado.username
+                    else:
+                        item['asignado'] = 'EXPRESS'
                     item['porcentaje'] = str(porcentaje)
                     data.append(item)
             elif action == 'get_parametros_estados':
@@ -155,14 +158,23 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 except Exception as e:
                     pass
                 total = 0
+                neto = 0
+                iva = 0
+                percepcion = 0
                 try:
                     for i in trabajos:
                         # Asignamos a una variable el estado de trabajo
                         estadoTrabajo = i['estadoTrabajo']
                         # Comparamos el nombre del estado de trabajo con el estado de trabajo en parametros
                         if estadoTrabajo['nombre'] != estado.estadoCancelado.nombre:
+                            neto += float(i['subtotal'])
+                            iva += float(i['iva'])
+                            percepcion += float(i['percepcion'])
                             total += float(i['total'])
-                        total = round(total,2)
+                        neto = round(neto, 2)
+                        iva = round(iva, 2)
+                        percepcion = round(percepcion, 2)
+                        total = round(total, 2)
                 except Exception as e:
                     pass
                 # Pasamos a letras el total
@@ -186,6 +198,9 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                         'trabajos': trabajos,
                         'estadoCancelado': estadoCancelado,
                         'usuario': request.user,
+                        'subtotal': neto,
+                        'iva': iva,
+                        'percepcion': percepcion,
                         'total': total,
                         'enLetras': totalEnLetras,
                     }
@@ -215,6 +230,199 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
         context['create_url'] = reverse_lazy('trabajos:trabajos_create')
         context['list_url'] = reverse_lazy('trabajos:trabajos_list')
         context['entity'] = 'Trabajos'
+        return context
+
+
+class TrabajosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+    model = Trabajos
+    template_name = 'trabajos/audit.html'
+    permission_required = 'trabajos.view_trabajos'
+
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request):
+        data = {}
+        try:
+            action = request.POST['action']
+            if action == 'searchdata':
+                data = []
+                for i in Trabajos.history.all():
+                    try:
+                        usuario = i.history_user.username
+                    except:
+                        usuario = '----'
+                    dict = {'history_id': i.history_id, 'fechaEntrada': i.fechaEntrada, 'fechaSalida': i.fechaSalida,
+                            'trabajo_id': i.id, 'subtotal': i.subtotal, 'iva': i.iva, 'percepcion': i.percepcion,
+                            'total': i.total, 'fichaTrabajo': i.fichaTrabajo, 'observaciones': i.observaciones,
+                            'history_date': i.history_date, 'history_type': i.history_type,
+                            'cliente': i.cliente.razonSocial, 'estadoTrabajo': i.estadoTrabajo_id,
+                            'modelo': i.modelo.nombre, 'prioridad': i.prioridad_id, 'history_user': usuario,
+                            'usuarioAsignado': i.usuarioAsignado_id}
+                    data.append(dict)
+            elif action == 'view_movimiento':
+                data = []
+                mov = Trabajos.history.get(history_id=request.POST['pk'])
+                tiempo_inicial = mov.history_date
+                tiempo_margen = tiempo_inicial + datetime.timedelta(seconds=2)
+                movAnt = mov.prev_record
+                try:
+                    usuario = mov.history_user.username
+                    movAnt = mov.prev_record
+                except:
+                    usuario = '----'
+                try:
+                    usuarioAsignado = mov.usuarioAsignado.username
+                except:
+                    usuarioAsignado = '----'
+                try:
+                    usuarioAsignadoOld = movAnt.usuarioAsignado.username
+                except:
+                    usuarioAsignadoOld = '----'
+                if movAnt:
+                    dict = {'usuario': mov.usuario.username, 'history_id': mov.history_id,
+                            'fechaEntrada': mov.fechaEntrada, 'fechaSalida': mov.fechaSalida, 'trabajo_id': mov.id,
+                            'subtotal': mov.subtotal, 'iva': mov.iva, 'percepcion': mov.percepcion, 'total': mov.total,
+                            'fichaTrabajo': mov.fichaTrabajo, 'observaciones': mov.observaciones,
+                            'history_date': mov.history_date, 'history_type': mov.history_type,
+                            'cliente': mov.cliente.razonSocial, 'estadoTrabajo': mov.estadoTrabajo.nombre,
+                            'modelo': mov.modelo.nombre, 'prioridad': mov.prioridad.nombre, 'history_user': usuario,
+                            'usuarioAsignado': usuarioAsignado,
+                            'usuarioOld': movAnt.usuario.username, 'fechaEntradaOld': movAnt.fechaEntrada,
+                            'fechaSalidaOld': movAnt.fechaSalida, 'subtotalOld': movAnt.subtotal, 'ivaOld': movAnt.iva,
+                            'percepcionOld': movAnt.percepcion, 'totalOld': movAnt.total,
+                            'fichaTrabajoOld': movAnt.fichaTrabajo, 'observacionesOld': movAnt.observaciones,
+                            'history_dateOld': movAnt.history_date, 'history_typeOld': movAnt.history_type,
+                            'clienteOld': movAnt.cliente.razonSocial, 'estadoTrabajoOld': movAnt.estadoTrabajo.nombre,
+                            'modeloOld': movAnt.modelo.nombre, 'prioridadOld': movAnt.prioridad.nombre,
+                            'history_userOld': usuario, 'usuarioAsignadoOld': usuarioAsignadoOld}
+                    item = dict
+                else:
+                    dict = {'usuario': mov.usuario.username, 'history_id': mov.history_id,
+                            'fechaEntrada': mov.fechaEntrada, 'fechaSalida': mov.fechaSalida, 'trabajo_id': mov.id,
+                            'subtotal': mov.subtotal, 'iva': mov.iva, 'percepcion': mov.percepcion, 'total': mov.total,
+                            'fichaTrabajo': mov.fichaTrabajo, 'observaciones': mov.observaciones,
+                            'history_date': mov.history_date, 'history_type': mov.history_type,
+                            'cliente': mov.cliente.razonSocial, 'estadoTrabajo': mov.estadoTrabajo.nombre,
+                            'modelo': mov.modelo.nombre, 'prioridad': mov.prioridad.nombre, 'history_user': usuario,
+                            'usuarioAsignado': mov.usuarioAsignado.username}
+                    item = dict
+                # Obtenemos el ID del trabajo para Filtrar
+                trabajo = request.POST['trabajo_id']
+                # Creamos un array de detalle de productos
+                detalle_productos = []
+                for i in DetalleProductosTrabajo.history.filter(trabajo_id=trabajo, history_date__range=[tiempo_inicial,
+                                                                                                         tiempo_margen]).order_by(
+                    'producto__descripcion'):
+                    detalle = {
+                        'producto': i.producto.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
+                        'subtotal': i.subtotal, 'history_type': i.history_type, 'usuario': i.history_user.username,
+                        'history_date': i.history_date, 'history_id': i.history_id}
+                    detalle_productos.append(detalle)
+                item['detalle_productos'] = detalle_productos
+                # Creamos un array de detalle de servicios
+                detalle_servicios = []
+                for i in DetalleServiciosTrabajo.history.filter(trabajo_id=trabajo, history_date__range=[tiempo_inicial,
+                                                                                                         tiempo_margen]).order_by(
+                    'servicio__descripcion'):
+                    detalle = {
+                        'servicio': i.servicio.descripcion, 'precio': i.precio, 'cantidad': i.cantidad,
+                        'subtotal': i.subtotal, 'history_type': i.history_type, 'usuario': i.history_user.username,
+                        'history_date': i.history_date, 'history_id': i.history_id}
+                    detalle_servicios.append(detalle)
+                item['detalle_servicios'] = detalle_servicios
+                data.append(item)
+            # Creamos el REPORTE
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('trabajos/reportAuditoria.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos el producto si esta filtrado
+                trabajo = ""
+                try:
+                    trabajo = reporte['trabajo']
+                except Exception as e:
+                    pass
+                # Obtenemos el usuario si esta filtrado
+                usuario = ""
+                try:
+                    usuario = reporte['usuario']
+                except Exception as e:
+                    pass
+                # Obtenemos el cliente si esta filtrado
+                cliente = ""
+                try:
+                    cliente = reporte['cliente']
+                except Exception as e:
+                    pass
+                # Obtenemos la accion si esta filtrada
+                accion = ""
+                try:
+                    accion = reporte['accion']
+                except Exception as e:
+                    pass
+                # Obtenemos si se filtro por rango de fechas
+                inicio = ""
+                fin = ""
+                try:
+                    inicio = reporte['fechaDesde']
+                    fin = reporte['fechaHasta']
+                except Exception as e:
+                    pass
+                # Obtenemos el reporte
+                trabajos = []
+                try:
+                    trabajos = reporte['trabajos']
+                    for trab in trabajos:
+                        trab['subtotal'] = float(trab['subtotal'])
+                        trab['iva'] = float(trab['iva'])
+                        trab['percepcion'] = float(trab['percepcion'])
+                        trab['total'] = float(trab['total'])
+                except Exception as e:
+                    pass
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'trabajo': trabajo,
+                        'accion': accion,
+                        'inicio': inicio,
+                        'fin': fin,
+                        'trabajos': trabajos,
+                        'usuarioAuditoria': usuario,
+                        'cliente': cliente,
+                        'usuario': request.user,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteAuditoriaTrabajos.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteAuditoriaTrabajos.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
+            else:
+                data['error'] = 'Ha ocurrido un error'
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data, safe=False)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Auditoría de Trabajos'
+        context['list_url'] = reverse_lazy('trabajos:trabajos_audit')
+        context['entity'] = 'Auditoría Trabajos'
         return context
 
 
@@ -374,9 +582,8 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 data = []
                 # Asigno a una variable los parametros de estados y de tipos de usuarios
                 estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
                 # Obtenemos los usuarios von esos filtros
-                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                usuarios = Usuarios.objects.all()
                 try:
                     # asignamos a una variable una cantidad alta de trabajos pendientes
                     cant = 1000000
@@ -888,6 +1095,10 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     # Buscamos el estado Especial para iniciar el Proceso
                     try:
                         estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
+                        # Buscamos si hay un servicio ya realizado para cambiar el estado de Pendiente a En Proceso
+                        for i in formTrabajoRequest['servicios']:
+                            if i['estado'] == True:
+                                trabajo.estadoTrabajo_id = estado.estadoEspecial_id
                         if confirm == 'si':
                             trabajo.estadoTrabajo_id = estado.estadoFinalizado_id
                         elif trabajo.estadoTrabajo_id == estado.estadoPlanificado_id:

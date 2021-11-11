@@ -28,8 +28,8 @@
                 {% csrf_token %}
                 {#Error en el Formulario#}
                 {% if form.errors %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <p>Usuario o Contraseña incorrectos</p>
+                    <div class="alert alert-danger alert-dismissible text-center">
+                        <p>Los datos ingresados son incorrectos</p>
                     </div>
                 {% endif %}
                 <div class="input-group mb-4">

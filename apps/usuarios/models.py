@@ -2,35 +2,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 from apps.geografico.models import Localidades
 
 from config.settings import MEDIA_URL, STATIC_URL
-
-
-#   Clase Tipos de Usuarios
-class TiposUsuarios(models.Model):
-    nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
-    realizaTrabajos = models.BooleanField(default=False, verbose_name='¿Realiza trabajos?')
-
-    def __str__(self):
-        return self.nombre
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        return item
-
-    class Meta:
-        verbose_name = 'Tipo de Usuario'
-        verbose_name_plural = 'Tipos de Usuarios'
-        db_table = 'usuarios_tipos'
-        ordering = ['nombre']
-
-    # Para convertir a MAYUSCULA
-    def save(self, force_insert=False, force_update=False):
-        self.nombre = self.nombre.upper()
-        super(TiposUsuarios, self).save(force_insert, force_update)
-
 
 #   Clase Usuarios
 class Usuarios(AbstractUser):
@@ -40,9 +16,9 @@ class Usuarios(AbstractUser):
     localidad = models.ForeignKey(Localidades, models.DO_NOTHING, verbose_name='Localidad', null=True, blank=True)
     direccion = models.CharField(max_length=100, verbose_name='Dirección', null=True, blank=True)
     telefono = models.CharField(max_length=100, verbose_name='Teléfono', null=True, blank=True)
-    tipoUsuario = models.ForeignKey(TiposUsuarios, models.DO_NOTHING, verbose_name='Tipo de Usuario', null=True, blank=True)
     imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
     chatIdUsuario = models.IntegerField(null=True, blank=True, default=None)
+    history = HistoricalRecords()
 
 
     def toJSON(self):
@@ -53,10 +29,6 @@ class Usuarios(AbstractUser):
             pass
         try:
             item['localidad'] = self.localidad.toJSON()
-        except:
-            pass
-        try:
-            item['tipoUsuario'] = self.tipoUsuario.toJSON()
         except:
             pass
         item['full_name'] = self.get_full_name()

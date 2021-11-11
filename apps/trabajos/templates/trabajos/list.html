@@ -71,21 +71,17 @@
                                autocomplete="off">
                     </div>
                 </div>
-                <div class="col-3">
-                    <label></label>
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input excluirEntregados"
-                               id="excluirEntregados">
-                        <label class="custom-control-label" for="excluirEntregados"> Excluir Entregados</label>
-                    </div>
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input excluirCancelados"
-                               id="excluirCancelados">
-                        <label class="custom-control-label" for="excluirCancelados"> Excluir Cancelados</label>
+                <div class="form-group col-2">
+                    <label>Asignado a:</label>
+                    <div class="input-group">
+                        <select class="form-select form-control select2 selectUsuario" id="selectUsuario"
+                                name="selectUsuario" aria-label="selectUsuario">
+                            <option value="">---------</option>
+                        </select>
                     </div>
                 </div>
                 <div class="form-group col-1">
-                    <label></label>
+                    <label class="mb-4"></label>
                     <div class="card-row">
                         <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
                                 class="fas fa-times"></i> Filtros
@@ -95,15 +91,29 @@
             </div>
             <div class="row" id="filters2">
                 <div class="col-2">
-                     <label>Ver determinados Estados:</label>
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                        <input type="checkbox" class="custom-control-input excluirFinalizados"
+                               id="excluirFinalizados">
+                        <label class="custom-control-label" for="excluirFinalizados"> Excluir Finalizados</label>
+                    </div>
                 </div>
                 <div class="col-2">
                     <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input verPendientes"
-                               id="verPendientes">
-                        <label class="custom-control-label" for="verPendientes"> Ver Pendientes</label>
+                        <input type="checkbox" class="custom-control-input excluirEntregados"
+                               id="excluirEntregados">
+                        <label class="custom-control-label" for="excluirEntregados"> Excluir Entregados</label>
                     </div>
                 </div>
+                <div class="col-2">
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                        <input type="checkbox" class="custom-control-input excluirCancelados"
+                               id="excluirCancelados">
+                        <label class="custom-control-label" for="excluirCancelados"> Excluir Cancelados</label>
+                    </div>
+                </div>
+            </div>
+        <hr id="filters1">
+            <div class="row" id="filters3">
                 <div class="col-2">
                     <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input verPlanificados"
@@ -125,10 +135,17 @@
                         <label class="custom-control-label" for="verFinalizados"> Ver Finalizados</label>
                     </div>
                 </div>
+                <div class="col-2">
+                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                        <input type="checkbox" class="custom-control-input verPendientes"
+                               id="verPendientes">
+                        <label class="custom-control-label" for="verPendientes"> Ver Pendientes</label>
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                <br>
+                    <br>
                     <table class="table" id="data">
                         <thead>
                         <tr>
@@ -138,8 +155,8 @@
                             <th scope="col" style="width: 11%;">Entrada</th>
                             <th scope="col" style="width: 11%;">Salida</th>
                             <th scope="col" style="width: 11%;">Modelo</th>
-                            <th scope="col" style="width: 24%;">Cliente</th>
-                            <th scope="col" style="width: 5%;">Total</th>
+                            <th scope="col" style="width: 20%;">Cliente</th>
+                            <th scope="col" style="width: 12%;">Usuario Asignado</th>
                             <th scope="col" style="width: 23%;">Opciones</th>
                         </tr>
                         </thead>

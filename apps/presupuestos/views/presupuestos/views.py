@@ -22,7 +22,7 @@ from apps.presupuestos.forms import PresupuestosForm
 from apps.presupuestos.models import Presupuestos, DetalleProductosPresupuesto, DetalleServiciosPresupuesto, \
     PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, DetalleServiciosPlantillaPresupuesto
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
-from apps.usuarios.models import TiposUsuarios, Usuarios
+from apps.usuarios.models import Usuarios
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -100,10 +100,19 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 except Exception as e:
                     pass
                 total = 0
+                neto = 0
+                iva = 0
+                percepcion = 0
                 try:
                     for i in presupuestos:
                         if i['estado']:
+                            neto += float(i['subtotal'])
+                            iva += float(i['iva'])
+                            percepcion += float(i['percepcion'])
                             total += float(i['total'])
+                    neto = round(neto, 2)
+                    iva = round(iva, 2)
+                    percepcion = round(percepcion, 2)
                     total = round(total, 2)
                 except Exception as e:
                     print(str(e))
@@ -124,6 +133,9 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                         'soloConfirmados': soloConfirmados,
                         'presupuestos': presupuestos,
                         'usuario': request.user,
+                        'subtotal': neto,
+                        'iva': iva,
+                        'percepcion': percepcion,
                         'total': total,
                         'enLetras': totalEnLetras,
                     }

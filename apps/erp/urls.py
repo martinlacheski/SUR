@@ -2,6 +2,7 @@ from apps.erp.views.categorias.views import *
 from apps.erp.views.clientes.views import *
 from apps.erp.views.compras.views import *
 from apps.erp.views.pedidosSolicitud.views import *
+from apps.erp.views.pedidosSolicitudProveedores.views import *
 from apps.erp.views.proveedores.views import *
 from apps.erp.views.subcategorias.views import *
 from apps.erp.views.productos.views import *
@@ -28,11 +29,13 @@ urlpatterns = [
     path('productos/add/', ProductosCreateView.as_view(), name='productos_create'),
     path('productos/update/<int:pk>/', ProductosUpdateView.as_view(), name='productos_update'),
     path('productos/delete/<int:pk>/', ProductosDeleteView.as_view(), name='productos_delete'),
+    path('productos/audit/', ProductosAuditListView.as_view(), name='productos_audit'),
     # Servicios
     path('servicios/list/', ServiciosListView.as_view(), name='servicios_list'),
     path('servicios/add/', ServiciosCreateView.as_view(), name='servicios_create'),
     path('servicios/update/<int:pk>/', ServiciosUpdateView.as_view(), name='servicios_update'),
     path('servicios/delete/<int:pk>/', ServiciosDeleteView.as_view(), name='servicios_delete'),
+    path('servicios/audit/', ServiciosAuditListView.as_view(), name='servicios_audit'),
     # Clientes
     path('clientes/list/', ClientesListView.as_view(), name='clientes_list'),
     path('clientes/add/', ClientesCreateView.as_view(), name='clientes_create'),
@@ -49,6 +52,7 @@ urlpatterns = [
     path('ventas/update/<int:pk>/', VentasUpdateView.as_view(), name='ventas_update'),
     path('ventas/delete/<int:pk>/', VentasDeleteView.as_view(), name='ventas_delete'),
     path('ventas/pdf/<int:pk>/', VentasPdfView.as_view(), name='ventas_pdf'),
+    path('ventas/audit/', VentasAuditListView.as_view(), name='ventas_audit'),
     # Compras
     path('compras/list/', ComprasListView.as_view(), name='compras_list'),
     path('compras/add/', ComprasCreateView.as_view(), name='compras_create'),
@@ -62,4 +66,7 @@ urlpatterns = [
     path('pedidos/solicitudes/confirm/<int:pk>/', PedidosSolicitudConfirmView.as_view(), name='pedidos_solicitudes_confirm'),
     path('pedidos/solicitudes/delete/<int:pk>/', PedidosSolicitudDeleteView.as_view(), name='pedidos_solicitudes_delete'),
     path('pedidos/solicitudes/pdf/<int:pk>/', PedidosSolicitudPdfView.as_view(), name='pedidos_solicitudes_pdf'),
+    # Solicitudes de Pedidos Vista de Proveedores
+    path('pedidos/solicitudes/proveedores/list/', PedidosSolicitudProveedoresListView.as_view(), name='pedidos_solicitudes_proveedores_list'),
+    path('pedidos/solicitudes/proveedores/add/', PedidosSolicitudProveedoresCreateView.as_view(), name='pedidos_solicitudes_proveedores_create'),
 ]

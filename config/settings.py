@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-gkq$j64h%z-0uoq35u+)5oow6khuw1*f96i_88=d^go6)v$tp+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
+# ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 ALLOWED_HOSTS = ["*"]
 ASGI_APPLICATION = 'config.asgi.application'
 
@@ -45,11 +45,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-
-    #Librerias
+    # Librerias
     'widget_tweaks',
     'django.contrib.humanize',
+    'simple_history',
     # Aplicaciones
     'apps.parametros',
     'apps.login',
@@ -72,6 +71,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Para las pistas de auditoria. Completar el historia de usuario automaticamente
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -129,8 +130,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
-
 
 #LANGUAGE_CODE = 'en-us'
 LANGUAGE_CODE = 'es-ar'

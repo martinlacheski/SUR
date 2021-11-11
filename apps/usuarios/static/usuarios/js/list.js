@@ -17,13 +17,23 @@ $(function () {
             {"data": "full_name"},
             {"data": "username"},
             {"data": "cuil"},
-            {"data": "legajo"},
             {"data": "email"},
             {"data": "telefono"},
+            {"data": "is_active"},
             {"data": "imagen"},
             {"data": "username"},
         ],
         columnDefs: [
+            {
+                targets: [-3],
+                class: 'text-center',
+                render: function (data, type, row) {
+                    if (row.is_active) {
+                        return '<span class="badge badge-success">' + ' ACTIVO' + '</span>'
+                    }
+                    return '<span class="badge badge-danger">' + ' BAJA' + '</span>'
+                }
+            },
             {
                 targets: [-2],
                 class: 'text-center',

@@ -98,12 +98,8 @@ class GruposUsuariosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMix
         try:
             action = request.POST['action']
             if action == 'edit':
-                try:
-                    grupo = Group.objects.get(name=request.POST['name'].upper())
-                    data['error'] = "Ya existe un grupo con este nombre"
-                except ObjectDoesNotExist:
-                    # Garda grupo SOLAMENTE con su nombre.
-                    self.object.name = request.POST['name']
+                    # Guarda grupo SOLAMENTE con su nombre.
+                    self.object.name = request.POST['name'].upper()
                     self.object.save()
 
                     # Elimina todos sus permisos

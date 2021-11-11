@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import model_to_dict
+from simple_history.models import HistoricalRecords
 
 from apps.erp.models import Productos, Servicios, Clientes
 from apps.parametros.models import Modelos
@@ -12,6 +13,7 @@ class PlantillaPresupuestos(models.Model):
     modelo = models.ForeignKey(Modelos, models.DO_NOTHING, verbose_name='Modelo')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
     estado = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name()
@@ -47,6 +49,7 @@ class DetalleProductosPlantillaPresupuesto(models.Model):
     presupuestoPlantilla = models.ForeignKey(PlantillaPresupuestos, models.DO_NOTHING)
     producto = models.ForeignKey(Productos, models.DO_NOTHING)
     cantidad = models.IntegerField(default=0)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -68,6 +71,7 @@ class DetalleServiciosPlantillaPresupuesto(models.Model):
     presupuestoPlantilla = models.ForeignKey(PlantillaPresupuestos, models.DO_NOTHING)
     servicio = models.ForeignKey(Servicios, models.DO_NOTHING)
     cantidad = models.IntegerField(default=0)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.servicio.descripcion
@@ -97,6 +101,7 @@ class Presupuestos(models.Model):
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default="", blank=True, null=True)
     observaciones = models.CharField(max_length=100, verbose_name='Observaciones', blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.get_full_name()
@@ -135,6 +140,7 @@ class DetalleProductosPresupuesto(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.producto.descripcion
@@ -160,6 +166,7 @@ class DetalleServiciosPresupuesto(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.servicio.descripcion

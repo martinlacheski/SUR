@@ -1,5 +1,7 @@
 import datetime
 from django.db import models
+from simple_history.models import HistoricalRecords
+
 from apps.erp.models import Clientes
 from apps.usuarios.models import Usuarios
 from apps.trabajos.models import Trabajos
@@ -7,9 +9,11 @@ from django.forms import model_to_dict
 from django.utils import timezone
 
 
+
 # Registra a qué usuarios administrativos le vamos a notificar eventos en el bot.
 class notifUsuariosBot(models.Model):
     usuario_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario a notificar')
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Notificacion de incidencia'
@@ -28,6 +32,7 @@ class respuestaTrabajoFinalizado(models.Model):
     fechaRespuesta = models.DateTimeField(default=datetime.datetime.today(), blank=True, null=True)
     respuesta_puntual = models.DateField(blank=True, null=True)
     respuesta_generica = models.CharField(max_length=20, verbose_name='Respuesta', null=True, blank=True)
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Respuesta de trabajo finalizado'
@@ -53,6 +58,7 @@ class seguimientoTrabajos(models.Model):
     fechaEnvio = models.DateTimeField(null=True, blank=True)
     fechaRespuesta = models.DateTimeField(blank=True, null=True)
     notif_por_sist = models.IntegerField(default=0, verbose_name="Cantidad de veces notificadas por Sistema.")
+    history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Seguimiento de estado de trabajo'

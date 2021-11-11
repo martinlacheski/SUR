@@ -1,6 +1,8 @@
-*TRABAJOS terminar algoritmo de asignacion automatica de trabajo a Empleado mas desocupado
-    asignacion automatica de usuarioAsignado, falta controlar si hay dos o mas usuarios con la misma cantidad,
-    ejecutar un random
+Para cargar los registros de Auditoria
+python manage.py populate_history --auto
+
+
+AGREGAR UN CONTROL EN EL DELETE Y EL UPDATE PARA VER SI TIENE LOS PERMISOS SINO MOSTRAR EL MSJ DE ERROR
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -10,27 +12,32 @@
 
 --------------------------------------------------------------------------------------------------------------------
 
-* EN REPORTES AGREGAR CORTES DE CONTROL POR CLIENTE O POR MODELO, POR EJ
-
-AGREGAR LOS NETOS IVA Y PERCEPCIONES
+* USUARIOS AGREGAR CAMPO ESTADO EN EL LISTVIEW, MODIFICAR DELETE PARA QUE CAMBIE EL ESTADO, CHEQUEAR QUE NO SE PUEDA LOGUEAR EL USUARIO
 
 --------------------------------------------------------------------------------------------------------------------
 
+* Agregar un campo para obtener el usuario de la edicion anterior, a fin de representar en el reporte visual
 
-*AUDITORIA
+*AUDITORIA sobre:
+PRODUCTOS                   OK
+SERVICIOS                   OK
+VENTAS                      OK
+TRABAJOS                    OK
+EVENTOS DE AGENDA
+COMPRAS                     Dejar por ultimo
+PRESUPUESTOS                Dejar por ultimo
+PLANIFICACIONES             Dejar por ultimo
+SOLICITUD DE PEDIDOS        Dejar por ultimo
 
-
-* EN PLANIFICACIONES CHEQUEAR QUE NO PERMITA AGREGAR PLANIFICACIONES ENTRE OTRAS QUE YA EXISTEN
+Agregar ID de venta y de trabajo en el MODAL
 
 --------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
-*AUDITORIA
-
 *ESTADISTICAS
 
-*GRUPOS DE USUARIOS
+*GRUPOS DE USUARIOS         *ROLES Y PERMISOS           --- OK
 
-*ROLES Y PERMISOS
+
 

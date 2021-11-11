@@ -1,6 +1,8 @@
 from django.db import models
 from django.forms import model_to_dict
 from django.utils import timezone
+from simple_history.models import HistoricalRecords
+
 from apps.usuarios.models import Usuarios
 
 class tiposEvento(models.Model):
@@ -9,6 +11,7 @@ class tiposEvento(models.Model):
     recordarSistema = models.BooleanField(default=True) # Si le va a aparecer alguna notificacion
     recordarTelegram = models.BooleanField() # Si se le va a enviar un msj al telegram
     estado = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.nombre
@@ -48,6 +51,7 @@ class eventosAgenda(models.Model):
     resueltoPor_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario que resolvió el evento',
                                        null=True, blank=True)
     horaResolucion = models.DateTimeField(blank=True, null=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return self.descripcion
@@ -77,6 +81,7 @@ class diasAvisoEvento(models.Model):
     viernes = models.BooleanField(default=True)
     sabado = models.BooleanField(default=False)
     domingo = models.BooleanField(default=False)
+    history = HistoricalRecords()
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -93,6 +98,7 @@ class notificacionUsuarios (models.Model):
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
     usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='UsuarioAsoc', null=False, blank=False)
     estado = models.BooleanField(default=True)
+    history = HistoricalRecords()
 
     def toJSON(self):
         item = model_to_dict(self)

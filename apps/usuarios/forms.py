@@ -1,45 +1,8 @@
-from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, FileInput, \
+from django.forms import ModelForm, TextInput, Select, PasswordInput, SelectMultiple, DateInput, EmailInput, \
     CheckboxInput
-
-from apps.usuarios.models import TiposUsuarios, Usuarios
+from apps.usuarios.models import Usuarios
 from django.contrib.auth.models import Group
 
-
-class TiposUsuariosForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['nombre'].widget.attrs['autofocus'] = True
-
-    class Meta:
-        model = TiposUsuarios
-        fields = ['nombre', 'realizaTrabajos']
-        widgets = {
-            'nombre': TextInput(
-                attrs={
-                    'placeholder': 'Ingrese un nombre',
-                    # agregamos este estilo para que convierta lo que ingresamos a mayuscula
-                    'style': 'text-transform: uppercase',
-                }
-            ),
-            'realizaTrabajos': CheckboxInput(
-                attrs={
-                    'type': 'checkbox',
-                    'class': 'custom-control-input',
-                }
-            ),
-        }
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data
 
 class GruposUsuariosForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -64,13 +27,14 @@ class GruposUsuariosForm(ModelForm):
         form = super()
         try:
             if form.is_valid():
+                # PASAMOS A MAYUSCULAS LOS CAMPOS PARA GUARDAR EN LA BD
+                self.cleaned_data['name'] = self.cleaned_data['name'].upper()
                 form.save()
             else:
                 data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
         return data
-
 
 
 class UsuariosForm(ModelForm):
@@ -82,7 +46,7 @@ class UsuariosForm(ModelForm):
         model = Usuarios
         # fields = '__all__'
         fields = 'first_name', 'last_name', 'username', 'password', 'email', 'legajo', 'fechaIngreso', 'cuil', \
-                 'localidad', 'direccion', 'telefono', 'tipoUsuario', 'groups', 'imagen'
+                 'localidad', 'direccion', 'telefono', 'groups', 'imagen', 'is_active', 'is_superuser'
         widgets = {
             'first_name': TextInput(
                 attrs={
@@ -164,14 +128,21 @@ class UsuariosForm(ModelForm):
                 'multiple': 'multiple'
             }
             ),
-            'tipoUsuario': Select(
+            'is_superuser': CheckboxInput(
                 attrs={
-                    'class': 'form-control select2',
-                    'style': 'width: 100%'
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
+            'is_active': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
                 }
             ),
         }
-        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_superuser', 'is_active', 'is_staff', 'chatIdUsuario']
+        exclude = ['user_permissions', 'last_login', 'date_joined', 'is_staff',
+                   'chatIdUsuario']
 
     def save(self, commit=True):
         data = {}
@@ -186,14 +157,14 @@ class UsuariosForm(ModelForm):
                 self.cleaned_data['direccion'] = self.cleaned_data['direccion'].upper()
                 if u.pk is None:
                     u.set_password(pwd)
-                    #llamamos al metodo en models para pasar a mayusculas antes de guardar
+                    # llamamos al metodo en models para pasar a mayusculas antes de guardar
                     u.saveCreate()
-                    #u.save()
+                    # u.save()
                 else:
                     user = Usuarios.objects.get(pk=u.pk)
                     if user.password != pwd:
                         u.set_password(pwd)
-                    #Utilizamos el SAVE convencional, porque el paso a mayuscula viene de la VIEW
+                    # Utilizamos el SAVE convencional, porque el paso a mayuscula viene de la VIEW
                     u.save()
                 # limpiar los grupos que tiene el usuario
                 u.groups.clear()

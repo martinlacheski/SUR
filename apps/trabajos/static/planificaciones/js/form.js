@@ -361,6 +361,7 @@ $(function () {
     var chequear = false;
     //Hacemos el envio del Formulario mediante AJAX
     $("#planificacionesForm").submit(function (e) {
+
         e.preventDefault();
         if (planificacion.items.trabajos.length === 0) {
             error_action('Error', 'No hay trabajos planificados', function () {
@@ -369,75 +370,120 @@ $(function () {
                 //pass
             });
         } else {
-            //Buscamos si no hay otra planificacion en el rango de fechas ingresado
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: {
-                    'action': 'check_fechas_planificacion',
-                    'inicio': moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD'),
-                    'fin': moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD'),
-                },
-                dataType: 'json',
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-            }).done(function (data) {
-                chequear = data.check;
-                console.log(chequear);
-                if (chequear == false) {
-                    confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
-                            //realizamos la creacion de la PLanificacion mediante Ajax
-                            planificacion.items.fechaInicio = moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                            planificacion.items.fechaFin = moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                            var parameters = new FormData();
-                            //Pasamos la Accion
-                            parameters.append('action', $('input[name="action"]').val());
-                            parameters.append('planificacion', JSON.stringify(planificacion.items));
-                            //Bloque AJAX PLANIFICACION
-                            $.ajax({
-                                url: window.location.href,
-                                type: 'POST',
-                                data: parameters,
-                                dataType: 'json',
-                                headers: {
-                                    'X-CSRFToken': csrftoken
-                                },
-                                processData: false,
-                                contentType: false,
-                                success: function (data) {
-                                    if (!data.hasOwnProperty('error')) {
-                                        confirm_action('Notificación', '¿Desea imprimir la planificacion?', function () {
-                                            window.open('/planificaciones/pdf/' + data.id + '/', '_blank');
-                                            location.replace(data.redirect);
-                                        }, function () {
-                                            location.replace(data.redirect);
-                                        });
-                                        //location.replace(data.redirect);
-                                    } else {
-                                        error_action('Error', data.error, function () {
-                                            //pass
-                                        }, function () {
-                                            //pass
-                                        });
+            var accion = $('input[name="action"]').val();
+            if (accion === 'add') {
+                //Buscamos si no hay otra planificacion en el rango de fechas ingresado
+                $.ajax({
+                    url: window.location.pathname,
+                    type: 'POST',
+                    data: {
+                        'action': 'check_fechas_planificacion',
+                        'inicio': moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD'),
+                        'fin': moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD'),
+                    },
+                    dataType: 'json',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                }).done(function (data) {
+                    chequear = data.check;
+                    console.log(chequear);
+                    if (chequear == false) {
+                        confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+                                //realizamos la creacion de la PLanificacion mediante Ajax
+                                planificacion.items.fechaInicio = moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                                planificacion.items.fechaFin = moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                                var parameters = new FormData();
+                                //Pasamos la Accion
+                                parameters.append('action', $('input[name="action"]').val());
+                                parameters.append('planificacion', JSON.stringify(planificacion.items));
+                                //Bloque AJAX PLANIFICACION
+                                $.ajax({
+                                    url: window.location.href,
+                                    type: 'POST',
+                                    data: parameters,
+                                    dataType: 'json',
+                                    headers: {
+                                        'X-CSRFToken': csrftoken
+                                    },
+                                    processData: false,
+                                    contentType: false,
+                                    success: function (data) {
+                                        if (!data.hasOwnProperty('error')) {
+                                            confirm_action('Notificación', '¿Desea imprimir la planificacion?', function () {
+                                                window.open('/planificaciones/pdf/' + data.id + '/', '_blank');
+                                                location.replace(data.redirect);
+                                            }, function () {
+                                                location.replace(data.redirect);
+                                            });
+                                            //location.replace(data.redirect);
+                                        } else {
+                                            error_action('Error', data.error, function () {
+                                                //pass
+                                            }, function () {
+                                                //pass
+                                            });
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }, function () {
+                                //pass
+                            }
+                        );
+                    } else {
+                        error_action('Error', 'Ya existe una planificación en ese rango de fechas', function () {
+                            //pass
                         }, function () {
                             //pass
-                        }
-                    );
-                } else {
-                    error_action('Error', 'Ya existe una planificación en ese rango de fechas', function () {
-                        //pass
+                        });
+                    }
+                }).fail(function (jqXHR, textStatus, errorThrown) {
+                }).always(function (data) {
+
+                });
+            } else if (accion === 'edit') {
+                confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+                        //realizamos la creacion de la PLanificacion mediante Ajax
+                        planificacion.items.fechaInicio = moment(moment(fechaInicio, 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                        planificacion.items.fechaFin = moment(moment(fechaFin, 'DD-MM-YYYY')).format('YYYY-MM-DD');
+                        var parameters = new FormData();
+                        //Pasamos la Accion
+                        parameters.append('action', $('input[name="action"]').val());
+                        parameters.append('planificacion', JSON.stringify(planificacion.items));
+                        //Bloque AJAX PLANIFICACION
+                        $.ajax({
+                            url: window.location.href,
+                            type: 'POST',
+                            data: parameters,
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRFToken': csrftoken
+                            },
+                            processData: false,
+                            contentType: false,
+                            success: function (data) {
+                                if (!data.hasOwnProperty('error')) {
+                                    confirm_action('Notificación', '¿Desea imprimir la planificacion?', function () {
+                                        window.open('/planificaciones/pdf/' + data.id + '/', '_blank');
+                                        location.replace(data.redirect);
+                                    }, function () {
+                                        location.replace(data.redirect);
+                                    });
+                                    //location.replace(data.redirect);
+                                } else {
+                                    error_action('Error', data.error, function () {
+                                        //pass
+                                    }, function () {
+                                        //pass
+                                    });
+                                }
+                            }
+                        });
                     }, function () {
                         //pass
-                    });
-                }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-            }).always(function (data) {
-
-            });
-        }
+                    }
+                );
+            }
+        };
     });
 });
