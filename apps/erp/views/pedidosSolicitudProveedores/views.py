@@ -61,6 +61,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):
                 data = []
                 # Acá agarra los objetos con el stock minimo
                 for producto in Productos.objects.all():
+                    pedido = PedidosSolicitud.objects.get(id=request.POST['pedido'])
                     if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
                         item = producto.toJSON()
                         item['cantidad'] = producto.reposicion
