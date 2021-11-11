@@ -29,7 +29,7 @@ class notifUsuariosBot(models.Model):
 class respuestaTrabajoFinalizado(models.Model):
     cliente = models.ForeignKey(Clientes, models.DO_NOTHING, verbose_name='Cliente que respondió')
     trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo asociado')
-    fechaRespuesta = models.DateTimeField(default=datetime.datetime.today(), blank=True, null=True)
+    fechaRespuesta = models.DateTimeField(blank=True, null=True)
     respuesta_puntual = models.DateField(blank=True, null=True)
     respuesta_generica = models.CharField(max_length=20, verbose_name='Respuesta', null=True, blank=True)
     history = HistoricalRecords()
