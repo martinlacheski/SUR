@@ -346,6 +346,7 @@ class DetalleProductosVenta(models.Model):
     class Meta:
         verbose_name = 'Detalle de Venta - Productos'
         verbose_name_plural = 'Detalle de Ventas - Productos'
+        db_table = 'erp_ventas_detalle_productos'
         ordering = ['id']
 
 
@@ -371,6 +372,7 @@ class DetalleServiciosVenta(models.Model):
     class Meta:
         verbose_name = 'Detalle de Venta - Servicios'
         verbose_name_plural = 'Detalle de Ventas - Servicios'
+        db_table = 'erp_ventas_detalle_servicios'
         ordering = ['id']
 
 
@@ -432,6 +434,7 @@ class DetalleProductosCompra(models.Model):
     class Meta:
         verbose_name = 'Detalle de Compra'
         verbose_name_plural = 'Detalle de Compras'
+        db_table = 'erp_compras_detalle'
         ordering = ['id']
 
 
@@ -446,7 +449,7 @@ class PedidosSolicitud(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.get_full_sale()
+        return str(self.id)
 
     def get_full_sale(self):
         return '{} - {}'.format(self.fecha, self.estado)
@@ -491,4 +494,116 @@ class DetallePedidoSolicitud(models.Model):
     class Meta:
         verbose_name = 'Detalle de Solicitud de Pedido'
         verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
+        db_table = 'erp_pedidos_solicitud_detalle'
+        ordering = ['id']
+
+
+
+#   Clase Solicitudo de Pedidos completado por Proveedores
+class PedidoSolicitudProveedor(models.Model):
+    pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    enviado = models.DateTimeField(verbose_name='Fecha y Hora de envío correo electrónico')
+    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario')
+    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario')
+
+    def __str__(self):
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return '{} - {}'.format(self.pedidoSolicitud, self.proveedor)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
+        item['proveedor'] = self.proveedor.toJSON()
+        item['subtotal'] = format(self.subtotal, '.2f')
+        item['iva'] = format(self.iva, '.2f')
+        item['total'] = format(self.total, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Solicitud de Pedido Proveedor'
+        verbose_name_plural = 'Solicitudes de Pedidos Proveedor'
+        db_table = 'erp_pedidos_solicitud_proveedor'
+        ordering = ['id']
+
+
+class DetallePedidoSolicitudProveedor(models.Model):
+    pedidoSolicitudProveedor = models.ForeignKey(PedidoSolicitudProveedor, models.DO_NOTHING)
+    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['pedidoSolicitudProveedor'])
+        item['producto'] = self.producto.toJSON()
+        item['costo'] = format(self.costo, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Solicitud de Pedido'
+        verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
+        db_table = 'erp_pedidos_solicitud_proveedor_detalle'
+        ordering = ['id']
+
+
+#   Clase Pedidos
+class Pedidos(models.Model):
+    pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
+    fecha = models.DateField(verbose_name='Fecha')
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    estado = models.BooleanField(default="", blank=True, null=True)
+
+    def __str__(self):
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return '{} - {}'.format(self.pedidoSolicitud, self.fecha)
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
+        return item
+
+    class Meta:
+        verbose_name = 'Pedido'
+        verbose_name_plural = 'Pedidos'
+        db_table = 'erp_pedidos'
+        ordering = ['id']
+
+
+class DetallePedido(models.Model):
+    pedido = models.ForeignKey(Pedidos, models.DO_NOTHING)
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
+    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
+    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad = models.IntegerField(default=0)
+    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.producto.descripcion
+
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['pedido'])
+        item['proveedor'] = self.proveedor.toJSON()
+        item['producto'] = self.producto.toJSON()
+        item['costo'] = format(self.costo, '.2f')
+        item['subtotal'] = format(self.subtotal, '.2f')
+        return item
+
+    class Meta:
+        verbose_name = 'Detalle de Pedido'
+        verbose_name_plural = 'Detalle de Pedidos'
+        db_table = 'erp_pedidos_detalle'
         ordering = ['id']

@@ -1,6 +1,9 @@
 Para cargar los registros de Auditoria
 python manage.py populate_history --auto
 
+
+AGREGAR UN CONTROL EN EL DELETE Y EL UPDATE PARA VER SI TIENE LOS PERMISOS SINO MOSTRAR EL MSJ DE ERROR
+
 --------------------------------------------------------------------------------------------------------------------
 
 *PEDIDOS - TERMINAR
