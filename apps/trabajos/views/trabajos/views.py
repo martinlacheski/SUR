@@ -580,15 +580,13 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
             # Asignamos automaticamente el trabajo al usuario mas desocupado
             elif action == 'get_mas_desocupado':
                 data = []
-                # Asigno a una variable los parametros de estados y de tipos de usuarios
+                # Asigno a una variable los parametros de estados
                 estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
                 # Obtenemos los usuarios von esos filtros
-                usuarios = Usuarios.objects.all()
+                usuarios = Usuarios.objects.filter(realizaTrabajos=True)
                 try:
                     # asignamos a una variable una cantidad alta de trabajos pendientes
                     cant = 1000000
-                    # creamos una variable de usuarios de tipo array
-                    # usuarios = []
                     # recorremos por cada usuario dentro del filtro anterior excluyendo trabajos finalizados en adelante
                     for user in usuarios:
                         trabajos = Trabajos.objects.filter(usuarioAsignado_id=user.id).exclude(
@@ -600,7 +598,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     data.append({'id': usuario.id, 'text': usuario.username})
                 except Exception as e:
                     data['error'] = str(e)
-                    print(str(e))
             elif action == 'add':
                 with transaction.atomic():
                     formTrabajoRequest = json.loads(request.POST['trabajo'])

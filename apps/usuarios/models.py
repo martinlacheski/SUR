@@ -17,6 +17,7 @@ class Usuarios(AbstractUser):
     direccion = models.CharField(max_length=100, verbose_name='Dirección', null=True, blank=True)
     telefono = models.CharField(max_length=100, verbose_name='Teléfono', null=True, blank=True)
     imagen = models.ImageField(upload_to='usuarios/%Y/%m/%d', null=True, blank=True, verbose_name='Imagen')
+    realizaTrabajos = models.BooleanField(default=False, verbose_name='¿Realiza Trabajos?')
     chatIdUsuario = models.IntegerField(null=True, blank=True, default=None)
     history = HistoricalRecords()
 
