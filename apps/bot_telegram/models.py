@@ -8,37 +8,17 @@ from apps.trabajos.models import Trabajos
 from django.forms import model_to_dict
 from django.utils import timezone
 
-class registroBotIncidencias (models.Model):
-    fechaSuceso = models.DateTimeField(default=datetime.datetime.today())
-    observacion = models.TextField(blank=True, null=True)
-    revisadoPor = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario que revisó el inconveniente',
-                                    blank=True, null=True)
-    fechaRevision = models.DateTimeField(default=datetime.datetime.today(), blank=True, null=True)
-    history = HistoricalRecords()
-
-    class Meta:
-        verbose_name = 'Registro no Exitoso de Cliente'
-        verbose_name_plural = 'Registros no Exitosos de Clientes'
-        db_table = 'bot_log_incidencias'
-        ordering = ['fechaSuceso']
 
 
-
-# Usuarios a los cuales se les notificó el incidente. (no está en funcionamiento. La dejo por las dudas 12/10/2021)
-class notificacionUsuarios_Tel(models.Model):
-    usuario_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario notificado')
-    registro_id = models.ForeignKey(registroBotIncidencias, models.DO_NOTHING, verbose_name='registro log asociado')
-    history = HistoricalRecords()
-
-# Registra a qué usuarios le vamos a notificar sobre incidencias.
-class notifIncidentesUsuarios(models.Model):
+# Registra a qué usuarios administrativos le vamos a notificar eventos en el bot.
+class notifUsuariosBot(models.Model):
     usuario_id = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario a notificar')
     history = HistoricalRecords()
 
     class Meta:
         verbose_name = 'Notificacion de incidencia'
         verbose_name_plural = 'Notificaciones de incidencia'
-        db_table = 'usuarios_notifIncidencias'
+        db_table = 'bot_usuarios_a_notificar'
         ordering = ['usuario_id']
 
     def toJSON(self):

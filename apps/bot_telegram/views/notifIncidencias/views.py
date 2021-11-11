@@ -7,7 +7,7 @@ from apps.bot_telegram.models import *
 from apps.bot_telegram.forms import *
 
 class notifIncidentesUsersListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
-    model = notifIncidentesUsuarios
+    model = notifUsuariosBot
     template_name = 'usersNotifIncidencias/list.html'
     permission_required = 'bot.view_notifincidentesusuarios'
 
@@ -38,7 +38,7 @@ class notifIncidentesUsersListView(LoginRequiredMixin, ValidatePermissionRequire
         return context
 
 class notifIncidentesUsersCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
-    model = notifIncidentesUsuarios
+    model = notifUsuariosBot
     form_class = gestionNotifIncidenciasForm
     template_name = 'usersNotifIncidencias/create.html'
     success_url = reverse_lazy('bot:notifIncidenList')
@@ -69,7 +69,7 @@ class notifIncidentesUsersCreateView(LoginRequiredMixin, ValidatePermissionRequi
 
 
 class notifIncidentesUsersEditView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = notifIncidentesUsuarios
+    model = notifUsuariosBot
     form_class = gestionNotifIncidenciasForm
     template_name = 'usersNotifIncidencias/create.html'
     success_url = reverse_lazy('bot:notifIncidenList')
@@ -99,7 +99,7 @@ class notifIncidentesUsersEditView(LoginRequiredMixin, ValidatePermissionRequire
         return context
 
 class notifIncidentesUsersDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
-    model = notifIncidentesUsuarios
+    model = notifUsuariosBot
     success_url = reverse_lazy('bot:notifIncidenList')
     permission_required = 'bot.delete_notifincidentesusuarios'
     url_redirect = success_url

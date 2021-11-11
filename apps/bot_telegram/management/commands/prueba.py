@@ -11,11 +11,12 @@ from django.forms import model_to_dict
 # Obtención de todos los usuarios que pueden realizar trabajos y cuantos trabajos tiene cada uno.
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        grupos = Group.objects.all().defer('permissions')
-        for g in grupos:
-            g = model_to_dict(g)
-            del g['permissions']
-            print(g)
+        user = Usuarios.objects.get(pk=3)
+        #permisos = Usuarios.objects.get(pk=3).get_group_permissions()
+        if user.has_perm('agenda.view_eventosagenda'):
+            print("tiene ese perm")
+        else:
+            print("no tiene ese perm")
 
 
 
