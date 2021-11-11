@@ -589,6 +589,15 @@ class PedidoSolicitudProveedorForm(ModelForm):
         model = PedidoSolicitudProveedor
         fields = '__all__'
         widgets = {
+            'pedidoSolicitud': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'proveedor': Select(
+                attrs={
+                    'class': 'form-control select2',
+                }
+            ),
             'iva': TextInput(attrs={
                 'readonly': True,
                 'class': 'form-control',

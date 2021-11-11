@@ -449,7 +449,7 @@ class PedidosSolicitud(models.Model):
     history = HistoricalRecords()
 
     def __str__(self):
-        return self.get_full_sale()
+        return str(self.id)
 
     def get_full_sale(self):
         return '{} - {}'.format(self.fecha, self.estado)
