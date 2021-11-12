@@ -46,7 +46,7 @@ class UsuariosForm(ModelForm):
         model = Usuarios
         # fields = '__all__'
         fields = 'first_name', 'last_name', 'username', 'password', 'email', 'legajo', 'fechaIngreso', 'cuil', \
-                 'localidad', 'direccion', 'telefono', 'groups', 'imagen', 'is_active', 'is_superuser'
+                 'localidad', 'direccion', 'telefono', 'groups', 'imagen', 'is_active', 'is_superuser', 'realizaTrabajos'
         widgets = {
             'first_name': TextInput(
                 attrs={
@@ -135,6 +135,12 @@ class UsuariosForm(ModelForm):
                 }
             ),
             'is_active': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
+            'realizaTrabajos': CheckboxInput(
                 attrs={
                     'type': 'checkbox',
                     'class': 'custom-control-input',
