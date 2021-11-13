@@ -1,4 +1,3 @@
-import datetime
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -6,7 +5,6 @@ from apps.erp.models import Clientes
 from apps.usuarios.models import Usuarios
 from apps.trabajos.models import Trabajos
 from django.forms import model_to_dict
-from django.utils import timezone
 
 
 
@@ -44,7 +42,6 @@ class respuestaTrabajoFinalizado(models.Model):
 
 class seguimientoTrabajos(models.Model):
     trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo asociado')
-    # ultPorcentajeAvance = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True)
     cantVecesNotif_dia = models.IntegerField(default=0, verbose_name="Cantidad de veces notificadas en el día")
     cantVecesNotif_total = models.IntegerField(default=0, verbose_name="Cantidad de veces TOTALES notificadas (1 por día)")
     inicialUserAsig = models.ForeignKey(Usuarios, models.DO_NOTHING,

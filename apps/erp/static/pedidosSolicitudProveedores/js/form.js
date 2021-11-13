@@ -142,7 +142,6 @@ function calcular_importes() {
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
     var accion = $('input[name="action"]').val();
-    console.log(accion);
     if (accion === 'add') {
         $('input[name="subtotal"]').val('0.00');
         $('input[name="iva"]').val('0.00');

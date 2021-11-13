@@ -5,6 +5,10 @@ AGREGAR UN CONTROL EN EL DELETE Y EL UPDATE PARA VER SI TIENE LOS PERMISOS SINO 
 
 --------------------------------------------------------------------------------------------------------------------
 
+AGREGAR UN REPORTE DE PRODUCTOS, PARA SABER CUALES HAY EN STOCK y PODER IMPRIMIR
+
+--------------------------------------------------------------------------------------------------------------------
+
 *PEDIDOS - TERMINAR
 
 * Resolver la forma de generar los detalles de las cotizaciones de los proveedores
@@ -24,12 +28,18 @@ PRESUPUESTOS                Dejar por ultimo
 PLANIFICACIONES             Dejar por ultimo
 SOLICITUD DE PEDIDOS        Dejar por ultimo
 
-Agregar ID de venta y de trabajo en el MODAL
-
 --------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 
 *ESTADISTICAS
 
+ESTADISTICA -
+Line Chart - Evolución Anual (Ultimos 365 dias) de $ Ventas y Cantidad de Trabajos
+Bar Chart - Evolucion Anual (Ultimos 365 dias) de Ventas de Productos y Servicios
+Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Modelos mas realizados (2 Graficos)
+Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Productos mas vendidos (2 Graficos)
+Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Servicios mas realizados (2 Graficos)
+Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Insumos mas realizados (2 Graficos)
+Bar Chart - Ranking Mensual (Ultimos 30 dias) de Clientes  $ Ventas y Cantidad de Trabajos
 

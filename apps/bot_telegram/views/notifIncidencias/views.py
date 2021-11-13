@@ -1,9 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.bot_telegram.models import *
 from apps.bot_telegram.forms import *
 
 class notifIncidentesUsersListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -21,7 +20,7 @@ class notifIncidentesUsersListView(LoginRequiredMixin, ValidatePermissionRequire
             if action == 'searchdata':
                 data = []
                 # Solamente mostramos usuarios que tengan chatID
-                for i in notifIncidentesUsuarios.objects.all():
+                for i in notifUsuariosBot.objects.all():
                     data.append(i.toJSON())
 
             else:

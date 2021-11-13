@@ -249,7 +249,7 @@ $(function () {
     });
     //Filtrar Estado Canceladas
     $('#excluirCanceladas').on('click', function () {
-        var verdadero = ' Cancelada';
+        var verdadero = ' CANCELADA';
         if (this.checked) {
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkCanceladas = true;

@@ -59,9 +59,12 @@ class PedidosSolicitudProveedoresCreateView(CreateView):
             action = request.POST['action']
             if action == 'get_productos_pedidos':
                 data = []
+                try:
+                    pedido = PedidosSolicitud.objects.get(id=request.POST['pedido'])
+                except:
+                    pass
                 # Acá agarra los objetos con el stock minimo
                 for producto in Productos.objects.all():
-                    pedido = PedidosSolicitud.objects.get(id=request.POST['pedido'])
                     if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
                         item = producto.toJSON()
                         item['cantidad'] = producto.reposicion
@@ -81,18 +84,6 @@ class PedidosSolicitudProveedoresCreateView(CreateView):
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
-            # ACTUALIZACION DE PRECIO
-            elif action == 'update_precioProducto':
-                with transaction.atomic():
-                    producto = Productos.objects.get(id=request.POST['pk'])
-                    producto.costo = float(request.POST['costo'])
-                    producto.utilidad = float(request.POST['utilidad'])
-                    producto.precioVenta = float(request.POST['precioVenta'])
-                    producto.save()
-            # Buscamos el Precio del Producto luego de actualizar el precio
-            elif action == 'search_precioProducto':
-                producto = Productos.objects.get(id=request.POST['pk'])
-                data = producto.costo
             elif action == 'add':
                 with transaction.atomic():
                     formPedidoRequest = json.loads(request.POST['pedido'])
