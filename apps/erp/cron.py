@@ -6,7 +6,7 @@ def generarSolicitudPedido():
     sub_total = 0
     productos_stock_min = []
     pedido = PedidosSolicitud()
-    det = DetallePedidoSolicitud()
+
 
     for producto in Productos.objects.all():
         if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
@@ -23,6 +23,7 @@ def generarSolicitudPedido():
     pedido.save()
 
     for p in productos_stock_min:
+        det = DetallePedidoSolicitud()
         det.pedido_id = pedido.id
         det.producto_id = p.id
         det.costo = p.costo
