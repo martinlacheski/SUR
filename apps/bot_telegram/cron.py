@@ -14,7 +14,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from django.db.models import Count
 from apps.usuarios.models import Usuarios
 from apps.bot_telegram.logicaBot import porcentajeTrabajo
-from apps.usuarios.models import TiposUsuarios
+#from apps.usuarios.models import TiposUsuarios
 
 
 bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
@@ -219,6 +219,7 @@ def msjNotificarSistema(nuevoUser, trabajo, segTrabajo):
 
 
 # Obtiene todos los usuarios que pueden realizar trabajos y luego vé cuantos trabajos tiene asignad ocada uno
+# TO - DO: cambió la manera de identificar a un usuario que realiza trabajos.
 def eleccionUsuarios(userTrabajo):
     empsAEvaluar = []
     tiposUser = TiposUsuarios.objects.filter(realizaTrabajos=True)

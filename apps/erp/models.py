@@ -26,7 +26,7 @@ class Clientes(models.Model):
                                        verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
     history = HistoricalRecords()
-    
+
     def __str__(self):
         return self.razonSocial
 
@@ -441,7 +441,7 @@ class DetalleProductosCompra(models.Model):
 #   Clase Pedidos de Solicitud de Productos
 class PedidosSolicitud(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
-    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite')
+    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite', null=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)

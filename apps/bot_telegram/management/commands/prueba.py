@@ -1,7 +1,8 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
 from django.utils import timezone
-from apps.usuarios.models import Usuarios, TiposUsuarios
+
+from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud, Productos
 
 from apps.parametros.models import EstadoParametros
 from apps.trabajos.models import Trabajos
@@ -11,12 +12,33 @@ from django.forms import model_to_dict
 # Obtención de todos los usuarios que pueden realizar trabajos y cuantos trabajos tiene cada uno.
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        user = Usuarios.objects.get(pk=3)
-        #permisos = Usuarios.objects.get(pk=3).get_group_permissions()
-        if user.has_perm('agenda.view_eventosagenda'):
-            print("tiene ese perm")
-        else:
-            print("no tiene ese perm")
+        sub_total = 0
+        productos_stock_min = []
+        pedido = PedidosSolicitud()
+        det = DetallePedidoSolicitud()
+
+        for producto in Productos.objects.all():
+            if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
+                sub_total += producto.costo
+                productos_stock_min.append(producto)
+
+        print("productos: " + str(productos_stock_min))
+
+        pedido.fecha = timezone.now().date()
+        # pedido.fechaLimite = formPedidoRequest['fechaLimite'] No va a tener fecha límite si se crea mediante un cron.
+        pedido.subtotal = sub_total
+        pedido.iva = float(sub_total) * 0.21
+        pedido.total = float(sub_total) + pedido.iva
+        pedido.save()
+
+        for p in productos_stock_min:
+            det.pedido_id = pedido.id
+            det.producto_id = p.id
+            det.costo = p.costo
+            det.cantidad = p.reposicion
+            det.subtotal = p.costo * p.reposicion
+            det.save()
+
 
 
 

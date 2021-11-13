@@ -96,7 +96,7 @@ class diasAvisoEvento(models.Model):
 
 class notificacionUsuarios (models.Model):
     tipoEvento = models.ForeignKey(tiposEvento, models.DO_NOTHING, verbose_name='tipoEvento')
-    usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='UsuarioAsoc', null=False, blank=False)
+    usuarioNotif = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='UsuarioAsoc', null=True, blank=True)
     estado = models.BooleanField(default=True)
     history = HistoricalRecords()
 
