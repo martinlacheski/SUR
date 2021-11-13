@@ -1,3 +1,4 @@
+from django.contrib.sites.shortcuts import get_current_site
 import json
 import os
 
@@ -10,6 +11,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
+from apps.erp.createSolicitudes import crearSolicitudes
 from apps.erp.forms import ProductosForm, PedidosSolicitudForm
 from apps.erp.models import Productos, Categorias, Subcategorias, PedidosSolicitud, \
     DetallePedidoSolicitud
@@ -333,6 +335,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
 
     def post(self, request, *args, **kwargs):
         data = {}
+        dominio = ''.join(['http://', get_current_site(request).domain])
         try:
             action = request.POST['action']
             # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
@@ -441,7 +444,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                     # Devolvemos en Data la ID de la Solicitud de Pedido para poder generar la Boleta
                     data = {'id': pedido.id}
                     data['redirect'] = self.url_redirect
-                # Acá lógica de generar el link y enviar el correo
+                    crearSolicitudes(pedido, dominio) # Arma link y prepara solicitud para proveedor
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:

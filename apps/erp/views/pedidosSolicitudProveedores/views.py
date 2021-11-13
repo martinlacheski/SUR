@@ -1,4 +1,5 @@
 import json
+from django.contrib.sites.shortcuts import get_current_site
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -8,14 +9,14 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView
 
 from apps.erp.forms import ProductosForm, PedidoSolicitudProveedorForm
-from apps.erp.models import Productos, Categorias, Subcategorias, PedidosSolicitud, \
-    DetallePedidoSolicitud, PedidoSolicitudProveedor
+from apps.erp.models import Productos, Categorias, Subcategorias, PedidosSolicitud, DetallePedidoSolicitud, \
+    PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import  TiposIVA
 
 
 
-class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
+class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView, ):
     model = PedidoSolicitudProveedor
     template_name = 'pedidosSolicitudProveedores/list.html'
     permission_required = 'erp.view_pedidosolicitudproveedor'
@@ -40,13 +41,13 @@ class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermission
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Solicitudes de Pedidos por Proveedor'
-        context['create_url'] = reverse_lazy('erp:pedidos_solicitudes_proveedores_create')
+        #context['create_url'] = reverse_lazy('erp:pedidos_solicitudes_proveedores_create')
         context['list_url'] = reverse_lazy('erp:pedidos_solicitudes_proveedores_list')
         context['entity'] = 'Solicitudes de Pedidos por Proveedor'
         return context
 
 
-class PedidosSolicitudProveedoresCreateView(CreateView):
+class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qué tipo de view es
     model = PedidoSolicitudProveedor
     form_class = PedidoSolicitudProveedorForm
     template_name = 'pedidosSolicitudProveedores/create.html'
@@ -54,20 +55,26 @@ class PedidosSolicitudProveedoresCreateView(CreateView):
     url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
+        #print(self.kwargs['hash_code'])
         data = {}
         try:
             action = request.POST['action']
             if action == 'get_productos_pedidos':
                 data = []
+                pedidoP = PedidoSolicitudProveedor.objects.get(hash=self.kwargs['hash_code'])
                 # Acá agarra los objetos con el stock minimo
-                for producto in Productos.objects.all():
-                    pedido = PedidosSolicitud.objects.get(id=request.POST['pedido'])
-                    if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
-                        item = producto.toJSON()
-                        item['cantidad'] = producto.reposicion
-                        data.append(item)
+                for det in DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedidoP):
+                    item = det.producto.toJSON()
+                    item['cantidad'] = det.producto.reposicion
+                    data.append(item)
+                cabecera = {}
+                cabecera['pedido'] = pedidoP.pedidoSolicitud.id
+                cabecera['proveedor'] = {'id': pedidoP.proveedor.id,
+                                     'text': pedidoP.proveedor.razonSocial}
+                data.append(cabecera)
             # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
             # Buscamos el IVA para el MODAL de Productos
+
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva

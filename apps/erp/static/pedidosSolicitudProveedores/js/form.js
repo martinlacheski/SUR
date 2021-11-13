@@ -155,10 +155,10 @@ $(document).ready(function () {
             data: {
                 'csrfmiddlewaretoken': csrftoken,
                 'action': 'get_productos_pedidos',
-                'pedido': pedidoActual,
             },
             dataType: 'json',
             success: function (data) {
+                console.log(data);
                 //asignamos el detalle a la estructura
                 pedido.items.productos = data;
                 //actualizamos el listado de productos

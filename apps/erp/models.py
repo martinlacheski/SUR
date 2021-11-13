@@ -507,8 +507,9 @@ class PedidoSolicitudProveedor(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     enviado = models.DateTimeField(verbose_name='Fecha y Hora de envío correo electrónico')
-    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario')
-    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario')
+    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario', null=True)
+    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario', null=True)
+    hash = models.CharField(max_length=66, verbose_name='Hash de solicitud', null=True)
 
     def __str__(self):
         return self.get_full_name()
