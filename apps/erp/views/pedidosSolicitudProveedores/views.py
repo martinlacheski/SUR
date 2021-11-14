@@ -59,7 +59,14 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
         data = {}
         try:
             action = request.POST['action']
-            if action == 'get_productos_pedidos':
+            # Obtenemos la cabecera del Pedido
+            if action == 'search_cabecera':
+                pedidoP = PedidoSolicitudProveedor.objects.get(hash=self.kwargs['hash_code'])
+                data['pedido'] = pedidoP.pedidoSolicitud.id
+                data['proveedor'] = pedidoP.proveedor.razonSocial
+                data['validoHasta'] = pedidoP.pedidoSolicitud.fechaLimite
+            # Obtenemos el Detalle del Pedido
+            elif action == 'get_productos_pedidos':
                 data = []
                 pedidoP = PedidoSolicitudProveedor.objects.get(hash=self.kwargs['hash_code'])
                 # Acá agarra los objetos con el stock minimo
@@ -67,39 +74,6 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
                     item = det.producto.toJSON()
                     item['cantidad'] = det.producto.reposicion
                     data.append(item)
-                cabecera = {}
-                cabecera['pedido'] = pedidoP.pedidoSolicitud.id
-                cabecera['proveedor'] = {'id': pedidoP.proveedor.id,
-                                     'text': pedidoP.proveedor.razonSocial}
-                data.append(cabecera)
-            # Buscamos los distintos productos ingresando por teclado excluyendo ya cargados
-            # Buscamos el IVA para el MODAL de Productos
-
-            elif action == 'search_iva':
-                iva = TiposIVA.objects.get(id=request.POST['pk'])
-                data['iva'] = iva.iva
-            # Select Anidado de Categorias
-            elif action == 'search_subcategorias':
-                data = [{'id': '', 'text': '---------'}]
-                for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
-                    data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
-            elif action == 'create_producto':
-                with transaction.atomic():
-                    formProducto = ProductosForm(request.POST)
-                    data = formProducto.save()
-            # ACTUALIZACION DE PRECIO
-            elif action == 'update_precioProducto':
-                with transaction.atomic():
-                    producto = Productos.objects.get(id=request.POST['pk'])
-                    producto.costo = float(request.POST['costo'])
-                    producto.utilidad = float(request.POST['utilidad'])
-                    producto.precioVenta = float(request.POST['precioVenta'])
-                    producto.save()
-            # Buscamos el Precio del Producto luego de actualizar el precio
-            elif action == 'search_precioProducto':
-                producto = Productos.objects.get(id=request.POST['pk'])
-                data = producto.costo
             elif action == 'add':
                 with transaction.atomic():
                     formPedidoRequest = json.loads(request.POST['pedido'])
@@ -137,7 +111,5 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
         context['entity'] = 'Solicitudes de Pedidos'
         context['list_url'] = self.success_url
         context['action'] = 'add'
-        context['categorias'] = Categorias.objects.all()
-        context['formProducto'] = ProductosForm()
         return context
 

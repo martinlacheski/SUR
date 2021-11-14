@@ -142,12 +142,25 @@ function calcular_importes() {
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
     var accion = $('input[name="action"]').val();
-    console.log(accion);
     if (accion === 'add') {
         $('input[name="subtotal"]').val('0.00');
         $('input[name="iva"]').val('0.00');
         $('input[name="total"]').val('0.00');
-        var pedidoActual = $('input[name="pedidoSolicitud"]').val();
+        //Buscamos el Listado de los productos que deben reponerse por ajax
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_cabecera',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="pedidoSolicitud"]').val(data.pedido);
+                $('input[name="proveedor"]').val(data.proveedor);
+                $('input[name="validoHasta"]').val(moment(data.validoHasta, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm'));
+            }
+        });
         //Buscamos el Listado de los productos que deben reponerse por ajax
         $.ajax({
             url: window.location.pathname,
@@ -158,7 +171,6 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data);
                 //asignamos el detalle a la estructura
                 pedido.items.productos = data;
                 //actualizamos el listado de productos
