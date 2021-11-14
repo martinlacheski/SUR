@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'apps.agenda',
     'apps.bot_telegram',
     'apps.notif_channel',
+    'apps.estadisticas',
 ]
 
 MIDDLEWARE = [

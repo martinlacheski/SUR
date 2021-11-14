@@ -29,28 +29,28 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
-                 <!-- Agenda -->
+                <!-- Agenda -->
                 {% if perms.notificaciones.view_notificaciones %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'notificaciones:listNotificacionesCompleta' %}" class="nav-link">
-                        <i class="far fa-bell nav-icon"></i>
-                        <p>
-                            Notificaciones
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'notificaciones:listNotificacionesCompleta' %}" class="nav-link">
+                            <i class="far fa-bell nav-icon"></i>
+                            <p>
+                                Notificaciones
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 {% if perms.agenda.add_eventosagenda %}
-                <!-- Agenda -->
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'agenda:dashboard' %}" class="nav-link">
-                        <i class="far fa-calendar nav-icon"></i>
-                        <p>
-                            Agenda
-                        </p>
-                    </a>
-                </li>
+                    <!-- Agenda -->
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'agenda:dashboard' %}" class="nav-link">
+                            <i class="far fa-calendar nav-icon"></i>
+                            <p>
+                                Agenda
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Clientes -->
@@ -67,456 +67,523 @@
 
                 <!-- Proveedores -->
                 {% if perms.erp.view_proveedores %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:proveedores_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-people-carry"></i>
-                        <p>
-                            Proveedores
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:proveedores_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-people-carry"></i>
+                            <p>
+                                Proveedores
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Compras -->
                 {% if perms.erp.view_compras %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:compras_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-pallet"></i>
-                        <p>
-                            Compras
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:compras_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-pallet"></i>
+                            <p>
+                                Compras
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Ventas -->
                 {% if perms.erp.view_ventas %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:ventas_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-shopping-cart"></i>
-                        <p>
-                            Ventas
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:ventas_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-shopping-cart"></i>
+                            <p>
+                                Ventas
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Productos -->
                 {% if perms.erp.view_productos %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:productos_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-dolly"></i>
-                        <p>
-                            Productos
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:productos_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-dolly"></i>
+                            <p>
+                                Productos
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Servicios -->
                 {% if perms.erp.view_servicios %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'erp:servicios_list' %}" class="nav-link">
-                        <i class="fas fa-wrench nav-icon"></i>
-                        <p>
-                            Servicios
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:servicios_list' %}" class="nav-link">
+                            <i class="fas fa-wrench nav-icon"></i>
+                            <p>
+                                Servicios
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Presupuestos -->
                 {% if perms.presupuestos.view_presupuestos %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'presupuestos:presupuestos_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-tasks"></i>
-                        <p>
-                            Presupuestos
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'presupuestos:presupuestos_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-tasks"></i>
+                            <p>
+                                Presupuestos
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Presupuestos Plantilla -->
                 {% if perms.presupuestos.view_plantillapresupuestos %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
-                        <i class="nav-icon fas fa-tasks"></i>
-                        <p>
-                            Plantilla Presupuestos
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-tasks"></i>
+                            <p>
+                                Plantilla Presupuestos
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Trabajos -->
                 {% if perms.trabajos.view_trabajos %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'trabajos:trabajos_list' %}" class="nav-link">
-                        <i class="nav-icon far fa-list-alt"></i>
-                        <p>
-                            Trabajos
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'trabajos:trabajos_list' %}" class="nav-link">
+                            <i class="nav-icon far fa-list-alt"></i>
+                            <p>
+                                Trabajos
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Trabajos Express -->
                 {% if perms.trabajos.add_trabajos %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'trabajos:trabajos_create_express' %}" class="nav-link">
-                        <i class="nav-icon fas fa-clipboard-check"></i>
-                        <p>
-                            Trabajo Express
-                        </p>
-                    </a>
-                </li>
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'trabajos:trabajos_create_express' %}" class="nav-link">
+                            <i class="nav-icon fas fa-clipboard-check"></i>
+                            <p>
+                                Trabajo Express
+                            </p>
+                        </a>
+                    </li>
                 {% endif %}
 
                 <!-- Planificacion -->
                 {% if perms.trabajos.view_planificacionessemanales %}
-                <li class="nav-item has-treeview">
-                    <a href="{% url 'trabajos:planificaciones_list' %}" class="nav-link">
-                        <i class="nav-icon far fa-calendar-check"></i>
-                        <p>
-                            Planificaciones
-                        </p>
-                    </a>
-                </li>
-                {%  endif %}
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'trabajos:planificaciones_list' %}" class="nav-link">
+                            <i class="nav-icon far fa-calendar-check"></i>
+                            <p>
+                                Planificaciones
+                            </p>
+                        </a>
+                    </li>
+                {% endif %}
 
                 <!-- Pedidos -->
                 {% if perms.erp.view_pedidossolicitud %}
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
 
-                        <i class="nav-icon fas fa-clipboard-list"></i>
-                        <p>
-                            Pedidos
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                            <a href="{% url 'erp:pedidos_solicitudes_list' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>Solicitud de Pedidos</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Pedidos Realizados
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'erp:pedidos_solicitudes_proveedores_list' %}" class="nav-link">
-                                <i class="far fa-dot-circle nav-icon"></i>
-                                <p>
-                                    Pedidos Proveedores
-                                </p>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+                            <i class="nav-icon fas fa-clipboard-list"></i>
+                            <p>
+                                Pedidos
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'erp:pedidos_solicitudes_list' %}" class="nav-link">
+                                    <i class="far fa-dot-circle nav-icon"></i>
+                                    <p>Solicitud de Pedidos</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <i class="far fa-dot-circle nav-icon"></i>
+                                    <p>
+                                        Pedidos Realizados
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'erp:pedidos_solicitudes_proveedores_list' %}" class="nav-link">
+                                    <i class="far fa-dot-circle nav-icon"></i>
+                                    <p>
+                                        Pedidos Proveedores
+                                    </p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
+
+                <!-- Pedidos -->
+                {% if request.user.is_superuser %}
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+
+                            <i class="nav-icon fas fa-chart-bar"></i>
+                            <p>
+                                Estadísticas
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:trabajos_ventas' %}" class="nav-link">
+                                    <i class="fas fa-chart-line nav-icon"></i>
+                                    <p>Trabajos y Ventas</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:productos_servicios' %}" class="nav-link">
+                                    <i class="fas fa-chart-bar nav-icon"></i>
+                                    <p>Productos y Servicios</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:clientes_trabajos' %}" class="nav-link">
+                                    <i class="far fa-chart-bar nav-icon"></i>
+                                    <p>Clientes y Trabajos</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:modelos_mas_realizados' %}" class="nav-link">
+                                    <i class="fas fa-chart-pie nav-icon"></i>
+                                    <p>Modelos + Realizados</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:productos_mas_vendidos' %}" class="nav-link">
+                                    <i class="fas fa-chart-pie nav-icon"></i>
+                                    <p>Productos + Vendidos</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:servicios_mas_realizados' %}" class="nav-link">
+                                    <i class="fas fa-chart-pie nav-icon"></i>
+                                    <p>Servicios + Realizados</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'estadisticas:insumos_mas_utilizados' %}" class="nav-link">
+                                   <i class="fas fa-chart-pie nav-icon"></i>
+                                    <p>Insumos + Utilizados</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 {% endif %}
 
                 <!-- Parametros -->
-               {% if request.user.is_superuser %}
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-cogs"></i>
-                        <p>
-                            Parámetros
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <li class="nav-item has-treeview">
-                            <a href="" class="nav-link">
-                                <i class="far fa-calendar nav-icon"></i>
-                                <p>
-                                    Agenda
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'agenda:tiposEventoList' %}" class="nav-link">
-                                        <i class="far fa-calendar-alt nav-icon"></i>
-                                        <p>Tipos de Eventos</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'agenda:notifEventosList' %}" class="nav-link">
-                                        <i class="fas fa-bell nav-icon"></i>
-                                        <p>Gestion de Notif.</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                {% if request.user.is_superuser %}
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-cogs"></i>
+                            <p>
+                                Parámetros
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-globe-americas nav-icon"></i>
-                                <p>
-                                    Geográfico
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'geografico:paises_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Paises</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'geografico:provincias_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Provincias</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'geografico:localidades_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Localidades</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item has-treeview">
+                                <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
+                                    <i class="fas fa-briefcase nav-icon"></i>
+                                    <p>
+                                        Datos Empresa
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item has-treeview">
+                                <a href="" class="nav-link">
+                                    <i class="far fa-calendar nav-icon"></i>
+                                    <p>
+                                        Agenda
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'agenda:tiposEventoList' %}" class="nav-link">
+                                            <i class="far fa-calendar-alt nav-icon"></i>
+                                            <p>Tipos de Eventos</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'agenda:notifEventosList' %}" class="nav-link">
+                                            <i class="fas fa-bell nav-icon"></i>
+                                            <p>Gestion de Notif.</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-money-check-alt nav-icon"></i>
-                                <p>
-                                    Impositivo
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:tiposIVA_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Tipos de IVA</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:condicionesIVA_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Condición frente al IVA</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:tiposPercepciones_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Tipos de Percepciones</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:tiposComprobantes_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Tipos de Comprobantes</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:condicionesPago_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Condiciones de Pago</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:mediosPago_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Medios de Pago</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-globe-americas nav-icon"></i>
+                                    <p>
+                                        Geográfico
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'geografico:paises_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Paises</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'geografico:provincias_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Provincias</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'geografico:localidades_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Localidades</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-tasks"></i>
-                                <p>
-                                    Presupuestos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Plantilla</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:marcas_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Marcas</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:modelos_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Modelos</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-money-check-alt nav-icon"></i>
+                                    <p>
+                                        Impositivo
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:tiposIVA_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Tipos de IVA</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:condicionesIVA_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Condición frente al IVA</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:tiposPercepciones_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Tipos de Percepciones</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:tiposComprobantes_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Tipos de Comprobantes</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:condicionesPago_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Condiciones de Pago</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:mediosPago_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Medios de Pago</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-dolly nav-icon"></i>
-                                <p>
-                                    Productos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'erp:categorias_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Categorías</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'erp:subcategorias_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Subcategorías</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-tasks"></i>
+                                    <p>
+                                        Presupuestos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Plantilla</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:marcas_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Marcas</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:modelos_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Modelos</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon far fa-list-alt"></i>
-                                <p>
-                                    Trabajos
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:estados_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Estados</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:estadosParametros_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Estados - Parámetros</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'parametros:prioridades_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Prioridades</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-dolly nav-icon"></i>
+                                    <p>
+                                        Productos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'erp:categorias_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Categorías</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'erp:subcategorias_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Subcategorías</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
 
-                <!-- Sistema -->
-                <li class="nav-item has-treeview">
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon far fa-list-alt"></i>
+                                    <p>
+                                        Trabajos
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:estados_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Estados</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:estadosParametros_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Estados - Parámetros</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'parametros:prioridades_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Prioridades</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
                     <!-- Sistema -->
-                <li class="nav-item has-treeview">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-cog"></i>
-                        <p>
-                            Sistema
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
-                        <!-- Auditoria -->
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-book-reader nav-icon"></i>
-                                <p>
-                                    Auditoría
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'erp:productos_audit' %}" class="nav-link">
-                                        <i class="fas fa-dolly nav-icon"></i>
-                                        <p>
-                                            Productos
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'erp:servicios_audit' %}" class="nav-link">
-                                        <i class="fas fa-wrench nav-icon"></i>
-                                        <p>
-                                            Servicios
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'erp:ventas_audit' %}" class="nav-link">
-                                        <i class="fas fa-shopping-cart nav-icon"></i>
-                                        <p>
-                                            Ventas
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'trabajos:trabajos_audit' %}" class="nav-link">
-                                        <i class="far fa-list-alt nav-icon"></i>
-                                        <p>
-                                            Trabajos
-                                        </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- Usuarios -->
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-users nav-icon"></i>
-                                <p>
-                                    Usuarios
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{% url 'usuarios:usuarios_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                        <p>Usuarios</p>
-                                    </a>
-                                </li>
-                                 <li class="nav-item">
-                                    <a href="{% url 'usuarios:grupos_usuarios_list' %}" class="nav-link">
-                                        <i class="far fa-dot-circle nav-icon"></i>
-                                      <p>Grupos</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{% url 'bot:notifIncidenList' %}" class="nav-link">
-                                        <i class="far fa-bell nav-icon"></i>
-                                        <p>Notificaciones</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-               {% endif %}
+                    <li class="nav-item has-treeview">
+                        <!-- Sistema -->
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-cog"></i>
+                            <p>
+                                Sistema
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <!-- Auditoria -->
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-book-reader nav-icon"></i>
+                                    <p>
+                                        Auditoría
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'erp:productos_audit' %}" class="nav-link">
+                                            <i class="fas fa-dolly nav-icon"></i>
+                                            <p>
+                                                Productos
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'erp:servicios_audit' %}" class="nav-link">
+                                            <i class="fas fa-wrench nav-icon"></i>
+                                            <p>
+                                                Servicios
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'erp:ventas_audit' %}" class="nav-link">
+                                            <i class="fas fa-shopping-cart nav-icon"></i>
+                                            <p>
+                                                Ventas
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'trabajos:trabajos_audit' %}" class="nav-link">
+                                            <i class="far fa-list-alt nav-icon"></i>
+                                            <p>
+                                                Trabajos
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <!-- Usuarios -->
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="fas fa-users nav-icon"></i>
+                                    <p>
+                                        Usuarios
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{% url 'usuarios:usuarios_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Usuarios</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'usuarios:grupos_usuarios_list' %}" class="nav-link">
+                                            <i class="far fa-dot-circle nav-icon"></i>
+                                            <p>Grupos</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'bot:notifIncidenList' %}" class="nav-link">
+                                            <i class="far fa-bell nav-icon"></i>
+                                            <p>Notificaciones</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                {% endif %}
 
 
             </ul>

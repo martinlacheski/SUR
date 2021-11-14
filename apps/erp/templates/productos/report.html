@@ -66,7 +66,7 @@
     </div>
     <div class="row">
         <div class="col-6">
-            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo" alt="SUR Logo">
             <p class="text-left">
                 <b>CUIT: </b> {{ empresa.cuit }}<br>
                 <b>Dirección: </b> {{ empresa.direccion }}<br>
@@ -88,8 +88,17 @@
         Filtros aplicados: <br>
     </h5>
     <p>
+        {% if categoria %}
+            Categoría: <b> {{ categoria }}</b>
+        {% endif %}
+        {% if subcategoria %}
+            Subcategoría: <b> {{ subcategoria }}</b>
+        {% endif %}
         {% if producto %}
             Producto: <b> {{ producto }}</b>
+        {% endif %}
+        {% if checkSinStock %}
+            Solo con Stock: <b> {{ checkSinStock }}</b>
         {% endif %}
     <h4 class="text-uppercase font-weight-bold text-left">
         Detalle: <br>
@@ -102,24 +111,24 @@
             <th class="text-center" style="width: 5%;">Código</th>
             <th class="text-center" style="width: 35%;">Descripcion</th>
             <th class="text-center" style="width: 10%;">Stock</th>
-            <th class="text-center" style="width: 15%;">Precio</th>
+            <th class="text-center" style="width: 15%;">Precio Venta</th>
         </tr>
         </thead>
         <tbody>
         {% for det in productos %}
             <tr>
-                    <td class="text-center">{{ det.categoría.nombre }}</td>
-                    <td class="text-center">{{ det.subcategoría.nombre }}</td>
-                    <td class="text-center">{{ det.codigo }}</td>
-                    <td class="text-center"> {{ det.descripcion }}</td>
-                    <td class="text-right">$ {{ det.stockReal }}</td>
-                    <td class="text-right">$ {{ det.precioVenta|intcomma|localize }}</td>
+                <td class="text-center">{{ det.subcategoria.categoria.nombre }}</td>
+                <td class="text-center">{{ det.subcategoria.nombre }}</td>
+                <td class="text-center">{{ det.codigo }}</td>
+                <td class="text-center"> {{ det.descripcion }}</td>
+                <td class="text-center"> {{ det.stockReal }}</td>
+                <td class="text-right">$ {{ det.precioVenta|intcomma|localize }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     <p class="text-uppercase text-right">
-        Cantidad de Productos: <b> {{ cantProductos }}</b><br>
+        Cantidad de Productos: <b> {{ stock }}</b><br>
         Valor económico: <b>$ {{ total|intcomma|localize }}</b><br>
     </p>
     <p style="font-size:13px;" class="text-uppercase text-right">

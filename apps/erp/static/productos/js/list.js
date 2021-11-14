@@ -102,42 +102,6 @@ $(function () {
                     $('.selectCategoria').append(newOption).trigger('change');
                 });
             });
-            //Agregamos al Select2 las subcategorias que tenemos en el listado
-            this.api().columns(1).every(function () {
-                var column = this;
-                var select = $('<select><option value=""></option></select>')
-                    .appendTo($(column.footer()).empty())
-                    .on('change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    });
-                column.data().unique().sort().each(function (d, j) {
-                    var newOption = new Option(d.toString(), d.toString(), false, false);
-                    $('.selectSubcategoria').append(newOption).trigger('change');
-                });
-            });
-            //Agregamos al Select2 los productos que tenemos en el listado
-            this.api().columns(2).every(function () {
-                var column = this;
-                var select = $('<select><option value=""></option></select>')
-                    .appendTo($(column.footer()).empty())
-                    .on('change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex(
-                            $(this).val()
-                        );
-                        column
-                            .search(val ? '^' + val + '$' : '', true, false)
-                            .draw();
-                    });
-                column.data().unique().sort().each(function (d, j) {
-                    var newOption = new Option(d.toString(), d.toString(), false, false);
-                    $('.selectProducto').append(newOption).trigger('change');
-                });
-            });
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkSinStock = true;
             //Extendemos la busqueda del datatables
@@ -171,10 +135,6 @@ $(function () {
 
     //Aplicamos Filtro de Categorias
     $('.selectCategoria').on('change', function () {
-        //Reseteamos los filtros
-        // $.fn.dataTable.ext.search = [];
-        // $.fn.dataTable.ext.search.pop();
-        // tablaProductos.draw();
         //Asignamos a una variabla la Categoria del Select
         var categoria = $(this).val();
         if (categoria !== null && categoria !== '' && categoria !== undefined) {
@@ -192,15 +152,61 @@ $(function () {
             );
             //Actualizamos la tabla
             tablaProductos.draw();
+            //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS y los productos de dicha CATEGORIA
+            var select_subcategorias = $('select[name="selectSubcategoria"]');
+            var select_productos = $('select[name="selectProducto"]');
+            var id = $(this).val();
+            var options = '<option value="">---------</option>';
+            if (id === '') {
+                select_subcategorias.html(options);
+                select_productos.html(options);
+                return false;
+            }
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_subcategorias',
+                    'pk': id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                        select_subcategorias.html('').select2({
+                            theme: "bootstrap4",
+                            language: 'es',
+                            data: data
+                        });
+                    }
+                }
+            });
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'search_subcategorias_productos',
+                    'pk': id
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (!data.hasOwnProperty('error')) {
+                        //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                        select_productos.html('').select2({
+                            theme: "bootstrap4",
+                            language: 'es',
+                            data: data
+                        });
+                    }
+                }
+            });
         }
     });
 
     //Aplicamos Filtro de Subcategorias
     $('.selectSubcategoria').on('change', function () {
-        //Reseteamos los filtros
-        // $.fn.dataTable.ext.search = [];
-        // $.fn.dataTable.ext.search.pop();
-        // tablaProductos.draw();
         //Asignamos a una variabla la Subcategoria del Select
         var subcategoria = $(this).val();
         if (subcategoria !== null && subcategoria !== '' && subcategoria !== undefined) {
@@ -219,14 +225,37 @@ $(function () {
             //Actualizamos la tabla
             tablaProductos.draw();
         }
+        var select_productos = $('select[name="selectProducto"]');
+        var id = $(this).val();
+        var options = '<option value="">---------</option>';
+        if (id === '') {
+            select_productos.html(options);
+            return false;
+        }
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_productos',
+                'pk': id
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (!data.hasOwnProperty('error')) {
+                    //Volvemos a cargar los datos del Select2 solo que los datos (data) ingresados vienen por AJAX
+                    select_productos.html('').select2({
+                        theme: "bootstrap4",
+                        language: 'es',
+                        data: data
+                    });
+                }
+            }
+        });
     });
 
     //Aplicamos Filtro de Productos
     $('.selectProducto').on('change', function () {
-        //Reseteamos los filtros
-        // $.fn.dataTable.ext.search = [];
-        // $.fn.dataTable.ext.search.pop();
-        // tablaProductos.draw();
         //Asignamos a una variabla el producto del Select
         var producto = $(this).val();
         if (producto !== null && producto !== '' && producto !== undefined) {
@@ -283,32 +312,26 @@ $(function () {
         $.fn.dataTable.ext.search.pop();
         tablaProductos.draw();
         $('.selectCategoria').val(null).trigger('change');
-            $('.selectSubcategoria').val(null).trigger('change');
-            $('.selectProducto').val(null).trigger('change');
-        //Limpiamos limpio el Filtro de Rango de Fechas
-        $('input[name="filterRangoFechas"]').val('');
-        $('#excluirSinStock').prop('checked', true);
+        $('.selectSubcategoria').val(null).trigger('change');
+        $('.selectProducto').val(null).trigger('change');
+        $('#excluirSinStock').prop('checked', false);
     });
 //------------------------------------GENERAR REPORTE----------------------------------------//
     //Boton Generar Reporte
     $('#reporteForm').on('submit', function (e) {
         e.preventDefault();
-        var dataVentas = [];
+        var dataProductos = [];
         //Recorremos el listado del Datatables para pasar el detalle con LOS FILTROS APLICADOS
         $('#data').DataTable().rows({filter: 'applied'}).every(function (rowIdx, tableLoop, rowLoop) {
             var data = this.data();
-            dataVentas.push(data);
+            dataProductos.push(data);
         });
-        for (var i = 0; i < dataVentas.length; i++) {
-            dataVentas[i].fecha = moment(moment(dataVentas[i].fecha, 'YYYY-MM-DD')).format('DD-MM-YYYY');
-        }
         //Asignamos las variables a la estructura
-        reporte.items.cliente = $('select[name="selectCliente"]').val();
-        reporte.items.fechaDesde = fechaInicio;
-        reporte.items.fechaHasta = fechaFin;
-        reporte.items.excluirCanceladas = checkCanceladas;
-        reporte.items.excluirSinTrabajos = checkSinTrabajos;
-        reporte.items.ventas = dataVentas;
+        reporte.items.categoria = $('select[name="selectCategoria"]').val();
+        reporte.items.subcategoria = $('select[name="selectSubcategoria"]').val();
+        reporte.items.producto = $('select[name="selectProducto"]').val();
+        reporte.items.checkSinStock = checkSinStock;
+        reporte.items.productos = dataProductos;
         var parameters = new FormData();
         //Pasamos la accion
         parameters.append('action', 'create_reporte');

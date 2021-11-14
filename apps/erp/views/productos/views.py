@@ -12,6 +12,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from apps.erp.forms import ProductosForm, SubcategoriasForm, CategoriasForm
 from apps.erp.models import Productos, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.numlet import NumeroALetras
 from apps.parametros.models import TiposIVA, Empresa
 
 from config import settings
@@ -35,6 +36,98 @@ class ProductosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Lis
                 data = []
                 for i in Productos.objects.all():
                     data.append(i.toJSON())
+            elif action == 'search_subcategorias':
+                data = []
+                data = [{'id': '', 'text': '---------'}]
+                for i in Subcategorias.objects.filter(categoria__nombre=request.POST['pk']):
+                    data.append({'id': i.nombre, 'text': i.nombre})
+            elif action == 'search_subcategorias_productos':
+                data = []
+                data = [{'id': '', 'text': '---------'}]
+                for i in Productos.objects.filter(subcategoria__categoria__nombre=request.POST['pk']):
+                    data.append({'id': i.descripcion, 'text': i.descripcion})
+            elif action == 'search_productos':
+                data = []
+                data = [{'id': '', 'text': '---------'}]
+                for i in Productos.objects.filter(subcategoria__nombre=request.POST['pk']):
+                    data.append({'id': i.descripcion, 'text': i.descripcion})
+            elif action == 'create_reporte':
+                # Traemos la empresa para obtener los valores
+                empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Utilizamos el template para generar el PDF
+                template = get_template('productos/report.html')
+                # Obtenemos el detalle del Reporte
+                reporte = json.loads(request.POST['reporte'])
+                # Obtenemos la Categoria si esta filtrada
+                categoria = ""
+                try:
+                    categoria = reporte['categoria']
+                except Exception as e:
+                    pass
+                # Obtenemos la Categoria si esta filtrada
+                subcategoria = ""
+                try:
+                    subcategoria = reporte['subcategoria']
+                except Exception as e:
+                    pass
+                # Obtenemos el producto si esta filtrado
+                producto = ""
+                try:
+                    producto = reporte['producto']
+                except Exception as e:
+                    pass
+                # Obtenemos si se quito los Sin Stock
+                checkSinStock = False
+                try:
+                    checkSinStock = reporte['checkSinStock']
+                except Exception as e:
+                    pass
+                # Obtenemos los productos del listado
+                productos = []
+                try:
+                    stock = 0
+                    total = 0
+                    productos = reporte['productos']
+                    for prod in productos:
+                        if prod['stockReal'] > 0:
+                            stock += prod['stockReal']
+                        prod['precioVenta'] = float(prod['precioVenta'])
+                        if prod['stockReal'] > 0:
+                            total += float(prod['precioVenta']*prod['stockReal'])
+                except Exception as e:
+                    pass
+                # Pasamos a letras el total
+                totalEnLetras = NumeroALetras(total).a_letras.upper()
+                #   cargamos los datos del contexto
+                try:
+                    context = {
+                        'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                        'fecha': datetime.datetime.now(),
+                        'categoria': categoria,
+                        'subcategoria': subcategoria,
+                        'producto': producto,
+                        'checkSinStock': checkSinStock,
+                        'productos': productos,
+                        'usuario': request.user,
+                        'stock': stock,
+                        'total': total,
+                        'enLetras': totalEnLetras,
+                    }
+                    # Generamos el render del contexto
+                    html = template.render(context)
+                    # Asignamos la ruta donde se guarda el PDF
+                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteProductos.pdf'
+                    # Asignamos la ruta donde se visualiza el PDF
+                    urlReporte = settings.MEDIA_URL + 'reportes/reporteProductos.pdf'
+                    # Asignamos la ruta del CSS de BOOTSTRAP
+                    css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+                    # Creamos el PDF
+                    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)],
+                                                                                             target=urlWrite)
+                    data['url'] = urlReporte
+                except Exception as e:
+                    data['error'] = str(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -47,6 +140,7 @@ class ProductosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Lis
         context['create_url'] = reverse_lazy('erp:productos_create')
         context['list_url'] = reverse_lazy('erp:productos_list')
         context['entity'] = 'Productos'
+        context['categorias'] = Categorias.objects.all()
         return context
 
 
