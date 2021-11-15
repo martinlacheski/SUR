@@ -9,8 +9,9 @@ from django.urls import reverse_lazy
 
 from django.views.generic import TemplateView
 
-from apps.erp.models import Ventas
+from apps.erp.models import Ventas, DetalleProductosVenta, Productos, Servicios, DetalleServiciosVenta, Clientes
 from apps.mixins import ValidatePermissionRequiredMixin
+from apps.parametros.models import Modelos
 from apps.trabajos.models import Trabajos
 
 
@@ -30,14 +31,15 @@ class TrabajosVentasView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Te
                 try:
                     fecha_inicio_actual = datetime.now() - relativedelta(months=12)
                     fecha_inicio_anterior = datetime.now() - relativedelta(months=24)
-                    for m in range(1, 13):
+                    for m in range(1, 14):
                         year = fecha_inicio_actual.year
                         mes = fecha_inicio_actual.month
                         yearAnterior = fecha_inicio_anterior.year
                         mesAnterior = fecha_inicio_anterior.month
                         total = Ventas.objects.filter(fecha__year=year, fecha__month=mes).aggregate(
                             r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
-                        totalAnterior = Ventas.objects.filter(fecha__year=yearAnterior, fecha__month=mesAnterior).aggregate(
+                        totalAnterior = Ventas.objects.filter(fecha__year=yearAnterior,
+                                                              fecha__month=mesAnterior).aggregate(
                             r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
                         cantidad = Trabajos.objects.filter(fechaSalida__year=year, fechaSalida__month=mes).aggregate(
                             r=Coalesce(Count('id'), 0, output_field=IntegerField())).get('r')
@@ -104,12 +106,60 @@ class ProductosServiciosView(LoginRequiredMixin, ValidatePermissionRequiredMixin
         data = {}
         try:
             action = request.POST['action']
-            if action == 'get_trabajos_ventas':
+            if action == 'get_productos_servicios':
+                meses = []
+                productos = []
+                servicios = []
+                try:
+                    fecha_inicio_actual = datetime.now() - relativedelta(months=12)
+                    totalProductos = 0
+                    totalServicios = 0
+                    for m in range(1, 14):
+                        year = fecha_inicio_actual.year
+                        mes = fecha_inicio_actual.month
+                        for prod in Productos.objects.filter():
+                            totalProductos += DetalleProductosVenta.objects.filter(venta__fecha__year=year,
+                                                                                   venta__fecha__month=mes,
+                                                                                   producto_id=prod.id).aggregate(
+                                r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        for serv in Servicios.objects.filter():
+                            totalServicios += DetalleServiciosVenta.objects.filter(venta__fecha__year=year,
+                                                                                   venta__fecha__month=mes,
+                                                                                   servicio_id=serv.id).aggregate(
+                                r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if mes == 1:
+                            meses.append('Enero ' + str(year))
+                        elif mes == 2:
+                            meses.append('Febrero ' + str(year))
+                        elif mes == 3:
+                            meses.append('Marzo ' + str(year))
+                        elif mes == 4:
+                            meses.append('Abril ' + str(year))
+                        elif mes == 5:
+                            meses.append('Mayo ' + str(year))
+                        elif mes == 6:
+                            meses.append('Junio ' + str(year))
+                        elif mes == 7:
+                            meses.append('Julio ' + str(year))
+                        elif mes == 8:
+                            meses.append('Agosto ' + str(year))
+                        elif mes == 9:
+                            meses.append('Septiembre ' + str(year))
+                        elif mes == 10:
+                            meses.append('Octubre ' + str(year))
+                        elif mes == 11:
+                            meses.append('Noviembre ' + str(year))
+                        elif mes == 12:
+                            meses.append('Diciembre ' + str(year))
+                        productos.append(float(totalProductos))
+                        servicios.append(float(totalServicios))
+                        fecha_inicio_actual = fecha_inicio_actual + relativedelta(months=1)
+                except Exception as e:
+                    print(e)
                 data = {
-                    'name': 'Porcentaje de venta',
-                    'showInLegend': False,
-                    'colorByPoint': True,
-                    'data': ''
+                    'meses': meses,
+                    'productos': productos,
+                    'servicios': servicios,
                 }
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -132,13 +182,35 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         data = {}
         try:
             action = request.POST['action']
-            if action == 'get_trabajos_ventas':
+            if action == 'get_ranking_inicial':
 
+                clientes = []
+                ventas = []
+                trabajos = []
+                try:
+                    totalVentas = 0
+                    totalTrabajos = 0
+                    fecha_inicio_actual = datetime.now() - relativedelta(months=12)
+                    total = Ventas.objects.filter(fecha__gte=fecha_inicio_actual).aggregate(
+                        r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
+
+                    for cli in Clientes.objects.all():
+                        ventas_filtradas = Ventas.objects.filter(fecha__gte=fecha_inicio_actual).filter(
+                            cliente_id=cli.id)
+                        totalTrabajos = len(ventas_filtradas)
+                        for vent in ventas_filtradas:
+                            totalVentas += vent.total
+                        clientes.append(cli.razonSocial)
+                        ventas.append(float(totalVentas))
+                        trabajos.append(totalTrabajos)
+                        totalVentas = 0
+                        totalTrabajos = 0
+                except Exception as e:
+                    print(e)
                 data = {
-                    'name': 'Porcentaje de venta',
-                    'showInLegend': False,
-                    'colorByPoint': True,
-                    'data': ''
+                    'clientes': clientes,
+                    'ventas': ventas,
+                    'trabajos': trabajos,
                 }
             else:
                 data['error'] = 'Ha ocurrido un error'
@@ -148,9 +220,9 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de Productos y Servicios'
-        context['list_url'] = reverse_lazy('estadisticas:productos_servicios')
-        context['entity'] = 'Estadística Productos y Servicios'
+        context['title'] = 'Estadística Ranking de Clientes'
+        context['list_url'] = reverse_lazy('estadisticas:clientes_trabajos')
+        context['entity'] = 'Estadística Ranking Clientes'
         return context
 
 
@@ -158,16 +230,23 @@ class ModelosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
     template_name = 'modelos_mas_realizados.html'
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        data = []
         try:
             action = request.POST['action']
-            if action == 'get_trabajos_ventas':
-                data = {
-                    'name': 'Porcentaje de venta',
-                    'showInLegend': False,
-                    'colorByPoint': True,
-                    'data': ''
-                }
+            if action == 'get_ranking_modelos':
+                try:
+                    total = 0
+                    fecha_inicio_actual = datetime.now() - relativedelta(months=12)
+                    for mod in Modelos.objects.filter():
+                        total = Trabajos.objects.filter(fechaSalida__gte=fecha_inicio_actual).filter(modelo_id=mod.id)
+                        totalModelos = len(total)
+                        if totalModelos > 0:
+                            data.append({
+                                'name': mod.marca.nombre + ' - ' + mod.nombre,
+                                'y': float(totalModelos)
+                            })
+                except Exception as e:
+                    print(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -186,16 +265,25 @@ class ProductosMasVendidosView(LoginRequiredMixin, ValidatePermissionRequiredMix
     template_name = 'productos_mas_vendidos.html'
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        data = []
         try:
             action = request.POST['action']
-            if action == 'get_trabajos_ventas':
-                data = {
-                    'name': 'Porcentaje de venta',
-                    'showInLegend': False,
-                    'colorByPoint': True,
-                    'data': ''
-                }
+            if action == 'get_ranking_productos':
+                try:
+                    total = 0
+                    fecha_inicio_actual = datetime.now() - relativedelta(months=12)
+                    for prod in Productos.objects.filter():
+                        total = DetalleProductosVenta.objects.filter(venta__fecha__gte=fecha_inicio_actual,
+                                                                     producto_id=prod.id).aggregate(
+                            r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if total > 0:
+                            nombre = prod.abreviatura + ' - $' + str(round(total,2)),
+                            data.append({
+                                'name': nombre,
+                                'y': float(total)
+                            })
+                except Exception as e:
+                    print(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -214,16 +302,25 @@ class ServiciosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredM
     template_name = 'servicios_mas_realizados.html'
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        data = []
         try:
             action = request.POST['action']
-            if action == 'get_trabajos_ventas':
-                data = {
-                    'name': 'Porcentaje de venta',
-                    'showInLegend': False,
-                    'colorByPoint': True,
-                    'data': ''
-                }
+            if action == 'get_ranking_servicios':
+                try:
+                    total = 0
+                    fecha_inicio_actual = datetime.now() - relativedelta(months=12)
+                    for serv in Servicios.objects.filter():
+                        total = DetalleServiciosVenta.objects.filter(venta__fecha__gte=fecha_inicio_actual,
+                                                                     servicio_id=serv.id).aggregate(
+                            r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if total > 0:
+                            nombre = serv.descripcion + ' - $' + str(round(total, 2)),
+                            data.append({
+                                'name': nombre,
+                                'y': float(total)
+                            })
+                except Exception as e:
+                    print(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -242,16 +339,25 @@ class InsumosMasUtilizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
     template_name = 'insumos_mas_utilizados.html'
 
     def post(self, request, *args, **kwargs):
-        data = {}
+        data = []
         try:
             action = request.POST['action']
-            if action == 'get_trabajos_ventas':
-                data = {
-                    'name': 'Porcentaje de venta',
-                    'showInLegend': False,
-                    'colorByPoint': True,
-                    'data': ''
-                }
+            if action == 'get_ranking_insumos':
+                try:
+                    total = 0
+                    fecha_inicio_actual = datetime.now() - relativedelta(months=12)
+                    for prod in Productos.objects.filter(esInsumo=True):
+                        total = DetalleProductosVenta.objects.filter(venta__fecha__gte=fecha_inicio_actual,
+                                                                     producto_id=prod.id).aggregate(
+                            r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if total > 0:
+                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            data.append({
+                                'name': nombre,
+                                'y': float(total)
+                            })
+                except Exception as e:
+                    print(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

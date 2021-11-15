@@ -1,3 +1,6 @@
+var clientes;
+var ventas;
+var trabajos;
 $(document).ready(function () {
     //Inicializamos el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').daterangepicker({
@@ -14,65 +17,78 @@ $(document).ready(function () {
     });
     //Inicializamos limpio el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').val('');
-});
-$(function () {
-    Highcharts.chart('container', {
-    chart: {
-        type: 'bar'
-    },
-    title: {
-        text: 'Ranking de Clientes'
-    },
-    subtitle: {
-        text: '10 mejores clientes'
-    },
-    xAxis: {
-        categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania', 'Africa', 'America', 'Asia', 'Europe', 'Oceania'],
-        title: {
-            text: null
-        }
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Population (millions)',
-            align: 'high'
+    //Realizamos el AJAX para traer el ranking de Clientes los ultimos 12 meses
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'get_ranking_inicial',
         },
-        labels: {
-            overflow: 'justify'
+        dataType: 'json',
+        success: function (data) {
+            console.log(data);
+            console.log(data);
+            clientes = data.clientes;
+            ventas = data.ventas;
+            trabajos = data.trabajos;
+            //ARMAMOS EL GRAFICO
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Ranking de Clientes'
+                },
+                subtitle: {
+                    text: '10 mejores clientes'
+                },
+                xAxis: {
+                    categories: clientes,
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Pesos $',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 0,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Ventas',
+                    data: ventas
+                }, {
+                    name: 'Trabajos',
+                    data: trabajos
+                }]
+            });
         }
-    },
-    tooltip: {
-        valueSuffix: ' millions'
-    },
-    plotOptions: {
-        bar: {
-            dataLabels: {
-                enabled: true
-            }
-        }
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'top',
-        x: -40,
-        y: 80,
-        floating: true,
-        borderWidth: 1,
-        backgroundColor:
-            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
-        shadow: true
-    },
-    credits: {
-        enabled: false
-    },
-    series: [{
-        name: 'Ventas',
-        data: [107, 131, 635, 203, 182, 107, 131, 635, 203, 182]
-    }, {
-        name: 'Trabajos',
-        data: [133, 156, 947, 408, 300, 133, 156, 947, 408, 300]
-    }]
-});
+    });
 });
