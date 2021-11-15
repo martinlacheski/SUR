@@ -43,29 +43,28 @@ def crearSolicitudes(pedido, dominio):
 
         link = dominio + path_interno + hash
 
-        # # Enviamos mail
-        # try:
-        #     print("envio")
-        #     send_mail(
-        #         subject='Solicitud de pedidos SUR EXPRESS',
-        #         message='Hemos elaborado un pedido, por favor entrá al link e indicanos qué tenes: \n\n ' + link,
-        #         from_email=settings.EMAIL_HOST_USER,
-        #         recipient_list=['ingraquelespindola@gmail.com'],
-        #         )
-        # except Exception as e:
-        #     print(str(e))
-        #     print("algo")
-        #     # Si falla, notificamos por sistema
-        #     titulo = "No se pudo notificar al proveedor"
-        #     desc = "Ha ocurrido un problema al enviar un mail al proveedor. Asegúrese de estar\"" \
-        #            "conectado a internet o comúniquese con el administrador"
-        #     notificarSistema(titulo, desc)
-        #
-        #     # Borramos la solicitud. Si no le avisó al proveedor no tiene sentido mantener el registro.
-        #     detDel = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedido.id)
-        #     for d in detDel:
-        #         d.delete()
-        #     SP.delete()
+        # Enviamos mail
+        try:
+            print("envio")
+            send_mail(
+                subject='Solicitud de pedidos SUR EXPRESS',
+                message='Hemos elaborado un pedido, por favor entrá al link e indicanos qué tenes: \n\n ' + link,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=['ingraquelespindola@gmail.com'],
+                )
+        except Exception as e:
+            print(str(e))
+            # Si falla, notificamos por sistema
+            titulo = "No se pudo notificar al proveedor"
+            desc = "Ha ocurrido un problema al enviar un mail al proveedor. Asegúrese de estar\"" \
+                   "conectado a internet o comúniquese con el administrador"
+            notificarSistema(titulo, desc)
+
+            # Borramos la solicitud. Si no le avisó al proveedor no tiene sentido mantener el registro.
+            detDel = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedido.id)
+            for d in detDel:
+                d.delete()
+            SP.delete()
 
 def generarHash():
     code = random.randint(1, 10000000000)

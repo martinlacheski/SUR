@@ -1,5 +1,7 @@
-from apps.erp.models import Productos, DetallePedidoSolicitud
-from apps.erp.models import PedidosSolicitud
+from apps.erp.models import Productos
+from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud
+from apps.erp.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor
+from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud
 from django.utils import timezone
 
 def generarSolicitudPedido():
@@ -11,8 +13,6 @@ def generarSolicitudPedido():
         if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
             sub_total += producto.costo * producto.reposicion
             productos_stock_min.append(producto)
-
-    print("productos: " + str(productos_stock_min))
 
     pedido.fecha = timezone.now().date()
     # pedido.fechaLimite = formPedidoRequest['fechaLimite'] No va a tener fecha límite si se crea mediante un cron.
@@ -29,6 +29,10 @@ def generarSolicitudPedido():
         det.cantidad = p.reposicion
         det.subtotal = p.costo * p.reposicion
         det.save()
+
+def generarPedido():
+    respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
+
 
 
 
