@@ -12,8 +12,6 @@ $(document).ready(function () {
             cancelLabel: 'Cancelar',
             applyLabel: 'Aplicar',
         },
-        //Remover Botones de Aplicar y Cancelar
-        autoApply: true,
     });
     //Inicializamos limpio el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').val('');
@@ -27,9 +25,8 @@ $(document).ready(function () {
         },
         dataType: 'json',
         success: function (data) {
-            console.log(data);
-            console.log(data);
             clientes = data.clientes;
+            totales = data.totales;
             ventas = data.ventas;
             trabajos = data.trabajos;
             //ARMAMOS EL GRAFICO
@@ -38,10 +35,7 @@ $(document).ready(function () {
                     type: 'bar'
                 },
                 title: {
-                    text: 'Ranking de Clientes'
-                },
-                subtitle: {
-                    text: '10 mejores clientes'
+                    text: 'Ranking de Clientes - últimos 12 meses'
                 },
                 xAxis: {
                     categories: clientes,
@@ -82,6 +76,9 @@ $(document).ready(function () {
                     enabled: false
                 },
                 series: [{
+                    name: 'Total',
+                    data: totales
+                }, {
                     name: 'Ventas',
                     data: ventas
                 }, {
@@ -90,5 +87,95 @@ $(document).ready(function () {
                 }]
             });
         }
+    });
+});
+$(function () {
+//Armamos el GRAFICO con el Filtro de FECHAS
+    $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
+        //Asignamos las variables Desde y Hasta
+        var desde = picker.startDate.format('YYYY-MM-DD');
+        var hasta = picker.endDate.format('YYYY-MM-DD');
+        //Realizamos el AJAX para traer las Ventas y los trabajos realizados segun la fecha filtrada
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_ranking_filtrado',
+                'desde': desde,
+                'hasta': hasta,
+            },
+            dataType: 'json',
+            success: function (data) {
+                clientes = data.clientes;
+                totales = data.totales;
+                ventas = data.ventas;
+                trabajos = data.trabajos;
+                //ARMAMOS EL GRAFICO
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: 'Ranking de Clientes'
+                    },
+                    subtitle: {
+                        text: 'Datos filtrados desde el ' + moment(desde).format('DD-MM-YYYY') + ' hasta el ' + moment(hasta).format('DD-MM-YYYY')
+                    },
+                    xAxis: {
+                        categories: clientes,
+                        title: {
+                            text: null
+                        }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Pesos $',
+                            align: 'high'
+                        },
+                        labels: {
+                            overflow: 'justify'
+                        }
+                    },
+                    plotOptions: {
+                        bar: {
+                            dataLabels: {
+                                enabled: true
+                            }
+                        }
+                    },
+                    legend: {
+                        layout: 'vertical',
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -40,
+                        y: 0,
+                        floating: true,
+                        borderWidth: 1,
+                        backgroundColor:
+                            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF',
+                        shadow: true
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: [{
+                        name: 'Total',
+                        data: totales
+                    }, {
+                        name: 'Ventas',
+                        data: ventas
+                    }, {
+                        name: 'Trabajos',
+                        data: trabajos
+                    }]
+                });
+            }
+        });
+    });
+    //Reseteamos la pagina para limpiar el filtro
+    $('input[name="filterRangoFechas"]').on('cancel.daterangepicker', function (ev, picker) {
+        location.reload();
     });
 });

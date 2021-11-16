@@ -85,6 +85,44 @@ class TrabajosVentasView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Te
                     'trabajos': trabajos,
                     'trabajosAnterior': trabajosAnterior
                 }
+            elif action == 'get_trabajos_ventas_filtradas':
+                dias = []
+                totales = []
+                totalesAnterior = []
+                trabajos = []
+                trabajosAnterior = []
+                try:
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    desdeAnterior = desde - relativedelta(months=12)
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    diferencia = hasta - desde
+                    for dia in range(0, diferencia.days + 1):
+                        total = Ventas.objects.filter(fecha=desde).aggregate(
+                            r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
+                        totalAnterior = Ventas.objects.filter(fecha=desdeAnterior).aggregate(
+                            r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
+                        cantidad = Trabajos.objects.filter(fechaSalida=desde).aggregate(
+                            r=Coalesce(Count('id'), 0, output_field=IntegerField())).get('r')
+                        cantidadAnterior = Trabajos.objects.filter(fechaSalida=desdeAnterior).aggregate(
+                            r=Coalesce(Count('id'), 0, output_field=IntegerField())).get('r')
+                        totales.append(float(total))
+                        totalesAnterior.append(float(totalAnterior))
+                        trabajos.append(cantidad)
+                        trabajosAnterior.append(cantidadAnterior)
+                        dias.append(desde.strftime('%d-%m-%Y'))
+                        desde = desde + relativedelta(days=1)
+                        desdeAnterior = desdeAnterior + relativedelta(days=1)
+                except Exception as e:
+                    print(e)
+                data = {
+                    'dias': dias,
+                    'totales': totales,
+                    'totalesAnterior': totalesAnterior,
+                    'trabajos': trabajos,
+                    'trabajosAnterior': trabajosAnterior
+                }
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -161,6 +199,40 @@ class ProductosServiciosView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     'productos': productos,
                     'servicios': servicios,
                 }
+            elif action == 'get_productos_servicios_filtradas':
+                dias = []
+                productos = []
+                servicios = []
+                try:
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    diferencia = hasta - desde
+                    totalProductos = 0
+                    totalServicios = 0
+                    for dia in range(0, diferencia.days + 1):
+                        for prod in Productos.objects.filter():
+                            totalProductos += DetalleProductosVenta.objects.filter(venta__fecha=desde,
+                                                                                   producto_id=prod.id).aggregate(
+                                r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        for serv in Servicios.objects.filter():
+                            totalServicios += DetalleServiciosVenta.objects.filter(venta__fecha=desde,
+                                                                                   servicio_id=serv.id).aggregate(
+                                r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        productos.append(float(totalProductos))
+                        servicios.append(float(totalServicios))
+                        dias.append(desde.strftime('%d-%m-%Y'))
+                        totalProductos = 0
+                        totalServicios = 0
+                        desde = desde + relativedelta(days=1)
+                except Exception as e:
+                    print(e)
+                data = {
+                    'dias': dias,
+                    'productos': productos,
+                    'servicios': servicios,
+                }
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -183,32 +255,73 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         try:
             action = request.POST['action']
             if action == 'get_ranking_inicial':
-
                 clientes = []
+                totales = []
                 ventas = []
                 trabajos = []
                 try:
                     totalVentas = 0
                     totalTrabajos = 0
                     fecha_inicio_actual = datetime.now() - relativedelta(months=12)
-                    total = Ventas.objects.filter(fecha__gte=fecha_inicio_actual).aggregate(
-                        r=Coalesce(Sum('total'), 0, output_field=DecimalField())).get('r')
-
                     for cli in Clientes.objects.all():
+                        trabajos_filtrados = Trabajos.objects.filter(fechaSalida__gte=fecha_inicio_actual).filter(
+                            cliente_id=cli.id)
+                        totalTrabajos = len(trabajos_filtrados)
                         ventas_filtradas = Ventas.objects.filter(fecha__gte=fecha_inicio_actual).filter(
                             cliente_id=cli.id)
-                        totalTrabajos = len(ventas_filtradas)
+                        cantVentas = len(ventas_filtradas)
                         for vent in ventas_filtradas:
                             totalVentas += vent.total
-                        clientes.append(cli.razonSocial)
-                        ventas.append(float(totalVentas))
-                        trabajos.append(totalTrabajos)
+                        if totalVentas > 0:
+                            clientes.append(cli.razonSocial)
+                            totales.append(float(totalVentas))
+                            ventas.append(cantVentas)
+                            trabajos.append(totalTrabajos)
+                        cantVentas = 0
                         totalVentas = 0
                         totalTrabajos = 0
                 except Exception as e:
                     print(e)
                 data = {
                     'clientes': clientes,
+                    'totales': totales,
+                    'ventas': ventas,
+                    'trabajos': trabajos,
+                }
+            elif action == 'get_ranking_filtrado':
+                clientes = []
+                totales = []
+                ventas = []
+                trabajos = []
+                try:
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    totalVentas = 0
+                    totalTrabajos = 0
+                    for cli in Clientes.objects.all():
+                        trabajos_filtrados = Trabajos.objects.filter(fechaSalida__gte=desde,
+                                                                     fechaSalida__lte=hasta).filter(
+                            cliente_id=cli.id)
+                        totalTrabajos = len(trabajos_filtrados)
+                        ventas_filtradas = Ventas.objects.filter(fecha__gte=desde, fecha__lte=hasta).filter(
+                            cliente_id=cli.id)
+                        cantVentas = len(ventas_filtradas)
+                        for vent in ventas_filtradas:
+                            totalVentas += vent.total
+                        if totalVentas > 0:
+                            clientes.append(cli.razonSocial)
+                            totales.append(float(totalVentas))
+                            ventas.append(cantVentas)
+                            trabajos.append(totalTrabajos)
+                        totalVentas = 0
+                        totalTrabajos = 0
+                except Exception as e:
+                    print(e)
+                data = {
+                    'clientes': clientes,
+                    'totales': totales,
                     'ventas': ventas,
                     'trabajos': trabajos,
                 }
@@ -247,6 +360,24 @@ class ModelosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                             })
                 except Exception as e:
                     print(e)
+            elif action == 'get_ranking_filtrado':
+                try:
+                    total = 0
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    for mod in Modelos.objects.filter():
+                        total = Trabajos.objects.filter(fechaSalida__gte=desde,
+                                                        fechaSalida__lte=hasta).filter(modelo_id=mod.id)
+                        totalModelos = len(total)
+                        if totalModelos > 0:
+                            data.append({
+                                'name': mod.marca.nombre + ' - ' + mod.nombre,
+                                'y': float(totalModelos)
+                            })
+                except Exception as e:
+                    print(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -277,7 +408,26 @@ class ProductosMasVendidosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                                                                      producto_id=prod.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = prod.abreviatura + ' - $' + str(round(total,2)),
+                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            data.append({
+                                'name': nombre,
+                                'y': float(total)
+                            })
+                except Exception as e:
+                    print(e)
+            elif action == 'get_ranking_filtrado':
+                try:
+                    total = 0
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    for prod in Productos.objects.filter():
+                        total = DetalleProductosVenta.objects.filter(venta__fecha__gte=desde, venta__fecha__lte=hasta,
+                                                                     producto_id=prod.id).aggregate(
+                            r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if total > 0:
+                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
                             data.append({
                                 'name': nombre,
                                 'y': float(total)
@@ -321,6 +471,25 @@ class ServiciosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredM
                             })
                 except Exception as e:
                     print(e)
+            elif action == 'get_ranking_filtrado':
+                try:
+                    total = 0
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    for serv in Servicios.objects.filter():
+                        total = DetalleServiciosVenta.objects.filter(venta__fecha__gte=desde, venta__fecha__lte=hasta,
+                                                                     servicio_id=serv.id).aggregate(
+                            r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if total > 0:
+                            nombre = serv.descripcion + ' - $' + str(round(total, 2)),
+                            data.append({
+                                'name': nombre,
+                                'y': float(total)
+                            })
+                except Exception as e:
+                    print(e)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -348,6 +517,25 @@ class InsumosMasUtilizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                     fecha_inicio_actual = datetime.now() - relativedelta(months=12)
                     for prod in Productos.objects.filter(esInsumo=True):
                         total = DetalleProductosVenta.objects.filter(venta__fecha__gte=fecha_inicio_actual,
+                                                                     producto_id=prod.id).aggregate(
+                            r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
+                        if total > 0:
+                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            data.append({
+                                'name': nombre,
+                                'y': float(total)
+                            })
+                except Exception as e:
+                    print(e)
+            elif action == 'get_ranking_filtrado':
+                try:
+                    total = 0
+                    desde = request.POST['desde']
+                    desde = datetime.strptime(desde, "%Y-%m-%d").date()
+                    hasta = request.POST['hasta']
+                    hasta = datetime.strptime(hasta, "%Y-%m-%d").date()
+                    for prod in Productos.objects.filter(esInsumo=True):
+                        total = DetalleProductosVenta.objects.filter(venta__fecha__gte=desde, venta__fecha__lte=hasta,
                                                                      producto_id=prod.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
