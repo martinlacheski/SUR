@@ -408,7 +408,7 @@ class ProductosMasVendidosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                                                                      producto_id=prod.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            nombre = prod.abreviatura,
                             data.append({
                                 'name': nombre,
                                 'y': float(total)
@@ -427,7 +427,7 @@ class ProductosMasVendidosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                                                                      producto_id=prod.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            nombre = prod.abreviatura,
                             data.append({
                                 'name': nombre,
                                 'y': float(total)
@@ -464,7 +464,7 @@ class ServiciosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredM
                                                                      servicio_id=serv.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = serv.descripcion + ' - $' + str(round(total, 2)),
+                            nombre = serv.descripcion,
                             data.append({
                                 'name': nombre,
                                 'y': float(total)
@@ -483,7 +483,7 @@ class ServiciosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredM
                                                                      servicio_id=serv.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = serv.descripcion + ' - $' + str(round(total, 2)),
+                            nombre = serv.descripcion,
                             data.append({
                                 'name': nombre,
                                 'y': float(total)
@@ -520,7 +520,7 @@ class InsumosMasUtilizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                                                                      producto_id=prod.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            nombre = prod.abreviatura,
                             data.append({
                                 'name': nombre,
                                 'y': float(total)
@@ -539,7 +539,7 @@ class InsumosMasUtilizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
                                                                      producto_id=prod.id).aggregate(
                             r=Coalesce(Sum('subtotal'), 0, output_field=DecimalField())).get('r')
                         if total > 0:
-                            nombre = prod.abreviatura + ' - $' + str(round(total, 2)),
+                            nombre = prod.abreviatura,
                             data.append({
                                 'name': nombre,
                                 'y': float(total)

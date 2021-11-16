@@ -36,7 +36,7 @@ $(document).ready(function () {
                     text: 'Productos más vendidos - últimos 12 meses'
                 },
                 tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                    pointFormat: '<b>{series.name} - ${point.y} - {point.percentage:.1f}%</b>'
                 },
                 accessibility: {
                     point: {
@@ -49,12 +49,12 @@ $(document).ready(function () {
                         cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            format: '<b>{point.name}</b> - ${point.y} - {point.percentage:.1f} %'
                         }
                     }
                 },
                 series: [{
-                    name: 'Porcentaje',
+                    name: 'Total',
                     colorByPoint: true,
                     data: productos
                 }]
@@ -63,7 +63,12 @@ $(document).ready(function () {
     });
 });
 $(function () {
-//Armamos el GRAFICO con el Filtro de FECHAS
+    //Descargamos el EXCEL de la estadistica
+    $('.btnXLS').on('click', function () {
+        var chart = $('#container').highcharts();
+        chart.downloadXLS();
+    });
+    //Armamos el GRAFICO con el Filtro de FECHAS
     $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
         //Asignamos las variables Desde y Hasta
         var desde = picker.startDate.format('YYYY-MM-DD');
@@ -96,7 +101,7 @@ $(function () {
                         text: 'Datos filtrados desde el ' + moment(desde).format('DD-MM-YYYY') + ' hasta el ' + moment(hasta).format('DD-MM-YYYY')
                     },
                     tooltip: {
-                        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                        pointFormat: '<b>{series.name} - ${point.y} - {point.percentage:.1f}%</b>'
                     },
                     accessibility: {
                         point: {
@@ -109,12 +114,12 @@ $(function () {
                             cursor: 'pointer',
                             dataLabels: {
                                 enabled: true,
-                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                                format: '<b>{point.name}</b> - ${point.y} - {point.percentage:.1f} %'
                             }
                         }
                     },
                     series: [{
-                        name: 'Porcentaje',
+                        name: 'Total',
                         colorByPoint: true,
                         data: productos
                     }]

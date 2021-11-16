@@ -127,7 +127,14 @@ $(document).ready(function () {
     });
 });
 $(function () {
-//Armamos el GRAFICO con el Filtro de FECHAS
+    //Descargamos el EXCEL de la estadistica
+    $('.btnXLS').on('click', function () {
+        var chartTrabajos = $('#containerTrabajos').highcharts();
+        var chartVentas = $('#containerVentas').highcharts();
+        chartTrabajos.downloadXLS();
+        chartVentas.downloadXLS();
+    });
+    //Armamos el GRAFICO con el Filtro de FECHAS
     $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
         //Asignamos las variables Desde y Hasta
         var desde = picker.startDate.format('YYYY-MM-DD');

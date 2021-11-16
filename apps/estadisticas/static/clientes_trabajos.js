@@ -90,7 +90,12 @@ $(document).ready(function () {
     });
 });
 $(function () {
-//Armamos el GRAFICO con el Filtro de FECHAS
+    //Descargamos el EXCEL de la estadistica
+    $('.btnXLS').on('click', function () {
+        var chart = $('#container').highcharts();
+        chart.downloadXLS();
+    });
+    //Armamos el GRAFICO con el Filtro de FECHAS
     $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
         //Asignamos las variables Desde y Hasta
         var desde = picker.startDate.format('YYYY-MM-DD');
