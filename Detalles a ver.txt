@@ -1,7 +1,9 @@
 Para cargar los registros de Auditoria
 python manage.py populate_history --auto
 
-AGREGAR UN CONTROL EN EL DELETE Y EL UPDATE PARA VER SI TIENE LOS PERMISOS SINO MOSTRAR EL MSJ DE ERROR
+--------------------------------------------------------------------------------------------------------------------
+
+AGREGAR UN CONTROL EN EL DELETE PARA VER SI TIENE LOS PERMISOS SINO MOSTRAR EL MSJ DE ERROR
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -11,26 +13,5 @@ AGREGAR UN CONTROL EN EL DELETE Y EL UPDATE PARA VER SI TIENE LOS PERMISOS SINO 
 
 --------------------------------------------------------------------------------------------------------------------
 
-* Agregar un campo para obtener el usuario de la edicion anterior, a fin de representar en el reporte visual
-
-*AUDITORIA sobre:
-PRODUCTOS                   OK
-SERVICIOS                   OK
-VENTAS                      OK
-TRABAJOS                    OK
-
---------------------------------------------------------------------------------------------------------------------
-
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
-
-*ESTADISTICAS
-
-ESTADISTICA -
-Line Chart - Evolución Anual (Ultimos 12 meses) de $ Ventas y Cantidad de Trabajos
-Bar Chart - Evolucion Anual (Ultimos 12 meses) de Ventas de Productos y Servicios
-Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Modelos mas realizados (2 Graficos)
-Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Productos mas vendidos (2 Graficos)
-Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Servicios mas realizados (2 Graficos)
-Pie Chart - Evolucion Anual  (Ultimos 365 dias) y Mensual  (Ultimos 30 dias) de Insumos mas realizados (2 Graficos)
-Bar Chart - Ranking Mensual (Ultimos 30 dias) de Clientes  $ Ventas y Cantidad de Trabajos
 

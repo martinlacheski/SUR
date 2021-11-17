@@ -155,7 +155,12 @@
                             $('.btnNo').text("Volver");
                             // En caso de que la Exception sea por otra cosa
                         } else {
-                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            if (data.error === undefined) {
+                                $('#exampleModalLabel').text('Error');
+                                $('#msjErrorModal')[0].innerHTML = 'No posee permisos suficientes para realizar dicha operación';
+                            } else {
+                                $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            }
                             $('.btnDelete').attr('style', 'visibility: hidden');
                             $('.btnNo').text("Volver");
                         }
