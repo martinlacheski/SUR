@@ -316,7 +316,6 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                         totalTrabajos = 0
                 except Exception as e:
                     print(e)
-                print(datos)
                 data = sorted(datos, key=itemgetter('totales'), reverse=True)
             else:
                 data['error'] = 'Ha ocurrido un error'
