@@ -1,4 +1,6 @@
 from datetime import datetime
+from operator import itemgetter
+
 from dateutil.relativedelta import relativedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -255,10 +257,7 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
         try:
             action = request.POST['action']
             if action == 'get_ranking_inicial':
-                clientes = []
-                totales = []
-                ventas = []
-                trabajos = []
+                datos = []
                 try:
                     totalVentas = 0
                     totalTrabajos = 0
@@ -273,26 +272,21 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                         for vent in ventas_filtradas:
                             totalVentas += vent.total
                         if totalVentas > 0:
-                            clientes.append(cli.razonSocial)
-                            totales.append(float(totalVentas))
-                            ventas.append(cantVentas)
-                            trabajos.append(totalTrabajos)
+                            datos.append({
+                                'cliente': cli.razonSocial,
+                                'totales': float(totalVentas),
+                                'ventas': cantVentas,
+                                'trabajos': totalTrabajos
+                            })
                         cantVentas = 0
                         totalVentas = 0
                         totalTrabajos = 0
+
                 except Exception as e:
                     print(e)
-                data = {
-                    'clientes': clientes,
-                    'totales': totales,
-                    'ventas': ventas,
-                    'trabajos': trabajos,
-                }
+                data = sorted(datos, key=itemgetter('totales'), reverse=True)
             elif action == 'get_ranking_filtrado':
-                clientes = []
-                totales = []
-                ventas = []
-                trabajos = []
+                datos = []
                 try:
                     desde = request.POST['desde']
                     desde = datetime.strptime(desde, "%Y-%m-%d").date()
@@ -311,20 +305,19 @@ class ClientesTrabajosView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                         for vent in ventas_filtradas:
                             totalVentas += vent.total
                         if totalVentas > 0:
-                            clientes.append(cli.razonSocial)
-                            totales.append(float(totalVentas))
-                            ventas.append(cantVentas)
-                            trabajos.append(totalTrabajos)
+                            datos.append({
+                                'cliente': cli.razonSocial,
+                                'totales': float(totalVentas),
+                                'ventas': cantVentas,
+                                'trabajos': totalTrabajos
+                            })
+                        cantVentas = 0
                         totalVentas = 0
                         totalTrabajos = 0
                 except Exception as e:
                     print(e)
-                data = {
-                    'clientes': clientes,
-                    'totales': totales,
-                    'ventas': ventas,
-                    'trabajos': trabajos,
-                }
+                print(datos)
+                data = sorted(datos, key=itemgetter('totales'), reverse=True)
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:

@@ -1,6 +1,7 @@
-var clientes;
-var ventas;
-var trabajos;
+var clientes = [];
+var totales = [];
+var ventas = [];
+var trabajos = [];
 $(document).ready(function () {
     //Inicializamos el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').daterangepicker({
@@ -25,10 +26,12 @@ $(document).ready(function () {
         },
         dataType: 'json',
         success: function (data) {
-            clientes = data.clientes;
-            totales = data.totales;
-            ventas = data.ventas;
-            trabajos = data.trabajos;
+            for (let i = 0; i < data.length; i++) {
+                clientes.push(data[i].cliente)
+                totales.push(data[i].totales)
+                ventas.push(data[i].ventas)
+                trabajos.push(data[i].trabajos)
+            }
             //ARMAMOS EL GRAFICO
             Highcharts.chart('container', {
                 chart: {
@@ -65,7 +68,7 @@ $(document).ready(function () {
                     align: 'right',
                     verticalAlign: 'top',
                     x: -40,
-                    y: 0,
+                    y: -10,
                     floating: true,
                     borderWidth: 1,
                     backgroundColor:
@@ -97,6 +100,10 @@ $(function () {
     });
     //Armamos el GRAFICO con el Filtro de FECHAS
     $('input[name="filterRangoFechas"]').on('apply.daterangepicker', function (ev, picker) {
+        clientes = [];
+        totales = [];
+        ventas = [];
+        trabajos = [];
         //Asignamos las variables Desde y Hasta
         var desde = picker.startDate.format('YYYY-MM-DD');
         var hasta = picker.endDate.format('YYYY-MM-DD');
@@ -112,10 +119,12 @@ $(function () {
             },
             dataType: 'json',
             success: function (data) {
-                clientes = data.clientes;
-                totales = data.totales;
-                ventas = data.ventas;
-                trabajos = data.trabajos;
+                for (let i = 0; i < data.length; i++) {
+                    clientes.push(data[i].cliente)
+                    totales.push(data[i].totales)
+                    ventas.push(data[i].ventas)
+                    trabajos.push(data[i].trabajos)
+                }
                 //ARMAMOS EL GRAFICO
                 Highcharts.chart('container', {
                     chart: {
@@ -155,7 +164,7 @@ $(function () {
                         align: 'right',
                         verticalAlign: 'top',
                         x: -40,
-                        y: 0,
+                        y: -10,
                         floating: true,
                         borderWidth: 1,
                         backgroundColor:
