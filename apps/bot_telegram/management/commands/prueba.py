@@ -25,10 +25,10 @@ class Command(BaseCommand):
 
         # RECORDATORIO: Este proceso se ejecuta únicamente cuando se vence el plazo para respuestas.
 
-        group_det_no_ordenado = []
-        group_det_ordenado = []
-        detalles = []
-
+        detalles = []                   # Contiene los datos crudos de las respuestas
+        group_det_no_ordenado = []      # Auxiliar de agrupamiento
+        group_det_ordenado = []         # Productos separados por grupo (lista de listas)
+        productos_def = []              # Productos finales que ENTRARÍAN en el pedido. Puede contener repetidos.
 
         respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
         # Solamente analizamos SI HAY respuetas.
@@ -53,10 +53,23 @@ class Command(BaseCommand):
                 if elem not in group_det_ordenado:
                     group_det_ordenado.append(elem)
 
-            # # Análisis de cada grupo
-            # for grupo in group_det_ordenado:
-            #     if len(grupo) == 1: # Solamente un proveedor respondió por un producto en particular.
-            #         prod = grupo[0]
-            #         generarDetalle(prod.costo, prod.cantidad, prod.subtotal, prod.pedidoSolicitudProveedor)
-            #     for g in grupo:
+            # Armado de lista de productos que se van a pedir
+            for grupo in group_det_ordenado:
+                if len(grupo) == 1:                     # si únicamente UN proveedor ofertó por el producto
+                    productos_def.append(grupo[0])
+                else:                                   # varios ofertaron por el producto
+                    # Se halla el costo mínimo por grupo y se agregan todos los productos con ese costo.
+                    # Nos interesa si hay repetidos o no.
+                    prodInicial = grupo[0]
+                    minimo = 0
+                    for g in grupo:
+                        if g.costo <= prodInicial.costo:
+                            minimo = g.costo
+                    for g in grupo:
+                        if g.costo == minimo:
+                            productos_def.append(g)
+
+
+            # for x in productos_def:
+            #     print(str(x.producto.id) + " - " + str(x.producto.abreviatura) + " - " + str(x.costo) + "-" + str(x.pedidoSolicitudProveedor.proveedor))
 
