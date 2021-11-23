@@ -13,8 +13,13 @@ from django.conf import settings
 from apps.bot_telegram.logicaBot import notificarSistema
 from django.urls import reverse
 
+"""
+    Función que crea, por cada proveedor, una cabecera y un detalle de todos los productos que se necesitan.
+    también, a cada uno, envía un mail con un link para que éste pueda acceder y EDITAR los registros que le corresponden.
 
+"""
 def crearSolicitudes(pedido, dominio):
+
     # Obtenemos la url interna (/pedidos/solicitudes/proveedores/ en este caso)
     path_interno = reverse('erp:pedidos_solicitudes_proveedores_create', args=['a'])[:-1]
 
@@ -44,27 +49,27 @@ def crearSolicitudes(pedido, dominio):
         link = dominio + path_interno + hash
 
         # Enviamos mail
-        try:
-            print("envio")
-            send_mail(
-                subject='Solicitud de pedidos SUR EXPRESS',
-                message='Hemos elaborado un pedido, por favor entrá al link e indicanos qué tenes: \n\n ' + link,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=['ingraquelespindola@gmail.com'],
-                )
-        except Exception as e:
-            print(str(e))
-            # Si falla, notificamos por sistema
-            titulo = "No se pudo notificar al proveedor"
-            desc = "Ha ocurrido un problema al enviar un mail al proveedor. Asegúrese de estar\"" \
-                   "conectado a internet o comúniquese con el administrador"
-            notificarSistema(titulo, desc)
-
-            # Borramos la solicitud. Si no le avisó al proveedor no tiene sentido mantener el registro.
-            detDel = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedido.id)
-            for d in detDel:
-                d.delete()
-            SP.delete()
+        # try:
+        #     print("envio")
+        #     send_mail(
+        #         subject='Solicitud de pedidos SUR EXPRESS',
+        #         message='Hemos elaborado un pedido, por favor entrá al link e indicanos qué tenes: \n\n ' + link,
+        #         from_email=settings.EMAIL_HOST_USER,
+        #         recipient_list=['ingraquelespindola@gmail.com'],
+        #         )
+        # except Exception as e:
+        #     print(str(e))
+        #     # Si falla, notificamos por sistema
+        #     titulo = "No se pudo notificar al proveedor"
+        #     desc = "Ha ocurrido un problema al enviar un mail al proveedor. Asegúrese de estar\"" \
+        #            "conectado a internet o comúniquese con el administrador"
+        #     notificarSistema(titulo, desc)
+        #
+        #     # Borramos la solicitud. Si no le avisó al proveedor no tiene sentido mantener el registro.
+        #     detDel = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedido.id)
+        #     for d in detDel:
+        #         d.delete()
+        #     SP.delete()
 
 def generarHash():
     code = random.randint(1, 10000000000)
