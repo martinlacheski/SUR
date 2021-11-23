@@ -56,9 +56,6 @@ class Command(BaseCommand):
                         aux_list.append(dd)
                 group_det_no_ordenado.append(aux_list)
 
-            for d in group_det_no_ordenado:
-                print(d)
-
             # Removemos repetidos
             for elem in group_det_no_ordenado:
                 if elem not in group_det_ordenado:
@@ -145,10 +142,12 @@ class Command(BaseCommand):
                     print()
                     print("____________________________________________VUELTA: " + str(vuelta))
                     print("PRODUCTO A ANALIZAR: " + str(item_prod.abreviatura))
-                    cambioProveedor(item_prod, prov_det, prod_det_original)
+                    prov_det = cambioProveedor(item_prod, prov_det, prod_det_original)
                     vuelta += 1
 
+            prov_det = analisisCantidades(prov_det)
 
+# Función que realiza el análisis de productos en donde los proveedores respondieron con el mismo precio.
 def cambioProveedor(producto_item, prod_det, prod_det_original):
 
     print("\nCOMO EMPIEZA: ")
@@ -217,31 +216,12 @@ def cambioProveedor(producto_item, prod_det, prod_det_original):
     for d in prod_det:                                      # Actualización de lista
         d['cant_prod'] = len(d['productos'])
     ver_detalle(prod_det)
-#
-#     # prov_inicial = pd['proveedor']  # El proveedor del producto que estamos analizando
-#     # print("proveedor inicial:" + str(prov_inicial))
-#     #
-#
-#     #
-#
-#     #
-#     # print("proveedor electo:" + str(prov_selecto))
-#     # print(len(prov_plazos_iguales))
-#     #
-#
-#     #
-#
-#     #
-#     # else:
-#     #     print("tercer criterio (help)")
-#     #     # Tercer criterio (buscamos, de los prov que ofrecen dicho producto, quien es el que menos prod tiene. Si tienen igual, random)
-#     #     # prov_aux = prod_det[0]
-#     #     # for p in prod_det:
-#     #     #     if p['proveedor'] in prov_ofrece:
-#     #     #         if p['cant_prod'] < prov_aux['cant_prod']:
-#     #     #             prov_aux = p
-#     #
-#     #
-#
-#
-#
+    return prod_det
+
+# Funcion que analiza si las cantidades que respondieron los proveedores satisfacen la solucitd de pedio.
+# Si no lo hacen, rearma el pedido.
+def analisisCantidades(prod_det):
+    for det in prod_det:
+        for p in det['productos']:
+            print("ho")
+    return True
