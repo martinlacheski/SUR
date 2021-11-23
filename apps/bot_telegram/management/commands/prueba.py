@@ -30,215 +30,193 @@ from .logica_pedidos_auto import ver_detalle
 class Command(BaseCommand):
     def handle(self, *args, **options):
 
-        sub_total = 0
-        productos_stock_min = []
-        pedido = PedidosSolicitud()
 
-        for producto in Productos.objects.all():
-            if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
-                sub_total += producto.costo * producto.reposicion
-                productos_stock_min.append(producto)
+        # RECORDATORIO: Este proceso se ejecuta únicamente cuando se vence el plazo para respuestas.
 
-        pedido.fecha = timezone.now().date()
-        # pedido.fechaLimite = formPedidoRequest['fechaLimite'] No va a tener fecha límite si se crea mediante un cron.
-        pedido.iva = float(sub_total) * 0.21
-        pedido.subtotal = float(sub_total) - pedido.iva
-        pedido.total = sub_total
-        pedido.save()
+        detalles = []                   # Contiene los datos crudos de las respuestas
+        group_det_no_ordenado = []      # Auxiliar de agrupamiento
+        group_det_ordenado = []         # Productos separados por grupo (lista de listas)
+        productos_def = []              # Productos finales que ENTRARÍAN en el pedido. Puede contener repetidos.
 
-        for p in productos_stock_min:
-            det = DetallePedidoSolicitud()
-            det.pedido_id = pedido.id
-            det.producto_id = p.id
-            det.costo = p.costo
-            det.cantidad = p.reposicion
-            det.subtotal = p.costo * p.reposicion
-            det.save()
+        respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
+        # Solamente analizamos SI HAY respuetas.
+        if len(respuestas) != 0:
+##                                          ______LIMPIEZA DE DATOS________
+            # Se obtienen TODOS los detalles de TODAS las solicitudes que se hayan respondido
+            for r in respuestas:
+                detalleRespuesta = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=r)
+                for d in detalleRespuesta:
+                    detalles.append(d)
 
-#         # RECORDATORIO: Este proceso se ejecuta únicamente cuando se vence el plazo para respuestas.
-#
-#         detalles = []                   # Contiene los datos crudos de las respuestas
-#         group_det_no_ordenado = []      # Auxiliar de agrupamiento
-#         group_det_ordenado = []         # Productos separados por grupo (lista de listas)
-#         productos_def = []              # Productos finales que ENTRARÍAN en el pedido. Puede contener repetidos.
-#
-#         respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
-#         # Solamente analizamos SI HAY respuetas.
-#         if len(respuestas) != 0:
-# ##                                          ______LIMPIEZA DE DATOS________
-#
-#             # Se obtienen TODOS los detalles de TODAS las solicitudes que se hayan respondido
-#             for r in respuestas:
-#                 detalleRespuesta = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=r)
-#                 for d in detalleRespuesta:
-#                     detalles.append(d)
-#
-#             # Se agrupan los detalles POR PRODUCTO (lista de listas)
-#             for d in detalles:
-#                 aux_list = []
-#                 for dd in detalles:
-#                     if d.producto == dd.producto:
-#                         aux_list.append(dd)
-#                 group_det_no_ordenado.append(aux_list)
-#
-#             # Removemos repetidos
-#             for elem in group_det_no_ordenado:
-#                 if elem not in group_det_ordenado:
-#                     group_det_ordenado.append(elem)
-#
-#             # Armado de lista de productos que se van a pedir
-#             for grupo in group_det_ordenado:
-#                 if len(grupo) == 1:                     # si únicamente UN proveedor ofertó por el producto
-#                     productos_def.append(grupo[0])
-#                 else:                                   # varios ofertaron por el producto
-#                     # Se halla el costo mínimo por grupo y se agregan todos los productos con ese costo.
-#                     # Nos interesa si hay repetidos o no.
-#                     prodInicial = grupo[0]
-#                     minimo = 0
-#                     for g in grupo:
-#                         if g.costo <= prodInicial.costo:
-#                             minimo = g.costo
-#                     for g in grupo:
-#                         if g.costo == minimo:
-#                             productos_def.append(g)
-#
-#
-#             for x in productos_def:
-#                 print(str(x.producto.id) + " - " +
-#                       str(x.producto.abreviatura) + " - " +
-#                       str(x.costo) + " - " +
-#                       str(x.pedidoSolicitudProveedor.proveedor))
-#
-#             print()
-#             print()
-#
-# ##                                          ______REAGRUPAMIENTO DE DATOS________
-#             # Identificamos cuantos proveedores quedaron luego de la etapa de selección
-#             proveedores = []
-#             produc_only = []
-#             for p in productos_def:
-#                 if p.pedidoSolicitudProveedor.proveedor not in proveedores:
-#                     proveedores.append(p.pedidoSolicitudProveedor.proveedor)
-#                 produc_only.append(p.producto)
-#
-#             # Identificamos los productos que se repiten en el listado depurado (los que tienen igual precio)
-#             prod_dup = []
-#             for key in Counter(produc_only).keys():
-#                 if Counter(produc_only)[key] > 1:
-#                     prod_dup.append(key)
-#
-#             # Sumarizamos datos en un diccionario
-#             prov_det = []
-#             prod_det_original = []
-#             for p in proveedores:
-#                 cant_prod = 0
-#                 productos = []
-#                 for prod in productos_def:
-#                     if p == prod.pedidoSolicitudProveedor.proveedor:
-#                         cant_prod += 1
-#                         productos.append(prod.producto)
-#                 prov_det.append({
-#                     'proveedor': p,
-#                     'cant_prod': cant_prod,
-#                     'productos': productos,
-#                 })
-#                 prod_det_original.append(
-#                     {'proveedor': p,
-#                      'cant_prod': cant_prod,
-#                     'productos': productos,
-#                 })
-#
-#             for item_prod in prod_dup:                          # PRIMER CRITERIO
-#                 for det in prov_det:
-#                     if len(det['productos']) == 1:
-#                         if item_prod == det['productos'][0]:
-#                             print("BORRAMOS")
-#                             det['productos'].remove(item_prod)
-#                             det['cant_prod'] = 0
-#
-#             vuelta = 0
-#             if len(prod_dup) >= 1:                              # Análisis del resto de criterios
-#                 for item_prod in prod_dup:
-#                     ver_detalle(prov_det)
-#                     print()
-#                     print()
-#                     print()
-#                     print("____________________________________________VUELTA: " + str(vuelta))
-#                     print("PRODUCTO A ANALIZAR: " + str(item_prod.abreviatura))
-#
-#                     cambioProveedor(item_prod, prov_det, prod_det_original)
-#                     vuelta += 1
-#
-#
-# def cambioProveedor(producto_item, prod_det, prod_det_original):
-#
-#     print("\nCOMO EMPIEZA: ")
-#     ver_detalle(prod_det)
-#
-#     # Obtenemos una lista de los proveedores que ofrecen dicho producto
-#     prov_ofrece = []
-#     for det in prod_det_original:
-#         if producto_item in det['productos']:
-#             prov_ofrece.append(det['proveedor'])
-#
-#
-#     # Encontramos al proveedor con el mayor plazo
-#     prov_plazos_iguales = []
-#     prov_min_plazo = prov_ofrece[0]
-#     for p in prov_ofrece:
-#         if p.plazoCtaCte >= prov_min_plazo.plazoCtaCte:
-#             prov_min_plazo = p
-#
-#     # Comprobamos si no existe más de un proveedor con el plazo mínimo
-#     for p in prov_ofrece:
-#         if prov_min_plazo.plazoCtaCte == p.plazoCtaCte:
-#             prov_plazos_iguales.append(p)
-#
-#     if len(prov_plazos_iguales) == 1:                           # Si existe un único proveedor con un plazo mínimo, entramos [SEGUNDO CRITERIO]
-#         print("[SEGUNDO CRITERIO]")
-#         for d in prod_det:
-#             if d['proveedor'] != prov_plazos_iguales[0]:
-#                 for dp in d['productos']:
-#                     if dp == producto_item:
-#                         d['productos'].remove(dp)
-#     else:
-#         # Encontramos al proveedor que menos productos tiene
-#         prov_prod_iguales = []
-#         prov_min_prod = prod_det_original[0]
-#         for p in prod_det_original:
-#             if p['proveedor'] in prov_ofrece:
-#                 if p['cant_prod'] < prov_min_prod['cant_prod']:
-#                     prov_min_prod = p
-#
-#         # Comprobamos si no existe más de un proveedor con mínima cantidad de productos
-#         for p in prod_det_original:
-#             if p['cant_prod'] == prov_min_prod['cant_prod']:
-#                 prov_prod_iguales.append(p)
-#
-#         print("PROVEEDORES MISMA CANT PROD: " + str(prov_prod_iguales))
-#         if len(prov_prod_iguales) == 1:                         # Si existe un único proveedor con cant productos mínimo, entramos [TERCER CRITERIO]
-#             print("[TERCER CRITERIO]")
-#             for d in prod_det:
-#                 if d['proveedor'] != prov_prod_iguales[0]['proveedor']:
-#                     for dp in d['productos']:
-#                         if dp == producto_item:
-#                             d['productos'].remove(dp)
-#                                                                # Random. [CUARTO CRITERIO]
-#         else:
-#             print("[CUARTO CRITERIO]")
-#             prov_random = random.choice(prov_ofrece)
-#             for d in prod_det:
-#                 if d['proveedor'] != prov_random:
-#                     for dp in d['productos']:
-#                         if dp == producto_item:
-#                             d['productos'].remove(dp)
+            # Se agrupan los detalles POR PRODUCTO (lista de listas)
+            for d in detalles:
+                aux_list = []
+                for dd in detalles:
+                    if d.producto == dd.producto:
+                        aux_list.append(dd)
+                group_det_no_ordenado.append(aux_list)
+
+            for d in group_det_no_ordenado:
+                print(d)
+
+            # Removemos repetidos
+            for elem in group_det_no_ordenado:
+                if elem not in group_det_ordenado:
+                    group_det_ordenado.append(elem)
+
+            # Armado de lista de productos que se van a pedir
+            for grupo in group_det_ordenado:
+                if len(grupo) == 1:                     # si únicamente UN proveedor ofertó por el producto
+                    productos_def.append(grupo[0])
+                else:                                   # varios ofertaron por el producto
+                    # Se halla el costo mínimo por grupo y se agregan todos los productos con ese costo.
+                    # Nos interesa si hay repetidos o no.
+                    prodInicial = grupo[0]
+                    minimo = prodInicial.costo
+                    for g in grupo:
+                        if g.costo <= minimo:
+                            minimo = g.costo
+                    for g in grupo:
+                        if g.costo == minimo:
+                            productos_def.append(g)
+
+
+            for x in productos_def:
+                print(str(x.producto.id) + " - " +
+                      str(x.producto.abreviatura) + " - " +
+                      str(x.costo) + " - " +
+                      str(x.pedidoSolicitudProveedor.proveedor))
+
+            print()
+            print()
+
+##                                          ______REAGRUPAMIENTO DE DATOS________
+            # Identificamos cuantos proveedores quedaron luego de la etapa de selección
+            proveedores = []
+            produc_only = []
+            for p in productos_def:
+                if p.pedidoSolicitudProveedor.proveedor not in proveedores:
+                    proveedores.append(p.pedidoSolicitudProveedor.proveedor)
+                produc_only.append(p.producto)
+
+            # Identificamos los productos que se repiten en el listado depurado (los que tienen igual precio)
+            prod_dup = []
+            for key in Counter(produc_only).keys():
+                if Counter(produc_only)[key] > 1:
+                    prod_dup.append(key)
+
+            # Sumarizamos datos en un diccionario
+            prov_det = []
+            prod_det_original = []
+            for p in proveedores:
+                cant_prod = 0
+                productos = []
+                for prod in productos_def:
+                    if p == prod.pedidoSolicitudProveedor.proveedor:
+                        cant_prod += 1
+                        productos.append(prod.producto)
+                prov_det.append({
+                    'proveedor': p,
+                    'cant_prod': cant_prod,
+                    'productos': productos,
+                })
+                prod_det_original.append(
+                    {'proveedor': p,
+                     'cant_prod': cant_prod,
+                    'productos': productos,
+                })
+
+            print("__DETALLE ORIGINAL__")
+            ver_detalle(prov_det)
+
+            for item_prod in prod_dup:                          # PRIMER CRITERIO
+                for det in prov_det:
+                    if len(det['productos']) == 1:
+                        if item_prod == det['productos'][0]:
+                            print("BORRAMOS")
+                            det['productos'].remove(item_prod)
+                            det['cant_prod'] = 0
+
+            vuelta = 0
+            if len(prod_dup) >= 1:                              # Análisis del resto de criterios
+                for item_prod in prod_dup:
+                    print()
+                    print()
+                    print()
+                    print("____________________________________________VUELTA: " + str(vuelta))
+                    print("PRODUCTO A ANALIZAR: " + str(item_prod.abreviatura))
+                    cambioProveedor(item_prod, prov_det, prod_det_original)
+                    vuelta += 1
+
+
+def cambioProveedor(producto_item, prod_det, prod_det_original):
+
+    print("\nCOMO EMPIEZA: ")
+    ver_detalle(prod_det)
+
+    # Obtenemos una lista de los proveedores que ofrecen dicho producto
+    prov_ofrece = []
+    for det in prod_det_original:
+        if producto_item in det['productos']:
+            prov_ofrece.append(det['proveedor'])
+
+
+    # Encontramos al proveedor con el mayor plazo
+    prov_plazos_iguales = []
+    prov_min_plazo = prov_ofrece[0]
+    for p in prov_ofrece:
+        if p.plazoCtaCte >= prov_min_plazo.plazoCtaCte:
+            prov_min_plazo = p
+
+    # Comprobamos si no existe más de un proveedor con el plazo mínimo
+    for p in prov_ofrece:
+        if prov_min_plazo.plazoCtaCte == p.plazoCtaCte:
+            prov_plazos_iguales.append(p)
+
+    if len(prov_plazos_iguales) == 1:                           # Si existe un único proveedor con un plazo mínimo, entramos [SEGUNDO CRITERIO]
+        print("[SEGUNDO CRITERIO]")
+        for d in prod_det:
+            if d['proveedor'] != prov_plazos_iguales[0]:
+                for dp in d['productos']:
+                    if dp == producto_item:
+                        d['productos'].remove(dp)
+    else:
+        # Encontramos al proveedor que menos productos tiene
+        prov_prod_iguales = []
+        prov_min_prod = prod_det_original[0]
+        for p in prod_det_original:
+            if p['proveedor'] in prov_ofrece:
+                if p['cant_prod'] < prov_min_prod['cant_prod']:
+                    prov_min_prod = p
+
+        # Comprobamos si no existe más de un proveedor con mínima cantidad de productos
+        for p in prod_det_original:
+            if p['cant_prod'] == prov_min_prod['cant_prod']:
+                prov_prod_iguales.append(p)
+
+        print("PROVEEDORES MISMA CANT PROD: " + str(prov_prod_iguales))
+        if len(prov_prod_iguales) == 1:                         # Si existe un único proveedor con cant productos mínimo, entramos [TERCER CRITERIO]
+            print("[TERCER CRITERIO]")
+            for d in prod_det:
+                if d['proveedor'] != prov_prod_iguales[0]['proveedor']:
+                    for dp in d['productos']:
+                        if dp == producto_item:
+                            d['productos'].remove(dp)
+                                                               # Random. [CUARTO CRITERIO]
+        else:
+            print("[CUARTO CRITERIO]")
+            prov_random = random.choice(prov_ofrece)
+            for d in prod_det:
+                if d['proveedor'] != prov_random:
+                    for dp in d['productos']:
+                        if dp == producto_item:
+                            d['productos'].remove(dp)
 #
 #
-#     print("\nCOMO TERMINA:")
-#     for d in prod_det:                                      # Actualización de lista
-#         d['cant_prod'] = len(d['productos'])
-#     #
-#     ver_detalle(prod_det)
+    print("\nCOMO TERMINA:")
+    for d in prod_det:                                      # Actualización de lista
+        d['cant_prod'] = len(d['productos'])
+    ver_detalle(prod_det)
 #
 #     # prov_inicial = pd['proveedor']  # El proveedor del producto que estamos analizando
 #     # print("proveedor inicial:" + str(prov_inicial))
