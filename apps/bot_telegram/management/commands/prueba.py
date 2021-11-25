@@ -67,7 +67,7 @@ class Command(BaseCommand):
                     productos_def.append(grupo[0])
                 else:                                   # varios ofertaron por el producto
                     # Se halla el costo mínimo por grupo y se agregan todos los productos con ese costo.
-                    # Nos interesa si hay repetidos o no.
+                    # Nos interesa si hay repetidos o no (está bien que haya)
                     prodInicial = grupo[0]
                     minimo = prodInicial.costo
                     for g in grupo:
@@ -77,15 +77,14 @@ class Command(BaseCommand):
                         if g.costo == minimo:
                             productos_def.append(g)
 
-
-            for x in productos_def:
-                print(str(x.producto.id) + " - " +
-                      str(x.producto.abreviatura) + " - " +
-                      str(x.costo) + " - " +
-                      str(x.pedidoSolicitudProveedor.proveedor))
-
-            print()
-            print()
+            # for x in productos_def:
+            #     print(str(x.producto.id) + " - " +
+            #           str(x.producto.abreviatura) + " - " +
+            #           str(x.costo) + " - " +
+            #           str(x.pedidoSolicitudProveedor.proveedor))
+            #
+            # print()
+            # print()
 
 ##                                          ______REAGRUPAMIENTO DE DATOS________
             # Identificamos cuantos proveedores quedaron luego de la etapa de selección
@@ -102,7 +101,7 @@ class Command(BaseCommand):
                 if Counter(produc_only)[key] > 1:
                     prod_dup.append(key)
 
-            # Sumarizamos datos en un diccionario
+            # Sumarizamos datos en dos listas de diccionarios
             prov_det = []
             prod_det_original = []
             for p in proveedores:
@@ -117,9 +116,9 @@ class Command(BaseCommand):
                     'cant_prod': cant_prod,
                     'productos': productos,
                 })
-                prod_det_original.append(
-                    {'proveedor': p,
-                     'cant_prod': cant_prod,
+                prod_det_original.append({
+                    'proveedor': p,
+                    'cant_prod': cant_prod,
                     'productos': productos,
                 })
 
@@ -134,25 +133,32 @@ class Command(BaseCommand):
                             det['productos'].remove(item_prod)
                             det['cant_prod'] = 0
 
-            vuelta = 0
             if len(prod_dup) >= 1:                              # Análisis del resto de criterios
                 for item_prod in prod_dup:
-                    print()
-                    print()
-                    print()
-                    print("____________________________________________VUELTA: " + str(vuelta))
-                    print("PRODUCTO A ANALIZAR: " + str(item_prod.abreviatura))
                     prov_det = cambioProveedor(item_prod, prov_det, prod_det_original)
-                    vuelta += 1
 
-            prov_det = analisisCantidades(prov_det)
+            #Rearmamos la lista depurado con los criterios. Nos interesa que los productos sean objetos tipo DetalleSolicitudProveedor
+            for p in prov_det:
+                prov_det_obj = []
+                for prod_obj in p['productos']:
+                    for det_obj_SoliProveedor in detalles:
+                        if prod_obj == det_obj_SoliProveedor.producto and p['proveedor'] == det_obj_SoliProveedor.pedidoSolicitudProveedor.proveedor:
+                            prov_det_obj.append(det_obj_SoliProveedor)
+            p['productos'] = prov_det_obj
+            #prod_det_final = analisisCantidades(prov_det_obj)
+
+            for det in prov_det:
+                for det_obj in det['productos']:
+                    print(type(det_obj))
+                    # cant_pedido_original = DetallePedidoSolicitud.objects.get(pedido=det_obj.pedidoSolicitudProveedor.pedidoSolicitud,
+                    #                                                          proveedor=det['proveedor'],
+                    #                                                          producto=det_obj.prodcuto)
+                    # if det_obj.cantidad < cant_pedido_original.cantidad:
+                    #     print(det_obj.cantidad)
+                    #     print(cant_pedido_original.cantidad)
 
 # Función que realiza el análisis de productos en donde los proveedores respondieron con el mismo precio.
 def cambioProveedor(producto_item, prod_det, prod_det_original):
-
-    print("\nCOMO EMPIEZA: ")
-    ver_detalle(prod_det)
-
     # Obtenemos una lista de los proveedores que ofrecen dicho producto
     prov_ofrece = []
     for det in prod_det_original:
@@ -173,7 +179,6 @@ def cambioProveedor(producto_item, prod_det, prod_det_original):
             prov_plazos_iguales.append(p)
 
     if len(prov_plazos_iguales) == 1:                           # Si existe un único proveedor con un plazo mínimo, entramos [SEGUNDO CRITERIO]
-        print("[SEGUNDO CRITERIO]")
         for d in prod_det:
             if d['proveedor'] != prov_plazos_iguales[0]:
                 for dp in d['productos']:
@@ -193,24 +198,19 @@ def cambioProveedor(producto_item, prod_det, prod_det_original):
             if p['cant_prod'] == prov_min_prod['cant_prod']:
                 prov_prod_iguales.append(p)
 
-        print("PROVEEDORES MISMA CANT PROD: " + str(prov_prod_iguales))
         if len(prov_prod_iguales) == 1:                         # Si existe un único proveedor con cant productos mínimo, entramos [TERCER CRITERIO]
-            print("[TERCER CRITERIO]")
             for d in prod_det:
                 if d['proveedor'] != prov_prod_iguales[0]['proveedor']:
                     for dp in d['productos']:
                         if dp == producto_item:
                             d['productos'].remove(dp)
-                                                               # Random. [CUARTO CRITERIO]
-        else:
-            print("[CUARTO CRITERIO]")
+        else:                                                    # Random. [CUARTO CRITERIO]
             prov_random = random.choice(prov_ofrece)
             for d in prod_det:
                 if d['proveedor'] != prov_random:
                     for dp in d['productos']:
                         if dp == producto_item:
                             d['productos'].remove(dp)
-#
 #
     print("\nCOMO TERMINA:")
     for d in prod_det:                                      # Actualización de lista
@@ -221,7 +221,4 @@ def cambioProveedor(producto_item, prod_det, prod_det_original):
 # Funcion que analiza si las cantidades que respondieron los proveedores satisfacen la solucitd de pedio.
 # Si no lo hacen, rearma el pedido.
 def analisisCantidades(prod_det):
-    for det in prod_det:
-        for p in det['productos']:
-            print("ho")
     return True
