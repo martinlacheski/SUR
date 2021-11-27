@@ -24,7 +24,7 @@ from . import logica_pedidos_auto
 
 
 # Obtención de todos los usuarios que pueden realizar trabajos y cuantos trabajos tiene cada uno.
-from .logica_pedidos_auto import ver_detalle
+from .logica_pedidos_auto import *
 
 
 class Command(BaseCommand):
@@ -77,15 +77,6 @@ class Command(BaseCommand):
                         if g.costo == minimo:
                             productos_def.append(g)
 
-            # for x in productos_def:
-            #     print(str(x.producto.id) + " - " +
-            #           str(x.producto.abreviatura) + " - " +
-            #           str(x.costo) + " - " +
-            #           str(x.pedidoSolicitudProveedor.proveedor))
-            #
-            # print()
-            # print()
-
 ##                                          ______REAGRUPAMIENTO DE DATOS________
             # Identificamos cuantos proveedores quedaron luego de la etapa de selección
             proveedores = []
@@ -122,9 +113,6 @@ class Command(BaseCommand):
                     'productos': productos,
                 })
 
-            print("__DETALLE ORIGINAL__")
-            ver_detalle(prov_det)
-
             for item_prod in prod_dup:                          # PRIMER CRITERIO
                 for det in prov_det:
                     if len(det['productos']) == 1:
@@ -144,20 +132,50 @@ class Command(BaseCommand):
                     for det_obj_SoliProveedor in detalles:
                         if prod_obj == det_obj_SoliProveedor.producto and p['proveedor'] == det_obj_SoliProveedor.pedidoSolicitudProveedor.proveedor:
                             prov_det_obj.append(det_obj_SoliProveedor)
-            p['productos'] = prov_det_obj
-            #prod_det_final = analisisCantidades(prov_det_obj)
+                p['productos'] = prov_det_obj
 
+            # ________________ ANALISIS DE CANTIDADES________________
+            prods_a_agregar = []
             for det in prov_det:
                 for det_obj in det['productos']:
-                    print(type(det_obj))
-                    # cant_pedido_original = DetallePedidoSolicitud.objects.get(pedido=det_obj.pedidoSolicitudProveedor.pedidoSolicitud,
-                    #                                                          proveedor=det['proveedor'],
-                    #                                                          producto=det_obj.prodcuto)
-                    # if det_obj.cantidad < cant_pedido_original.cantidad:
-                    #     print(det_obj.cantidad)
-                    #     print(cant_pedido_original.cantidad)
+                    prods_candidatos = []
+                    cant_pedido_original = DetallePedidoSolicitud.objects.get(pedido=det_obj.pedidoSolicitudProveedor.pedidoSolicitud,
+                                                                              producto=det_obj.producto)
+                    # Si la cantidad que nos propusieron es menor a la cant necesaria, entra
+                    if det_obj.cantidad < cant_pedido_original.cantidad:
+                        # Obtenemos la cantidad de prod que faltan para completar el pedido y generamos una list de prods_candidatos
+                        diferencia = abs(det_obj.cantidad - cant_pedido_original.cantidad)
+                        for dd in detalles:
+                            if dd.pedidoSolicitudProveedor.proveedor != det_obj.pedidoSolicitudProveedor.proveedor and \
+                                    dd.producto == det_obj.producto:
+                                prods_candidatos.append(dd)
+                        # Si existe al menos un prod_candidato, ordenamos la lista por costo y agregamos segun corresponda
+                        if len(prods_candidatos) >= 1:
+                            prods_candidatos.sort(key=costo)
+                            cant_aux = det_obj.cantidad
+                            for pc in prods_candidatos:
+                                if (pc.cantidad + cant_aux) < cant_pedido_original.cantidad:
+                                    cant_aux += pc.cantidad
+                                    prods_a_agregar.append(pc)
+                                elif (pc.cantidad + cant_aux) >= cant_pedido_original.cantidad:
+                                    pc.cantidad = abs(cant_aux - cant_pedido_original.cantidad)
+                                    prods_a_agregar.append(pc)
+                                    break
+            # Agregamos los nuevos productos que completan las cantidades
+            for det in prov_det:
+                for prod in prods_a_agregar:
+                    if prod.pedidoSolicitudProveedor.proveedor == det['proveedor']:
+                        det['productos'].append(prod)
 
-# Función que realiza el análisis de productos en donde los proveedores respondieron con el mismo precio.
+            # Actualización de cant_prod lista
+            for d in prov_det:
+                d['cant_prod'] = len(d['productos'])
+
+
+
+""" Función que realiza el análisis de productos
+    en donde los proveedores respondieron con el mismo precio. """
+
 def cambioProveedor(producto_item, prod_det, prod_det_original):
     # Obtenemos una lista de los proveedores que ofrecen dicho producto
     prov_ofrece = []
@@ -212,10 +230,8 @@ def cambioProveedor(producto_item, prod_det, prod_det_original):
                         if dp == producto_item:
                             d['productos'].remove(dp)
 #
-    print("\nCOMO TERMINA:")
     for d in prod_det:                                      # Actualización de lista
         d['cant_prod'] = len(d['productos'])
-    ver_detalle(prod_det)
     return prod_det
 
 # Funcion que analiza si las cantidades que respondieron los proveedores satisfacen la solucitd de pedio.

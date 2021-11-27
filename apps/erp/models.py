@@ -446,6 +446,8 @@ class PedidosSolicitud(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default="", blank=True, null=True)
+    analizado = models.BooleanField(blank=True, null=True)
+    resp_incompleta = models.BooleanField(blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):
