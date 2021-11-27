@@ -77,30 +77,6 @@
                     </li>
                 {% endif %}
 
-                <!-- Compras -->
-                {% if perms.erp.view_compras %}
-                    <li class="nav-item has-treeview">
-                        <a href="{% url 'erp:compras_list' %}" class="nav-link">
-                            <i class="nav-icon fas fa-pallet"></i>
-                            <p>
-                                Compras
-                            </p>
-                        </a>
-                    </li>
-                {% endif %}
-
-                <!-- Ventas -->
-                {% if perms.erp.view_ventas %}
-                    <li class="nav-item has-treeview">
-                        <a href="{% url 'erp:ventas_list' %}" class="nav-link">
-                            <i class="nav-icon fas fa-shopping-cart"></i>
-                            <p>
-                                Ventas
-                            </p>
-                        </a>
-                    </li>
-                {% endif %}
-
                 <!-- Productos -->
                 {% if perms.erp.view_productos %}
                     <li class="nav-item has-treeview">
@@ -120,6 +96,30 @@
                             <i class="fas fa-wrench nav-icon"></i>
                             <p>
                                 Servicios
+                            </p>
+                        </a>
+                    </li>
+                {% endif %}
+
+                <!-- Compras -->
+                {% if perms.erp.view_compras %}
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:compras_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-pallet"></i>
+                            <p>
+                                Compras
+                            </p>
+                        </a>
+                    </li>
+                {% endif %}
+
+                <!-- Ventas -->
+                {% if perms.erp.view_ventas %}
+                    <li class="nav-item has-treeview">
+                        <a href="{% url 'erp:ventas_list' %}" class="nav-link">
+                            <i class="nav-icon fas fa-shopping-cart"></i>
+                            <p>
+                                Ventas
                             </p>
                         </a>
                     </li>
