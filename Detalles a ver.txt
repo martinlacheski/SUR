@@ -7,6 +7,12 @@ AGREGAR UN CONTROL EN EL DELETE PARA VER SI TIENE LOS PERMISOS SINO MOSTRAR EL M
 
 --------------------------------------------------------------------------------------------------------------------
 
+CAMBIAR TEXTO ELIMINAR PLANIFICACION SEMANAL
+
+QUITAR MODIFICACION COMPRAS, VENTAS, USUARIOS A NOTIFICAR
+
+--------------------------------------------------------------------------------------------------------------------
+
 *PEDIDOS - TERMINAR
 
 * Resolver la forma de generar los detalles de las cotizaciones de los proveedores
