@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import random
 from datetime import date
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -26,6 +27,7 @@ from apps.trabajos.forms import TrabajosForm
 from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
 from apps.usuarios.models import Usuarios
 from config import settings
+from apps.bot_telegram.logicaBot import porcentajeTrabajo
 
 from weasyprint import HTML, CSS
 
@@ -580,24 +582,9 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
             # Asignamos automaticamente el trabajo al usuario mas desocupado
             elif action == 'get_mas_desocupado':
                 data = []
-                # Asigno a una variable los parametros de estados
-                estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                # Obtenemos los usuarios von esos filtros
-                usuarios = Usuarios.objects.filter(realizaTrabajos=True)
-                try:
-                    # asignamos a una variable una cantidad alta de trabajos pendientes
-                    cant = 1000000
-                    # recorremos por cada usuario dentro del filtro anterior excluyendo trabajos finalizados en adelante
-                    for user in usuarios:
-                        trabajos = Trabajos.objects.filter(usuarioAsignado_id=user.id).exclude(
-                            estadoTrabajo__orden__gte=estado.estadoFinalizado.orden).count()
-                        if cant > trabajos:
-                            usuario = user
-                            cant = trabajos
-                    # devolvemos el usuario al template
-                    data.append({'id': usuario.id, 'text': usuario.username})
-                except Exception as e:
-                    data['error'] = str(e)
+                user_selecto = self.user_menos_ocupado()
+                # data.append({'id': usuario.id, 'text': usuario.username})
+                data.append(user_selecto)
             elif action == 'add':
                 with transaction.atomic():
                     formTrabajoRequest = json.loads(request.POST['trabajo'])
@@ -682,6 +669,68 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
         context['productos'] = Productos.objects.all()
         context['servicios'] = Servicios.objects.all()
         return context
+
+    def user_menos_ocupado(self):
+        users_a_evaluar = Usuarios.objects.filter(realizaTrabajos=True)
+        if len(users_a_evaluar) < 1:
+            return {}
+        else:
+            # Se obtienen los estados de interés para los trabajos de los usuarios a evaluar
+            estados = EstadoParametros.objects.last()
+            estados_filter = [estados.estadoEspecial.id, estados.estadoInicial.id, estados.estadoPlanificado.id]
+            # Se obtiene un diccionaro que sumariza cuantos trabajos y qué porcentaje de avance tiene cada usuario actualmente
+            trab_por_user = []
+            for u in users_a_evaluar:
+                porcentaje_avance_trabajos = 0
+                trabajos_user = Trabajos.objects.filter(usuarioAsignado=u,
+                                                        estadoTrabajo__in=estados_filter)
+                for t in trabajos_user:
+                    porcentaje_avance_trabajos += float(porcentajeTrabajo(t))
+                trab_por_user.append(
+                    {'usuario': u,
+                     'cant_trab': len(trabajos_user),
+                     'procentaje_avance': porcentaje_avance_trabajos,
+                    })
+            # Ordenamiento de lista
+            trab_por_user.sort(key=self.orden_cant_trab)
+            # Se corrobora si existe un solo user con menor cantidad de trabajos.
+            candidato = trab_por_user[0]
+            users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'cant_trab')
+            if len(users_candidatos) == 1:
+                return {'id': users_candidatos[0]['usuario'].id ,
+                        'text':  users_candidatos[0]['usuario'].username}
+            else:
+                # Ordenamiento de lista
+                trab_por_user.sort(key=self.orden_avance_trab)
+                # Se corrobora si existe un solo user con mayor porcentaje de avance en trabajos.
+                candidato = trab_por_user[0]
+                users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'procentaje_avance')
+                if len(users_candidatos) == 1:
+                    return {'id': users_candidatos[0]['usuario'].id,
+                            'text': users_candidatos[0]['usuario'].username}
+                else:
+                    # Random
+                    user_final = random.choice(users_candidatos)
+                    return {'id': user_final['usuario'].id,
+                            'text': user_final['usuario'].username}
+
+    # Criterior de ordenación por cantidad de trabajos
+    def orden_cant_trab(self, dict_user_trabajo):
+        return dict_user_trabajo['cant_trab']
+
+    # Criterior de ordenación por porcentaje de avance de trabajos
+    def orden_avance_trab(self, dict_user_trabajo):
+        return dict_user_trabajo['procentaje_avance']
+
+    # Check si existe más de un user con el concepto que se le indique.
+    # Returna lista de diccionarios.
+    def check_mas_de_uno(self, candidato, trabajos, concepto):
+        users_cand = []
+        for u in trabajos:
+            if u[concepto] == candidato[concepto]:
+                users_cand.append(u)
+        return users_cand
+
 
 
 class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
