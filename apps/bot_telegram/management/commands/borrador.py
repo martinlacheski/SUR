@@ -25,33 +25,10 @@ from . import logica_pedidos_auto
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        # # Se debe integrar al proceso final
-        # soli_no_analizadas = PedidosSolicitud.objects.filter(analizado__isnull=True)
-        # print(soli_no_analizadas)
-        # for soli in soli_no_analizadas:
-        #     respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False, pedidoSolicitud=soli.id)
-        #     print(respuestas)
-        #     print("hoa")
+        # Se debe integrar al proceso final
+        soli_no_analizadas = PedidosSolicitud.objects.filter(analizado__isnull=True)
+        print(soli_no_analizadas)
+        for soli in soli_no_analizadas:
+            respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False, pedidoSolicitud=soli.id)
+            print(respuestas)
 
-        detalles = []                   # Contiene los datos crudos de las respuestas
-
-        respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
-        for r in respuestas:
-            detalleRespuesta = DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=r)
-            for d in detalleRespuesta:
-                detalles.append(d)
-
-        for d in detalles:
-            print(d.producto.abreviatura + " - " + str(d.costo))
-
-        print()
-        print()
-        print()
-
-        detalles.sort(reverse=True, key=costo)
-
-        for d in detalles:
-            print(d.producto.abreviatura + " - " + str(d.costo))
-
-def costo(objDetalle):
-    return objDetalle.costo
