@@ -135,9 +135,9 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteVentas.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteVentas.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteVentas.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteVentas.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -313,9 +313,9 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteAuditoriaVentas.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteAuditoriaVentas.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteAuditoriaVentas.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteAuditoriaVentas.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF

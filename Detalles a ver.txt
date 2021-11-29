@@ -3,7 +3,11 @@ python manage.py populate_history --auto
 
 --------------------------------------------------------------------------------------------------------------------
 
-VIDEOS: Presupuestos y Trabajos cuando unifiquemos ramas
+VIDEOS: Trabajos cuando unifiquemos ramas por el algoritmo de usuario mas desocupado
+
+--------------------------------------------------------------------------------------------------------------------
+
+Resolver Presupuesto VALIDEZ que no toma el valor correspondiente
 
 --------------------------------------------------------------------------------------------------------------------
 

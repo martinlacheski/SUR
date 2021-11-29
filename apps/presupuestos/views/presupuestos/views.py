@@ -142,9 +142,9 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reportePresupuestos.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reportePresupuestos.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reportePresupuestos.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reportePresupuestos.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -743,9 +743,8 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 # data = []
                 # Asigno a una variable los parametros de estados y de tipos de usuarios
                 estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
-                # Obtenemos los usuarios con esos filtros
-                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                # Obtenemos los usuarios que puede realizar trabajos
+                usuarios = Usuarios.objects.filter(realizaTrabajos=True)
                 try:
                     # asignamos a una variable una cantidad alta de trabajos pendientes
                     cant = 1000000

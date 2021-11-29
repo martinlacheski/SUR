@@ -153,9 +153,9 @@ class ServiciosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteAuditoriaServicios.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteAuditoriaServicios.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteAuditoriaServicios.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteAuditoriaServicios.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF

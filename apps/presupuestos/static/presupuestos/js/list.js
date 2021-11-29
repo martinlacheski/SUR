@@ -359,7 +359,7 @@ $(function () {
     });
     //Filtrar Trabajos Asociados
     $('#excluirNoConfirmados').on('click', function () {
-        var verdadero = ' No confirmado';
+        var verdadero = ' NO CONFIRMADO';
         if (this.checked) {
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkNoConfirmados = true;
@@ -393,7 +393,7 @@ $(function () {
     });
     //Filtrar Estado Cancelados
     $('#excluirCancelados').on('click', function () {
-        var verdadero = ' Cancelado';
+        var verdadero = ' CANCELADO';
         if (this.checked) {
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkCancelados = true;
