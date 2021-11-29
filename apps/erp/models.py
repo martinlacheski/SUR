@@ -25,6 +25,7 @@ class Clientes(models.Model):
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True, blank=True,
                                        verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    chatIdCliente = models.IntegerField(null=True, blank=True, default=None)
     history = HistoricalRecords()
     
     def __str__(self):

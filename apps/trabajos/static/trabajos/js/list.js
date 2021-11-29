@@ -26,6 +26,7 @@ var reporte = {
         //Filtros
         cliente: '',
         modelo: '',
+        usuarioAsignado: '',
         fechaDesde: '',
         fechaHasta: '',
         excluirEntregados: '',
@@ -163,7 +164,6 @@ $(function () {
                 targets: [-2],
                 class: 'text-center',
                 render: function (data, type, row) {
-                    // console.log(row.usuarioAsignado.username)
                     if (row.asignado !== 'EXPRESS') {
                         return row.asignado
                     } else {
@@ -496,10 +496,10 @@ $(function () {
     });
     //Aplicamos Filtro de Modelos
     $('.selectModelo').on('change', function () {
-        //Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaTrabajo.draw();
+        // //Reseteamos los filtros
+        // $.fn.dataTable.ext.search = [];
+        // $.fn.dataTable.ext.search.pop();
+        // tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var modelo = $(this).val();
         if (modelo !== null && modelo !== '' && modelo !== undefined) {
@@ -936,6 +936,7 @@ $(function () {
         //Asignamos las variables a la estructura
         reporte.items.cliente = $('select[name="selectCliente"]').val();
         reporte.items.modelo = $('select[name="selectModelo"]').val();
+        reporte.items.usuarioAsignado = $('select[name="selectUsuario"]').val();
         reporte.items.fechaDesde = fechaInicio;
         reporte.items.fechaHasta = fechaFin;
         reporte.items.excluirEntregados = checkEntregados;
