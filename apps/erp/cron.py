@@ -16,12 +16,14 @@ def generarSolicitudPedido():
 
     pedido.fecha = timezone.now().date()
     # pedido.fechaLimite = formPedidoRequest['fechaLimite'] No va a tener fecha límite si se crea mediante un cron.
-    pedido.iva = float(sub_total) * 0.21
-    pedido.subtotal = float(sub_total) - pedido.iva
+    # pedido.iva = float(sub_total) * 0.21
+
     pedido.total = sub_total
     pedido.save()
 
+    pedido.iva = 0
     for p in productos_stock_min:
+        pedido.iva += p.costo * (p.iva.iva / 100) * p.reposision
         det = DetallePedidoSolicitud()
         det.pedido_id = pedido.id
         det.producto_id = p.id
@@ -29,10 +31,12 @@ def generarSolicitudPedido():
         det.cantidad = p.reposicion
         det.subtotal = p.costo * p.reposicion
         det.save()
+    pedido.subtotal = float(sub_total) - float(pedido.iva)
+    pedido.save()
 
-def generarPedido():
-    respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
-
-
+# def generarPedido():
+#     respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False)
+#
+#
 
 

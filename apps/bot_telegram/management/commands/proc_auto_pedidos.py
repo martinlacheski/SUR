@@ -12,8 +12,8 @@ import itertools
 # para hallar duplicados
 from collections import Counter
 
-from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud, \
-    Productos, PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, Pedidos
+from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud, Productos, PedidoSolicitudProveedor, \
+    DetallePedidoSolicitudProveedor, Pedidos, DetallePedido
 
 from apps.parametros.models import EstadoParametros
 from apps.trabajos.models import Trabajos
@@ -210,7 +210,6 @@ class Command(BaseCommand):
                     })
 
                 # Persistencia de completitud de productos.
-
                 detalle_original = DetallePedidoSolicitud.objects.filter(pedido=soli)
                 for d in detalle_original:
                     d_encontrado = False
@@ -238,9 +237,30 @@ class Command(BaseCommand):
                     d.save()
                 soli.save()
 
-                # Falta guardar la mierda esta y listo
 
-                ver_detalle_obj(prov_det)
+                # Persistencia del pedido FINAL
+                for p in prov_det:
+                    pedido_final = Pedidos()
+                    pedido_final.pedidoSolicitud = soli
+                    pedido_final.fecha = timezone.now() # probablemente no vaya
+                    pedido_final.estado = True
+                    pedido_final.iva = 0
+                    pedido_final.subtotal = 0
+                    pedido_final.save()
+                    for det in p['productos']:
+                        pedido_final.subtotal += det.costo
+                        pedido_final.iva += det.costo * (det.producto.iva.iva / 100) * det.cantidad
+                        detPedido_final = DetallePedido()
+                        detPedido_final.pedido = pedido_final
+                        detPedido_final.producto = det.producto
+                        detPedido_final.costo = det.costo
+                        detPedido_final.cantidad = det.cantidad
+                        detPedido_final.proveedor = det.pedidoSolicitudProveedor.proveedor
+                        detPedido_final.subtotal = det.subtotal
+                        detPedido_final.save()
+                    pedido_final.total = pedido_final.subtotal + pedido_final.iva
+                    pedido_final.save()
+                #ver_detalle_obj(prov_det)
 
 
 
