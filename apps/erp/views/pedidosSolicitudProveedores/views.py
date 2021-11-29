@@ -61,7 +61,6 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
         pedidoP = PedidoSolicitudProveedor.objects.get(hash=self.kwargs['hash_code'])
 
         if pedidoP.pedidoSolicitud.fechaLimite >= timezone.now():
-            print("hola")
             try:
                 # Obtenemos la cabecera del Pedido
                 if action == 'search_cabecera':

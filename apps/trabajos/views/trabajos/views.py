@@ -583,8 +583,11 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
             elif action == 'get_mas_desocupado':
                 data = []
                 user_selecto = self.user_menos_ocupado()
-                # data.append({'id': usuario.id, 'text': usuario.username})
                 data.append(user_selecto)
+                usuarios = Usuarios.objects.filter(realizaTrabajos=True).exclude(pk=user_selecto['id'])
+                for u in usuarios:
+                    data.append({'id': u.id, 'text': u.username})
+
             elif action == 'add':
                 with transaction.atomic():
                     formTrabajoRequest = json.loads(request.POST['trabajo'])
