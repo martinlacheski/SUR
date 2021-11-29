@@ -4,7 +4,7 @@ var select_categoria = $('select[name="selectCategoria"]');
 var select_subcategoria = $('select[name="selectSubcategoria"]');
 var select_producto = $('select[name="selectProducto"]');
 //Creamos variables auxiliares para el reporte
-var checkSinStock = true;
+var checkSinStock = false;
 //Creamos una estructura para el Reporte
 var reporte = {
     items: {
@@ -295,6 +295,8 @@ $(function () {
             //Actualizamos la tabla
             tablaProductos.draw();
         } else {
+            //Asignamos Falso a la variable auxiliar del reporte
+            checkSinStock = false;
             //Reseteamos los filtros
             $.fn.dataTable.ext.search = [];
             $.fn.dataTable.ext.search.pop();

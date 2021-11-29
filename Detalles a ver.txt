@@ -3,13 +3,21 @@ python manage.py populate_history --auto
 
 --------------------------------------------------------------------------------------------------------------------
 
-AGREGAR UN CONTROL EN EL DELETE PARA VER SI TIENE LOS PERMISOS SINO MOSTRAR EL MSJ DE ERROR
+VIDEOS: Presupuestos y Trabajos cuando unifiquemos ramas
 
 --------------------------------------------------------------------------------------------------------------------
 
-CAMBIAR TEXTO ELIMINAR PLANIFICACION SEMANAL
+RESOLVER EL MODULO BACKUP con el comando:
 
-QUITAR MODIFICACION COMPRAS, VENTAS, USUARIOS A NOTIFICAR
+python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > NOMBRE_BACKUP.json
+
+--------------------------------------------------------------------------------------------------------------------
+
+VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
+
+--------------------------------------------------------------------------------------------------------------------
+
+QUITAR MODIFICACION COMPRAS, VENTAS, USUARIOS A NOTIFICAR   --- OK
 
 --------------------------------------------------------------------------------------------------------------------
 
