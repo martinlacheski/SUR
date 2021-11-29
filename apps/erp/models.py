@@ -473,7 +473,7 @@ class PedidosSolicitud(models.Model):
 
 class DetallePedidoSolicitud(models.Model):
     pedido = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING)
-    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor', blank=True, null=True)
+    #proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor', blank=True, null=True)
     producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
@@ -486,10 +486,10 @@ class DetallePedidoSolicitud(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['pedido'])
-        try:
-            item['proveedor'] = self.proveedor.toJSON()
-        except:
-            pass
+        # try:
+        #     item['proveedor'] = self.proveedor.toJSON()
+        # except:
+        #     pass
         item['producto'] = self.producto.toJSON()
         item['costo'] = format(self.costo, '.2f')
         item['subtotal'] = format(self.subtotal, '.2f')
