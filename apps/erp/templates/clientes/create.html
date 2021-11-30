@@ -29,6 +29,9 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#}" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -36,7 +39,8 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-12" class="form-control">
+                        <div class="form-group col-12" class="form-control"
+                             data-intro="Ingresamos la razón social del cliente">
                             <label>(*) Razón Social:</label>
                             <br>
                             {{ form.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -45,13 +49,13 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6">
+                        <div class="form-group col-6" data-intro="Seleccionamos la condición frente al IVA">
                             <label>(*) Condición frente al IVA:</label>
 
                             {{ form.condicionIVA|add_class:'form-control'|attr:'required:true' }}
                         </div>
 
-                        <div class="form-group col-6">
+                        <div class="form-group col-6" data-intro="Ingresamos un CUIL o CUIT válido">
                             <label>(*) Cuil - Cuit:</label>
                             <div class="col-12" class="form-control" id="cuil" onkeypress="return isNumberKey(event)">
                                 {{ form.cuil|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -61,12 +65,12 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="Seleccionamos la localidad del Cliente">
                         <label>(*) Localidad:</label>
                         <br>
                         {{ form.localidad|add_class:'form-control'|attr:'required:true' }}
                     </div>
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="Ingresamos la dirección">
                         <label>(*) Dirección:</label>
                         <div class="col-12" class="form-control" id="direccion">
                             {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -74,7 +78,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="OPCIONAL - Ingresamos un correo electrónico válido">
                         <label>Dirección de email:</label>
                         <br>
                         <div class="input-group" type="email" class="form-control" id="email">
@@ -83,7 +87,7 @@
                                   style="color: red;">Dirección de correo electrónico no válido </span>
                         </div>
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4" data-intro="Ingresamos un número de teléfono">
                         <label>(*) Teléfono:</label>
                         <div class="col-12" class="form-control" id="telefono" onkeypress="return isNumberKey(event)"
                              autocomplete="off" required>
@@ -92,14 +96,14 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="OPCIONAL - Ingresamos el CBU - CVU del Cliente">
                         <label>CBU - CVU:</label>
                         <br>
                         <div class="input-group" type="text" class="form-control" id="cbu" name="cbu">
                             {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4" data-intro="OPCIONAL - Ingresamos el Alias de la cuenta del Cliente">
                         <label>Alias:</label>
                         <div class="col-12" class="form-control" id="alias" name="alias">
                             {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -108,13 +112,14 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6">
+                        <div class="form-group col-6"
+                             data-intro="Seleccionamos la condición de pago que tendrá el cliente">
                             <label>(*) Condición de Pago:</label>
                             <div class="input-group">
                                 {{ form.condicionPago|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
                             </div>
                         </div>
-                        <div class="col-6 mb-6">
+                        <div class="col-6 mb-6" data-intro="Seleccionamos el tipo de percepción que tendrá el cliente">
                             <label>(*) Tipo de Percepción:</label>
                             <div class="input-group">
                                 {{ form.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
@@ -124,21 +129,22 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-3 mb-3">
-                        <label class="mb-4"></label>
-                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                            <input type="checkbox" class="custom-control-input" id="ctaCte" name="ctaCte">
-                            <label class="custom-control-label" for="ctaCte">¿Cuenta Corriente?</label>
+                        <div class="form-group col-3 mb-3"
+                             data-intro="OPCIONAL - Tildamos si el Cliente tendrá cuenta corriente">
+                            <label class="mb-4"></label>
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                <input type="checkbox" class="custom-control-input" id="ctaCte" name="ctaCte">
+                                <label class="custom-control-label" for="ctaCte">¿Cuenta Corriente?</label>
+                            </div>
                         </div>
-                    </div>
-                        <div class="form-group col-4">
+                        <div class="form-group col-4" data-intro="Ingresamos el límite de la cuenta corriente">
                             <label>Límite:</label>
                             <br>
                             <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
                                 {{ form.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
                         </div>
-                        <div class="form-group col-4">
+                        <div class="form-group col-4" data-intro="Ingresamos el plazo de pago de la cuenta corriente">
                             <label>Plazo:</label>
                             <br>
                             <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
@@ -153,10 +159,10 @@
             {#Mensaje de error#}
             <ul id="errorList" name="errorList" class="alert-danger"></ul>
             {#Botones#}
-            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd" data-intro="Hacemos click para guardar el registro">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+            <a href="{{ list_url }}" class="btn btn-danger btn-flat" data-intro="Hacemos click para cancelar y regresar al listado">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>

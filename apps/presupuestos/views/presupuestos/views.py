@@ -337,6 +337,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     # obtenemos el Usuario actual
                     presupuesto.usuario = request.user
                     presupuesto.cliente_id = formPresupuestoRequest['cliente']
+                    presupuesto.validez = formPresupuestoRequest['validez']
                     presupuesto.modelo_id = formPresupuestoRequest['modelo']
                     presupuesto.subtotal = float(formPresupuestoRequest['subtotal'])
                     presupuesto.iva = float(formPresupuestoRequest['iva'])

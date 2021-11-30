@@ -13,6 +13,17 @@ $(function () {
         placeholder: 'Seleccionar'
     });
 
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Inicializamos los campos de tipo TOUCHSPIN
     $("input[name='limiteCtaCte']").TouchSpin({
         min: 0,
