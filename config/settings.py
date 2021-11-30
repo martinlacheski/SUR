@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import environ
 import os
+
+# Para obtener contraseña y dirección de correo (archivo .env dentro de config/)
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -180,7 +184,8 @@ AUTH_USER_MODEL = 'usuarios.Usuarios'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
-    ('0 8 * * *', 'apps.bot_telegram.cron.rastreoTrabajos')
+    ('0 8 * * *', 'apps.bot_telegram.cron.rastreoTrabajos'),
+    ('0 8 * * 1', 'apps.ero.cron.generarSolicitudPedido'),
 ]
 
 
@@ -204,3 +209,11 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
