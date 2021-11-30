@@ -228,7 +228,7 @@
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary btn-flat"
-                                    data-intro="Hacer click para guardar el registro">
+                                            data-intro="Hacer click para guardar el registro">
                                         <i class="fas fa-save"></i> Guardar registro
                                     </button>
                                     <a href="{{ list_url }}" class="btn btn-danger btn-flat"
@@ -261,7 +261,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-12">
+                                <div class="form-group col-12 mb-3">
                                     <label>(*) Razón Social:</label>
                                     <br>
                                     {{ formProveedor.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -270,13 +270,13 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6 mb-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Condición frente al IVA:</label>
                                     <br>
                                     {{ formProveedor.condicionIVA|add_class:'form-control condicionIvaFormProveedor'|attr:'required:true' }}
                                 </div>
 
-                                <div class="form-group col-6 mb-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Cuit:</label>
                                     <br>
                                     <div class="col-12" class="form-control" id="cuit" name="cuit"
@@ -288,12 +288,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>(*) Localidad:</label>
                                 <br>
                                 {{ formProveedor.localidad|add_class:'form-control localidadFormProveedor'|attr:'required:true' }}
                             </div>
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>(*) Dirección:</label>
                                 <div class="col-12" class="form-control" id="direccion" name="direccion">
                                     {{ formProveedor.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -302,16 +302,16 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>(*) Dirección de email:</label>
                                 <br>
-                                <div class="input-group" type="email" class="form-control" id="email" name="email">
+                                <div class="col-12" type="email" class="form-control" id="email" name="email">
                                     {{ formProveedor.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                     <span hidden id="errorEmail"
                                           style="color: red;">Dirección de correo electrónico no válido </span>
                                 </div>
                             </div>
-                            <div class="form-group col-4 mb-4">
+                            <div class="form-group col-4 mb-3">
                                 <label>(*) Teléfono:</label>
                                 <div class="col-12" class="form-control" id="telefono" name="telefono"
                                      onkeypress="return isNumberKey(event)"
@@ -322,14 +322,15 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>CBU - CVU:</label>
                                 <br>
-                                <div class="input-group" type="text" class="form-control" id="cbu" name="cbu">
+                                <div class="col-12" class="form-control" id="cbu" name="cbu"
+                                     onkeypress="return isNumberKey(event)">
                                     {{ formProveedor.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
-                            <div class="form-group col-4 mb-4">
+                            <div class="form-group col-4 mb-3">
                                 <label>Alias:</label>
                                 <div class="col-12" class="form-control" id="alias" name="alias">
                                     {{ formProveedor.alias|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -338,12 +339,12 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Condición de Pago:</label>
                                     <br>
                                     {{ formProveedor.condicionPago|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
-                                <div class="form-group col-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Tipo de Percepción:</label>
                                     <br>
                                     {{ formProveedor.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -351,11 +352,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-2">
+                            <div class="form-group col-2 mb-3">
                                 <label>¿Cuenta Corriente?:</label>
                                 <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-4 mb-3">
                                 <label>Plazo:</label>
                                 <br>
                                 <div class="col-12 date" class="form-control" id="plazoCtaCte" name="plazoCtaCte">
@@ -431,7 +432,7 @@
                             <div class="form-group col-3 mb-3">
                                 <label>Código:</label>
                                 <br>
-                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'disabled' }}
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>

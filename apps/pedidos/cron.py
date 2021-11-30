@@ -1,7 +1,6 @@
 from apps.erp.models import Productos
-from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud
-from apps.erp.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor
-from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud
+from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor
+from apps.pedidos.models import PedidosSolicitud, DetallePedidoSolicitud
 from django.utils import timezone
 
 def generarSolicitudPedido():

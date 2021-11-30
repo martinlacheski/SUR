@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'apps.bot_telegram',
     'apps.notif_channel',
     'apps.estadisticas',
+    'apps.pedidos',
 ]
 
 MIDDLEWARE = [

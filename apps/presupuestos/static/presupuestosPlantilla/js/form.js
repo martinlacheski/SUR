@@ -353,7 +353,7 @@ $(function () {
         $('#formModelo').trigger('reset');
         errorList = document.getElementById("errorListModelo");
         errorList.innerHTML = '';
-     });
+    });
 
     //Submit Modal Modelo
     $('#formModelo').on('submit', function (e) {
@@ -466,6 +466,19 @@ $(function () {
 
     ///Boton Agregar Producto Mostrar Modal
     $('.btnAddProducto').on('click', function () {
+        //Inicializamos el Codigo del Producto
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo_producto',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="codigo"]').val(data.codigo);
+            }
+        });
         $('#modalProducto').modal('show');
         //Inicializamos SELECT2
         $('.ivaProducto').select2({
@@ -885,6 +898,19 @@ $(function () {
 
     ///Boton Agregar Servicio Mostrar Modal
     $('.btnAddServicio').on('click', function () {
+        //Inicializamos el Codigo del Servicio
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo_servicio',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('.codigoServicio').val(data.codigo);
+            }
+        });
         $('#modalServicio').modal('show');
         //Inicializamos SELECT2
         $('.ivaServicio').select2({

@@ -61,7 +61,7 @@
                                     <div class="form-group col-2">
                                         <label>(*) Fecha:</label>
                                         <div class="col-12" id="fecha" data-target-input="nearest">
-                                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                            {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled' }}
                                         </div>
                                     </div>
                                     <div class="form-group col-1">
@@ -249,14 +249,14 @@
                             <div class="form-group col-3 mb-3">
                                 <label>Código:</label>
                                 <br>
-                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'disabled' }}
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>
                                 {{ formProducto.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>
                             <div class="form-group col-3 mb-3">
-                                <label>Código de Barras 1: </label>
+                                <label>Código de Barras: </label>
                                 <br>
                                 {{ formProducto.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
                             </div>

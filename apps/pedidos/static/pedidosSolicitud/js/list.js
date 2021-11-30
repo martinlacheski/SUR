@@ -19,6 +19,7 @@ $(function () {
             {"data": "id"},
             {"data": "estado"},
             {"data": "fecha"},
+            {"data": "fechaLimite"},
             {"data": "subtotal"},
             {"data": "iva"},
             {"data": "total"},
@@ -52,7 +53,15 @@ $(function () {
                 }
             },
             {
-                targets: [-2, -3, -4],
+                targets: [3],
+                class: 'text-center',
+                // orderable: false,
+                render: function (data, type, row) {
+                    return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
+                }
+            },
+            {
+                targets: [-2, -3, -4, -5],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -70,7 +79,7 @@ $(function () {
                         buttons += '<a href="/pedidos/solicitudes/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     } else {
                         var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/pedidos/solicitudes/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        buttons += '<a href="/pedidos/solicitudes/pdf/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     }
                     return buttons;
                 }

@@ -6,7 +6,7 @@ import random
 
 # Django y models
 from apps.erp.models import Proveedores
-from apps.erp.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, PedidosSolicitud, DetallePedidoSolicitud
+from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, PedidosSolicitud, DetallePedidoSolicitud
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
@@ -21,7 +21,7 @@ from django.urls import reverse
 def crearSolicitudes(pedido, dominio):
 
     # Obtenemos la url interna (/pedidos/solicitudes/proveedores/ en este caso)
-    path_interno = reverse('erp:pedidos_solicitudes_proveedores_create', args=['a'])[:-1]
+    path_interno = reverse('pedidos:pedidos_solicitudes_proveedores_create', args=['a'])[:-1]
 
     for prov in Proveedores.objects.all():
         # Generamos un hash por proveedor

@@ -11,12 +11,13 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from apps.erp.createSolicitudes import crearSolicitudes
-from apps.erp.forms import ProductosForm, PedidosSolicitudForm
-from apps.erp.models import Productos, Categorias, Subcategorias, PedidosSolicitud, \
-    DetallePedidoSolicitud
+from apps.erp.forms import ProductosForm
+from apps.erp.models import Productos, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import Empresa, TiposIVA
+from apps.pedidos.createSolicitudes import crearSolicitudes
+from apps.pedidos.forms import PedidosSolicitudForm
+from apps.pedidos.models import PedidosSolicitud, DetallePedidoSolicitud
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -25,7 +26,7 @@ from weasyprint import HTML, CSS
 class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
     model = PedidosSolicitud
     template_name = 'pedidosSolicitud/list.html'
-    permission_required = 'erp.view_pedidossolicitud'
+    permission_required = 'pedidos.view_pedidossolicitud'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -37,6 +38,7 @@ class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMix
             if action == 'searchdata':
                 data = []
                 for i in PedidosSolicitud.objects.all():
+                    print(i.fechaLimite)
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
@@ -51,8 +53,8 @@ class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMix
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Solicitudes de Pedidos'
-        context['create_url'] = reverse_lazy('erp:pedidos_solicitudes_create')
-        context['list_url'] = reverse_lazy('erp:pedidos_solicitudes_list')
+        context['create_url'] = reverse_lazy('pedidos:pedidos_solicitudes_create')
+        context['list_url'] = reverse_lazy('pedidos:pedidos_solicitudes_list')
         context['entity'] = 'Solicitudes de Pedidos'
         return context
 
@@ -61,8 +63,8 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
     model = PedidosSolicitud
     form_class = PedidosSolicitudForm
     template_name = 'pedidosSolicitud/create.html'
-    success_url = reverse_lazy('erp:pedidos_solicitudes_list')
-    permission_required = 'erp.add_pedidossolicitud'
+    success_url = reverse_lazy('pedidos:pedidos_solicitudes_list')
+    permission_required = 'pedidos.add_pedidossolicitud'
     url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
@@ -124,7 +126,15 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Generamos el Codigo para el nuevo producto
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
@@ -145,6 +155,8 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                 with transaction.atomic():
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     pedido = PedidosSolicitud()
+                    # obtenemos el Usuario actual
+                    pedido.usuario = request.user
                     pedido.fecha = formPedidoRequest['fecha']
                     pedido.fechaLimite = formPedidoRequest['fechaLimite']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
@@ -187,8 +199,8 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
     model = PedidosSolicitud
     form_class = PedidosSolicitudForm
     template_name = 'pedidosSolicitud/create.html'
-    success_url = reverse_lazy('erp:pedidos_solicitudes_list')
-    permission_required = 'erp.change_pedidossolicitud'
+    success_url = reverse_lazy('pedidos:pedidos_solicitudes_list')
+    permission_required = 'pedidos.change_pedidossolicitud'
     url_redirect = success_url
 
     def get_form(self, form_class=None):
@@ -279,6 +291,8 @@ class PedidosSolicitudUpdateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     # Obtenemos la Solicitud de Pedido que se esta editando
                     pedido = self.get_object()
+                    # obtenemos el Usuario actual
+                    pedido.usuario = request.user
                     pedido.fecha = formPedidoRequest['fecha']
                     pedido.fechaLimite = formPedidoRequest['fechaLimite']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
@@ -324,8 +338,8 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
     model = PedidosSolicitud
     form_class = PedidosSolicitudForm
     template_name = 'pedidosSolicitud/create.html'
-    success_url = reverse_lazy('erp:pedidos_solicitudes_list')
-    permission_required = 'erp.change_pedidossolicitud'
+    success_url = reverse_lazy('pedidos:pedidos_solicitudes_list')
+    permission_required = 'pedidos.change_pedidossolicitud'
     url_redirect = success_url
 
     def get_form(self, form_class=None):
@@ -418,7 +432,7 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     # Obtenemos la Solicitud de Pedido que se esta editando
                     pedido = self.get_object()
-                    # print(reverse_lazy('erp:pedidos_solicitudes_update') + '/' + str(pedido.id) + '/')
+                    # print(reverse_lazy('pedidos:pedidos_solicitudes_update') + '/' + str(pedido.id) + '/')
                     pedido.fecha = formPedidoRequest['fecha']
                     pedido.fechaLimite = formPedidoRequest['fechaLimite']
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
@@ -466,8 +480,8 @@ class PedidosSolicitudDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
     model = PedidosSolicitud
     form_class = PedidosSolicitudForm
     template_name = 'pedidosSolicitud/create.html'
-    success_url = reverse_lazy('erp:pedidos_solicitudes_list')
-    permission_required = 'erp.delete_pedidossolicitud'
+    success_url = reverse_lazy('pedidos:pedidos_solicitudes_list')
+    permission_required = 'pedidos.delete_pedidossolicitud'
     url_redirect = success_url
 
     def dispatch(self, request, *args, **kwargs):
@@ -504,7 +518,7 @@ class PedidosSolicitudDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
 
 
 class PedidosSolicitudPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
-    permission_required = 'erp.view_pedidossolicitud'
+    permission_required = 'pedidos.view_pedidossolicitud'
 
     def get(self, request, *args, **kwargs):
         try:
@@ -526,4 +540,4 @@ class PedidosSolicitudPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixi
             return HttpResponse(pdf, content_type='application/pdf')
         except:
             pass
-        return HttpResponseRedirect(reverse_lazy('erp:pedidos_solicitudes_list'))
+        return HttpResponseRedirect(reverse_lazy('pedidos:pedidos_solicitudes_list'))
