@@ -254,7 +254,6 @@ class Command(BaseCommand):
         # Procesa los mensajes que NO son comandos.
         def respuestaDefault(update, context):
             msjRecibido = str(update.message.text).upper()
-
             try:
                 user_gerencial = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
                 esUser = True

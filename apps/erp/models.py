@@ -27,7 +27,7 @@ class Clientes(models.Model):
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
     chatIdCliente = models.IntegerField(null=True, blank=True, default=None)
     history = HistoricalRecords()
-    
+
     def __str__(self):
         return self.razonSocial
 
@@ -442,11 +442,13 @@ class DetalleProductosCompra(models.Model):
 #   Clase Pedidos de Solicitud de Productos
 class PedidosSolicitud(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
-    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite')
+    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite', null=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     estado = models.BooleanField(default="", blank=True, null=True)
+    analizado = models.BooleanField(blank=True, null=True)
+    resp_incompleta = models.BooleanField(blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -471,11 +473,12 @@ class PedidosSolicitud(models.Model):
 
 class DetallePedidoSolicitud(models.Model):
     pedido = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING)
-    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor', blank=True, null=True)
+    #proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor', blank=True, null=True)
     producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+    cantidad_resp = models.IntegerField(default=0)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -483,10 +486,10 @@ class DetallePedidoSolicitud(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['pedido'])
-        try:
-            item['proveedor'] = self.proveedor.toJSON()
-        except:
-            pass
+        # try:
+        #     item['proveedor'] = self.proveedor.toJSON()
+        # except:
+        #     pass
         item['producto'] = self.producto.toJSON()
         item['costo'] = format(self.costo, '.2f')
         item['subtotal'] = format(self.subtotal, '.2f')
@@ -508,8 +511,9 @@ class PedidoSolicitudProveedor(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     enviado = models.DateTimeField(verbose_name='Fecha y Hora de envío correo electrónico')
-    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario')
-    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario')
+    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario', null=True)
+    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario', null=True)
+    hash = models.CharField(max_length=66, verbose_name='Hash de solicitud', null=True)
 
     def __str__(self):
         return self.get_full_name()

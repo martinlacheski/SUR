@@ -593,11 +593,10 @@ class PedidoSolicitudProveedorForm(ModelForm):
                 'readonly': True,
                 'class': 'form-control',
             }),
-            'proveedor': Select(
-                attrs={
-                    'class': 'form-control select2',
-                }
-            ),
+            'proveedor': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
             'iva': TextInput(attrs={
                 'readonly': True,
                 'class': 'form-control',

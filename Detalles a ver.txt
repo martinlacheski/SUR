@@ -10,6 +10,7 @@ fas fa-check 	            &#f00c;
 fas fa-people-carry 	    &#f4ce;
 fas fa-times 	            &#f00d;         &#10060;
 
+sacando la basura
 --------------------------------------------------------------------------------------------------------------------
 
 VIDEOS: Trabajos cuando unifiquemos ramas por el algoritmo de usuario mas desocupado

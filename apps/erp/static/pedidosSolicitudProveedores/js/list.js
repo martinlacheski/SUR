@@ -17,7 +17,6 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "estado"},
             {"data": "fecha"},
             {"data": "subtotal"},
             {"data": "iva"},

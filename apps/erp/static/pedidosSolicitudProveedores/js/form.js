@@ -146,7 +146,21 @@ $(document).ready(function () {
         $('input[name="subtotal"]').val('0.00');
         $('input[name="iva"]').val('0.00');
         $('input[name="total"]').val('0.00');
-        var pedidoActual = $('input[name="pedidoSolicitud"]').val();
+        //Buscamos el Listado de los productos que deben reponerse por ajax
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_cabecera',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="pedidoSolicitud"]').val(data.pedido);
+                $('input[name="proveedor"]').val(data.proveedor);
+                $('input[name="validoHasta"]').val(moment(data.validoHasta, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm'));
+            }
+        });
         //Buscamos el Listado de los productos que deben reponerse por ajax
         $.ajax({
             url: window.location.pathname,
@@ -154,7 +168,6 @@ $(document).ready(function () {
             data: {
                 'csrfmiddlewaretoken': csrftoken,
                 'action': 'get_productos_pedidos',
-                'pedido': pedidoActual,
             },
             dataType: 'json',
             success: function (data) {
