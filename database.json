@@ -68,14 +68,6 @@
 },
 {
   "model": "sessions.session",
-  "pk": "hfh1drj2ymng6vif12j5npvcsk72uniw",
-  "fields": {
-    "session_data": ".eJxVjDsOwjAQBe_iGlnr9RdKes5grX84gGwpTirE3UmkFNDOzHtv5mldql9Hnv2U2IUJdvplgeIzt12kB7V757G3ZZ4C3xN-2MFvPeXX9Wj_DiqNuq3xbJ1zqqDJRGC1pVikQxABlDWotAQCwA2jNFQsRMyYpY5BaiUMsM8XtP02lA:1msASs:Ec3HI9dTxj8xQbmLmzmTz5HzQiQwojgjff8D05WRP7Q",
-    "expire_date": "2021-12-14T21:15:02.307Z"
-  }
-},
-{
-  "model": "sessions.session",
   "pk": "mnw38u7jg3mm35pqqp9vw94ykyzrst2a",
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlnr9RdKes5grX84gGwpTirE3UmkFNDOzHtv5mldql9Hnv2U2IUJdvplgeIzt12kB7V757G3ZZ4C3xN-2MFvPeXX9Wj_DiqNuq3xbJ1zqqDJRGC1pVikQxABlDWotAQCwA2jNFQsRMyYpY5BaiUMsM8XtP02lA:1moStm:bBtLGXcCMUYTw9H45d68R8G8d6FjWHO199SCqli3hr4",
@@ -42696,6 +42688,1190 @@
     "descripcion": "Se intentó notificar al cliente LACHESKI, MARTIN ANIBAL sin éxito ya que el mismo no está registrado con el BOT.",
     "enviadoAUser": 3,
     "fechaRevisionUser": null
+  }
+},
+{
+  "model": "pedidos.historicalpedidossolicitud",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "fecha": "2021-11-30",
+    "fechaLimite": "2021-12-01T22:00:00Z",
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "estado": null,
+    "analizado": null,
+    "resp_incompleta": null,
+    "usuario": null,
+    "history_date": "2021-11-30T22:12:28.028Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicalpedidossolicitud",
+  "pk": 2,
+  "fields": {
+    "id": 1,
+    "fecha": "2021-11-30",
+    "fechaLimite": "2021-12-02T11:00:00Z",
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "estado": null,
+    "analizado": null,
+    "resp_incompleta": null,
+    "usuario": 1,
+    "history_date": "2021-11-30T22:26:01.307Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicalpedidossolicitud",
+  "pk": 3,
+  "fields": {
+    "id": 1,
+    "fecha": "2021-11-30",
+    "fechaLimite": "2021-12-02T11:00:00Z",
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "estado": true,
+    "analizado": null,
+    "resp_incompleta": null,
+    "usuario": 1,
+    "history_date": "2021-11-30T22:38:40.292Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.pedidossolicitud",
+  "pk": 1,
+  "fields": {
+    "fecha": "2021-11-30",
+    "fechaLimite": "2021-12-02T11:00:00Z",
+    "usuario": 1,
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "estado": true,
+    "analizado": null,
+    "resp_incompleta": null
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 16,
+    "history_date": "2021-11-30T22:12:28.029Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 7,
+    "history_date": "2021-11-30T22:12:28.030Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 15,
+    "history_date": "2021-11-30T22:12:28.031Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 11,
+    "history_date": "2021-11-30T22:12:28.031Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 5,
+  "fields": {
+    "id": 5,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 19,
+    "history_date": "2021-11-30T22:12:28.032Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 6,
+  "fields": {
+    "id": 6,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 17,
+    "history_date": "2021-11-30T22:12:28.033Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 7,
+  "fields": {
+    "id": 7,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 18,
+    "history_date": "2021-11-30T22:12:28.033Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 8,
+  "fields": {
+    "id": 8,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 9,
+    "history_date": "2021-11-30T22:12:28.034Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 9,
+  "fields": {
+    "id": 8,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 9,
+    "history_date": "2021-11-30T22:26:01.310Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 10,
+  "fields": {
+    "id": 7,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 18,
+    "history_date": "2021-11-30T22:26:01.311Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 11,
+  "fields": {
+    "id": 6,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 17,
+    "history_date": "2021-11-30T22:26:01.311Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 12,
+  "fields": {
+    "id": 5,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 19,
+    "history_date": "2021-11-30T22:26:01.312Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 13,
+  "fields": {
+    "id": 4,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 11,
+    "history_date": "2021-11-30T22:26:01.312Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 14,
+  "fields": {
+    "id": 3,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 15,
+    "history_date": "2021-11-30T22:26:01.312Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 15,
+  "fields": {
+    "id": 2,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 7,
+    "history_date": "2021-11-30T22:26:01.313Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 16,
+  "fields": {
+    "id": 1,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 16,
+    "history_date": "2021-11-30T22:26:01.313Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 17,
+  "fields": {
+    "id": 9,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 16,
+    "history_date": "2021-11-30T22:26:01.313Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 18,
+  "fields": {
+    "id": 10,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 7,
+    "history_date": "2021-11-30T22:26:01.314Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 19,
+  "fields": {
+    "id": 11,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 15,
+    "history_date": "2021-11-30T22:26:01.315Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 20,
+  "fields": {
+    "id": 12,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 11,
+    "history_date": "2021-11-30T22:26:01.315Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 21,
+  "fields": {
+    "id": 13,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 19,
+    "history_date": "2021-11-30T22:26:01.316Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 22,
+  "fields": {
+    "id": 14,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 17,
+    "history_date": "2021-11-30T22:26:01.316Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 23,
+  "fields": {
+    "id": 15,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 18,
+    "history_date": "2021-11-30T22:26:01.317Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 24,
+  "fields": {
+    "id": 16,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 9,
+    "history_date": "2021-11-30T22:26:01.317Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 25,
+  "fields": {
+    "id": 16,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 9,
+    "history_date": "2021-11-30T22:38:40.295Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 26,
+  "fields": {
+    "id": 15,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 18,
+    "history_date": "2021-11-30T22:38:40.296Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 27,
+  "fields": {
+    "id": 14,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 17,
+    "history_date": "2021-11-30T22:38:40.297Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 28,
+  "fields": {
+    "id": 13,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 19,
+    "history_date": "2021-11-30T22:38:40.297Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 29,
+  "fields": {
+    "id": 12,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 11,
+    "history_date": "2021-11-30T22:38:40.297Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 30,
+  "fields": {
+    "id": 11,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 15,
+    "history_date": "2021-11-30T22:38:40.298Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 31,
+  "fields": {
+    "id": 10,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 7,
+    "history_date": "2021-11-30T22:38:40.298Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 32,
+  "fields": {
+    "id": 9,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 16,
+    "history_date": "2021-11-30T22:38:40.299Z",
+    "history_change_reason": null,
+    "history_type": "-",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 33,
+  "fields": {
+    "id": 17,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 16,
+    "history_date": "2021-11-30T22:38:40.299Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 34,
+  "fields": {
+    "id": 18,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 7,
+    "history_date": "2021-11-30T22:38:40.300Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 35,
+  "fields": {
+    "id": 19,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 15,
+    "history_date": "2021-11-30T22:38:40.301Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 36,
+  "fields": {
+    "id": 20,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 11,
+    "history_date": "2021-11-30T22:38:40.301Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 37,
+  "fields": {
+    "id": 21,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 19,
+    "history_date": "2021-11-30T22:38:40.302Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 38,
+  "fields": {
+    "id": 22,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 17,
+    "history_date": "2021-11-30T22:38:40.303Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 39,
+  "fields": {
+    "id": 23,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 18,
+    "history_date": "2021-11-30T22:38:40.303Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.historicaldetallepedidosolicitud",
+  "pk": 40,
+  "fields": {
+    "id": 24,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00",
+    "cantidad_resp": 0,
+    "pedido": 1,
+    "producto": 9,
+    "history_date": "2021-11-30T22:38:40.304Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 17,
+  "fields": {
+    "pedido": 1,
+    "producto": 16,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 18,
+  "fields": {
+    "pedido": 1,
+    "producto": 7,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 19,
+  "fields": {
+    "pedido": 1,
+    "producto": 15,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 20,
+  "fields": {
+    "pedido": 1,
+    "producto": 11,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 21,
+  "fields": {
+    "pedido": 1,
+    "producto": 19,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 22,
+  "fields": {
+    "pedido": 1,
+    "producto": 17,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 23,
+  "fields": {
+    "pedido": 1,
+    "producto": 18,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitud",
+  "pk": 24,
+  "fields": {
+    "pedido": 1,
+    "producto": 9,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00",
+    "cantidad_resp": 0
+  }
+},
+{
+  "model": "pedidos.pedidosolicitudproveedor",
+  "pk": 1,
+  "fields": {
+    "pedidoSolicitud": 1,
+    "proveedor": 1,
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "enviado": "2021-11-30T22:38:40.305Z",
+    "visto": "2021-11-30T22:40:00.653Z",
+    "respuesta": null,
+    "hash": "c4d778f1c042be8adc7f44428548174c0a242112dc2f1782e1472a3fad73021a"
+  }
+},
+{
+  "model": "pedidos.pedidosolicitudproveedor",
+  "pk": 2,
+  "fields": {
+    "pedidoSolicitud": 1,
+    "proveedor": 3,
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "enviado": "2021-11-30T22:38:40.313Z",
+    "visto": null,
+    "respuesta": null,
+    "hash": "e359158a8035cd57a144a3e596a44f3f032112eec8ce791edee19e2c8fe62f50"
+  }
+},
+{
+  "model": "pedidos.pedidosolicitudproveedor",
+  "pk": 3,
+  "fields": {
+    "pedidoSolicitud": 1,
+    "proveedor": 2,
+    "subtotal": "30850.29",
+    "iva": "8200.71",
+    "total": "39051.00",
+    "enviado": "2021-11-30T22:38:40.320Z",
+    "visto": null,
+    "respuesta": null,
+    "hash": "e9b28ce207d294861ac73ed69242b7b3f2cad5949af31aa205aba045e6d86eee"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 1,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 16,
+    "marcaOfertada": null,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 2,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 7,
+    "marcaOfertada": null,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 3,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 15,
+    "marcaOfertada": null,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 4,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 11,
+    "marcaOfertada": null,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 5,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 19,
+    "marcaOfertada": null,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 6,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 17,
+    "marcaOfertada": null,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 7,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 18,
+    "marcaOfertada": null,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 8,
+  "fields": {
+    "pedidoSolicitudProveedor": 1,
+    "producto": 9,
+    "marcaOfertada": null,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 9,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 16,
+    "marcaOfertada": null,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 10,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 7,
+    "marcaOfertada": null,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 11,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 15,
+    "marcaOfertada": null,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 12,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 11,
+    "marcaOfertada": null,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 13,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 19,
+    "marcaOfertada": null,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 14,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 17,
+    "marcaOfertada": null,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 15,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 18,
+    "marcaOfertada": null,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 16,
+  "fields": {
+    "pedidoSolicitudProveedor": 2,
+    "producto": 9,
+    "marcaOfertada": null,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 17,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 16,
+    "marcaOfertada": null,
+    "costo": "450.00",
+    "cantidad": 8,
+    "subtotal": "3600.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 18,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 7,
+    "marcaOfertada": null,
+    "costo": "1151.00",
+    "cantidad": 1,
+    "subtotal": "1151.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 19,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 15,
+    "marcaOfertada": null,
+    "costo": "5600.00",
+    "cantidad": 2,
+    "subtotal": "11200.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 20,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 11,
+    "marcaOfertada": null,
+    "costo": "6300.00",
+    "cantidad": 1,
+    "subtotal": "6300.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 21,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 19,
+    "marcaOfertada": null,
+    "costo": "250.00",
+    "cantidad": 8,
+    "subtotal": "2000.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 22,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 17,
+    "marcaOfertada": null,
+    "costo": "1000.00",
+    "cantidad": 4,
+    "subtotal": "4000.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 23,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 18,
+    "marcaOfertada": null,
+    "costo": "1050.00",
+    "cantidad": 4,
+    "subtotal": "4200.00"
+  }
+},
+{
+  "model": "pedidos.detallepedidosolicitudproveedor",
+  "pk": 24,
+  "fields": {
+    "pedidoSolicitudProveedor": 3,
+    "producto": 9,
+    "marcaOfertada": null,
+    "costo": "1650.00",
+    "cantidad": 4,
+    "subtotal": "6600.00"
   }
 }
 ]

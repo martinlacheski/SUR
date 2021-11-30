@@ -28,7 +28,7 @@ SOLICITUD DE PEDIDO
 
 RESOLVER EL MODULO BACKUP con el comando:
 #Con este comando evitamos tener que reinicializar la BD
-python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > NOMBRE_BACKUP.json
+python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > database.json
 
 #Reestablecemos el BACKUP con LOADDATA
 python manage.py loaddata database.json
