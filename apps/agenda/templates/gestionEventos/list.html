@@ -47,36 +47,46 @@
                     {% csrf_token %}
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Crear un evento</h3>
+                            <h3 class="card-title">Crear un evento
+                                <a href="#" class="btn btn-flat">
+                                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                                </a>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <input type="hidden" name="action" value="{{ action }}">
-                                <div class="col-12 mb-4">
+                                <div class="col-12 mb-4"
+                                     data-intro="Seleccionar del listado el Tipo de Evento">
                                     <label>Tipo de evento</label>
                                     {{ form.tipoEvento }}
                                 </div>
-                                <div class="col-12 mb-4">
+                                <div class="col-12 mb-4"
+                                     data-intro="Ingresar la descripción del evento. Por ej: Vencimiento del Evento ....">
                                     <label>Descripción</label>
                                     {{ form.descripcion }}
                                 </div>
-                                <div class="col-12 mb-4">
+                                <div class="col-12 mb-4"
+                                     data-intro="Seleccionar la fecha de notificación">
                                     <label>Fecha de Notificación</label>
                                     <div class="date input-group" id="fechaNotificacion" data-target-input="nearest">
                                         {{ form.fechaNotificacion }}
                                     </div>
                                 </div>
-                                <div class="col-12 mb-1">
+                                <div class="col-12 mb-1"
+                                     data-intro="OPCIONAL - Tildar si el evento se repetirá">
                                     <div class="custom-control custom-checkbox">
                                         <input class="custom-control-input" type="checkbox" id="customCheckbox1"
                                                value="repite">
                                         <label for="customCheckbox1" class="custom-control-label"> Se repite</label>
                                     </div>
                                 </div>
-                                <div class="col-12 mb-4">
+                                <div class="col-12 mb-4"
+                                     data-intro="OPCIONAL - seleccionar del listado el tipo de repetición">
                                     {{ form.repeticion }}
                                 </div>
-                                <div hidden id="fechaFinalizacionField" class="col-12 mb-4">
+                                <div hidden id="fechaFinalizacionField" class="col-12 mb-4"
+                                     data-intro="OPCIONAL - seleccionar la fecha de finalización de repetición">
                                     <label>Fecha de Finalización</label>
                                     <div class="date input-group" id="fechaFinalizacion" data-target-input="nearest">
                                         {{ form.fechaFinalizacion }}
@@ -85,22 +95,25 @@
                                 <p hidden id="errorFechas" style="color:red;">Fecha de Finalización es menor a la de
                                     Notificación </p>
                                 {% if action == 'add' %}
-                                    <div class="col-12">
+                                    <div class="col-12"
+                                         data-intro="Hacer click para guardar el registro">
                                         <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                                            <i class="fas fa-save"></i> Registrar
+                                            <i class="fas fa-save"></i> Guardar registro
                                         </button>
                                     </div>
                                 {% else %}
-                                    <div class="col-6">
+                                    <div class="col-6"
+                                         data-intro="Hacer click para guardar la modificación">
                                         <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
-                                            <i class="fas fa-save"></i> Registrar
+                                            <i class="fas fa-save"></i> Guardar
                                         </button>
                                     </div>
                                     <div class="col-6">
-                                        <a href="{% url 'agenda:dashboard' %}">
+                                        <a href="{% url 'agenda:dashboard' %}"
+                                           data-intro="Hacer click para cancelar la modificación del registro">
                                             <button type="button" id="btnVolverEvento"
-                                                    class="btn btn-info btn-flat btn-block">
-                                                <i class="fas fa-undo"></i> Volver
+                                                    class="btn btn-danger btn-flat btn-block">
+                                                <i class="fas fa-times"></i> Cancelar
                                             </button>
                                         </a>
                                     </div>
@@ -134,7 +147,8 @@
         </div>
 
         <!-- Calendario -->
-        <div class="col-md-9">
+        <div class="col-md-9"
+             data-step="1" data-intro="Se visualizan los distintos eventos registrados. Hacer click sobre uno de ellos para ver las opciones disponibles">
             <div class="card card-primary">
                 <div class="card-body p-0">
                     <div id="calendar">
@@ -268,11 +282,11 @@
                         {%  if evento.estado %}
                             {
                                 id: "{{ evento.id }}",
-                            {% if evento.resuelto %}
-                                title: "{{ evento.tipoEvento }} (resuelto)" ,
-                            {% else %}
-                                title: "{{ evento.tipoEvento }}",
-                            {% endif %}
+                                {% if evento.resuelto %}
+                                    title: "{{ evento.tipoEvento }} (resuelto)" ,
+                                {% else %}
+                                    title: "{{ evento.tipoEvento }}",
+                                {% endif %}
                                 {% if evento.repeticion %}
                                     rrule: {
                                         freq: "{{ evento.repeticion }}",
@@ -317,7 +331,6 @@
                     $('#btnMod').attr('evento_id', info.event.id);
                     $('#btnDelete').attr('evento_id', info.event.id); // No es el modal principal
                     $('#btnRes').attr('evento_id', info.event.id);
-
 
 
                 }
@@ -434,7 +447,7 @@
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'evento_cumplido',
                     'pk': id_evento,
-                    'usuario' : "{{ request.user }}",
+                    'usuario': "{{ request.user }}",
                 },
                 success: function (data) {
                     // Control de eliminación de un registro que es dependencia de otros.
@@ -449,6 +462,17 @@
     </script>
 
     <script>
+        //Al hacer click en el AYUDA
+        $('.verAyuda').on('click', function () {
+            introJs().setOptions({
+                showProgress: true,
+                showBullets: false,
+                nextLabel: 'Siguiente',
+                prevLabel: 'Atrás',
+                doneLabel: 'Finalizar',
+            }).start()
+        });
+
         $('#fechaNotificacion').datetimepicker({
             format: 'DD-MM-yyyy',
             minDate: new Date(),

@@ -170,7 +170,7 @@ class Subcategorias(models.Model):
 class Productos(models.Model):
     subcategoria = models.ForeignKey(Subcategorias, models.DO_NOTHING, verbose_name='Subcategoría')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
-    abreviatura = models.CharField(max_length=30, null=True, blank=True, verbose_name='Abreviatura')
+    abreviatura = models.CharField(max_length=30, verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo', unique=True)
     codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor',
                                        unique=True)

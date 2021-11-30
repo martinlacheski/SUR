@@ -1,6 +1,15 @@
 Para cargar los registros de Auditoria
 python manage.py populate_history --auto
 
+EMOJIS PARA EL AYUDA
+fas fa-eye	                &#xf06e;
+far fa-file-pdf 	        &#f1c1;
+fas fa-edit	                &#xf044;        &#128221;
+fas fa-trash-alt	        &#xf2ed;
+fas fa-check 	            &#f00c;
+fas fa-people-carry 	    &#f4ce;
+fas fa-times 	            &#f00d;         &#10060;
+
 --------------------------------------------------------------------------------------------------------------------
 
 VIDEOS: Trabajos cuando unifiquemos ramas por el algoritmo de usuario mas desocupado

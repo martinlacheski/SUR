@@ -29,6 +29,9 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -36,7 +39,8 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-12">
+                        <div class="form-group col-12"
+                             data-intro="Ingresar la razón social del Proveedor. Por ej: PEREZ, JUAN">
                             <label>(*) Razón Social:</label>
                             <br>
                             {{ form.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -45,13 +49,15 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6">
+                        <div class="form-group col-6"
+                             data-intro="Seleccionar del listado la condición frente al IVA del Proveedor">
                             <label>(*) Condición frente al IVA:</label>
                             <br>
                             {{ form.condicionIVA|add_class:'form-control'|attr:'required:true' }}
                         </div>
 
-                        <div class="form-group col-6">
+                        <div class="form-group col-6"
+                             data-intro="Ingresar un CUIT válido, sin guiones ni puntos. Solo números">
                             <label>(*) Cuit:</label>
                             <br>
                             <div class="col-12" class="form-control" id="cuit" name="cuit"
@@ -64,12 +70,13 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="Seleccionar del listado la localidad del Proveedor">
                         <label>(*) Localidad:</label>
                         <br>
                         {{ form.localidad|add_class:'form-control'|attr:'required:true' }}
                     </div>
-                    <div class="form-group col-6">
+                    <div class="form-group col-6"
+                         data-intro="Ingresar la dirección del Proveedor. Por ej: Calle Sin Nombre Nº1234">
                         <label>(*) Dirección:</label>
                         <div class="col-12" class="form-control" id="direccion" name="direccion">
                             {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -78,7 +85,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6"
+                         data-intro="Ingresar un correo electrónico válido. Por ej: ejemplo@correo.com">
                         <label>(*) Dirección de email:</label>
                         <br>
                         <div class="input-group" type="email" class="form-control" id="email" name="email">
@@ -87,7 +95,8 @@
                                   style="color: red;">Dirección de correo electrónico no válido </span>
                         </div>
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="Ingresar un número de teléfono de contacto. Ingresar solo números. Por ej: 3764123456">
                         <label>(*) Teléfono:</label>
                         <div class="col-12" class="form-control" id="telefono" name="telefono"
                              onkeypress="return isNumberKey(event)"
@@ -98,7 +107,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6"
+                         data-intro="OPCIONAL - Ingresar el CBU - CVU del Proveedor. Está compuesto por 22 números. Por ej: 1234567890123456789012">
                         <label>CBU - CVU:</label>
                         <br>
                         <div class="input-group" type="text" class="form-control" id="cbu" name="cbu"
@@ -106,7 +116,7 @@
                             {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4" data-intro="OPCIONAL - Ingresar el Alias de la cuenta del Proveedor. Está compuesto por tres palabras separadas por un '.' Por ej: CASA.PERRO.AUTO">
                         <label>Alias:</label>
                         <div class="col-12" class="form-control" id="alias" name="alias">
                             {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -115,12 +125,14 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6">
+                        <div class="form-group col-6"
+                             data-intro="Seleccionar del listado la condición de pago que tendrá el Proveedor">
                             <label>(*) Condición de Pago:</label>
                             <br>
                             {{ form.condicionPago|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
-                        <div class="form-group col-6">
+                        <div class="form-group col-6"
+                             data-intro="Seleccionar del listado el tipo de percepción que tendrá el Proveedor">
                             <label>(*) Tipo de Percepción:</label>
                             <br>
                             {{ form.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -128,14 +140,16 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-3 mb-3">
+                    <div class="form-group col-3 mb-3"
+                         data-intro="OPCIONAL - Tildar si el Proveedor tendrá cuenta corriente">
                         <label class="mb-4"></label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                             <input type="checkbox" class="custom-control-input" id="ctaCte" name="ctaCte">
                             <label class="custom-control-label" for="ctaCte">¿Cuenta Corriente?</label>
                         </div>
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="Ingresar el plazo de pago de la cuenta corriente del Proveedor">
                         <label>Plazo:</label>
                         <br>
                         <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
@@ -149,10 +163,12 @@
             {#Mensaje de error#}
             <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
-            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+            <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
+                    data-intro="Hacer click para guardar el registro">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+            <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+               data-intro="Hacer click para cancelar y regresar al listado de proveedores">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>

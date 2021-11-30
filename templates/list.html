@@ -24,10 +24,14 @@
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
                 {{ title }}
+                <a href="#" class="btn btn-flat">
+                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                </a>
             </h3>
         </div>
         <div class="card-body">
-            <table class="table" id="data">
+            <table class="table" id="data" data-intro="Se visualiza el {{ title }}.
+            Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                 <thead>
                 {% block columns %}
 
@@ -41,10 +45,10 @@
             </table>
         </div>
         <div class="card-footer">
-            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+            <a href="{{ create_url }}" class="btn btn-primary btn-flat" data-intro="Crear un nuevo registro">
                 <i class="fas fa-plus"></i> Nuevo registro
             </a>
-            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+            <a href="{{ list_url }}" class="btn btn-success btn-flat" data-intro="Actualizar el listado">
                 <i class="fas fa-sync"></i> Actualizar
             </a>
         </div>

@@ -314,7 +314,14 @@ class ProductosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
         data = {}
         try:
             action = request.POST['action']
-            if action == 'search_iva':
+            if action == 'generar_codigo':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
             elif action == 'search_categorias':
