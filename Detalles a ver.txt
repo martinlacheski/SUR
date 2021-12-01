@@ -15,10 +15,10 @@ fas fa-times 	            &#f00d;         &#10060;
 SOLICITUD DE PEDIDO
 - No se debería poder elegir una fecha en el campo "Fecha". Debería tomar la actual.    ---OK
 - Limpiar template de solicitud de proveedores                                          ---OK
-- Que la cantidad no supere el límite.
+- Que la cantidad no supere el límite.                                                  ---OK
 - Botón de reinicio de formulario.                                                      ---OK
-- Campo de observaciones.
-- Generar ayuda cuando carga la página.
+- Campo de marca ofertada.                                                              ---OK
+- Generar ayuda cuando carga la página.                                                 ---OK
 - Cambiar botón de "Guardar Registro" a "Enviar Cotización".                            ---OK
 - Cambiar en sidebar "pedidos proveedores" por "respuesta proveedores".                 ---OK
 - Generar algún tipo de redirección cuando la venció la validez.                        ---OK
@@ -36,10 +36,6 @@ python manage.py loaddata database.json
 --------------------------------------------------------------------------------------------------------------------
 
 VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
-
---------------------------------------------------------------------------------------------------------------------
-
-QUITAR MODIFICACION COMPRAS, VENTAS, USUARIOS A NOTIFICAR   --- OK
 
 --------------------------------------------------------------------------------------------------------------------
 

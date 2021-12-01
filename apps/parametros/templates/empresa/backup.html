@@ -26,16 +26,20 @@
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
-                <div>
-                    <button type="button"
-                            class="btn btn-primary btn-flat btnGenerar">
-                        <i class="fas fa-file-download"></i> Realizar Copia de Seguridad
-                    </button>
-                    <input id="btnReestablecer" class="upfile-button btnReestablecer" type="file">
-                    <button type="button"
-                            class="btn btn-success btn-flat upfile-button btnReestablecer">
-                        <i class="fas fa-file-upload"></i> Reestablecer
-                    </button>
+                <div class="row">
+                    <div class="form-group col-3">
+                        <button type="button"
+                                class="btn btn-primary btn-flat btnGenerar">
+                            <i class="fas fa-file-download"></i> Realizar Copia de Seguridad
+                        </button>
+                    </div>
+                    <div class="form-group col-9">
+                        <input id="uploadFile" class="upfile-button uploadFile" type="file">
+                        <button type="button"
+                                class="btn btn-success btn-flat upfile-button btnReestablecer">
+                            <i class="fas fa-file-upload"></i> Reestablecer Copia de Seguridad
+                        </button>
+                    </div>
 
                 </div>
             </div>
@@ -43,8 +47,8 @@
             <div class="card-footer">
                 {#Mensaje de error#}
                 <ul id="errorList" name="errorList" class="alert-danger"></ul>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                    <i class="fas fa-undo"></i> Volver
+                <a href="{{ home_url }}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-arrow-left"></i> Volver
                 </a>
             </div>
         </div>

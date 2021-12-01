@@ -246,21 +246,7 @@ function calcular_importes() {
     var percepcion = percepcionPorcentaje;
     //Recorremos el Array de productos para ir actualizando los importes
     $.each(venta.items.productos, function (pos, dict) {
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'action': 'search_precioProducto',
-                'pk': dict.id
-            },
-            dataType: 'json',
-            success: function (data) {
-                //Actualizamos el precio del list
-                dict.costo = parseFloat(data.costo);
-                venta.items.productos[pos].precioVenta = parseFloat(data.precioVenta);
-            }
-        });
+        ccccc
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);

@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
-from django.views import View
 from django.views.generic import CreateView, UpdateView, ListView, TemplateView
 
 from apps.parametros.forms import EmpresaForm
@@ -166,6 +165,10 @@ class BackupView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateVi
                 urlBACKUP = settings.MEDIA_URL + 'backup_SUR.json'
                 # Creamos el BACKUP ACA
                 data['url'] = urlBACKUP
+            elif action == 'restore_backup':
+                archivo = request.POST['file']
+                print(archivo)
+                data['check'] = 'OK'
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -176,6 +179,7 @@ class BackupView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateVi
         context = super().get_context_data(**kwargs)
         context['title'] = 'Copias de seguridad del sistema'
         context['create_url'] = reverse_lazy('parametros:copia_seguridad')
-        context['list_url'] = reverse_lazy('home:home')
+        context['list_url'] = reverse_lazy('parametros:copia_seguridad')
+        context['home_url'] = reverse_lazy('home:home')
         context['entity'] = 'Copias de seguridad del sistema'
         return context

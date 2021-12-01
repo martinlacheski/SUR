@@ -81,6 +81,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                     data = []
                     for i in DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedidoP):
                         item = i.producto.toJSON()
+                        item['marcaOfertada'] = i.marcaOfertada
                         item['cantidad'] = i.cantidad
                         item['costo'] = i.costo
                         data.append(item)
@@ -91,6 +92,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                         for i in DetallePedidoSolicitud.objects.filter(
                                 pedido=request.POST['pk']):
                             item = i.producto.toJSON()
+                            item['marcaOfertada'] = i.marcaOfertada
                             item['cantidad'] = i.cantidad
                             item['precio'] = i.producto.costo
                             data.append(item)
@@ -102,7 +104,6 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                         # Guardamos respuesta
                         pedidoP.respuesta = datetime.datetime.now()
                         pedidoP.save()
-                        # print(formPedidoRequest['productos'])
                         # Eliminamos todos los productos del Detalle
                         pedidoP.detallepedidosolicitudproveedor_set.all().delete()
                         # Volvemos a cargar los productos al Detalle
@@ -110,6 +111,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                             det = DetallePedidoSolicitudProveedor()
                             det.pedidoSolicitudProveedor_id = pedidoP.id
                             det.producto_id = i['id']
+                            det.marcaOfertada = i['marcaOfertada']
                             det.cantidad = int(i['cantidad'])
                             det.costo = float(i['costo'])
                             det.subtotal = float(i['subtotal'])

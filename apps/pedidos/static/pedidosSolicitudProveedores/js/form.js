@@ -41,6 +41,7 @@ var pedido = {
             columns: [
                 {"data": "id"}, //Para el boton eliminar
                 {"data": "descripcion"},
+                {"data": "marcaOfertada"},
                 {"data": "costo"},
                 {"data": "cantidad"},
                 {"data": "subtotal"},
@@ -52,6 +53,21 @@ var pedido = {
                     orderable: false,
                     render: function (data, type, row) {
                         return '<a rel="remove" class="btn btn-danger btn-xs btn-flat" style="color: white;" ><i class="fas fa-trash-alt"></i></a>';
+                    }
+                },
+                {
+                    targets: [-4],
+                    class: 'text-center',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        console.log(row.marcaOfertada);
+                        if (row.marcaOfertada) {
+                            return '<input type="Text" name="marcaOfertada" class="form-control form-control-sm input-sm text-center" autocomplete="off" value="' + row.marcaOfertada + '">';
+
+                        } else {
+                            return '<input type="Text" name="marcaOfertada" class="form-control form-control-sm input-sm text-center" autocomplete="off" value="">';
+                        }
+
                     }
                 },
                 {
@@ -93,7 +109,8 @@ var pedido = {
                 });
                 $(row).find('input[name="cantidad"]').TouchSpin({
                     min: 1,
-                    max: 1000000,
+                    //Seteamos que la cantidad maxima ofertada sea solo la solicitada
+                    max: data.cantidad,
                     step: 1,
                     boostat: 5,
                     maxboostedstep: 10,
@@ -156,9 +173,8 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
-                console.log(data.ok);
                 if (data.ok === 'si') {
-                    console.log('solicitud válida');
+                    // console.log('solicitud válida');
                 } else if (data.ok === 'no') {
                     location.replace(data.redirect);
                 }
@@ -199,6 +215,17 @@ $(document).ready(function () {
 });
 
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Llamamos a la funcion de Token
     getToken(name);
 
@@ -235,6 +262,18 @@ $(function () {
                 pedido.listProductos();
             }, function () {
             });
+        })
+        //evento cambiar a mayuscula (marcaOfertada) del detalle
+        .on('keyup', 'input[name="marcaOfertada"]', function () {
+            this.value = this.value.toLocaleUpperCase();
+        })
+        //evento cambiar renglon (marcaOfertada) del detalle
+        .on('change', 'input[name="marcaOfertada"]', function () {
+            //asignamos a una variable la marca ofertada, en la posicion actual
+            var marca = $(this).val();
+            //Obtenemos la posicion del elemento a modificar dentro del Datatables
+            var tr = tablaProductos.cell($(this).closest('td, li')).index();
+            pedido.items.productos[tr.row].marcaOfertada = marca;
         })
         //evento cambiar renglon (cantidad) del detalle
         .on('change', 'input[name="cantidad"]', function () {
@@ -281,6 +320,16 @@ $(function () {
                     pedido.listProductos();
                 }
             });
+        }, function () {
+            //pass
+        });
+    });
+
+    //Cerrar Pestaña
+    $('.btnCloseWindow').on('click', function (e) {
+        e.preventDefault();
+        confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
+            window.close();
         }, function () {
             //pass
         });
