@@ -38,7 +38,6 @@ class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMix
             if action == 'searchdata':
                 data = []
                 for i in PedidosSolicitud.objects.all():
-                    print(i.fechaLimite)
                     data.append(i.toJSON())
             elif action == 'search_detalle_productos':
                 data = []
@@ -432,6 +431,8 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                     formPedidoRequest = json.loads(request.POST['pedido'])
                     # Obtenemos la Solicitud de Pedido que se esta editando
                     pedido = self.get_object()
+                    # obtenemos el Usuario actual
+                    pedido.usuario = request.user
                     # print(reverse_lazy('pedidos:pedidos_solicitudes_update') + '/' + str(pedido.id) + '/')
                     pedido.fecha = formPedidoRequest['fecha']
                     pedido.fechaLimite = formPedidoRequest['fechaLimite']
@@ -496,6 +497,8 @@ class PedidosSolicitudDeleteView(LoginRequiredMixin, ValidatePermissionRequiredM
                 with transaction.atomic():
                     # Obtenemos la solicitud de pedido que se esta editando
                     pedido = self.get_object()
+                    # obtenemos el Usuario actual
+                    pedido.usuario = request.user
                     # Eliminamos la Solicitud de Pedido
                     pedido.estado = False
                     pedido.save()

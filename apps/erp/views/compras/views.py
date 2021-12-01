@@ -416,7 +416,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                         if det.producto.descuentaStock == True:
                             # Actualizamos el Stock de los Productos del Detalle
                             det.producto.stockReal += det.cantidad
-                        # Asignamos el costo de costo nuevo segun el importe de compra
+                        # Asignamos el costo nuevo segun el importe de compra
                         det.producto.costo = det.costo
                         # Asignamos el precio de venta en base al costo
                         det.producto.precioVenta = float(det.costo) * ((float(det.producto.utilidad) / 100) + 1) * \

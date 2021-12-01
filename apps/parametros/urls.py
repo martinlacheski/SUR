@@ -21,6 +21,7 @@ urlpatterns = [
     path('empresa/view/<int:pk>/', EmpresaView.as_view(), name='empresa_view'),
     path('empresa/add/', EmpresaCreateView.as_view(), name='empresa_create'),
     path('empresa/update/<int:pk>/', EmpresaUpdateView.as_view(), name='empresa_update'),
+    path('empresa/copia_seguridad/', BackupView.as_view(), name='copia_seguridad'),
     #Tipos de IVA
     path('tipos-iva/list/', TiposIVAListView.as_view(), name='tiposIVA_list'),
     path('tipos-iva/add/', TiposIVACreateView.as_view(), name='tiposIVA_create'),

@@ -10,20 +10,19 @@ fas fa-check 	            &#f00c;
 fas fa-people-carry 	    &#f4ce;
 fas fa-times 	            &#f00d;         &#10060;
 
-sacando la basura
 --------------------------------------------------------------------------------------------------------------------
 
 SOLICITUD DE PEDIDO
-- No se debería poder elegir una fecha en el campo "Fecha". Debería tomar la actual.        ---OK
-- Limpiar template de solicitud de proveedores
-    - Borrar el template innecesario
-    - Que la cantidad no supere el límite
-    - Botón de reinicio de formulario
-    - Campo de observaciones
-    - Generar ayuda cuando carga la página
-    - Cambiar botón de "Guardar Registro" a "Enviar Cotización"
-    - Cambiar en sidebar "pedidos proveedores" por "respuesta proveedores"                  ---OK
-    - Generar algún tipo de redirección cuando la venció la validez.
+- No se debería poder elegir una fecha en el campo "Fecha". Debería tomar la actual.    ---OK
+- Limpiar template de solicitud de proveedores                                          ---OK
+- Que la cantidad no supere el límite.
+- Botón de reinicio de formulario.                                                      ---OK
+- Campo de observaciones.
+- Generar ayuda cuando carga la página.
+- Cambiar botón de "Guardar Registro" a "Enviar Cotización".                            ---OK
+- Cambiar en sidebar "pedidos proveedores" por "respuesta proveedores".                 ---OK
+- Generar algún tipo de redirección cuando la venció la validez.                        ---OK
+- Generar una redirección cuando completó la cotización.                                ---OK
 
 --------------------------------------------------------------------------------------------------------------------
 

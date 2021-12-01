@@ -1,4 +1,4 @@
-{% extends 'body.html' %}
+{% extends 'base.html' %}
 {% load widget_tweaks %}
 {% load static %}
 {% block head %}
@@ -37,138 +37,163 @@
         <script src="{% static 'pedidosSolicitudProveedores/js/form.js' %}"></script>
     {% endblock %}
 {% endblock %}
-{% block content %}
-    <form id="pedidoForm" method="post" action="." enctype="multipart/form-data">
-        <div class="card card-primary">
-            <div class="card-header">
-                <h3 class="card-title">
-                    {% if action == 'add' %}
-                        <i class="fas fa-plus"></i>
-                    {% else %}
-                        <i class="fas fa-edit"></i>
-                    {% endif %}
-                    {{ title }}
-                </h3>
-            </div>
-            <div class="card-body">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="{{ action }}">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card card-secondary">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="form-group col-2">
-                                        <label>ID Pedido:</label>
-                                        <div class="col-12" id="pedidoSolicitud">
-                                            {{ form.pedidoSolicitud|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-5">
-                                        <label>Proveedor:</label>
-                                        <div class="col-12" id="proveedor">
-                                            {{ form.proveedor|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-5">
-                                        <label>Valido hasta:</label>
-                                        <div class="col-12" id="validoHasta">
-                                            <input type="text" class="form-control" name="validoHasta" readonly>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <hr>
-                                        <div class="card card-secondary">
-                                            <div class="card-header">
-                                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos
-                                                </h3>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="form-group">
-                                                    <hr>
-                                                    <table class="table table-bordered tablaCompraProducto"
-                                                           id="tablaProductos">
-                                                        <thead>
-                                                        <tr>
-                                                            <th scope="col" style="width: 10%;">Eliminar</th>
-                                                            <th scope="col" style="width: 48%;">Producto</th>
-                                                            <th scope="col" style="width: 18%;">Costo</th>
-                                                            <th scope="col" style="width: 12%;">Cantidad</th>
-                                                            <th scope="col" style="width: 12%;">Subtotal</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
+{% block body %}
+    <body>
 
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div class="card card-secondary">
-                                                    <div class="card-body">
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Block Content -->
+                    <form id="pedidoForm" method="post" action="." enctype="multipart/form-data">
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    {% if action == 'add' %}
+                                        <i class="fas fa-plus"></i>
+                                    {% else %}
+                                        <i class="fas fa-edit"></i>
+                                    {% endif %}
+                                    {{ title }}
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="{{ action }}">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="card card-secondary">
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="form-group col-2">
+                                                        <label>ID Pedido:</label>
+                                                        <div class="col-12" id="pedidoSolicitud">
+                                                            {{ form.pedidoSolicitud|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-5">
+                                                        <label>Proveedor:</label>
+                                                        <div class="col-12" id="proveedor">
+                                                            {{ form.proveedor|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-5">
+                                                        <label>Valido hasta:</label>
+                                                        <div class="col-12" id="validoHasta">
+                                                            <input type="text" class="form-control" name="validoHasta"
+                                                                   readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <hr>
+                                                        <div class="card card-secondary">
+                                                            <div class="card-header">
+                                                                <h3 class="card-title"><i class="fas fa-boxes"></i>
+                                                                    Detalle de productos
+                                                                </h3>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="form-group">
+                                                                    <hr>
+                                                                    <table class="table table-bordered tablaCompraProducto"
+                                                                           id="tablaProductos">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th scope="col" style="width: 10%;">
+                                                                                Eliminar
+                                                                            </th>
+                                                                            <th scope="col" style="width: 48%;">
+                                                                                Producto
+                                                                            </th>
+                                                                            <th scope="col" style="width: 18%;">Costo
+                                                                            </th>
+                                                                            <th scope="col" style="width: 12%;">
+                                                                                Cantidad
+                                                                            </th>
+                                                                            <th scope="col" style="width: 12%;">
+                                                                                Subtotal
+                                                                            </th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                         <div class="row">
-                                                            <div class="form-group col-4 mb-3">
-                                                                <label>Subtotal:</label>
-                                                                <div class="input-group">
-                                                                    <div class="input-group-append">
-                                                                        <div class="input-group-prepend">
+                                                            <div class="col-lg-12">
+                                                                <div class="card card-secondary">
+                                                                    <div class="card-body">
+                                                                        <div class="row">
+                                                                            <div class="form-group col-4 mb-3">
+                                                                                <label>Subtotal:</label>
+                                                                                <div class="input-group">
+                                                                                    <div class="input-group-append">
+                                                                                        <div class="input-group-prepend">
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-dollar-sign"></i></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    {{ form.subtotal }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-4 mb-3">
-                                                                <label>IVA:</label>
-                                                                <div class="input-group">
-                                                                    <div class="input-group-append">
-                                                                        <div class="input-group-prepend">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {{ form.subtotal }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group col-4 mb-3">
+                                                                                <label>IVA:</label>
+                                                                                <div class="input-group">
+                                                                                    <div class="input-group-append">
+                                                                                        <div class="input-group-prepend">
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-dollar-sign"></i></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    {{ form.iva }}
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group col-4 mb-3">
-                                                                <label>Total a pagar:</label>
-                                                                <div class="input-group">
-                                                                    <div class="input-group-append">
-                                                                        <div class="input-group-prepend">
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {{ form.iva }}
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group col-4 mb-3">
+                                                                                <label>Total a pagar:</label>
+                                                                                <div class="input-group">
+                                                                                    <div class="input-group-append">
+                                                                                        <div class="input-group-prepend">
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-dollar-sign"></i></span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {{ form.total }}
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    {{ form.total }}
                                                                 </div>
                                                             </div>
+                                                        </div>
+                                                        <div class="card-footer">
+                                                            <button type="submit" class="btn btn-primary btn-flat">
+                                                                <i class="fas fa-save"></i> Enviar Cotización
+                                                            </button>
+                                                            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                                                                <i class="fas fa-times"></i> Cancelar
+                                                            </a>
+                                                            <button type="button" class="btn btn-success btnResetForm btn-flat">
+                                                                <i class="fas fa-undo"></i> Resetear formulario
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="card-footer">
-                                            <button type="submit" class="btn btn-primary btn-flat">
-
-                                                <i class="fas fa-save"></i> Guardar registro
-
-                                            </button>
-                                            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
-                                                <i class="fas fa-times"></i> Cancelar
-                                            </a>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </div>
-        </div>
-    </form>
+
+
+        {% include 'footer.html' %}
+        <!-- /.control-sidebar -->
+    </div>
+    </body>
 {% endblock %}

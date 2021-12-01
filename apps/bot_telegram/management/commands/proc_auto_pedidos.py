@@ -12,7 +12,9 @@ import itertools
 # para hallar duplicados
 from collections import Counter
 
-from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud, Productos, PedidoSolicitudProveedor, \
+from apps.erp.models import Productos
+
+from apps.pedidos.models import PedidosSolicitud, DetallePedidoSolicitud, PedidoSolicitudProveedor, \
     DetallePedidoSolicitudProveedor, Pedidos, DetallePedido
 
 from apps.parametros.models import EstadoParametros

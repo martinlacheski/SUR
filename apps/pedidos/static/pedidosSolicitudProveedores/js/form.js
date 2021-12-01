@@ -131,7 +131,7 @@ function calcular_importes() {
         subtotal += dict.subtotal;
     });
     //Asignamos los valores a los campos
-    pedido.items.subtotal = subtotal - ivaCalculado;
+    pedido.items.subtotal = subtotal;
     pedido.items.iva = ivaCalculado;
     pedido.items.total = pedido.items.subtotal + pedido.items.iva;
     $('input[name="subtotal"]').val(pedido.items.subtotal.toFixed(2));
@@ -146,6 +146,24 @@ $(document).ready(function () {
         $('input[name="subtotal"]').val('0.00');
         $('input[name="iva"]').val('0.00');
         $('input[name="total"]').val('0.00');
+        //Buscamos si la solicitud es válida todavia
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_validez',
+            },
+            dataType: 'json',
+            success: function (data) {
+                console.log(data.ok);
+                if (data.ok === 'si') {
+                    console.log('solicitud válida');
+                } else if (data.ok === 'no') {
+                    location.replace(data.redirect);
+                }
+            }
+        });
         //Buscamos el Listado de los productos que deben reponerse por ajax
         $.ajax({
             url: window.location.pathname,
@@ -243,113 +261,28 @@ $(function () {
             $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + pedido.items.productos[tr.row].subtotal.toFixed(2));
         });
 
-//------------------------------------MODAL ACTUALIZAR PRECIO PRODUCTOS----------------------------------------//
-
-    //Funcion para calcular el precio entre COSTO UTILIDAD e IVA
-    function calcularPrecioActualizacion() {
-        var iva = $('input[name="actualizarIva"]').val();
-        var costo = $('input[name="actualizarCosto"]').val();
-        var utilidad = $('input[name="actualizarUtilidad"]').val();
-        utilidad = (utilidad / 100) + 1;
-        iva = (iva / 100) + 1;
-        var precio = (costo * utilidad * iva);
-        $('input[name="actualizarPrecioVenta"]').val(precio.toFixed(2));
-    }
-
-    //Funcion para calcular el precio entre COSTO IVA y TOTAL
-    function calcularUtilidadActualizacion() {
-        var iva = $('input[name="actualizarIva"]').val();
-        var costo = $('input[name="actualizarCosto"]').val();
-        var total = $('input[name="actualizarPrecioVenta"]').val();
-        iva = (iva / 100) + 1;
-        var precio = (((total / iva) / costo) - 1) * 100;
-        $('input[name="actualizarUtilidad"]').val(precio.toFixed(2));
-    }
-
-    //Actualizamos el precio del PRODUCTO desde el Modal
-    $('#formPrecioProducto').on('submit', function (e) {
-        e.preventDefault();
+    //Resetear formulario
+    $('.btnResetForm').on('click', function () {
         confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
-            var id = $('input[name="idProductoUpdate"]').val();
-            var costo = $('input[name="actualizarCosto"]').val();
-            var utilidad = $('input[name="actualizarUtilidad"]').val();
-            var precioVenta = $('input[name="actualizarPrecioVenta"]').val();
+            //Buscamos el Listado de los productos que deben reponerse por ajax
             $.ajax({
                 url: window.location.pathname,
                 type: 'POST',
                 data: {
-                    'action': 'update_precioProducto',
-                    'pk': id,
-                    'costo': costo,
-                    'utilidad': utilidad,
-                    'precioVenta': precioVenta
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'resetear_formulario',
+                    'pk': $('input[name="pedidoSolicitud"]').val(),
                 },
                 dataType: 'json',
-                headers: {
-                    'X-CSRFToken': csrftoken
-                },
-            }).done(function (data) {
-                if (!data.hasOwnProperty('error')) {
-                    //Actualizamos el Listado
-                    calcular_importes();
+                success: function (data) {
+                    //asignamos el detalle a la estructura
+                    pedido.items.productos = data;
+                    //actualizamos el listado de productos
                     pedido.listProductos();
-                    $('#modalPrecioProducto').modal('hide');
-
-                } else {
-                    message_error_precio_producto(data.error);
                 }
-            }).fail(function (jqXHR, textStatus, errorThrown) {
-            }).always(function (data) {
             });
-            //Asignamos a una variable el producto en base al renglon
-            var prod = pedido.items.productos[renglon];
-            //actualizamos el costo y subtotal del producto en el array
-            prod.costo = costo;
-            prod.subtotal = costo * prod.cantidad;
-            //Actualizamos el valor del renglon del Datatables
-            tablaProductos.row(renglon).data(prod).draw();
         }, function () {
             //pass
-        });
-    });
-
-    //Funcion Mostrar Errores del Formulario Producto
-    function message_error_precio_producto(obj) {
-        var errorList = document.getElementById("errorListformPrecioProducto");
-        errorList.innerHTML = '';
-        if (typeof (obj) === 'object') {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            $.each(obj, function (key, value) {
-                var li = document.createElement("li");
-                li.innerText = key + ': ' + value;
-                errorList.appendChild(li);
-            });
-        } else {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            var li = document.createElement("li");
-            li.innerText = obj;
-            errorList.appendChild(li);
-        }
-    }
-
-//Borrar desde el boton de busqueda de productos
-    $('.btnClearSearchProductos').on('click', function () {
-        $('input[name="searchProductos"]').val('').focus();
-    });
-//Borrar todos los productos
-    $('.btnRemoveAllProductos').on('click', function () {
-        if (pedido.items.productos.length === 0) return false;
-        //Ejecutar la Funcion de Confirmacion
-        confirm_action('Confirmación', '¿Estas seguro de eliminar todos los registros?', function () {
-            //removemos el listado de productos
-            pedido.items.productos = [];
-            //Actualizamos el Listado
-            pedido.listProductos();
-        }, function () {
         });
     });
 
@@ -385,20 +318,24 @@ $(function () {
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            if (!data.hasOwnProperty('error')) {
-                                confirm_action('Notificación', '¿Desea imprimir la nota de Pedido?', function () {
-                                    window.open('/pedidos/solicitudes/pdf/' + data.id + '/', '_blank');
-                                    location.replace(data.redirect);
-                                }, function () {
-                                    location.replace(data.redirect);
-                                });
-                                //location.replace(data.redirect);
+                            if (data.ok === 'no') {
+                                location.replace(data.redirect);
                             } else {
-                                error_action('Error', data.error, function () {
-                                    //pass
-                                }, function () {
-                                    //pass
-                                });
+                                if (!data.hasOwnProperty('error')) {
+                                    confirm_action('Notificación', '¿Desea imprimir la cotización enviada?', function () {
+                                        window.open('/pedidos/solicitudes/pdf/' + data.id + '/', '_blank');
+                                        location.replace(data.redirect);
+                                    }, function () {
+                                        location.replace(data.redirect);
+                                    });
+                                    //location.replace(data.redirect);
+                                } else {
+                                    error_action('Error', data.error, function () {
+                                        //pass
+                                    }, function () {
+                                        //pass
+                                    });
+                                }
                             }
                         }
                     });
