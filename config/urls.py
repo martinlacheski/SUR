@@ -34,5 +34,6 @@ urlpatterns = [
     path('', include('apps.bot_telegram.urls')),
     path('', include('apps.notif_channel.urls')),
     path('', include('apps.estadisticas.urls')),
+    path('', include('apps.pedidos.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -197,9 +197,17 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="{% url 'erp:pedidos_solicitudes_list' %}" class="nav-link">
+                                <a href="{% url 'pedidos:pedidos_solicitudes_list' %}" class="nav-link">
                                     <i class="far fa-dot-circle nav-icon"></i>
                                     <p>Solicitud de Pedidos</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'pedidos:pedidos_solicitudes_proveedores_list' %}" class="nav-link">
+                                    <i class="far fa-dot-circle nav-icon"></i>
+                                    <p>
+                                        Ofertas Proveedores
+                                    </p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -207,14 +215,6 @@
                                     <i class="far fa-dot-circle nav-icon"></i>
                                     <p>
                                         Pedidos Realizados
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'erp:pedidos_solicitudes_proveedores_list' %}" class="nav-link">
-                                    <i class="far fa-dot-circle nav-icon"></i>
-                                    <p>
-                                        Pedidos Proveedores
                                     </p>
                                 </a>
                             </li>

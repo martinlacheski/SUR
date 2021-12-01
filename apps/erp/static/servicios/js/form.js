@@ -140,4 +140,19 @@ function calcularPrecio() {
     }
 }
 
-
+$(document).ready(function () {
+    //Inicializamos el Codigo del Servicio
+    $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: {
+            'csrfmiddlewaretoken': csrftoken,
+            'action': 'generar_codigo',
+        },
+        dataType: 'json',
+        success: function (data) {
+            console.log(data.codigo);
+            $('input[name="codigo"]').val(data.codigo);
+        }
+    });
+});

@@ -173,7 +173,7 @@ $(document).ready(function () {
             format: 'DD-MM-YYYY HH:mm',
             locale: 'es',
             minDate: moment(),
-            icons: {time: 'far fa-clock' },
+            icons: {time: 'far fa-clock'},
         });
         //Buscamos el Listado de los productos que deben reponerse por ajax
         $.ajax({
@@ -349,6 +349,19 @@ $(function () {
 
     //Boton Agregar Producto Mostrar Modal
     $('.btnAddProducto').on('click', function () {
+        //Inicializamos el Codigo del Producto
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo_producto',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="codigo"]').val(data.codigo);
+            }
+        });
         $('#modalProducto').modal('show');
     });
 

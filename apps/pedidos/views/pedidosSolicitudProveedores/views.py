@@ -1,26 +1,23 @@
 import json
-from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.db.models import Q
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, TemplateView
-from apps.erp.forms import ProductosForm, PedidoSolicitudProveedorForm
-from apps.erp.models import Productos, Categorias, Subcategorias, PedidosSolicitud, DetallePedidoSolicitud, \
-    PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor
+from apps.erp.models import Productos
+from apps.pedidos.forms import PedidoSolicitudProveedorForm
+from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor
 from apps.mixins import ValidatePermissionRequiredMixin
-from apps.parametros.models import  TiposIVA
-from django.utils import timezone
-from django.core.exceptions import *
-from django.urls import reverse
 
+from django.utils import timezone
+
+from django.urls import reverse
 
 
 class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView, ):
     model = PedidoSolicitudProveedor
     template_name = 'pedidosSolicitudProveedores/list.html'
-    permission_required = 'erp.view_pedidosolicitudproveedor'
+    permission_required = 'pedidos.view_pedidosolicitudproveedor'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -42,17 +39,18 @@ class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermission
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Solicitudes de Pedidos por Proveedor'
-        #context['create_url'] = reverse_lazy('erp:pedidos_solicitudes_proveedores_create')
-        context['list_url'] = reverse_lazy('erp:pedidos_solicitudes_proveedores_list')
+        # context['create_url'] = reverse_lazy('pedidos:pedidos_solicitudes_proveedores_create')
+        context['list_url'] = reverse_lazy('pedidos:pedidos_solicitudes_proveedores_list')
         context['entity'] = 'Solicitudes de Pedidos por Proveedor'
         return context
 
+
 #
-class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qué tipo de view es
+class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual qué tipo de view es
     model = PedidoSolicitudProveedor
     form_class = PedidoSolicitudProveedorForm
     template_name = 'pedidosSolicitudProveedores/create.html'
-    success_url = reverse_lazy('erp:pedidos_solicitudes_proveedores_list')
+    success_url = reverse_lazy('pedidos:pedidos_solicitudes_proveedores_list')
     url_redirect = success_url
 
     def post(self, request, *args, **kwargs):
@@ -81,7 +79,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
                             data.append(item)
 
 
-                elif action == 'add':   # TO-DO: se tiene que cambiar el nombre de la acción en el front end
+                elif action == 'add':  # TO-DO: se tiene que cambiar el nombre de la acción en el front end
                     with transaction.atomic():
                         formPedidoRequest = json.loads(request.POST['pedido'])
 
@@ -89,7 +87,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
                         pedidoP.respuesta = timezone.now()
                         pedidoP.save()
 
-                        #Borramos detalle actual
+                        # Borramos detalle actual
                         for dp in DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedidoP):
                             dp.delete()
 
@@ -114,16 +112,15 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
                             # det.subtotal = float(i['subtotal'])
                             # det.save()
                         # Devolvemos en Data la ID del nuevo pedido para poder generar la Boleta
-                        #data = {'id': pedido.id}
+                        # data = {'id': pedido.id}
                         data['redirect'] = self.url_redirect
             except Exception as e:
                 data['error'] = str(e)
             return JsonResponse(data, safe=False)
         else:
-            data['redirect'] = reverse('erp:pedidos_solicitudes_expired')
+            data['redirect'] = reverse('pedidos:pedidos_solicitudes_expired')
             print(data)
             return JsonResponse(data, safe=False)
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -133,11 +130,10 @@ class PedidosSolicitudProveedoresCreateView(CreateView): #Da totalmente igual qu
         context['action'] = 'add'
         return context
 
+
 class ExpiredSolicitudProveedorView(TemplateView):
     template_name = 'pedidosSolicitudProveedores/expired.html'
 
+
 class CorrectoSolicitudProveedorView(TemplateView):
     template_name = 'pedidosSolicitudProveedores/correct.html'
-
-
-
