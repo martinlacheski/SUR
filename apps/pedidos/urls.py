@@ -1,5 +1,6 @@
 from django.urls import path
 
+from apps.pedidos.views.pedidos.views import *
 from apps.pedidos.views.pedidosSolicitud.views import *
 from apps.pedidos.views.pedidosSolicitudProveedores.views import *
 
@@ -18,4 +19,7 @@ urlpatterns = [
     path('pedidos/solicitudes/proveedores/<slug:hash_code>', PedidosSolicitudProveedoresCreateView.as_view(), name='pedidos_solicitudes_proveedores_create'),
     path('pedidos/solicitudes/enviado/', CorrectoSolicitudProveedorView.as_view(), name='pedidos_solicitudes_correcto'), # REDIRIGIR EL REENVIO CORRECTO
     path('pedidos/solicitudes/expired/', ExpiredSolicitudProveedorView.as_view(), name='pedidos_solicitudes_expired'), # REDIRIGIR EL REENVIO SI VENCIÓ
+    # Pedidos
+    path('pedidos/list/', PedidosListView.as_view(), name='pedidos_list'),
+    path('pedidos/pdf/<int:pk>/', PedidosPdfView.as_view(), name='pedidos_pdf'),
 ]

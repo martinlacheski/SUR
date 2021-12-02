@@ -5,9 +5,10 @@ import hashlib
 import random
 
 # Django y models
+from datetime import datetime
+
 from apps.erp.models import Proveedores
 from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, PedidosSolicitud, DetallePedidoSolicitud
-from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from apps.bot_telegram.logicaBot import notificarSistema
@@ -34,7 +35,7 @@ def crearSolicitudes(pedido, dominio):
         SP.subtotal = pedido.subtotal
         SP.iva = pedido.iva
         SP.total = pedido.total
-        SP.enviado = timezone.now()
+        SP.enviado = datetime.datetime.now()
         SP.hash = hash                          #importante
         SP.save()
         for p in DetallePedidoSolicitud.objects.filter(pedido=pedido.id):

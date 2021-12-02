@@ -1,6 +1,38 @@
 from django.forms import ModelForm, TextInput, DateInput, DateTimeInput
 
-from apps.pedidos.models import PedidosSolicitud, PedidoSolicitudProveedor
+from apps.pedidos.models import PedidosSolicitud, PedidoSolicitudProveedor, Pedidos
+
+
+class PedidosForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    class Meta:
+        model = Pedidos
+        fields = '__all__'
+        widgets = {
+            'fecha': DateInput(
+                attrs={
+                    'class': 'form-control datetimepicker-input',
+                    'id': 'fecha',
+                    'data-target': '#fecha',
+                    'data-toggle': 'datetimepicker'
+                }
+            ),
+            'iva': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'subtotal': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+            'total': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
+        }
+        exclude = ['estado']
 
 
 class PedidosSolicitudForm(ModelForm):

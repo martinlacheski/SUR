@@ -12,21 +12,7 @@ fas fa-times 	            &#f00d;         &#10060;
 
 --------------------------------------------------------------------------------------------------------------------
 
-SOLICITUD DE PEDIDO
-- No se debería poder elegir una fecha en el campo "Fecha". Debería tomar la actual.    ---OK
-- Limpiar template de solicitud de proveedores                                          ---OK
-- Que la cantidad no supere el límite.                                                  ---OK
-- Botón de reinicio de formulario.                                                      ---OK
-- Campo de marca ofertada.                                                              ---OK
-- Generar ayuda cuando carga la página.                                                 ---OK
-- Cambiar botón de "Guardar Registro" a "Enviar Cotización".                            ---OK
-- Cambiar en sidebar "pedidos proveedores" por "respuesta proveedores".                 ---OK
-- Generar algún tipo de redirección cuando la venció la validez.                        ---OK
-- Generar una redirección cuando completó la cotización.                                ---OK
-
---------------------------------------------------------------------------------------------------------------------
-
-RESOLVER EL MODULO BACKUP con el comando:
+MODULO BACKUP con el comando:
 #Con este comando evitamos tener que reinicializar la BD
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > database.json
 
@@ -41,7 +27,7 @@ VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
 
 *PEDIDOS - TERMINAR
 
-* Resolver la forma de generar los detalles de las cotizaciones de los proveedores
+* Resolver la forma de visualizar el detalle de la solicitud de los proveedores y poder modificar antes de aprobar el pedido
 
 --------------------------------------------------------------------------------------------------------------------
 

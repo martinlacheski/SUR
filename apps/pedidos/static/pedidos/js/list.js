@@ -17,21 +17,21 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "pedidoSolicitud.id"},
-            {"data": "id"},
+            {"data": "estado"},
             {"data": "proveedor.razonSocial"},
-            {"data": "visto"},
-            {"data": "respuesta"},
+            {"data": "fecha"},
+            {"data": "subtotal"},
+            {"data": "iva"},
             {"data": "total"},
             {"data": "id"},
         ],
         columnDefs: [
             {
-                targets: [0,1],
+                targets: [0],
                 class: 'text-center',
             },
             {
-                targets: [2],
+                targets: [1],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -45,33 +45,19 @@ $(function () {
                 }
             },
             {
-                targets: [4],
+                targets: [2],
+                class: 'text-center',
+            },
+            {
+                targets: [3],
                 class: 'text-center',
                 // orderable: false,
                 render: function (data, type, row) {
-                    if (row.visto) {
-                         return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
-                    } else {
-                        return '<span class="badge badge-danger">' + ' NO ACCEDÍO' + '</span>'
-                    }
-
+                    return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
                 }
             },
             {
-                targets: [5],
-                class: 'text-center',
-                // orderable: false,
-                render: function (data, type, row) {
-                    if (row.respuesta) {
-                         return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
-                    } else {
-                        return '<span class="badge badge-danger">' + ' NO RESPONDIÓ' + '</span>'
-                    }
-
-                }
-            },
-            {
-                targets: [-2, -3, -4],
+                targets: [-2, -3, -4, -5],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -84,6 +70,7 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    buttons += '<a href="/pedidos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     return buttons;
                 }
             },
@@ -114,7 +101,7 @@ $(function () {
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': csrftoken,
-                        'action': 'search_detalle_cotización',
+                        'action': 'search_detalle_pedido',
                         'id': data.id
                     },
                     dataSrc: ""
@@ -127,8 +114,19 @@ $(function () {
                     {"data": "subtotal"},
                 ],
                 columnDefs: [
-                    //Ocultamos la columna por la cual agrupamos
-                    // {"visible": false, "targets": 0},
+                    {
+                        targets: [1],
+                        class: 'text-center',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.marcaOfertada) {
+                                return row.marcaOfertada
+                            } else {
+                                // return '<span class="badge badge-success">' + ' SIN OBSERVACIONES' + '</span>'
+                                return 'SIN OBSERVACIONES'
+                            }
+                        }
+                    },
                     {
                         targets: [-2],
                         class: 'text-center',
