@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
@@ -7,6 +9,7 @@ from apps.parametros.forms import EmpresaForm
 from apps.parametros.models import Empresa
 from apps.mixins import ValidatePermissionRequiredMixin
 from config import settings
+import os
 
 
 class EmpresaListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
@@ -162,8 +165,22 @@ class BackupView(LoginRequiredMixin, ValidatePermissionRequiredMixin, TemplateVi
                 # Asignamos la ruta donde se guarda el PDF
                 urlWrite = settings.MEDIA_ROOT + 'backup_SUR.json'
                 # Asignamos la ruta donde se visualiza el PDF
-                urlBACKUP = settings.MEDIA_URL + 'backup_SUR.json'
-                # Creamos el BACKUP ACA
+                #urlBACKUP = settings.MEDIA_URL + 'backup_SUR.json'
+
+                # Confección de comandos
+                database_name = 'backup_SUR_' + datetime.datetime.today().strftime('%d_%m_%Y_%HH_%MM') + '.json'
+                database_name_compress = 'backup_SUR_' + datetime.datetime.today().strftime('%d_%m_%Y_%HH_%MM') + '.zip'
+                comando_crearBD = 'python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > ' + database_name
+                comando_comprimir = 'zip ' + database_name_compress + ' ' + database_name
+                move = 'mv ' + database_name_compress + ' ' + 'media/' + database_name_compress
+                delete = 'rm ' + database_name
+                urlBACKUP = settings.MEDIA_URL + database_name_compress
+
+                # ejecución de comandos
+                os.system(comando_crearBD)
+                os.system(comando_comprimir)
+                os.system(move)
+                os.system(delete)
                 data['url'] = urlBACKUP
             elif action == 'restore_backup':
                 archivo = request.POST['file']
