@@ -1,26 +1,4 @@
 $(function () {
-    //Funcion Mostrar Errores del Formulario
-    function message_error(obj) {
-        var errorList = document.getElementById("errorList");
-        errorList.innerHTML = '';
-        if (typeof (obj) === 'object') {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            $.each(obj, function (key, value) {
-                var li = document.createElement("li");
-                li.innerText = key + ': ' + value;
-                errorList.appendChild(li);
-            });
-        } else {
-            var li = document.createElement("h5");
-            li.textContent = "Error:";
-            errorList.appendChild(li);
-            var li = document.createElement("li");
-            li.innerText = obj;
-            errorList.appendChild(li);
-        }
-    }
 
     //Llamamos a la funcion de Token
     getToken(name);
@@ -41,33 +19,22 @@ $(function () {
         });
     });
     $('.btnReestablecer').on('click', function () {
-        var input = document.getElementById("uploadFile");
-        var fReader = new FileReader();
-        fReader.readAsDataURL(input.files[0]);
-        fReader.onloadend = function (event) {
-            console.log(event.target.result);
-            var img = document.getElementById("uploadFile");
-            img.src = event.target.result;
-        }
-        let archivo = $('#uploadFile').val();
-        // let archivo = document.getElementById("uploadFile").files[0].path
-        if (archivo === '') {
-            console.log('vacio');
-        } else {
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: {
-                    'csrfmiddlewaretoken': csrftoken,
-                    'action': 'restore_backup',
-                    'file': archivo,
-                },
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data.check);
-                }
-            });
+        document.getElementById('front_errors').setAttribute("hidden", "");
+        let archivo = document.getElementById('id_file');
+        var p_error = document.getElementById('front_errors');
 
+        // Se comprueba si se ingresó algún archivo
+        if(archivo.files.length == 0 ) {
+             p_error.removeAttribute("hidden");
+             p_error.innerHTML = 'No ha ingresado ningún archivo.';
+        } else {
+            // Se comprueba si es un .zip
+            if ((archivo.value).indexOf('.zip') === -1){
+                p_error.removeAttribute("hidden");
+                p_error.innerHTML = 'No ha ingresado un archivo .zip';
+            } else {
+                $('#ajaxForm').submit();
+            }
         }
     });
 });
