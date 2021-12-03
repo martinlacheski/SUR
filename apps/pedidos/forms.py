@@ -43,6 +43,10 @@ class PedidosSolicitudForm(ModelForm):
         model = PedidosSolicitud
         fields = '__all__'
         widgets = {
+            'id': TextInput(attrs={
+                'readonly': True,
+                'class': 'form-control',
+            }),
             'fecha': DateInput(
                 attrs={
                     'class': 'form-control datetimepicker-input',

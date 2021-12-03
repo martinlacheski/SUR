@@ -28,6 +28,12 @@ VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
 *PEDIDOS - TERMINAR
 
 * Resolver la forma de visualizar el detalle de la solicitud de los proveedores y poder modificar antes de aprobar el pedido
+    - Al seleccionar el PROVEEDOR, fijarse la Propuestas de los demas
+    - al submit modal borrar el detalle anterior
+    - agregar al detalle correspondiente al proveedor
+    - actualizar los importes
+    - enviar correos electrónicos
+* Si no hay visto en el detalle EYE no mostrar las propuestas
 
 --------------------------------------------------------------------------------------------------------------------
 

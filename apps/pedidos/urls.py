@@ -14,6 +14,10 @@ urlpatterns = [
     path('pedidos/solicitudes/confirm/<int:pk>/', PedidosSolicitudConfirmView.as_view(), name='pedidos_solicitudes_confirm'),
     path('pedidos/solicitudes/delete/<int:pk>/', PedidosSolicitudDeleteView.as_view(), name='pedidos_solicitudes_delete'),
     path('pedidos/solicitudes/pdf/<int:pk>/', PedidosSolicitudPdfView.as_view(), name='pedidos_solicitudes_pdf'),
+    # Visualizacion de la confirmación para modificar, confirmar o cancelar un PEDIDO
+    path('pedidos/update/<int:pk>/', PedidosUpdateView.as_view(), name='pedidos_solicitudes_update'),
+    path('pedidos/confirm/<int:pk>/', PedidosConfirmView.as_view(), name='pedidos_solicitudes_confirm'),
+    path('pedidos/delete/<int:pk>/', PedidosDeleteView.as_view(), name='pedidos_solicitudes_delete'),
     # Solicitudes de Pedidos Vista de Proveedores
     path('pedidos/solicitudes/proveedores/list/', PedidosSolicitudProveedoresListView.as_view(), name='pedidos_solicitudes_proveedores_list'),
     path('pedidos/solicitudes/proveedores/<slug:hash_code>', PedidosSolicitudProveedoresCreateView.as_view(), name='pedidos_solicitudes_proveedores_create'),

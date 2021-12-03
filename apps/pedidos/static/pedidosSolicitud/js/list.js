@@ -20,6 +20,7 @@ $(function () {
             {"data": "estado"},
             {"data": "fecha"},
             {"data": "fechaLimite"},
+            {"data": "realizado"},
             {"data": "subtotal"},
             {"data": "iva"},
             {"data": "total"},
@@ -36,11 +37,11 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     if (row.estado == true) {
-                        return '<span class="badge badge-success">' + ' CONFIRMADO' + '</span>'
+                        return '<span class="badge badge-success">' + ' CONFIRMADA' + '</span>'
                     } else if (row.estado == false) {
-                        return '<span class="badge badge-danger">' + ' CANCELADO' + '</span>'
+                        return '<span class="badge badge-danger">' + ' CANCELADA' + '</span>'
                     } else {
-                        return '<span class="badge badge-warning">' + ' NO CONFIRMADO' + '</span>'
+                        return '<span class="badge badge-warning">' + ' NO CONFIRMADA' + '</span>'
                     }
                 }
             },
@@ -61,6 +62,20 @@ $(function () {
                 }
             },
             {
+                targets: [4],
+                class: 'text-center',
+                orderable: false,
+                render: function (data, type, row) {
+                    if (row.realizado == true) {
+                        return '<span class="badge badge-success">' + ' REALIZADO' + '</span>'
+                    } else if (row.realizado == false) {
+                        return '<span class="badge badge-danger">' + ' CANCELADO' + '</span>'
+                    } else {
+                        return '<span class="badge badge-warning">' + ' NO CONFIRMADO' + '</span>'
+                    }
+                }
+            },
+            {
                 targets: [-2, -3, -4, -5],
                 class: 'text-center',
                 orderable: false,
@@ -77,9 +92,15 @@ $(function () {
                         var buttons = '<a href="/pedidos/solicitudes/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a href="/pedidos/solicitudes/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
                         buttons += '<a href="/pedidos/solicitudes/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                    } else if (row.pedido !== false && row.pedido !== true) {
+                        var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                        // buttons += '<a href="/pedidos/solicitudes/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        buttons += '<a href="/pedidos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                        buttons += '<a href="/pedidos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
+                        buttons += '<a href="/pedidos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     } else {
                         var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/pedidos/solicitudes/pdf/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        buttons += '<a href="/pedidos/solicitudes/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     }
                     return buttons;
                 }
@@ -117,11 +138,11 @@ $(function () {
                     dataSrc: ""
                 },
                 columns: [
-                    {"data": "producto.descripcion"},
-                    {"data": "proveedor"},
-                    {"data": "costo"},
-                    {"data": "cantidad"},
-                    {"data": "subtotal"},
+                    {"data": "detalle.producto.descripcion"},
+                    {"data": "proveedor.razonSocial"},
+                    {"data": "detalle.costo"},
+                    {"data": "detalle.cantidad"},
+                    {"data": "detalle.subtotal"},
                 ],
                 columnDefs: [
                     //Ocultamos la columna por la cual agrupamos
@@ -129,13 +150,6 @@ $(function () {
                     {
                         targets: [-4],
                         class: 'text-center',
-                        render: function (data, type, row) {
-                            if (row.proveedor) {
-                                return data.razonSocial;
-                            } else {
-                                return '';
-                            }
-                        }
                     },
                     {
                         targets: [-2],
@@ -152,6 +166,7 @@ $(function () {
                     },
                 ],
                 drawCallback: function (settings) {
+                    console.log(data);
                     var api = this.api();
                     var rows = api.rows({page: 'current'}).nodes();
                     var last = null;

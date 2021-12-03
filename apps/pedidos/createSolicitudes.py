@@ -5,7 +5,7 @@ import hashlib
 import random
 
 # Django y models
-from datetime import datetime
+import datetime
 
 from apps.erp.models import Proveedores
 from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, PedidosSolicitud, DetallePedidoSolicitud

@@ -14,6 +14,7 @@ class PedidosSolicitud(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
     fechaLimite = models.DateTimeField(verbose_name='Fecha Límite', null=True)
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
+    realizado = models.BooleanField(default="", blank=True, null=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
