@@ -5,6 +5,7 @@ $(function () {
 
 
     $('.btnGenerar').on('click', function () {
+        console.log("me ejecuto");
         $.ajax({
             url: window.location.pathname,
             type: 'POST',
