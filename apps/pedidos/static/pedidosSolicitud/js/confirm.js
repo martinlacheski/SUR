@@ -135,6 +135,7 @@ function calcular_importes() {
 
 //Inicializamos a CERO los campos de importes
 $(document).ready(function () {
+    $('input[name="id_pedido"]').val();
     var accion = $('input[name="action"]').val();
     if (accion === 'edit') {
         //Buscamos el detalle de los productos por ajax
@@ -202,7 +203,7 @@ $(function () {
             //Asignamos a una variable el producto en base al renglon
             var prod = pedido.items.productos[renglon];
             //Cargamos los valores del Producto en el modal
-            $('input[name="idProductoUpdate"]').val(prod.id);   //INPUT HIDDEN ID PRODUCTO
+            $('input[name="idProductoUpdate"]').val(prod.producto.id);   //INPUT HIDDEN ID PRODUCTO
             $('input[name="actualizarProducto"]').val(prod.producto.descripcion);
             //Buscamos por AJAX el PROVEEDOR QUE REALIZO LA OFERTA Y LOS DEMAS
             //Buscamos el detalle de proveedores del pedido
@@ -232,7 +233,75 @@ $(function () {
 //----------------------Al seleccionar un Proveedor-----------------------------//
     $('select[name="actualizarProveedor"]').on('change', function () {
         var id = $('select[name="actualizarProveedor"]').val();
-        console.log(id);
+        var prod = $('input[name="idProductoUpdate"]').val();
+        //Buscamos el detalle de de la cotizacion del proveedor seleccionado
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_detalle_cotizacion',
+                'pk': id,
+                'producto': prod,
+            },
+            dataType: 'json',
+            success: function (data) {
+                // Colocamos en el select el proveedor seleccionado y los demas
+                $('select[name="actualizarProveedor"]').html('').select2({
+                    theme: "bootstrap4",
+                    language: 'es',
+                    data: data[0].proveedores
+                });
+                // actualizamos los campos con los valores correspondientes
+                $('input[name="actualizarMarcaOfertada"]').val(data[0].marcaOfertada);
+                $('input[name="actualizarPrecioCosto"]').val(data[0].costo);
+            }
+        });
+    });
+
+    // Submit Actualizacion Detalle
+    $('#formDetalleProducto').on('submit', function (e) {
+        e.preventDefault();
+        var id = $('select[name="actualizarProveedor"]').val();
+        var prod = $('input[name="idProductoUpdate"]').val();
+        //Bloque AJAX Actualizacion de Pedido
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'action': 'actualizar_detalle_pedido',
+                'pk': id,
+                'producto': prod,
+            },
+            dataType: 'json',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+        }).done(function (data) {
+            if (!data.hasOwnProperty('error')) {
+                // Actualizamos el Listado
+                //Buscamos el detalle de los productos por ajax
+                $.ajax({
+                    url: window.location.pathname,
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'action': 'get_productos_pedidos',
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        //asignamos el detalle a la estructura
+                        pedido.items.productos = data;
+                        //actualizamos el listado de productos
+                        pedido.listProductos();
+                    }
+                });
+
+                $('#modalDetalleProducto').modal('hide');
+            }
+        }).fail(function (jqXHR, textStatus, errorThrown) {
+        }).always(function (data) {
+        });
     });
 //------------------------------------SUBMIT PEDIDO----------------------------------------//
     // Submit PEDIDO
