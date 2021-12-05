@@ -17,19 +17,21 @@ $(function () {
         },
         columns: [
             {"data": "id"},
-            {"data": "fecha"},
-            {"data": "subtotal"},
-            {"data": "iva"},
+            {"data": "pedidoSolicitud.id"},
+            {"data": "id"},
+            {"data": "proveedor.razonSocial"},
+            {"data": "visto"},
+            {"data": "respuesta"},
             {"data": "total"},
             {"data": "id"},
         ],
         columnDefs: [
             {
-                targets: [0],
+                targets: [0,1],
                 class: 'text-center',
             },
             {
-                targets: [1],
+                targets: [2],
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
@@ -43,11 +45,29 @@ $(function () {
                 }
             },
             {
-                targets: [2],
+                targets: [4],
                 class: 'text-center',
                 // orderable: false,
                 render: function (data, type, row) {
-                    return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
+                    if (row.visto) {
+                         return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
+                    } else {
+                        return '<span class="badge badge-danger">' + ' NO ACCEDÍO' + '</span>'
+                    }
+
+                }
+            },
+            {
+                targets: [5],
+                class: 'text-center',
+                // orderable: false,
+                render: function (data, type, row) {
+                    if (row.respuesta) {
+                         return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
+                    } else {
+                        return '<span class="badge badge-danger">' + ' NO RESPONDIÓ' + '</span>'
+                    }
+
                 }
             },
             {
@@ -63,9 +83,7 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-
                     var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-
                     return buttons;
                 }
             },
@@ -96,32 +114,21 @@ $(function () {
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': csrftoken,
-                        'action': 'search_detalle_productos',
+                        'action': 'search_detalle_cotización',
                         'id': data.id
                     },
                     dataSrc: ""
                 },
                 columns: [
                     {"data": "producto.descripcion"},
-                    {"data": "proveedor"},
+                    {"data": "marcaOfertada"},
                     {"data": "costo"},
                     {"data": "cantidad"},
                     {"data": "subtotal"},
                 ],
                 columnDefs: [
                     //Ocultamos la columna por la cual agrupamos
-                    {"visible": false, "targets": 0},
-                    {
-                        targets: [-4],
-                        class: 'text-center',
-                        render: function (data, type, row) {
-                            if (row.proveedor) {
-                                return data.razonSocial;
-                            } else {
-                                return '';
-                            }
-                        }
-                    },
+                    // {"visible": false, "targets": 0},
                     {
                         targets: [-2],
                         class: 'text-center',
@@ -137,19 +144,12 @@ $(function () {
                     },
                 ],
                 drawCallback: function (settings) {
-                    var api = this.api();
-                    var rows = api.rows({page: 'current'}).nodes();
-                    var last = null;
-                    api.column(0, {page: 'current'}).data().each(function (group, i) {
-                        if (last !== group) {
-                            $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="5">' + group + '</td></tr>'
-                            );
-                            last = group;
-                        }
-                    });
+                    $('input[name="subtotal"]').val(data.subtotal);
+                    $('input[name="iva"]').val(data.iva);
+                    $('input[name="total"]').val(data.total);
                 },
                 initComplete: function (settings, json) {
+
                 }
             });
             $('#modalDetalle').modal('show');

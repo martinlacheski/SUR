@@ -18,9 +18,8 @@ $(function () {
         columns: [
             {"data": "id"},
             {"data": "estado"},
+            {"data": "proveedor.razonSocial"},
             {"data": "fecha"},
-            {"data": "fechaLimite"},
-            {"data": "realizado"},
             {"data": "subtotal"},
             {"data": "iva"},
             {"data": "total"},
@@ -37,42 +36,24 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     if (row.estado == true) {
-                        return '<span class="badge badge-success">' + ' CONFIRMADA' + '</span>'
+                        return '<span class="badge badge-success">' + ' CONFIRMADO' + '</span>'
                     } else if (row.estado == false) {
-                        return '<span class="badge badge-danger">' + ' CANCELADA' + '</span>'
+                        return '<span class="badge badge-danger">' + ' CANCELADO' + '</span>'
                     } else {
-                        return '<span class="badge badge-warning">' + ' NO CONFIRMADA' + '</span>'
+                        return '<span class="badge badge-warning">' + ' NO CONFIRMADO' + '</span>'
                     }
                 }
             },
             {
                 targets: [2],
                 class: 'text-center',
-                // orderable: false,
-                render: function (data, type, row) {
-                    return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
-                }
             },
             {
                 targets: [3],
                 class: 'text-center',
                 // orderable: false,
                 render: function (data, type, row) {
-                    return moment(moment(data, 'YYYY-MM-DD HH:mm')).format('DD-MM-YYYY HH:mm');
-                }
-            },
-            {
-                targets: [4],
-                class: 'text-center',
-                orderable: false,
-                render: function (data, type, row) {
-                    if (row.realizado == true) {
-                        return '<span class="badge badge-success">' + ' REALIZADO' + '</span>'
-                    } else if (row.realizado == false) {
-                        return '<span class="badge badge-danger">' + ' CANCELADO' + '</span>'
-                    } else {
-                        return '<span class="badge badge-warning">' + ' NO CONFIRMADO' + '</span>'
-                    }
+                    return moment(moment(data, 'YYYY-MM-DD')).format('DD-MM-YYYY');
                 }
             },
             {
@@ -88,20 +69,8 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    if (row.estado !== false && row.estado !== true) {
-                        var buttons = '<a href="/pedidos/solicitudes/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
-                        buttons += '<a href="/pedidos/solicitudes/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
-                        buttons += '<a href="/pedidos/solicitudes/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
-                    } else if (row.realizado !== false && row.realizado !== true && row.analizado === true) {
-                        var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/pedidos/confirm/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
-                        buttons += '<a href="/pedidos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminarPedido(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
-                    } else if (row.realizado !== false && row.realizado == true) {
-                        var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/pedidos/realizados/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    } else {
-                        var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                    }
+                    var buttons = '<a rel="detallePedido" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                    buttons += '<a href="/pedidos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     return buttons;
                 }
             },
@@ -132,24 +101,31 @@ $(function () {
                     type: 'POST',
                     data: {
                         'csrfmiddlewaretoken': csrftoken,
-                        'action': 'search_detalle_productos',
+                        'action': 'search_detalle_pedido',
                         'id': data.id
                     },
                     dataSrc: ""
                 },
                 columns: [
-                    {"data": "detalle.producto.descripcion"},
-                    {"data": "proveedor.razonSocial"},
-                    {"data": "detalle.costo"},
-                    {"data": "detalle.cantidad"},
-                    {"data": "detalle.subtotal"},
+                    {"data": "producto.descripcion"},
+                    {"data": "marcaOfertada"},
+                    {"data": "costo"},
+                    {"data": "cantidad"},
+                    {"data": "subtotal"},
                 ],
                 columnDefs: [
-                    //Ocultamos la columna por la cual agrupamos
-                    {"visible": false, "targets": 0},
                     {
-                        targets: [-4],
+                        targets: [1],
                         class: 'text-center',
+                        orderable: false,
+                        render: function (data, type, row) {
+                            if (row.marcaOfertada) {
+                                return row.marcaOfertada
+                            } else {
+                                // return '<span class="badge badge-success">' + ' SIN OBSERVACIONES' + '</span>'
+                                return 'SIN OBSERVACIONES'
+                            }
+                        }
                     },
                     {
                         targets: [-2],
@@ -166,20 +142,12 @@ $(function () {
                     },
                 ],
                 drawCallback: function (settings) {
-                    console.log(data);
-                    var api = this.api();
-                    var rows = api.rows({page: 'current'}).nodes();
-                    var last = null;
-                    api.column(0, {page: 'current'}).data().each(function (group, i) {
-                        if (last !== group) {
-                            $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="5">' + group + '</td></tr>'
-                            );
-                            last = group;
-                        }
-                    });
+                    $('input[name="subtotal"]').val(data.subtotal);
+                    $('input[name="iva"]').val(data.iva);
+                    $('input[name="total"]').val(data.total);
                 },
                 initComplete: function (settings, json) {
+
                 }
             });
             $('#modalDetalle').modal('show');

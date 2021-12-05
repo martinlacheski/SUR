@@ -30,6 +30,10 @@ class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermission
                 data = []
                 for i in PedidoSolicitudProveedor.objects.all():
                     data.append(i.toJSON())
+            elif action == 'search_detalle_cotización':
+                data = []
+                for i in DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor_id=request.POST['id']):
+                    data.append(i.toJSON())
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
@@ -39,13 +43,11 @@ class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermission
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Listado de Solicitudes de Pedidos por Proveedor'
-        # context['create_url'] = reverse_lazy('pedidos:pedidos_solicitudes_proveedores_create')
         context['list_url'] = reverse_lazy('pedidos:pedidos_solicitudes_proveedores_list')
         context['entity'] = 'Solicitudes de Pedidos por Proveedor'
         return context
 
 
-#
 class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual qué tipo de view es
     model = PedidoSolicitudProveedor
     form_class = PedidoSolicitudProveedorForm
@@ -103,6 +105,10 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                         formPedidoRequest = json.loads(request.POST['pedido'])
                         # Guardamos respuesta
                         pedidoP.respuesta = datetime.datetime.now()
+                        # Guardamos los importes de la cabecera
+                        pedidoP.subtotal = float(formPedidoRequest['subtotal'])
+                        pedidoP.iva = float(formPedidoRequest['iva'])
+                        pedidoP.total = float(formPedidoRequest['total'])
                         pedidoP.save()
                         # Eliminamos todos los productos del Detalle
                         pedidoP.detallepedidosolicitudproveedor_set.all().delete()
@@ -117,31 +123,6 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                             det.subtotal = float(i['subtotal'])
                             det.save()
                         data['redirect'] = reverse('pedidos:pedidos_solicitudes_correcto')
-                        # Borramos detalle actual
-                        # for dp in DetallePedidoSolicitudProveedor.objects.filter(pedidoSolicitudProveedor=pedidoP):
-                        #     dp.delete()
-                        # Lo actualizamos
-                        # for i in formPedidoRequest['productos']:
-                        #     print()
-                        #     detSP = DetallePedidoSolicitudProveedor()
-                        #     detSP.pedidoSolicitudProveedor = pedidoP
-                        #     detSP.producto = Productos.objects.get(pk=i['id'])
-                        #     detSP.costo = float(i['costo'])
-                        #     detSP.subtotal = float(i['subtotal'])
-                        #     detSP.cantidad = int(i['cantidad'])
-                        #     detSP.save()
-                        # det.pedido_id = pedido.id
-                        # try:
-                        #     det.proveedor_id = i['proveedor']
-                        # except:
-                        #     pass
-                        # det.producto_id = i['id']
-                        # det.costo = float(i['costo'])
-                        # det.cantidad = int(i['cantidad'])
-                        # det.subtotal = float(i['subtotal'])
-                        # det.save()
-                        # Devolvemos en Data la ID del nuevo pedido para poder generar la Boleta
-                        # data = {'id': pedido.id}
             except Exception as e:
                 data['error'] = str(e)
             return JsonResponse(data, safe=False)

@@ -14,6 +14,7 @@ class PedidosSolicitud(models.Model):
     fecha = models.DateField(verbose_name='Fecha')
     fechaLimite = models.DateTimeField(verbose_name='Fecha Límite', null=True)
     usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
+    realizado = models.BooleanField(default="", blank=True, null=True)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -130,6 +131,8 @@ class DetallePedidoSolicitudProveedor(models.Model):
 #   Clase Pedidos
 class Pedidos(models.Model):
     pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
+    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
+    usuario = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario', blank=True, null=True)
     fecha = models.DateField(verbose_name='Fecha')
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -144,6 +147,7 @@ class Pedidos(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['proveedor'] = self.proveedor.toJSON()
         item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
         return item
 
@@ -156,8 +160,8 @@ class Pedidos(models.Model):
 
 class DetallePedido(models.Model):
     pedido = models.ForeignKey(Pedidos, models.DO_NOTHING)
-    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
     producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
+    marcaOfertada = models.CharField(max_length=100, verbose_name='Marca Ofertada', blank=True, null=True)
     costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
@@ -167,7 +171,6 @@ class DetallePedido(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self, exclude=['pedido'])
-        item['proveedor'] = self.proveedor.toJSON()
         item['producto'] = self.producto.toJSON()
         item['costo'] = format(self.costo, '.2f')
         item['subtotal'] = format(self.subtotal, '.2f')

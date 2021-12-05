@@ -285,7 +285,7 @@ $(function () {
             //Actualizamos los importes
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
-            $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + pedido.items.productos[tr.row].subtotal.toFixed(2));
+            $('td:eq(5)', tablaProductos.row(tr.row).node()).html('$' + pedido.items.productos[tr.row].subtotal.toFixed(2));
         })
         //Evento Editar Precio del Producto del detalle
         .on('change', 'input[name="costo"]', function () {
@@ -297,7 +297,7 @@ $(function () {
             //Actualizamos los importes
             calcular_importes();
             //Actualizamos el importe de subtotal en la Posicion correspondiente en cada modificación
-            $('td:eq(4)', tablaProductos.row(tr.row).node()).html('$' + pedido.items.productos[tr.row].subtotal.toFixed(2));
+            $('td:eq(5)', tablaProductos.row(tr.row).node()).html('$' + pedido.items.productos[tr.row].subtotal.toFixed(2));
         });
 
     //Resetear formulario

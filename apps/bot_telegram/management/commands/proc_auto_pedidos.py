@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
 from django.utils import timezone
@@ -237,6 +239,7 @@ class Command(BaseCommand):
                         d.cantidad_resp = 0
 
                     d.save()
+                soli.analizado = True
                 soli.save()
 
 
@@ -244,25 +247,26 @@ class Command(BaseCommand):
                 for p in prov_det:
                     pedido_final = Pedidos()
                     pedido_final.pedidoSolicitud = soli
-                    pedido_final.fecha = timezone.now() # probablemente no vaya
-                    pedido_final.estado = True
+                    pedido_final.fecha = datetime.datetime.now() # probablemente no vaya
+                    pedido_final.proveedor = p['proveedor']
                     pedido_final.iva = 0
                     pedido_final.subtotal = 0
                     pedido_final.save()
                     for det in p['productos']:
-                        pedido_final.subtotal += det.costo
-                        pedido_final.iva += det.costo * (det.producto.iva.iva / 100) * det.cantidad
                         detPedido_final = DetallePedido()
                         detPedido_final.pedido = pedido_final
                         detPedido_final.producto = det.producto
+                        detPedido_final.marcaOfertada = det.marcaOfertada
                         detPedido_final.costo = det.costo
                         detPedido_final.cantidad = det.cantidad
-                        detPedido_final.proveedor = det.pedidoSolicitudProveedor.proveedor
                         detPedido_final.subtotal = det.subtotal
                         detPedido_final.save()
+                        pedido_final.subtotal += det.subtotal
+                        pedido_final.iva += det.costo * (det.producto.iva.iva / 100) * det.cantidad
                     pedido_final.total = pedido_final.subtotal + pedido_final.iva
                     pedido_final.save()
-                #ver_detalle_obj(prov_det)
+                # Muestra el resultado final (despues de criterios y de análisis de cantidades)
+                ver_detalle_obj(prov_det)
 
 
 

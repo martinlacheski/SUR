@@ -23,7 +23,6 @@
             background-color: #ddd !important;
         }
     </style>
-
 {% endblock %}
 
 {% block content %}
@@ -38,14 +37,15 @@
             <table class="table" id="data">
                 <thead>
                 <tr>
-                    <th scope="col" style="width: 5%;">ID</th>
-                    <th scope="col" style="width: 7%;">Estado</th>
-                    <th scope="col" style="width: 15%;">Fecha</th>
-                    <th scope="col" style="width: 15%;">Fecha Límite</th>
-                    <th scope="col" style="width: 15%;">Subtotal</th>
-                    <th scope="col" style="width: 13%;">IVA</th>
-                    <th scope="col" style="width: 15%;">Total</th>
-                    <th scope="col" style="width: 15%;">Opciones</th>
+                    <th scope="col" style="width: 3%;">ID</th>
+                    <th scope="col" style="width: 7%;">Solicitud</th>
+                    <th scope="col" style="width: 10%;">Fecha</th>
+                    <th scope="col" style="width: 20%;">Fecha Límite</th>
+                    <th scope="col" style="width: 7%;">Pedido</th>
+                    <th scope="col" style="width: 12%;">Subtotal</th>
+                    <th scope="col" style="width: 12%;">IVA</th>
+                    <th scope="col" style="width: 12%;">Total</th>
+                    <th scope="col" style="width: 17%;">Opciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -92,7 +92,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Detalle de
-                        Solicitud de Pedido</b></h5>
+                        cotizaciones</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -129,12 +129,52 @@
         //Llamamos a la funcion de Token
         getToken(name);
 
-        //Funcion para Eliminar mediante AJAX
+        //Funcion para Cancelar Solicitud de Pedido mediante AJAX
         function btnEliminar(id, href) {
             // Reactivación de botón y mensaje a default.
             $('.btnDelete').attr('style', 'visibility: true');
             $('.btnNo').text("No");
             $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar la Solicitud de Pedido?';
+            $('.btnDelete').on('click', function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: href,
+                    type: 'POST',
+                    data: {
+                        'csrfmiddlewaretoken': csrftoken,
+                        'action': 'delete',
+                        'pk': id,
+                    },
+                    success: function (data) {
+                        // Control de eliminación de un registro que es dependencia de otros.
+                        if (data.check === 'ok') {
+                            location.replace(data.redirect);
+                        } else if (data.error === 'FOREIGN KEY constraint failed') {
+                            $('#msjErrorModal')[0].innerHTML = 'El registro que desea eliminar posee otros registros asociados. <br><br>' +
+                                '<strong>No puede ser eliminado</strong>'
+                            $('.btnDelete').attr('style', 'visibility: hidden');
+                            $('.btnNo').text("Volver");
+                            // En caso de que la Exception sea por otra cosa
+                        } else {
+                            if (data.error === undefined) {
+                                $('#exampleModalLabel').text('Error');
+                                $('#msjErrorModal')[0].innerHTML = 'No posee permisos suficientes para realizar dicha operación';
+                            } else {
+                                $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            }
+                            $('.btnDelete').attr('style', 'visibility: hidden');
+                            $('.btnNo').text("Volver");
+                        }
+                    }
+                });
+            });
+        }
+        //Funcion para Cancelar PEDIDO mediante AJAX
+        function btnEliminarPedido(id, href) {
+            // Reactivación de botón y mensaje a default.
+            $('.btnDelete').attr('style', 'visibility: true');
+            $('.btnNo').text("No");
+            $('#msjErrorModal')[0].innerHTML = '¿Estás seguro de cancelar el Pedido?';
             $('.btnDelete').on('click', function (e) {
                 e.preventDefault();
                 $.ajax({
