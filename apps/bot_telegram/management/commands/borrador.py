@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 import hashlib
 import random
+from django.core.mail import EmailMultiAlternatives
 
 # Para remover duplicados
 import itertools
@@ -12,10 +13,9 @@ import itertools
 # para hallar duplicados
 from collections import Counter
 
-from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud, \
-    Productos, PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, Pedidos
-
-from apps.parametros.models import EstadoParametros
+from apps.erp.models import Proveedores
+from apps.parametros.models import EstadoParametros, Empresa
+from apps.pedidos.models import Pedidos, DetallePedido
 from apps.trabajos.models import Trabajos
 from django.contrib.auth.models import Group
 from django.forms import model_to_dict
@@ -25,41 +25,29 @@ from . import logica_pedidos_auto
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        pedido = Pedidos.objects.get(pk=1)
+        detalle = DetallePedido.objects.filter(pedido=pedido)
+        empresa = Empresa.objects.all().last()
+        prov = Proveedores.objects.get(pk=1)
 
-        sub_total = 0
-        productos_stock_min = []
-        pedido = PedidosSolicitud()
+        empresa = Empresa.objects.all().last()
+        subject, from_email, to = 'Pedido de productos', settings.EMAIL_HOST_USER, 'leoquiroga221@gmail.com'
+        text_content = 'This is an important message.'
+        html_content = '<p>Hola, desde ' + empresa.razonSocial + ', a continuación listamos los productos que' \
+                       ' necesitamos: <br><br>' +\
+                       '<table style="margin: 0px auto; border: 1px solid black;">' \
+                       ' <tr align=Center style="border: 1px solid black;"> <th>Producto</th> <th>Marca Ofertada</th> <th>Cantidad</th></tr>'
 
-        for producto in Productos.objects.all():
-            if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
-                sub_total += producto.costo * producto.reposicion
-                productos_stock_min.append(producto)
+        for d in detalle:
+            marca_ofertada = d.marcaOfertada
+            if not marca_ofertada:
+                marca_ofertada = ''
+            html_content += '<tr align=Center style="border: 1px solid black;"> ' \
+                                '<td style="border: 1px solid black;">' + str(d.producto.descripcion) + '</td>' + '<td style="border: 1px solid black;">' + marca_ofertada + '</td>' + '<td style="border: 1px solid black;">'+ str(d.cantidad) +'</td>' +\
+                            '</tr>'
+        html_content += '</table>'
 
-        pedido.fecha = timezone.now().date()
-        # pedido.fechaLimite = formPedidoRequest['fechaLimite'] No va a tener fecha límite si se crea mediante un cron.
-        #pedido.iva = float(sub_total) * 0.21
-
-
-        pedido.total = sub_total
-        pedido.save()
-
-        pedido.iva = 0
-        for p in productos_stock_min:
-            pedido.iva += p.costo * (p.iva.iva / 100)
-            det = DetallePedidoSolicitud()
-            det.pedido_id = pedido.id
-            det.producto_id = p.id
-            det.costo = p.costo
-            det.cantidad = p.reposicion
-            det.subtotal = p.costo * p.reposicion
-            det.save()
-        pedido.subtotal = float(sub_total) - float(pedido.iva)
-        pedido.save()
-
-        # # Se debe integrar al proceso final
-        # soli_no_analizadas = PedidosSolicitud.objects.filter(analizado__isnull=True)
-        # print(soli_no_analizadas)
-        # for soli in soli_no_analizadas:
-        #     respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False, pedidoSolicitud=soli.id)
-        #     print(respuestas)
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
