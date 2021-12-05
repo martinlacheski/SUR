@@ -34,6 +34,7 @@ from weasyprint import HTML, CSS
 # Telegram notificacion
 from apps.bot_telegram.management.commands.telegram_bot import notificarCliente
 
+
 class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):
     model = Trabajos
     template_name = 'trabajos/list.html'
@@ -679,7 +680,8 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     for i in formTrabajoRequest['servicios']:
                         det = DetalleServiciosTrabajo()
@@ -696,7 +698,8 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
@@ -746,15 +749,15 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     {'usuario': u,
                      'cant_trab': len(trabajos_user),
                      'procentaje_avance': porcentaje_avance_trabajos,
-                    })
+                     })
             # Ordenamiento de lista
             trab_por_user.sort(key=self.orden_cant_trab)
             # Se corrobora si existe un solo user con menor cantidad de trabajos.
             candidato = trab_por_user[0]
             users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'cant_trab')
             if len(users_candidatos) == 1:
-                return {'id': users_candidatos[0]['usuario'].id ,
-                        'text':  users_candidatos[0]['usuario'].username}
+                return {'id': users_candidatos[0]['usuario'].id,
+                        'text': users_candidatos[0]['usuario'].username}
             else:
                 # Ordenamiento de lista
                 trab_por_user.sort(key=self.orden_avance_trab)
@@ -786,7 +789,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
             if u[concepto] == candidato[concepto]:
                 users_cand.append(u)
         return users_cand
-
 
 
 class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, CreateView):
@@ -994,8 +996,8 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            # det.fechaDetalle = datetime.datetime.now()
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     for i in formTrabajoRequest['servicios']:
                         det = DetalleServiciosTrabajo()
@@ -1012,8 +1014,8 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            # det.fechaDetalle = datetime.datetime.now()
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
@@ -1260,8 +1262,8 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            # det.fechaDetalle = datetime.datetime.now()
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -1281,8 +1283,8 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            # det.fechaDetalle = datetime.datetime.now()
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
@@ -1520,8 +1522,8 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            # det.fechaDetalle = datetime.datetime.now()
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Eliminamos todos los productos del Detalle
                     trabajo.detalleserviciostrabajo_set.all().delete()
@@ -1541,8 +1543,8 @@ class TrabajosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                         if observacion != "":
                             det.observaciones = observacion
                             det.usuario = request.user
-                            # det.fechaDetalle = datetime.datetime.now()
-                            det.fechaDetalle = timezone.localtime(timezone.now())
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
                         det.save()
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
