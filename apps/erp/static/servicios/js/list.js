@@ -31,7 +31,7 @@ $(function () {
                         return '<span class="badge badge-success">' + data + '%' + '</span>'
                     } else if (porcentaje >= 33.34 && porcentaje <= 66.66) {
                         return '<span class="badge badge-warning">' + data + '%' + '</span>'
-                    } else  {
+                    } else {
                         return '<span class="badge badge-danger">' + data + '%' + '</span>'
                     }
                 }
@@ -53,7 +53,7 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    return '$'+parseFloat(data).toFixed(2);
+                    return '$' + parseFloat(data).toFixed(2);
                 }
             },
             {
@@ -62,7 +62,7 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row) {
                     var buttons = '<a href="/servicios/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
-                    buttons += '<a href="/servicios/delete/' + row.id + '/" id="' + row.id +'" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-trash-alt"></i>';
+                    buttons += '<a href="/servicios/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-trash-alt"></i>';
 
                     return buttons;
                 }

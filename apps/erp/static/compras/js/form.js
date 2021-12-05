@@ -260,6 +260,17 @@ $(document).ready(function () {
 });
 
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Llamamos a la funcion de Token
     getToken(name);
 
@@ -541,6 +552,19 @@ $(function () {
 
     //Boton Agregar Producto Mostrar Modal
     $('.btnAddProducto').on('click', function () {
+        //Inicializamos el Codigo del Producto
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="codigo"]').val(data.codigo);
+            }
+        });
         $('#modalProducto').modal('show');
     });
 

@@ -18,6 +18,17 @@ var reporte = {
     },
 };
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        document.getElementById("filters").style.display = "";
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
     var tablaCompra = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
@@ -88,7 +99,7 @@ $(function () {
                     var buttons = '<a rel="detalleCompra" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
                     buttons += '<a href="/compras/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
                     if (row.estadoCompra) {
-                        buttons += '<a href="/compras/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                        // buttons += '<a href="/compras/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                         buttons += '<a href="/compras/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
                     }
                     return buttons;
@@ -249,7 +260,7 @@ $(function () {
     });
     //Filtrar Estado Canceladas
     $('#excluirCanceladas').on('click', function () {
-        var verdadero = ' Cancelada';
+        var verdadero = ' CANCELADA';
         if (this.checked) {
             //Asignamos Verdadero a la variable auxiliar del reporte
             checkCanceladas = true;

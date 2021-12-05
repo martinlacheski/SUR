@@ -16,10 +16,8 @@ from apps.usuarios.models import Usuarios
 from apps.bot_telegram.logicaBot import porcentajeTrabajo
 #from apps.usuarios.models import TiposUsuarios
 
-
 bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 scheduler_eventos = BlockingScheduler(timezone=settings.TIME_ZONE)
-
 
 def rastreoTrabajos():
     # Armamos una lista de los trabajos a supervisar
@@ -77,7 +75,7 @@ def job(t_supervisar):
             else:
                 # Usamos el try en caso de que se quiera evaluar un usuario NONE (trabajo express)
                 try:
-                    # Si el usuario tiene chatId, armamos msj con botones y enviamos.
+                    # Si el usuario tiene chatId y aúno no le avisamos 3 veces, armamos msj con botones y enviamos.
                     if t.usuarioAsignado.chatIdUsuario:
                         bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text=mensaje(t))
                         faltan_repuestos = {'trabajo': str(t.id), 'respuesta': "Faltan repuestos"}
@@ -97,18 +95,18 @@ def job(t_supervisar):
                         segTrab.save()
                     # Si el usuario no tiene chatID, informamos mediante sistema.
                     else:
-                        if segTrab.notif_por_sist < 1:
+                        if segTrab.notif_por_sist < 1: # if para que esto se notifique solamente UNA VEZ por sistema
                             titulo = "Aviso de trabajo pendiente fallido"
                             descripcion = "No se pudo notificar al usuario " + str(t.usuarioAsignado.username) + " que" \
-                                                                                                                 " su trabajo Nroª " + str(t.id) + " se encuentra atrasado debido a que el mismo" \
-                                                                                                                                                   " no está registrado con el BOT."
+                                          " su trabajo Nroª " + str(t.id) + " se encuentra atrasado debido a que el mismo" \
+                                          " no está registrado con el BOT."
                             notificarSistema(titulo, descripcion)
                             segTrab.notif_por_sist += 1
                             segTrab.save()
                 except AttributeError:
                     titulo = "Trabajo atrasado sin usuario asignado"
                     descripcion = "El trabajo Nro° " + str(t.id) + " se encuentra atrasado " \
-                                                                   "según su prioridad y no tiene un usuario asignado."
+                                  "según su prioridad y no tiene un usuario asignado."
                     notificarSistema(titulo, descripcion)
         # Si la respuesta fué que faltan repuestos, se notifica a la administración (esto se encuetnra en telegram_bot.py)
 
@@ -119,6 +117,7 @@ def mensaje(t):
               "Marca: " + str(t.modelo.marca.nombre) + "\n" + "Modelo: " + str(t.modelo.nombre) + "\n\n" + \
               "No está finalizado según la prioridad establecida.\n"
     return mensaje
+
 
 #                                   __ CRITERIOS__
 
@@ -148,6 +147,7 @@ def reasignacionTrabajo(trabajo, segTrabajo):
         descripcion = "El trabajo Nro° " + str(trabajo.id) + " se encuentra atrasado" \
                                                              "según su prioridad y no hay usuario a quien re-asignarselo."
         notificarSistema(titulo, descripcion)
+
     # Si hay candidatos, evaluamos
     elif len(empAEvaluar) > 1:                                          # Primer criterio
         empSeleccionados = []
@@ -195,7 +195,7 @@ def avanceTotalizado(empleado):
     return avance
 
 
-# Encargada de efectivamente realizar la re-asiganción y de llamar al notificador.
+# Encargada de efectivamente realizar la re-asiganción.
 def eleccionUnitaria(empSeleccionados, segTrabajo):
     if len(empSeleccionados) == 1:
         nuevoUserAsig = Usuarios.objects.get(pk=empSeleccionados[0]['usuarioAsignado'])
@@ -218,12 +218,11 @@ def msjNotificarSistema(nuevoUser, trabajo, segTrabajo):
     notificarSistema(titulo, descripcion)
 
 
-# Obtiene todos los usuarios que pueden realizar trabajos y luego vé cuantos trabajos tiene asignad ocada uno
-# TO - DO: cambió la manera de identificar a un usuario que realiza trabajos.
+# Obtiene todos los usuarios que pueden realizar trabajos y luego vé cuantos trabajos tiene asignado cada uno
+# Devuelve una lista de diccionarios que contiene c/u un usuario y cuanto trab tiene aasignados.
 def eleccionUsuarios(userTrabajo):
     empsAEvaluar = []
-    tiposUser = TiposUsuarios.objects.filter(realizaTrabajos=True)
-    users = Usuarios.objects.filter(tipoUsuario__in=tiposUser).exclude(pk=userTrabajo.id)
+    users = Usuarios.objects.filter(realizaTrabajos=True).exclude(pk=userTrabajo.id)
     estados = EstadoParametros.objects.last()
     estados_filter = [estados.estadoEspecial.id, estados.estadoInicial.id, estados.estadoPlanificado.id]
     for u in users:

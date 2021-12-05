@@ -20,7 +20,8 @@ $(function () {
             {"data": "email"},
             {"data": "telefono"},
             {"data": "is_active"},
-            {"data": "imagen"},
+            // {"data": "imagen"},
+            {"data": "realizaTrabajos"},
             {"data": "username"},
         ],
         columnDefs: [
@@ -39,9 +40,14 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 30px; height: 30px;">';
-                }
-            },
+                    //     return '<img src="' + data + '" class="img-fluid d-block mx-auto" style="width: 30px; height: 30px;">';
+                    // }
+                    if (row.realizaTrabajos) {
+                        return '<span class="badge badge-success">' + ' SI' + '</span>'
+                    }
+                    return '<span class="badge badge-danger">' + ' NO' + '</span>'
+                    }
+                },
             {
                 targets: [-1],
                 class: 'text-center',
@@ -57,4 +63,5 @@ $(function () {
 
         }
     });
-});
+})
+    ;

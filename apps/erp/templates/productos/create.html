@@ -29,13 +29,17 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-3"
+                         data-intro="Seleccionar del listado la categoría del Producto">
                         <label>Categoría:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectCategoria" id="selectCategoria"
@@ -45,18 +49,18 @@
                                     <option value={{ c.id }}>{{ c.nombre }}</option>
                                 {% endfor %}
                             </select>
-                            <div class="input-group-append">
+                            <div class="input-group-append" data-intro="Si la categoría no existe hacer click para crearla">
                                 <button class="btn btn-success btn-flat btnAddCategoria" type="button">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-3" data-intro="Seleccionar del listado la subcategoría del Producto">
                         <label>(*) Subcategoría:</label>
                         <div class="input-group">
                             {{ form.subcategoria|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
-                            <div class="input-group-append">
+                            <div class="input-group-append" data-intro="Si la subcategoría no existe hacer click para crearla">
                                 <button class="btn btn-success btn-flat btnAddSubcategoria" type="button">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -65,50 +69,57 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-3"
+                         data-intro="Ingresar la descripción del Producto. Por ej: SUBCATEGORÍA y NOMBRE DEL PRODUCTO">
                         <label>(*) Descripción:</label>
                         <br>
                         {{ form.descripcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-3 mb-3">
-                        <label>Abreviatura:</label>
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar la Abreviatura del Producto. Máximo 30 caracteres">
+                        <label>(*) Abreviatura:</label>
                         <br>
-                        {{ form.abreviatura|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.abreviatura|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-3 mb-3">
                         <label>Código:</label>
                         <br>
-                        {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                        {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly'}}
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="OPCIONAL - Ingresar el código de proveedor del Producto">
                         <label>Código Proveedor:</label>
                         <br>
                         {{ form.codigoProveedor|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-3 mb-3">
-                        <label>Código de Barras 1:</label>
+                    <div class="col-3 mb-3"
+                         data-intro="OPCIONAL - En caso de poseer, Ingresar el código de barras del Producto">
+                        <label>Código de Barras:</label>
                         <br>
                         {{ form.codigoBarras1|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el stock real del Producto">
                         <label>Stock Real:</label>
                         <br>
                         <div class="col-12 mb-3" class="input-group-text" id="stockReal">
                             {{ form.stockReal|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el stock mínimo del Producto">
                         <label>Stock Mínimo:</label>
                         <br>
                         <div class="col-12 mb-3" class="form-control" id="stockMinimo">
                             {{ form.stockMinimo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar la cantidad del Producto que debe reponerse en los pedidos">
                         <label>Pedido Reposición:</label>
                         <br>
                         <div class="col-12 mb-3" class="form-control" id="reposicion">
@@ -117,27 +128,29 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el precio de costo del Producto">
                         <label>Precio de Costo:</label>
                         <br>
                         <div class="col-12 mb-3" class="form-control" id="costo" name="costo">
                             {{ form.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el margen de utilidad del Producto">
                         <label>Margen de Utilidad:</label>
                         <br>
                         <div class="col-12 mb-3" class="form-control" id="utilidad" name="utilidad">
                             {{ form.utilidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3" data-intro="Seleccionar del listado el tipo de IVA del Producto">
                         <label>(*) Tipo de IVA:</label>
                         <br>
                         {{ form.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
 
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3" data-intro="Ingresar el precio de venta del Producto">
                         <label>Precio de Venta:</label>
                         <br>
                         <div class="col-12 mb-3" class="form-control" id="precioVenta" name="precioVenta">
@@ -147,12 +160,14 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="OPCIONAL - Ingresar la ubicación física del Producto. Por ej: Mueble 01 - Estante 01">
                         <label>Ubicacion Física:</label>
                         <br>
                         {{ form.ubicacion|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="OPCIONAL - Ingresar observaciones del Producto">
                         <label>Observaciones:</label>
                         <br>
                         {{ form.observaciones|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -162,14 +177,14 @@
                         <br>
 
                     </div>
-                    <div class="col-2 mb-3">
+                    <div class="col-2 mb-3" data-intro="OPCIONAL - Tildar si el Producto es Insumo">
                         <label class="mb-4"></label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                             {{ form.esInsumo }}
-                            <label class="custom-control-label" for="id_realizaTrabajos">¿Es Insumo?</label>
+                            <label class="custom-control-label" for="id_esInsumo">¿Es Insumo?</label>
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3" data-intro="OPCIONAL - Tildar si el Producto no descuenta Stock">
                         <label class="mb-4"></label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                             {{ form.descuentaStock }}
@@ -179,7 +194,7 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-3" data-intro="Hacer click para adjuntar una imagen del Producto">
                         <label>Imagen:</label>
                         {{ form.imagen }}
                     </div>
@@ -191,15 +206,18 @@
             <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
             {% if action == 'add' %}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
+                        data-intro="Hacer click para guardar el registro">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
             {% else %}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit"
+                        data-intro="Hacer click para guardar el registro">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
             {% endif %}
-            <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+            <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+               data-intro="Hacer click para cancelar y regresar al listado de productos">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>

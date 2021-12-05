@@ -1,0 +1,140 @@
+{% extends 'body.html' %}
+{% load static %}
+{% block head %}
+    <link rel="stylesheet"
+          href="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet"
+          href="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+    <!-- Moment -->
+    <!-- AGREGAMOS PARA VER FORMATEAR LA FECHA A DD-MM-YYYY -->
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/moment/moment-with-locales.js' %}"></script>
+    <!-- dataTables Sorting -->
+    <script src="{% static 'lib/datatables-sorting/datetime-moment.js' %}"></script>
+    <!-- archivo JS -->
+    <script src="{% static 'pedidos/js/list.js' %}"></script>
+    <!-- Estilo para el Detalle -->
+    <style>
+        tr.group,
+        tr.group:hover {
+            background-color: #ddd !important;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="card card-default">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-search"></i>
+                {{ title }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <table class="table" id="data">
+                <thead>
+                <tr>
+                    <th scope="col" style="width: 5%;">ID</th>
+                    <th scope="col" style="width: 10%;">Estado</th>
+                    <th scope="col" style="width: 20%;">Proveedor</th>
+                    <th scope="col" style="width: 15%;">Fecha</th>
+                    <th scope="col" style="width: 15%;">Subtotal</th>
+                    <th scope="col" style="width: 15%;">IVA</th>
+                    <th scope="col" style="width: 15%;">Total</th>
+                    <th scope="col" style="width: 5%;">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% block rows %}
+
+                {% endblock %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
+        </div>
+    </div>
+    <!-- Modal Detalle de Pedido -->
+    <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Detalle de Pedido</b></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="rowProductos">
+                        <div class="col-lg-12">
+                            <div class="card card-secondary">
+                                <div class="card-header">
+                                    <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos</h3>
+                                </div>
+                                <table class="table table-bordered" id="tablaProductos">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col" style="width: 40%;">Producto</th>
+                                        <th scope="col" style="width: 30%;">Marca Ofertada</th>
+                                        <th scope="col" style="width: 10%;">Importe</th>
+                                        <th scope="col" style="width: 10%;">Cantidad</th>
+                                        <th scope="col" style="width: 10%;">Subtotal</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4 mb-3">
+                            <label>Subtotal:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="subtotal" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>IVA:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="iva" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>Total:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="total" readonly>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

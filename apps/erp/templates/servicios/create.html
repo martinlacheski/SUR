@@ -29,13 +29,17 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="col-9 mb-3">
+                    <div class="col-9 mb-3"
+                         data-intro="Ingresar la descripción del Servicio">
                         <label>(*) Descripción:</label>
                         <br>
                         <div class="col-12" class="form-control" id="descripcion">
@@ -46,31 +50,35 @@
                         <label>(*) Código:</label>
                         <br>
                         <div class="col-12" class="form-control" id="codigo">
-                            {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el precio de costo del Servicio">
                         <label>Precio de Costo:</label>
                         <br>
                         <div class="col-12" class="form-control" id="costo">
                             {{ form.costo|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Seleccionar del listado el tipo de IVA del Servicio">
                         <label>(*) Tipo de IVA:</label>
                         <br>
                         {{ form.iva|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el precio de venta del Servicio">
                         <label>Precio de Venta:</label>
                         <br>
                         <div class="col-12" class="form-control" id="precioVenta">
                             {{ form.precioVenta|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'readonly:true' }}
                         </div>
                     </div>
-                    <div class="col-3 mb-3">
+                    <div class="col-3 mb-3"
+                         data-intro="Ingresar el esfuerzo que conlleva realizar el Servicio">
                         <label>Esfuerzo del Servicio:</label>
                         <br>
                         <div class="col-12" class="form-control" id="esfuerzo">
@@ -79,7 +87,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-6">
+                    <div class="col-6 mb-6" data-intro="Hacer click para adjuntar una imagen del Servicio">
                         <label>Imagen:</label>
                         {{ form.imagen }}
                     </div>
@@ -90,15 +98,18 @@
                 <ul id="errorList" class="alert-danger"></ul>
                 {#Botones#}
                 {% if action == 'add' %}
-                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
+                            data-intro="Hacer click para guardar el registro">
                         <i class="fas fa-save"></i> Guardar registro
                     </button>
                 {% else %}
-                    <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                    <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit"
+                            data-intro="Hacer click para guardar el registro">
                         <i class="fas fa-save"></i> Guardar registro
                     </button>
                 {% endif %}
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                   data-intro="Hacer click para cancelar y regresar al listado de servicios">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

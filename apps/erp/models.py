@@ -25,6 +25,7 @@ class Clientes(models.Model):
     limiteCtaCte = models.DecimalField(default=0.00, max_digits=9, decimal_places=2, null=True, blank=True,
                                        verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    chatIdCliente = models.IntegerField(null=True, blank=True, default=None)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -169,7 +170,7 @@ class Subcategorias(models.Model):
 class Productos(models.Model):
     subcategoria = models.ForeignKey(Subcategorias, models.DO_NOTHING, verbose_name='Subcategoría')
     descripcion = models.CharField(max_length=100, verbose_name='Descripción')
-    abreviatura = models.CharField(max_length=30, null=True, blank=True, verbose_name='Abreviatura')
+    abreviatura = models.CharField(max_length=30, verbose_name='Abreviatura')
     codigo = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo', unique=True)
     codigoProveedor = models.CharField(max_length=20, null=True, blank=True, verbose_name='Codigo de Proveedor',
                                        unique=True)
@@ -435,175 +436,4 @@ class DetalleProductosCompra(models.Model):
         verbose_name = 'Detalle de Compra'
         verbose_name_plural = 'Detalle de Compras'
         db_table = 'erp_compras_detalle'
-        ordering = ['id']
-
-
-#   Clase Pedidos de Solicitud de Productos
-class PedidosSolicitud(models.Model):
-    fecha = models.DateField(verbose_name='Fecha')
-    fechaLimite = models.DateTimeField(verbose_name='Fecha Límite', null=True)
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    estado = models.BooleanField(default="", blank=True, null=True)
-    history = HistoricalRecords()
-
-    def __str__(self):
-        return str(self.id)
-
-    def get_full_sale(self):
-        return '{} - {}'.format(self.fecha, self.estado)
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['subtotal'] = format(self.subtotal, '.2f')
-        item['iva'] = format(self.iva, '.2f')
-        item['total'] = format(self.total, '.2f')
-        return item
-
-    class Meta:
-        verbose_name = 'Solicitud de Pedido'
-        verbose_name_plural = 'Solicitudes de Pedidos'
-        db_table = 'erp_pedidos_solicitud'
-        ordering = ['fecha', 'id']
-
-
-class DetallePedidoSolicitud(models.Model):
-    pedido = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING)
-    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor', blank=True, null=True)
-    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
-    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    cantidad = models.IntegerField(default=0)
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    history = HistoricalRecords()
-
-    def __str__(self):
-        return self.producto.descripcion
-
-    def toJSON(self):
-        item = model_to_dict(self, exclude=['pedido'])
-        try:
-            item['proveedor'] = self.proveedor.toJSON()
-        except:
-            pass
-        item['producto'] = self.producto.toJSON()
-        item['costo'] = format(self.costo, '.2f')
-        item['subtotal'] = format(self.subtotal, '.2f')
-        return item
-
-    class Meta:
-        verbose_name = 'Detalle de Solicitud de Pedido'
-        verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
-        db_table = 'erp_pedidos_solicitud_detalle'
-        ordering = ['id']
-
-
-
-#   Clase Solicitudo de Pedidos completado por Proveedores
-class PedidoSolicitudProveedor(models.Model):
-    pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
-    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    enviado = models.DateTimeField(verbose_name='Fecha y Hora de envío correo electrónico')
-    visto = models.DateTimeField(verbose_name='Fecha y Hora de visto el formulario')
-    respuesta = models.DateTimeField(verbose_name='Fecha y Hora de respuesta del formulario')
-
-    def __str__(self):
-        return self.get_full_name()
-
-    def get_full_name(self):
-        return '{} - {}'.format(self.pedidoSolicitud, self.proveedor)
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
-        item['proveedor'] = self.proveedor.toJSON()
-        item['subtotal'] = format(self.subtotal, '.2f')
-        item['iva'] = format(self.iva, '.2f')
-        item['total'] = format(self.total, '.2f')
-        return item
-
-    class Meta:
-        verbose_name = 'Solicitud de Pedido Proveedor'
-        verbose_name_plural = 'Solicitudes de Pedidos Proveedor'
-        db_table = 'erp_pedidos_solicitud_proveedor'
-        ordering = ['id']
-
-
-class DetallePedidoSolicitudProveedor(models.Model):
-    pedidoSolicitudProveedor = models.ForeignKey(PedidoSolicitudProveedor, models.DO_NOTHING)
-    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
-    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    cantidad = models.IntegerField(default=0)
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-
-    def __str__(self):
-        return self.producto.descripcion
-
-    def toJSON(self):
-        item = model_to_dict(self, exclude=['pedidoSolicitudProveedor'])
-        item['producto'] = self.producto.toJSON()
-        item['costo'] = format(self.costo, '.2f')
-        item['subtotal'] = format(self.subtotal, '.2f')
-        return item
-
-    class Meta:
-        verbose_name = 'Detalle de Solicitud de Pedido'
-        verbose_name_plural = 'Detalle de Solicitudes de Pedidos'
-        db_table = 'erp_pedidos_solicitud_proveedor_detalle'
-        ordering = ['id']
-
-
-#   Clase Pedidos
-class Pedidos(models.Model):
-    pedidoSolicitud = models.ForeignKey(PedidosSolicitud, models.DO_NOTHING, verbose_name='Pedido de Solicitud')
-    fecha = models.DateField(verbose_name='Fecha')
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    estado = models.BooleanField(default="", blank=True, null=True)
-
-    def __str__(self):
-        return self.get_full_name()
-
-    def get_full_name(self):
-        return '{} - {}'.format(self.pedidoSolicitud, self.fecha)
-
-    def toJSON(self):
-        item = model_to_dict(self)
-        item['pedidoSolicitud'] = self.pedidoSolicitud.toJSON()
-        return item
-
-    class Meta:
-        verbose_name = 'Pedido'
-        verbose_name_plural = 'Pedidos'
-        db_table = 'erp_pedidos'
-        ordering = ['id']
-
-
-class DetallePedido(models.Model):
-    pedido = models.ForeignKey(Pedidos, models.DO_NOTHING)
-    proveedor = models.ForeignKey(Proveedores, models.DO_NOTHING, verbose_name='Proveedor')
-    producto = models.ForeignKey(Productos, models.DO_NOTHING, verbose_name='Producto')
-    costo = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-    cantidad = models.IntegerField(default=0)
-    subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
-
-    def __str__(self):
-        return self.producto.descripcion
-
-    def toJSON(self):
-        item = model_to_dict(self, exclude=['pedido'])
-        item['proveedor'] = self.proveedor.toJSON()
-        item['producto'] = self.producto.toJSON()
-        item['costo'] = format(self.costo, '.2f')
-        item['subtotal'] = format(self.subtotal, '.2f')
-        return item
-
-    class Meta:
-        verbose_name = 'Detalle de Pedido'
-        verbose_name_plural = 'Detalle de Pedidos'
-        db_table = 'erp_pedidos_detalle'
         ordering = ['id']

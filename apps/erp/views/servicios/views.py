@@ -97,6 +97,8 @@ class ServiciosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('servicios/reportAuditoria.html')
                 # Obtenemos el detalle del Reporte
@@ -140,7 +142,7 @@ class ServiciosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'servicio': servicio,
                         'accion': accion,
@@ -153,9 +155,9 @@ class ServiciosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteAuditoriaServicios.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteAuditoriaServicios.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteAuditoriaServicios.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteAuditoriaServicios.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -193,7 +195,14 @@ class ServiciosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
         data = {}
         try:
             action = request.POST['action']
-            if action == 'search_iva':
+            if action == 'generar_codigo':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
             elif action == 'add':

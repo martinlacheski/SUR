@@ -45,6 +45,8 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('compras/report.html')
                 # Obtenemos el detalle del Reporte
@@ -103,7 +105,7 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'proveedor': proveedor,
                         'inicio': inicio,
@@ -120,9 +122,9 @@ class ComprasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListV
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteCompras.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteCompras.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteCompras.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteCompras.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -205,7 +207,15 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
@@ -347,7 +357,15 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
@@ -400,7 +418,7 @@ class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
                         if det.producto.descuentaStock == True:
                             # Actualizamos el Stock de los Productos del Detalle
                             det.producto.stockReal += det.cantidad
-                        # Asignamos el costo de costo nuevo segun el importe de compra
+                        # Asignamos el costo nuevo segun el importe de compra
                         det.producto.costo = det.costo
                         # Asignamos el precio de venta en base al costo
                         det.producto.precioVenta = float(det.costo) * ((float(det.producto.utilidad) / 100) + 1) * \
@@ -479,6 +497,8 @@ class ComprasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('compras/pdf.html')
             # Obtenemos el valor total para pasar a letras
@@ -489,7 +509,7 @@ class ComprasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
                 'compra': Compras.objects.get(pk=self.kwargs['pk']),
                 'enLetras': totalEnLetras,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

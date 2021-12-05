@@ -1,4 +1,15 @@
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Inicializamos SELECT2
     $('.select2').select2({
         theme: "bootstrap4",
@@ -85,7 +96,6 @@ $(function () {
 
     // VALIDACION DE LOS CAMPOS
     $("#descripcion").validate();
-    $("#codigo").validate();
     $("#costo").validate();
     $("#iva").validate();
     $("#precioVenta").validate();
@@ -129,4 +139,21 @@ function calcularPrecio() {
     }
 }
 
-
+$(document).ready(function () {
+    var accion = $('input[name="action"]').val();
+    if (accion === 'add') {
+        //Inicializamos el Codigo del Servicio
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="codigo"]').val(data.codigo);
+            }
+        });
+    }
+});

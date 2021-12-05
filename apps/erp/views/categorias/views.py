@@ -131,7 +131,12 @@ class CategoriasDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             except Exception as e:
                 data['error'] = str(e)
                 print(str(e))
+        elif action == 'has_perms':
+            data = {}
+            data['has_perms'] = 'ok'
         return JsonResponse(data)
+
+
 
     def get_context_data(**kwargs):
         context = super().get_context_data(**kwargs)

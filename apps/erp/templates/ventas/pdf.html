@@ -66,8 +66,9 @@
     </div>
     <div class="row">
         <div class="col-6">
-            <img src="{{ empresa.imagen.url }}" class="img-fluid d-block img-logo">
+            <img src="{{ empresa.imagen }}" class="img-fluid d-block img-logo">
             <p class="text-left">
+                <b>Empresa: </b> {{ empresa.nombre }}<br>
                 <b>CUIT: </b> {{ empresa.cuit }}<br>
                 <b>Dirección: </b> {{ empresa.direccion }}<br>
                 <b>Localidad: </b> {{ empresa.localidad }}<br>

@@ -40,12 +40,16 @@
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
                 {{ title }}
+                <a href="#" class="btn btn-flat">
+                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                </a>
             </h3>
         </div>
         <div class="card-body">
-            <label>Filtros: <i class="fas fa-angle-down showFilters"></i> </label>
+            <label data-intro="Hacer click para visualizar los filtros">Filtros: <i
+                    class="fas fa-angle-down showFilters"></i> </label>
             <div class="row" id="filters">
-                <div class="form-group col-4">
+                <div class="form-group col-4" data-intro="Seleccione del listado para filtrar por Proveedores">
                     <label>Proveedores:</label>
                     <div class="input-group">
                         <select class="form-select form-control select2 selectProveedor" id="selectProveedor"
@@ -54,7 +58,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group col-3">
+                <div class="form-group col-3" data-intro="Seleccione el rango de fechas para filtrar">
                     <label>Fechas:</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="filterRangoFechas"
@@ -65,7 +69,7 @@
                 <div class="col-1">
 
                 </div>
-                <div class="col-2">
+                <div class="col-2" data-intro="Tildar para excluir las compras canceladas">
                     <label></label>
                     <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input excluirCanceladas"
@@ -73,7 +77,7 @@
                         <label class="custom-control-label" for="excluirCanceladas"> Excluir Canceladas</label>
                     </div>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-2" data-intro="Hacer click para limpiar los Filtros seleccionados">
                     <label></label>
                     <div class="card-row">
                         <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
@@ -84,7 +88,8 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <table class="table" id="data">
+                    <table class="table" id="data" data-intro="Se visualiza el {{ title }}.
+            Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                         <thead>
                         <tr>
                             <th scope="col" style="width: 5%;">ID</th>
@@ -95,7 +100,10 @@
                             <th scope="col" style="width: 10%;">IVA</th>
                             <th scope="col" style="width: 10%;">Perc.</th>
                             <th scope="col" style="width: 10%;">Total</th>
-                            <th scope="col" style="width: 12%;">Opciones</th>
+                            <th scope="col" style="width: 12%;"
+                                data-intro="Opciones de Listado. Ver detalle compra. Generar PDF compra. Cancelar Compra.">
+                                Opciones
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -109,13 +117,15 @@
         </div>
         <div class="card-footer">
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
-                <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                <a href="{{ create_url }}" class="btn btn-primary btn-flat"
+                   data-intro="Crear un nuevo registro">
                     <i class="fas fa-plus"></i> Nuevo registro
                 </a>
-                <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <a href="{{ list_url }}" class="btn btn-success btn-flat" data-intro="Actualizar el listado">
                     <i class="fas fa-sync"></i> Actualizar
                 </a>
-                <button type="submit" class="btn btn-info btn-flat btnReporte">
+                <button type="submit" class="btn btn-info btn-flat btnReporte"
+                        data-intro="Generar reporte de Compras">
                     <i class="fas fa-file-pdf"></i> Generar Reporte
                 </button>
             </form>
@@ -212,7 +222,12 @@
                             $('.btnNo').text("Volver");
                             // En caso de que la Exception sea por otra cosa
                         } else {
-                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            if (data.error === undefined) {
+                                $('#exampleModalLabel').text('Error');
+                                $('#msjErrorModal')[0].innerHTML = 'No posee permisos suficientes para realizar dicha operación';
+                            } else {
+                                $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            }
                             $('.btnDelete').attr('style', 'visibility: hidden');
                             $('.btnNo').text("Volver");
                         }

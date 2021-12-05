@@ -24,10 +24,14 @@
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
                 {{ title }}
+                <a href="#" class="btn btn-flat">
+                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                </a>
             </h3>
         </div>
         <div class="card-body">
-            <table class="table" id="data">
+            <table class="table" id="data" data-intro="Se visualiza el {{ title }}.
+            Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                 <thead>
                 {% block columns %}
 
@@ -41,12 +45,12 @@
             </table>
         </div>
         <div class="card-footer">
-                <a href="{{ create_url }}" class="btn btn-primary btn-flat">
-                    <i class="fas fa-plus"></i> Nuevo registro
-                </a>
-             <a href="{{ list_url }}" class="btn btn-success btn-flat">
-                    <i class="fas fa-sync"></i> Actualizar
-                </a>
+            <a href="{{ create_url }}" class="btn btn-primary btn-flat" data-intro="Crear un nuevo registro">
+                <i class="fas fa-plus"></i> Nuevo registro
+            </a>
+            <a href="{{ list_url }}" class="btn btn-success btn-flat" data-intro="Actualizar el listado">
+                <i class="fas fa-sync"></i> Actualizar
+            </a>
         </div>
     </div>
     <!-- Modal -->
@@ -75,11 +79,22 @@
 
 
     <script type="application/javascript">
+        //Al hacer click en el AYUDA
+        $('.verAyuda').on('click', function () {
+            introJs().setOptions({
+                showProgress: true,
+                showBullets: false,
+                nextLabel: 'Siguiente',
+                prevLabel: 'Atrás',
+                doneLabel: 'Finalizar',
+            }).start()
+        });
         //Llamamos a la funcion de Token
         getToken(name);
 
         //Funcion para Eliminar mediante AJAX
         function btnEliminar(id, href) {
+
             // Reactivación de botón y mensaje a default.
             $('.btnDelete').attr('style', 'visibility: true');
             $('.btnNo').text("No");
@@ -106,7 +121,12 @@
                             $('.btnNo').text("Volver");
                             // En caso de que la Exception sea por otra cosa
                         } else {
-                            $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            if (data.error === undefined) {
+                                $('#exampleModalLabel').text('Error');
+                                $('#msjErrorModal')[0].innerHTML = 'No posee permisos suficientes para realizar dicha operación';
+                            } else {
+                                $('#msjErrorModal')[0].innerHTML = 'Ha ocurrido un error inesperado. Contacte al administrador <br><br>' + data.error;
+                            }
                             $('.btnDelete').attr('style', 'visibility: hidden');
                             $('.btnNo').text("Volver");
                         }

@@ -38,31 +38,38 @@ def notificarCliente(trabajo):
         mensaje += "📝 Algunas observaciones son: " + str(trabajo.observaciones) + "\n\n"
     mensaje += "💰 El importe a abonar es: $" + str(trabajo.total) + " pesos.\n\n"
     mensaje += "Te pido que indiques cuándo lo vas a pasar a buscar presionando cualquiera de los siguiente botones."
-    bot.send_message(chat_id=cliente.chatIdCliente, text=mensaje)
+    if cliente.chatIdCliente:
+        bot.send_message(chat_id=cliente.chatIdCliente, text=mensaje)
 
-    # Callback data
-    data_hoy = {
-        'hoy': str(timezone.now().date),
-        'cliente': str(cliente.id),
-        'trabajo': str(trabajo.id),
+        # Callback data
+        data_hoy = {
+            'hoy': str(timezone.now().date),
+            'cliente': str(cliente.id),
+            'trabajo': str(trabajo.id),
 
-    }
-    sig_habil = {
-        'sig_dia_habil': str(dia_habil_siguiente(timezone.now().date())),
-        'cliente': str(cliente.id),
-        'trabajo': str(trabajo.id),
+        }
+        sig_habil = {
+            'sig_dia_habil': str(dia_habil_siguiente(timezone.now().date())),
+            'cliente': str(cliente.id),
+            'trabajo': str(trabajo.id),
 
-    }
-    se_comunica = {
-        'se_secomunica': 'Se comunicará luego.'
-    }
-    keyboard = [
-        [InlineKeyboardButton("Hoy", callback_data=str(data_hoy))],
-        [InlineKeyboardButton("Siguiente día hábil", callback_data=str(sig_habil))],
-        [InlineKeyboardButton("Me comunico luego", callback_data=str(se_comunica))],
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    bot.send_message(chat_id=cliente.chatIdCliente, text="Opciones:\n", reply_markup=reply_markup)
+        }
+        se_comunica = {
+            'se_secomunica': 'Se comunicará luego.'
+        }
+        keyboard = [
+            [InlineKeyboardButton("Hoy", callback_data=str(data_hoy))],
+            [InlineKeyboardButton("Siguiente día hábil", callback_data=str(sig_habil))],
+            [InlineKeyboardButton("Me comunico luego", callback_data=str(se_comunica))],
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        bot.send_message(chat_id=cliente.chatIdCliente, text="Opciones:\n", reply_markup=reply_markup)
+    else:
+        titulo = "Notificación a cliente fallida"
+        descripcion = "Se intentó notificar al cliente " + str(cliente.razonSocial) + " sin éxito" \
+                      " ya que el mismo no está registrado con el BOT."
+
+        notificarSistema(titulo, descripcion)
 
 
 class Command(BaseCommand):
@@ -247,7 +254,6 @@ class Command(BaseCommand):
         # Procesa los mensajes que NO son comandos.
         def respuestaDefault(update, context):
             msjRecibido = str(update.message.text).upper()
-
             try:
                 user_gerencial = Usuarios.objects.get(chatIdUsuario=update.effective_chat.id)
                 esUser = True

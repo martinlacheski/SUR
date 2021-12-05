@@ -55,6 +55,8 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('presupuestos/report.html')
                 # Obtenemos el detalle del Reporte
@@ -123,7 +125,7 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'cliente': cliente,
                         'modelo': modelo,
@@ -142,9 +144,9 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reportePresupuestos.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reportePresupuestos.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reportePresupuestos.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reportePresupuestos.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -294,12 +296,28 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                    data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -337,6 +355,7 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     # obtenemos el Usuario actual
                     presupuesto.usuario = request.user
                     presupuesto.cliente_id = formPresupuestoRequest['cliente']
+                    presupuesto.validez = formPresupuestoRequest['validez']
                     presupuesto.modelo_id = formPresupuestoRequest['modelo']
                     presupuesto.subtotal = float(formPresupuestoRequest['subtotal'])
                     presupuesto.iva = float(formPresupuestoRequest['iva'])
@@ -496,12 +515,28 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -703,12 +738,28 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -743,9 +794,8 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 # data = []
                 # Asigno a una variable los parametros de estados y de tipos de usuarios
                 estado = EstadoParametros.objects.get(pk=EstadoParametros.objects.all().last().id)
-                tipos = TiposUsuarios.objects.filter(realizaTrabajos=True)
-                # Obtenemos los usuarios con esos filtros
-                usuarios = Usuarios.objects.filter(tipoUsuario__in=tipos)
+                # Obtenemos los usuarios que puede realizar trabajos
+                usuarios = Usuarios.objects.filter(realizaTrabajos=True)
                 try:
                     # asignamos a una variable una cantidad alta de trabajos pendientes
                     cant = 1000000
@@ -909,6 +959,8 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestos/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
@@ -930,7 +982,7 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

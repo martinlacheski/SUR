@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% load static %}
+{% load humanize %}
+{% load l10n %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Solicitud de Pedido</title>
+    <style>
+
+        * {
+            color: black;
+        }
+
+        body {
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            color: black;
+        }
+
+        .name-company {
+            font-size: 30px;
+            padding: 0;
+            margin: 0;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        table thead tr th {
+            border: 1px solid black !important;
+            padding: 3px;
+        }
+
+        table tbody tr td {
+            border: 1px solid black;
+            padding: 3px;
+        }
+
+        .img-logo {
+            margin-top: 10px;
+            width: 250px;
+            height: 75px;
+            margin-bottom: 10px;
+        }
+
+        @page {
+            @bottom-center {
+                content: "Página " counter(page) " de " counter(pages);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="name-company text-center">Nota de Solicitud de Pedido</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <img src="{{ empresa.imagen }}" class="img-fluid d-block img-logo">
+            <p class="text-left">
+                <b>Empresa: </b> {{ empresa.nombre }}<br>
+                <b>CUIT: </b> {{ empresa.cuit }}<br>
+                <b>Dirección: </b> {{ empresa.direccion }}<br>
+                <b>Localidad: </b> {{ empresa.localidad }}<br>
+            </p>
+        </div>
+        <div class="col-1">
+            {#<h1 class="name-company">{{ empresa.nombre }}</h1>#}
+        </div>
+        <div class="col-6">
+            <p class="text-right">
+                <b>Número:</b> {{ pedido.id }}<br>
+                <b>Fecha:</b> {{ pedido.fecha|date:'d-m-Y' }}<br>
+                <b>Fecha y Hora Límite:</b> {{ pedido.fechaLimite|date:'d-m-Y H:m' }}<br>
+                {% if pedido.estado %}
+                    <b>Estado:</b> Confirmado <br>
+                {% elif pedido.estado == None %}
+                    <b>Estado:</b> No Confirmado <br>
+                {% else  %}
+                    <b>Estado:</b> Cancelado <br>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    <p class="text-uppercase font-weight-bold text-center">
+        Detalle de Productos <br>
+    </p>
+    <table class="table" style="width: 100%;">
+        <thead>
+        <tr style="border: 1px solid black;">
+            <th class="text-center" style="width: 10%;">Cantidad</th>
+            <th class="text-center" style="width: 70%;">Producto</th>
+            <th class="text-center" style="width: 10%;">Costo</th>
+            <th class="text-center" style="width: 10%;">Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for det in pedido.detallepedidosolicitud_set.all %}
+            <tr>
+                <td class="text-center">{{ det.cantidad }}</td>
+                <td class="text-center">{{ det.producto.descripcion }}</td>
+                <td class="text-right">$ {{ det.costo|intcomma|localize }}</td>
+                <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <p class="text-uppercase font-weight-bold text-right">
+        <b>IVA: $</b> {{ pedido.iva|intcomma|localize }}<br>
+        <b>Total Aproximado: $</b> {{ pedido.total|intcomma|localize }}<br>
+    </p>
+</div>
+</body>
+</html>

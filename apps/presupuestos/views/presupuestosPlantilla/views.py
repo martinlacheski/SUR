@@ -154,12 +154,28 @@ class PresupuestosPlantillaCreateView(LoginRequiredMixin, ValidatePermissionRequ
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                    data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -311,12 +327,28 @@ class PresupuestosPlantillaUpdateView(LoginRequiredMixin, ValidatePermissionRequ
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                    data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -420,13 +452,15 @@ class PresupuestosPlantillaPdfView(LoginRequiredMixin, ValidatePermissionRequire
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestosPlantilla/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
             context = {
                 'presupuesto': PlantillaPresupuestos.objects.get(pk=self.kwargs['pk']),
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

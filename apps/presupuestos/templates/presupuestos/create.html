@@ -501,7 +501,8 @@
                             <div class="form-group col-6 mb-6">
                                 <label>CBU - CVU:</label>
                                 <br>
-                                <div class="input-group" type="text" class="form-control" id="cbu" name="cbu">
+                                <div class="col-12" class="form-control" id="cbu" name="cbu"
+                                     onkeypress="return isNumberKey(event)">
                                     {{ formCliente.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
@@ -614,7 +615,7 @@
                             <div class="form-group col-3 mb-3">
                                 <label>Código:</label>
                                 <br>
-                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly' }}
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>
@@ -754,7 +755,7 @@
                                 <label>(*) Código:</label>
                                 <br>
                                 <div class="col-12" class="form-control" id="codigoServicio" name="codigoServicio">
-                                    {{ formServicio.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                    {{ formServicio.codigo|add_class:'form-control codigoServicio'|attr:'autocomplete:off'|attr:'readonly' }}
                                 </div>
                             </div>
                         </div>
@@ -983,7 +984,7 @@
                                 <label>Precio de Venta:</label>
                                 <br>
                                 <input type="text" class="form-control" name="actualizarPrecioVentaServicio"
-                                       autocomplete="off" readonly disabled>
+                                       autocomplete="off" readonly>
                             </div>
                         </div>
 

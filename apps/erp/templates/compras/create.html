@@ -48,6 +48,9 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:white"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -58,23 +61,27 @@
                         <div class="card card-secondary">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-7">
+                                    <div class="form-group col-7"
+                                         data-intro="Seleccionar del listado el Proveedor">
                                         <label>(*) Proveedor:</label>
                                         <div class="input-group">
                                             {{ form.proveedor }}
-                                            <div class="input-group-append">
+                                            <div class="input-group-append"
+                                                 data-intro="Si el Proveedor no existe hacer click para crearlo">
                                                 <button class="btn btn-success btn-flat btnAddProveedor" type="button">
                                                     <i class="fas fa-user-plus"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-3">
+                                    <div class="form-group col-3"
+                                         data-intro="Seleccionar del listado la condición de pago">
                                         <label>(*) Condición de Pago:</label>
                                         <br>
                                         {{ form.condicionPagoCompra|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                     </div>
-                                    <div class="form-group col-2">
+                                    <div class="form-group col-2"
+                                         data-intro="Seleccionar la fecha de compra">
                                         <label>(*) Fecha:</label>
                                         <div class="col-12 date" id="fecha" data-target-input="nearest">
                                             {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -82,12 +89,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="form-group col-3">
+                                    <div class="form-group col-3"
+                                         data-intro="Seleccionar del listado el tipo de comprobante">
                                         <label>(*) Tipo de Comprobante:</label>
                                         <br>
                                         {{ form.tipoComprobante }}
                                     </div>
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-4"
+                                         data-intro="Ingresar el número de comprobante de la compra">
                                         <label>(*) Número Comprobante:</label>
                                         <br>
                                         {{ form.nroComprobante|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -99,13 +108,16 @@
                                         <hr>
                                         <div class="card card-secondary">
                                             <div class="card-header">
-                                                <h3 class="card-title"><i class="fas fa-boxes"></i> Detalle de productos
+                                                <h3 class="card-title">
+                                                    <i class="fas fa-boxes"></i> Detalle de productos
                                                 </h3>
                                             </div>
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <label>Buscador de productos:</label>
-                                                    <div class="input-group">
+                                                    <label data-intro="Seleccione un Proveedor para poder ingresar productos">Buscador
+                                                        de productos:</label>
+                                                    <div class="input-group"
+                                                         data-intro="Se puede buscar por descripción, código, código del proveedor o código de barras del producto">
                                                         <input type="text" class="form-control" name="searchProductos"
                                                                placeholder="Ingrese una descripción de producto"
                                                                autocomplete="off">
@@ -117,15 +129,18 @@
                                                 </div>
                                                 <hr>
                                                 <button type="button"
-                                                        class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
-                                                        class="fas fa-search"></i> Buscar todos
+                                                        class="btn btn-primary btn-xs btn-flat btnSearchProductos"
+                                                        data-intro="Hacer click para visualizar todos los productos">
+                                                    <i class="fas fa-search"></i> Buscar todos
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-success btn-xs btn-flat btnAddProducto"><i
-                                                        class="fas fa-plus"></i> Agregar Producto
+                                                        class="btn btn-success btn-xs btn-flat btnAddProducto"
+                                                        data-intro="Si no existe el producto, hacer click para crearlo">
+                                                    <i class="fas fa-plus"></i> Agregar Producto
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos"
+                                                        data-intro="Eliminar todos los productos del detalle">
                                                     <i class="fas fa-trash"></i> Eliminar todos
                                                 </button>
                                                 <hr>
@@ -133,12 +148,17 @@
                                                        id="tablaProductos">
                                                     <thead>
                                                     <tr>
-                                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                                        <th scope="col" style="width: 10%;"
+                                                            data-intro="Eliminar el renglón">Eliminar
+                                                        </th>
                                                         <th scope="col" style="width: 48%;">Producto</th>
                                                         <th scope="col" style="width: 10%;">Costo</th>
                                                         <th scope="col" style="width: 12%;">Cantidad</th>
                                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                                        <th scope="col" style="width: 10%;"
+                                                            data-intro="Actualizar el precio de costo del Producto">
+                                                            Actualizar
+                                                        </th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -207,10 +227,12 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary btn-flat">
+                                    <button type="submit" class="btn btn-primary btn-flat"
+                                            data-intro="Hacer click para guardar el registro">
                                         <i class="fas fa-save"></i> Guardar registro
                                     </button>
-                                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                                    <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                                       data-intro="Hacer click para cancelar y regresar al listado de compras">
                                         <i class="fas fa-times"></i> Cancelar
                                     </a>
                                 </div>
@@ -239,7 +261,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-12">
+                                <div class="form-group col-12 mb-3">
                                     <label>(*) Razón Social:</label>
                                     <br>
                                     {{ formProveedor.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -248,13 +270,13 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6 mb-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Condición frente al IVA:</label>
                                     <br>
                                     {{ formProveedor.condicionIVA|add_class:'form-control condicionIvaFormProveedor'|attr:'required:true' }}
                                 </div>
 
-                                <div class="form-group col-6 mb-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Cuit:</label>
                                     <br>
                                     <div class="col-12" class="form-control" id="cuit" name="cuit"
@@ -266,12 +288,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>(*) Localidad:</label>
                                 <br>
                                 {{ formProveedor.localidad|add_class:'form-control localidadFormProveedor'|attr:'required:true' }}
                             </div>
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>(*) Dirección:</label>
                                 <div class="col-12" class="form-control" id="direccion" name="direccion">
                                     {{ formProveedor.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -280,16 +302,16 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>(*) Dirección de email:</label>
                                 <br>
-                                <div class="input-group" type="email" class="form-control" id="email" name="email">
+                                <div class="col-12" type="email" class="form-control" id="email" name="email">
                                     {{ formProveedor.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                     <span hidden id="errorEmail"
                                           style="color: red;">Dirección de correo electrónico no válido </span>
                                 </div>
                             </div>
-                            <div class="form-group col-4 mb-4">
+                            <div class="form-group col-4 mb-3">
                                 <label>(*) Teléfono:</label>
                                 <div class="col-12" class="form-control" id="telefono" name="telefono"
                                      onkeypress="return isNumberKey(event)"
@@ -300,14 +322,15 @@
                         </div>
 
                         <div class="row">
-                            <div class="form-group col-6 mb-6">
+                            <div class="form-group col-6 mb-3">
                                 <label>CBU - CVU:</label>
                                 <br>
-                                <div class="input-group" type="text" class="form-control" id="cbu" name="cbu">
+                                <div class="col-12" class="form-control" id="cbu" name="cbu"
+                                     onkeypress="return isNumberKey(event)">
                                     {{ formProveedor.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                                 </div>
                             </div>
-                            <div class="form-group col-4 mb-4">
+                            <div class="form-group col-4 mb-3">
                                 <label>Alias:</label>
                                 <div class="col-12" class="form-control" id="alias" name="alias">
                                     {{ formProveedor.alias|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -316,12 +339,12 @@
                         </div>
                         <div class="row">
                             <div class="input-group">
-                                <div class="form-group col-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Condición de Pago:</label>
                                     <br>
                                     {{ formProveedor.condicionPago|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                                 </div>
-                                <div class="form-group col-6">
+                                <div class="form-group col-6 mb-3">
                                     <label>(*) Tipo de Percepción:</label>
                                     <br>
                                     {{ formProveedor.tipoPercepcion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -329,11 +352,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col-2">
+                            <div class="form-group col-2 mb-3">
                                 <label>¿Cuenta Corriente?:</label>
                                 <input type="checkbox" class="form-control" id="ctaCte" name="ctaCte" value="">
                             </div>
-                            <div class="form-group col-4">
+                            <div class="form-group col-4 mb-3">
                                 <label>Plazo:</label>
                                 <br>
                                 <div class="col-12 date" class="form-control" id="plazoCtaCte" name="plazoCtaCte">
@@ -409,7 +432,7 @@
                             <div class="form-group col-3 mb-3">
                                 <label>Código:</label>
                                 <br>
-                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off' }}
+                                {{ formProducto.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly' }}
                             </div>
                             <div class="form-group col-3 mb-3">
                                 <label>Código Proveedor:</label>

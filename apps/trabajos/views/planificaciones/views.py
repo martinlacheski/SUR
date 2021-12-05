@@ -319,6 +319,8 @@ class PlanificacionesSemanalesPdfView(LoginRequiredMixin, ValidatePermissionRequ
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('planificaciones/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
@@ -328,7 +330,7 @@ class PlanificacionesSemanalesPdfView(LoginRequiredMixin, ValidatePermissionRequ
                 'inicio': planificacion.fechaInicio,
                 'fin': planificacion.fechaFin,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

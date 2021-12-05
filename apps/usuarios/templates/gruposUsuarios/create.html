@@ -3,9 +3,10 @@
 {% load static %}
 {% block head %}
     {% block head_form %}
-    <!-- Select 2 -->
-    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet">
-    <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}" rel="stylesheet">
+        <!-- Select 2 -->
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet">
+        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
+              rel="stylesheet">
     {% endblock %}
 {% endblock %}
 {% block content %}
@@ -56,7 +57,7 @@
         </div>
     </form>
 
-        <!-- select2 -->
+    <!-- select2 -->
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
 
@@ -119,17 +120,17 @@
         ]
 
         // Traducción de permisos. No afecta su valor real.
-        function simple_traductor(texto){
-            if (texto.includes('Can add')){
+        function simple_traductor(texto) {
+            if (texto.includes('Can add')) {
                 texto = texto.replace('Can add', 'Puede crear');
             }
-            if (texto.includes('Can change')){
+            if (texto.includes('Can change')) {
                 texto = texto.replace('Can change', 'Puede modificar');
             }
-            if (texto.includes('Can delete')){
+            if (texto.includes('Can delete')) {
                 texto = texto.replace('Can delete', 'Puede borrar');
             }
-            if (texto.includes('Can view')){
+            if (texto.includes('Can view')) {
                 texto = texto.replace('Can view', 'Puede ver');
             }
             return texto;
@@ -137,7 +138,7 @@
 
 
         // Uso de la función
-        for (const p in permisos_all){
+        for (const p in permisos_all) {
             permisos_all[p].text = simple_traductor(permisos_all[p].text);
         }
 
@@ -151,7 +152,6 @@
             })
 
         {%  if action == 'edit' %}
-            console.log("hola");
             // Metemos en un array los permisos de ESTE grupo
             ids = [];
             i = 0;
@@ -159,8 +159,6 @@
                 ids[i] = "{{ permiso.codename }}";
                 i++;
             {%  endfor %}
-
-            console.log(ids)
 
             // Prepopulamos el select con los users de este tipoEvento
             select2.val(ids);

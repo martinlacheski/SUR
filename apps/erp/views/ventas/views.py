@@ -53,6 +53,8 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('ventas/report.html')
                 # Obtenemos el detalle del Reporte
@@ -117,7 +119,7 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'cliente': cliente,
                         'inicio': inicio,
@@ -135,9 +137,9 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteVentas.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteVentas.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteVentas.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteVentas.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -248,6 +250,8 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('ventas/reportAuditoria.html')
                 # Obtenemos el detalle del Reporte
@@ -299,7 +303,7 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'venta': venta,
                         'accion': accion,
@@ -313,9 +317,9 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                     # Generamos el render del contexto
                     html = template.render(context)
                     # Asignamos la ruta donde se guarda el PDF
-                    urlWrite = settings.MEDIA_ROOT + 'reportes/reporteAuditoriaVentas.pdf'
+                    urlWrite = settings.MEDIA_ROOT + 'reporteAuditoriaVentas.pdf'
                     # Asignamos la ruta donde se visualiza el PDF
-                    urlReporte = settings.MEDIA_URL + 'reportes/reporteAuditoriaVentas.pdf'
+                    urlReporte = settings.MEDIA_URL + 'reporteAuditoriaVentas.pdf'
                     # Asignamos la ruta del CSS de BOOTSTRAP
                     css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
                     # Creamos el PDF
@@ -418,7 +422,23 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])
                 data['iva'] = iva.iva
-            # si no existe el Producto lo creamos
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_prod.id + 1)
+                if ultimo_prod.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
@@ -428,7 +448,15 @@ class VentasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Crea
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+            # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -633,7 +661,15 @@ class VentasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upda
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # si no existe el Servicio lo creamos
+            # Generamos el Codigo para el nuevo Servicio
+            elif action == 'generar_codigo_servicio':
+                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                nuevo_cod = str(ultimo_serv.id + 1)
+                if ultimo_serv.id <= 99999:
+                    while len(nuevo_cod) <= 4:
+                        nuevo_cod = '0' + nuevo_cod
+                data['codigo'] = nuevo_cod
+                # Guardamos el Servicio creado
             elif action == 'create_servicio':
                 with transaction.atomic():
                     formServicio = ServiciosForm(request.POST)
@@ -783,6 +819,8 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('ventas/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
@@ -805,7 +843,7 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

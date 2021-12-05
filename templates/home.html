@@ -1,77 +1,8 @@
 {% extends 'body.html' %}
 {% load static %}
 {% block head %}
-    <!-- Graficos -->
-    <script src="{% static 'js/grafics.js' %}"></script>
+
 {% endblock %}
 {% block content %}
-    <div class="row">
-        <!-- Columna IZQUIERDA -->
-        <div class="col-md-6">
 
-           <!-- BAR CHART -->
-            <div class="card card-success">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="card-title">Ventas por mes</h3>
-                        <a href="javascript:void(0);">Ver reporte</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart">
-                        <canvas id="barChart"
-                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- PIE CHART -->
-            <div class="card card-danger">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="card-title">Ranking de tapas de cilindro por mes</h3>
-                        <a href="javascript:void(0);">Ver reporte</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="pieChart"
-                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Columna DERECHA -->
-        <div class="col-md-6">
-
-            <!-- LINE CHART -->
-            <div class="card card-info">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="card-title">Tapas de Cilindro por mes</h3>
-                        <a href="javascript:void(0);">Ver reporte</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="chart">
-                        <canvas id="lineChart"
-                                style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- DONUT CHART -->
-            <div class="card card-danger">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="card-title">Ranking de Clientes por mes</h3>
-                        <a href="javascript:void(0);">Ver reporte</a>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <canvas id="donutChart"
-                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
