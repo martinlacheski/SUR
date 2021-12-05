@@ -580,7 +580,9 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     item = i.toJSON()
                     item['costoProducto'] = i.costo
                     item['proveedor'] = proveedor
+                    item['pedidoDetalle'] = i.pedido.id
                     data.append(item)
+
             # Buscamos el proveedor que gano el pedido del producto y los otros proveedores
             elif action == 'get_detalle_proveedor':
                 data = []
@@ -589,6 +591,7 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 proveedores = Pedidos.objects.filter(pedidoSolicitud=pedido.id).exclude(proveedor_id=request.POST['pk'])
                 for prov in proveedores:
                     data.append({'id': prov.proveedor.id, 'text': prov.proveedor.razonSocial})
+
             # Obtenemos el detalle de oferta del proveedor seleccionado
             elif action == 'get_detalle_cotizacion':
                 try:
@@ -599,6 +602,7 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         pedidoSolicitudProveedor__proveedor=request.POST['pk']).filter(
                         pedidoSolicitudProveedor__pedidoSolicitud=self.get_object().id)
                     producto = filtro.get(producto=request.POST['producto'])
+
                     # Agregamos el proveedor seleccionado y los otros proveedores del pedido
                     proveedor = Proveedores.objects.get(id=request.POST['pk'])
                     provs.append({'id': proveedor.id, 'text': proveedor.razonSocial})
@@ -608,6 +612,15 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     data.append({'marcaOfertada': producto.marcaOfertada, 'costo': producto.costo, 'proveedores': provs})
                 except Exception as e:
                     print(str(e))
+
+            elif action == 'get_proveedor':
+                try:
+                    data = []
+                    proveedor = Proveedores.objects.get(id=request.POST['pk'])
+                    data.append(proveedor.toJSON())
+                except Exception as e:
+                    data['error'] = str(e)
+
             elif action == 'actualizar_detalle_pedido':
                 with transaction.atomic():
                     try:
@@ -622,19 +635,35 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                             pedido__pedidoSolicitud=pedidoSolicitud)
                         productoEliminar = detallePedido.get(producto=prod)
 
+                        # Asignamos a una variable el pedido del cual hay que eliminar el detalle
+                        pedidoEliminar = productoEliminar.pedido
+
                         # asignamos la cantidad del producto para reasignar
                         cant = productoEliminar.cantidad
 
                         # Aca eliminamos el producto
                         productoEliminar.delete()
 
-                        # Obtenemos el detalle del producto de la propuesta del proveedor a asignar
+                        # Actualizamos la cabecera del Proveedor que eliminamos el producto
+                        subtotal = 0
+                        iva = 0
+                        total = 0
+                        for det in DetallePedido.objects.filter(pedido=pedidoEliminar.id):
+                            subtotal += det.subtotal
+                            iva += (det.producto.costo * det.producto.iva.iva / 100) * det.cantidad
+                        total = subtotal + iva
+                        pedidoEliminar.subtotal = subtotal
+                        pedidoEliminar.iva = iva
+                        pedidoEliminar.total = total
+                        pedidoEliminar.save()
+
+                        # Obtenemos el detalle del producto de la propuesta del proveedor a asignar el producto
                         filtro = DetallePedidoSolicitudProveedor.objects.filter(
                             pedidoSolicitudProveedor__pedidoSolicitud=pedidoSolicitud).filter(
                             pedidoSolicitudProveedor__proveedor=request.POST['pk'])
                         producto = filtro.get(producto=prod)
 
-                        # Obtenemos el Detalle del Pedido actual del proveedor al cual tenemos que asignar el producto
+                        # Obtenemos el Pedido del proveedor al cual tenemos que asignar el producto
                         pedidoNuevoProveedor = Pedidos.objects.filter(
                             pedidoSolicitud_id=pedidoSolicitud).get(Q(proveedor=proveedor))
 
@@ -648,7 +677,8 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         detallePedido.producto_id = producto.producto_id
                         detallePedido.marcaOfertada = producto.marcaOfertada
                         detallePedido.save()
-                        #Actualizamos la cabecera del Pedido
+
+                        #Actualizamos la cabecera del Pedido con el producto asignado
                         subtotal = 0
                         iva = 0
                         total = 0
@@ -663,7 +693,54 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     except Exception as e:
                         print(str(e))
 
+            elif action == 'confirm':
+                with transaction.atomic():
+                    try:
+                        # Obtenemos el detalle del Pedido
+                        pedidoRequest = json.loads(request.POST['pedido'])
 
+                        # Obtenemos el PedidoSolicitud para borrar el detalle
+                        pedidoSolicitud = pedidoRequest['pedidoSolicitud']
+
+                        # Filtramos los pedidos que tengan el Pedido de Solicitud
+                        pedidos = Pedidos.objects.filter(pedidoSolicitud_id=pedidoSolicitud)
+
+                        # Eliminamos el detalle de cada pedido asociado al Pedido de Solicitud
+                        for p in pedidos:
+                            p.detallepedido_set.all().delete()
+
+                        # Volvemos a crear el detalle de los pedidos asociados al Pedido de Solicitud
+                        for i in pedidoRequest['productos']:
+                            # Creamos una instancia de Detalle de Pedido
+                            detalle = DetallePedido()
+                            detalle.pedido_id = i['pedidoDetalle']
+                            detalle.producto_id = i['producto']['id']
+                            detalle.marcaOfertada = i['marcaOfertada']
+                            detalle.costo = i['costoProducto']
+                            detalle.cantidad = i['cantidad']
+                            detalle.subtotal = i['subtotal']
+                            detalle.save()
+
+                        # Actualizamos las cabecera de los pedidos
+                        for pedido in pedidos:
+                            subtotal = 0
+                            iva = 0
+                            detalle = DetallePedido.objects.filter(pedido=pedido)
+                            for det in detalle:
+                                subtotal += det.subtotal
+                                iva += (det.producto.costo * det.producto.iva.iva / 100) * det.cantidad
+                            pedido.subtotal = subtotal
+                            pedido.iva = iva
+                            pedido.total = subtotal + iva
+                            # Cambiamos el estado del PEDIDO a True (REALIZADO)
+                            pedido.estado = True
+                            pedido.usuario = request.user
+                            pedido.save()
+
+                        # ACA Cambiamos el estado del pedido y envio de MAIL
+
+                    except Exception as e:
+                        print(str(e))
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -675,7 +752,7 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
         context['title'] = 'Confirmar solicitud de pedido'
         context['entity'] = 'Solicitudes de Pedidos'
         context['list_url'] = self.success_url
-        context['action'] = 'edit'
+        context['action'] = 'confirm'
         context['pedido'] = self.get_object().id
         return context
 

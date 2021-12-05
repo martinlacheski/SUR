@@ -3,8 +3,7 @@ var tablaProductos;
 //Definimos una estructura en JS para crear la Solicitud de Pedido
 var pedido = {
     items: {
-        fecha: '',
-        fechaLimite: '',
+        pedidoSolicitud: '',
         subtotal: 0.00,
         iva: 0.00,
         total: 0.00,
@@ -104,21 +103,6 @@ function calcular_importes() {
     var ivaCalculado = 0.00;
     //Recorremos el Array de productos para ir actualizando los importes
     $.each(pedido.items.productos, function (pos, dict) {
-        $.ajax({
-            url: window.location.pathname,
-            type: 'POST',
-            data: {
-                'csrfmiddlewaretoken': csrftoken,
-                'action': 'search_precioProducto',
-                'pk': dict.id
-            },
-            dataType: 'json',
-            success: function (data) {
-                dict.costo = parseFloat(data);
-                //Actualizamos el precio del list
-                pedido.items.productos[pos].costo = parseFloat(data);
-            }
-        });
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.costo);
         ivaCalculado += dict.subtotal * (dict.producto.iva.iva / 100);
@@ -137,7 +121,7 @@ function calcular_importes() {
 $(document).ready(function () {
     $('input[name="id_pedido"]').val();
     var accion = $('input[name="action"]').val();
-    if (accion === 'edit') {
+    if (accion === 'confirm') {
         //Buscamos el detalle de los productos por ajax
         $.ajax({
             url: window.location.pathname,
@@ -230,7 +214,8 @@ $(function () {
             $('#modalDetalleProducto').modal('show');
         });
 
-//----------------------Al seleccionar un Proveedor-----------------------------//
+    //----------------------Al seleccionar un Proveedor-----------------------------//
+
     $('select[name="actualizarProveedor"]').on('change', function () {
         var id = $('select[name="actualizarProveedor"]').val();
         var prod = $('input[name="idProductoUpdate"]').val();
@@ -262,53 +247,82 @@ $(function () {
     // Submit Actualizacion Detalle
     $('#formDetalleProducto').on('submit', function (e) {
         e.preventDefault();
-        var id = $('select[name="actualizarProveedor"]').val();
-        var prod = $('input[name="idProductoUpdate"]').val();
-        //Bloque AJAX Actualizacion de Pedido
+        // actualizamos los campos con los valores correspondientes
+        var proveedor = $('select[name="actualizarProveedor"]').val();
+        var marcaOfertada = $('input[name="actualizarMarcaOfertada"]').val();
+        var costoProducto = $('input[name="actualizarPrecioCosto"]').val();
+        //Asignamos a una variable el renglon del pedido a modificar
+        var renglonActualizar = pedido.items.productos[renglon];
+        //Buscamos el proveedor con el ID
         $.ajax({
             url: window.location.pathname,
             type: 'POST',
             data: {
-                'action': 'actualizar_detalle_pedido',
-                'pk': id,
-                'producto': prod,
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'get_proveedor',
+                'pk': proveedor,
             },
             dataType: 'json',
-            headers: {
-                'X-CSRFToken': csrftoken
-            },
-        }).done(function (data) {
-            if (!data.hasOwnProperty('error')) {
-                // Actualizamos el Listado
-                //Buscamos el detalle de los productos por ajax
-                $.ajax({
-                    url: window.location.pathname,
-                    type: 'POST',
-                    data: {
-                        'csrfmiddlewaretoken': csrftoken,
-                        'action': 'get_productos_pedidos',
-                    },
-                    dataType: 'json',
-                    success: function (data) {
-                        //asignamos el detalle a la estructura
-                        pedido.items.productos = data;
-                        //actualizamos el listado de productos
-                        pedido.listProductos();
-                    }
-                });
-
-                $('#modalDetalleProducto').modal('hide');
+            success: function (data) {
+                renglonActualizar.proveedor = data[0];
+                renglonActualizar.marcaOfertada = marcaOfertada;
+                renglonActualizar.costo = costoProducto;
+                pedido.listProductos();
             }
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-        }).always(function (data) {
         });
+
+        $('#modalDetalleProducto').modal('hide');
+
+        // var id = $('select[name="actualizarProveedor"]').val();
+        // var prod = $('input[name="idProductoUpdate"]').val();
+        // //Bloque AJAX Actualizacion de Pedido
+        // $.ajax({
+        //     url: window.location.pathname,
+        //     type: 'POST',
+        //     data: {
+        //         'action': 'actualizar_detalle_pedido',
+        //         'pk': id,
+        //         'producto': prod,
+        //     },
+        //     dataType: 'json',
+        //     headers: {
+        //         'X-CSRFToken': csrftoken
+        //     },
+        // }).done(function (data) {
+        //     if (!data.hasOwnProperty('error')) {
+        //         // Actualizamos el Listado
+        //         //Buscamos el detalle de los productos por ajax
+        //         $.ajax({
+        //             url: window.location.pathname,
+        //             type: 'POST',
+        //             data: {
+        //                 'csrfmiddlewaretoken': csrftoken,
+        //                 'action': 'get_productos_pedidos',
+        //             },
+        //             dataType: 'json',
+        //             success: function (data) {
+        //                 //asignamos el detalle a la estructura
+        //                 pedido.items.productos = data;
+        //                 //actualizamos el listado de productos
+        //                 pedido.listProductos();
+        //             }
+        //         });
+        //
+        //
+        //     }
+        // }).fail(function (jqXHR, textStatus, errorThrown) {
+        // }).always(function (data) {
+        // });
+        // $('#modalDetalleProducto').modal('hide');
     });
-//------------------------------------SUBMIT PEDIDO----------------------------------------//
+//------------------------------------SUBMIT CONFIRMAR PEDIDO----------------------------------------//
+
     // Submit PEDIDO
     $('#pedidoForm').on('submit', function (e) {
+        var accion = $('input[name="action"]').val();
         e.preventDefault();
         if (pedido.items.productos.length === 0) {
-            error_action('Error', 'Debe al menos tener un producto en sus detalle', function () {
+            error_action('Error', 'Debe al menos tener un producto en su detalle', function () {
                 //pass
             }, function () {
                 //pass
@@ -316,11 +330,11 @@ $(function () {
         } else {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                     //realizamos el pedido mediante Ajax
-                    pedido.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                    pedido.items.fechaLimite = moment(moment($('input[name="fechaLimite"]').val(), 'DD-MM-YYYY HH:mm')).format('YYYY-MM-DD HH:mm');
                     var parameters = new FormData();
-                    //Pasamos la accion ADD
+                    //Pasamos la accion CONFIRM
                     parameters.append('action', $('input[name="action"]').val());
+                    //Pasamos el ID de Pedido de Solicitud
+                    pedido.items.pedidoSolicitud = $('input[name="id_pedido"]').val();
                     //Agregamos la estructura de PEDIDO con los detalles correspondientes
                     parameters.append('pedido', JSON.stringify(pedido.items));
                     //Bloque AJAX PEDIDO
@@ -335,21 +349,21 @@ $(function () {
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            if (!data.hasOwnProperty('error')) {
-                                confirm_action('Notificación', '¿Desea imprimir la nota de Pedido?', function () {
-                                    window.open('/pedidos/solicitudes/pdf/' + data.id + '/', '_blank');
-                                    location.replace(data.redirect);
-                                }, function () {
-                                    location.replace(data.redirect);
-                                });
-                                //location.replace(data.redirect);
-                            } else {
-                                error_action('Error', data.error, function () {
-                                    //pass
-                                }, function () {
-                                    //pass
-                                });
-                            }
+                            // if (!data.hasOwnProperty('error')) {
+                            //     confirm_action('Notificación', '¿Desea imprimir la nota de Pedido?', function () {
+                            //         window.open('/pedidos/solicitudes/pdf/' + data.id + '/', '_blank');
+                            //         location.replace(data.redirect);
+                            //     }, function () {
+                            //         location.replace(data.redirect);
+                            //     });
+                            //     //location.replace(data.redirect);
+                            // } else {
+                            //     error_action('Error', data.error, function () {
+                            //         //pass
+                            //     }, function () {
+                            //         //pass
+                            //     });
+                            // }
                         }
                     });
                 }
