@@ -31,7 +31,6 @@ con eso se puede ocultar los campos desde el JS
     - Grupos de Usuarios - Create
     - Usuarios a Notificar - Create
 
-
 --------------------------------------------------------------------------------------------------------------------
 
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
@@ -39,12 +38,6 @@ con eso se puede ocultar los campos desde el JS
 --------------------------------------------------------------------------------------------------------------------
 
 * VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
-
---------------------------------------------------------------------------------------------------------------------
-
-* PEDIDOS
-
-    - enviar correos electrónicos AL CONFIRMAR SOLICITUD DE PEDIDO Y AL CONFIRMAR PEDIDO
 
 --------------------------------------------------------------------------------------------------------------------
 
