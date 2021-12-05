@@ -1,65 +1,39 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.db.models import Count
 from django.utils import timezone
-from django.core.mail import send_mail
-from django.conf import settings
-import hashlib
+import datetime
 import random
-
-# Para remover duplicados
-import itertools
-
-# para hallar duplicados
-from collections import Counter
-
-from apps.erp.models import PedidosSolicitud, DetallePedidoSolicitud, \
-    Productos, PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, Pedidos
-
+import telegram
+from apscheduler.schedulers.background import BlockingScheduler
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.management.base import BaseCommand, CommandError
+from apps.bot_telegram.logicaBot import porcentajeTrabajo, notificarSistema
+from apps.bot_telegram.models import seguimientoTrabajos
 from apps.parametros.models import EstadoParametros
-from apps.trabajos.models import Trabajos
-from django.contrib.auth.models import Group
-from django.forms import model_to_dict
-from django.urls import reverse
-from . import logica_pedidos_auto
+from apps.trabajos.models import Trabajos, DetalleServiciosTrabajo
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from django.db.models import Count
+from apps.usuarios.models import Usuarios
+from apps.bot_telegram.logicaBot import porcentajeTrabajo
+#from apps.usuarios.models import TiposUsuarios
+from django.core.mail import EmailMultiAlternatives
+from django.conf import settings
+
+
+
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-
-        sub_total = 0
-        productos_stock_min = []
-        pedido = PedidosSolicitud()
-
-        for producto in Productos.objects.all():
-            if producto.stockReal < producto.stockMinimo and producto.reposicion > 0:
-                sub_total += producto.costo * producto.reposicion
-                productos_stock_min.append(producto)
-
-        pedido.fecha = timezone.now().date()
-        # pedido.fechaLimite = formPedidoRequest['fechaLimite'] No va a tener fecha límite si se crea mediante un cron.
-        #pedido.iva = float(sub_total) * 0.21
+        subject, from_email, to = 'prueba',settings.EMAIL_HOST_USER , 'leoquiroga221@gmail.com'
+        text_content = 'This is an important message.'
+        html_content = '<p>This is an <strong>important</strong> message.</p>'
+        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
 
 
-        pedido.total = sub_total
-        pedido.save()
-
-        pedido.iva = 0
-        for p in productos_stock_min:
-            pedido.iva += p.costo * (p.iva.iva / 100)
-            det = DetallePedidoSolicitud()
-            det.pedido_id = pedido.id
-            det.producto_id = p.id
-            det.costo = p.costo
-            det.cantidad = p.reposicion
-            det.subtotal = p.costo * p.reposicion
-            det.save()
-        pedido.subtotal = float(sub_total) - float(pedido.iva)
-        pedido.save()
-
-        # # Se debe integrar al proceso final
-        # soli_no_analizadas = PedidosSolicitud.objects.filter(analizado__isnull=True)
-        # print(soli_no_analizadas)
-        # for soli in soli_no_analizadas:
-        #     respuestas = PedidoSolicitudProveedor.objects.filter(respuesta__isnull=False, pedidoSolicitud=soli.id)
-        #     print(respuestas)
-
+def mensaje():
+    mensaje = "Hola! 👋 Te informo que el trabajo Nro° 34 \n\n" + \
+              "Marca: FORD \n" + "Modelo: FIESTA, ECOSPORT, KA \n\n" + \
+              "No está finalizado según la prioridad establecida.\n"
+    return mensaje

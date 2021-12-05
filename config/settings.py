@@ -186,7 +186,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONJOBS = [
     ('0 8 * * *', 'apps.bot_telegram.cron.rastreoTrabajos'),
-    ('0 8 * * 1', 'apps.ero.cron.generarSolicitudPedido'),
+    #('0 8 * * 1', 'apps.erp.cron.generarSolicitudPedido'),
 ]
 
 

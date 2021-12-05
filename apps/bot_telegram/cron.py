@@ -33,8 +33,7 @@ def rastreoTrabajos():
                 # Si ya existe un seguimiento para el trabajo en cuestión, ponemos su cant notif diaria a 0
                 segTrab = seguimientoTrabajos.objects.get(trabajo=t)
                 segTrab.cantVecesNotif_dia = 0
-                segTrab.cantVecesNotif_dia = 0
-                segTrab.respuestaUser = ""
+                segTrab.respuestaUser = None
                 segTrab.notif_por_sist = 0
             except ObjectDoesNotExist:
                 # Si no existe, creamos un seguimiento
@@ -54,24 +53,31 @@ def rastreoTrabajos():
         scheduler_eventos.start()
 
 
-# Utilizada para el seguimiento diario de los trabajos. Unicamente se ejecuta 4 veces.
-# Las primeras 3 de alerta, la última es la que asigna a otra persona el trabajo
+
+    """ Utilizada para el seguimiento diario de los trabajos. Unicamente se ejecuta 4 veces.
+        Las primeras 3 de alerta, la última es la que asigna a otra persona el trabajo """
+
 def job(t_supervisar):
     for t in t_supervisar:
         segTrab = seguimientoTrabajos.objects.get(trabajo=t)
+        # Si el usuario no respondió o si respondió "Postergar", entra
         if not segTrab.respuestaUser or segTrab.respuestaUser == 'Postergar':
 
             # Si se notificó más de 3 veces, se reasigna. Se notifica al usuario que "perdió" el trabajo y tmb a administraición
             if segTrab.cantVecesNotif_dia >= 3:
                 if t.usuarioAsignado.chatIdUsuario:
                     bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario,
-                                     text="🔴 Por falta de respuesta he reasignado tu trabajo Nro° " + str(t.id) + ".")
+                                     text="🔴 Por falta de respuesta he reasignado tu trabajo Nro° " + str(t.id) +
+                                     ". El mismo ya no será tu responsabilidad.")
                 reasignacionTrabajo(t, segTrab)
                 titulo = "Cambio de asignación de Trabajo"
                 descripcion = "El trabajo Nro° " + str(t.id) + " originalmente responsabilidad del usuario " + \
                               str(segTrab.inicialUserAsig.username) + ", fué re-asignado al usuario  " + \
                               str(segTrab.ultUserAsig.username) + "."
                 notificarSistema(titulo, descripcion)
+                if segTrab.ultUserAsig.chatIdUsuario:
+                    bot.send_message(chat_id=segTrab.ultUserAsig.chatIdUsuario,
+                                     text="⚠ AVISO ⚠ \nTe he asignado el trabajo  Nro° " + str(t.id) + ".")
             else:
                 # Usamos el try en caso de que se quiera evaluar un usuario NONE (trabajo express)
                 try:
@@ -126,7 +132,7 @@ def mensaje(t):
 #                                   Se asume que todos tienen la misma cantidad de trabajos
 #                                   debido al primer criterio.
 #               TERCER CRITERIO:    De manera aleatoria, habiendose evaluado los criterios 1 y 2,
-#                                   se toma un trabajador de manera aleatoria
+#                                   se toma un trabajador.
 
 
 # Aplica los 3 diferentes criterios donde cada criterio tiene en cuenta el anterior.
@@ -183,8 +189,8 @@ def reasignacionTrabajo(trabajo, segTrabajo):
 
 
 
-# Realiza una sumatoria del avance total de todos los trabajos de cada empleado.
-# No tiene en cuenta trabajos finalizados, cancelados o entregados.
+    """ Realiza una sumatoria del avance total de todos los trabajos de cada empleado.
+        No tiene en cuenta trabajos finalizados, cancelados o entregados. """
 def avanceTotalizado(empleado):
     estados = EstadoParametros.objects.last()
     estados_filter = [estados.estadoEspecial.id, estados.estadoInicial.id, estados.estadoPlanificado.id]
@@ -218,10 +224,13 @@ def msjNotificarSistema(nuevoUser, trabajo, segTrabajo):
     notificarSistema(titulo, descripcion)
 
 
-# Obtiene todos los usuarios que pueden realizar trabajos y luego vé cuantos trabajos tiene asignado cada uno
-# Devuelve una lista de diccionarios que contiene c/u un usuario y cuanto trab tiene aasignados.
+    """ Obtiene todos los usuarios que pueden realizar trabajos y luego vé
+        cuantos trabajos tiene asignado cada uno.
+        Devuelve una lista de diccionarios que contiene c/u
+        un usuario y cuanto trab tiene asignados. """
 def eleccionUsuarios(userTrabajo):
     empsAEvaluar = []
+    # Se toman todos los usuarios excepto el responsable inicial del trabajo
     users = Usuarios.objects.filter(realizaTrabajos=True).exclude(pk=userTrabajo.id)
     estados = EstadoParametros.objects.last()
     estados_filter = [estados.estadoEspecial.id, estados.estadoInicial.id, estados.estadoPlanificado.id]
