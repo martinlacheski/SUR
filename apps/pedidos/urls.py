@@ -14,6 +14,7 @@ urlpatterns = [
     path('pedidos/solicitudes/confirm/<int:pk>/', PedidosSolicitudConfirmView.as_view(), name='pedidos_solicitudes_confirm'),
     path('pedidos/solicitudes/delete/<int:pk>/', PedidosSolicitudDeleteView.as_view(), name='pedidos_solicitudes_delete'),
     path('pedidos/solicitudes/pdf/<int:pk>/', PedidosSolicitudPdfView.as_view(), name='pedidos_solicitudes_pdf'),
+    path('pedidos/realizados/pdf/<int:pk>/', PedidoRealizadoPdfView.as_view(), name='pedido_realizado_pdf'),
     # Visualizacion de la confirmación para modificar, confirmar o cancelar un PEDIDO
     # path('pedidos/update/<int:pk>/', PedidosUpdateView.as_view(), name='pedidos_solicitudes_update'),
     path('pedidos/confirm/<int:pk>/', PedidosConfirmView.as_view(), name='pedidos_solicitudes_confirm'),

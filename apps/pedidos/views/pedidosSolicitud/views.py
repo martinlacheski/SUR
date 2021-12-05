@@ -462,10 +462,13 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                         det.costo = float(i['costo'])
                         det.subtotal = float(i['subtotal'])
                         det.save()
+
                     # Devolvemos en Data la ID de la Solicitud de Pedido para poder generar la Boleta
                     data = {'id': pedido.id}
                     data['redirect'] = self.url_redirect
-                    crearSolicitudes(pedido, dominio)  # Arma link y prepara solicitud para proveedor
+
+                    # Arma link y prepara solicitud para proveedor
+                    crearSolicitudes(pedido, dominio)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -606,10 +609,12 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                     # Agregamos el proveedor seleccionado y los otros proveedores del pedido
                     proveedor = Proveedores.objects.get(id=request.POST['pk'])
                     provs.append({'id': proveedor.id, 'text': proveedor.razonSocial})
-                    proveedores = Pedidos.objects.filter(pedidoSolicitud=pedido.id).exclude(proveedor_id=request.POST['pk'])
+                    proveedores = Pedidos.objects.filter(pedidoSolicitud=pedido.id).exclude(
+                        proveedor_id=request.POST['pk'])
                     for prov in proveedores:
                         provs.append({'id': prov.proveedor.id, 'text': prov.proveedor.razonSocial})
-                    data.append({'marcaOfertada': producto.marcaOfertada, 'costo': producto.costo, 'proveedores': provs})
+                    data.append(
+                        {'marcaOfertada': producto.marcaOfertada, 'costo': producto.costo, 'proveedores': provs})
                 except Exception as e:
                     print(str(e))
 
@@ -624,6 +629,7 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 except Exception as e:
                     data['error'] = str(e)
 
+            # Borrar porque no se ocupa
             elif action == 'actualizar_detalle_pedido':
                 with transaction.atomic():
                     try:
@@ -681,13 +687,13 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         detallePedido.marcaOfertada = producto.marcaOfertada
                         detallePedido.save()
 
-                        #Actualizamos la cabecera del Pedido con el producto asignado
+                        # Actualizamos la cabecera del Pedido con el producto asignado
                         subtotal = 0
                         iva = 0
                         total = 0
                         for det in DetallePedido.objects.filter(pedido=pedidoNuevoProveedor.id):
-                            subtotal+= det.subtotal
-                            iva+= (det.producto.costo * det.producto.iva.iva/100) * det.cantidad
+                            subtotal += det.subtotal
+                            iva += (det.producto.costo * det.producto.iva.iva / 100) * det.cantidad
                         total = subtotal + iva
                         pedidoNuevoProveedor.subtotal = subtotal
                         pedidoNuevoProveedor.iva = iva
@@ -740,7 +746,15 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                             pedido.usuario = request.user
                             pedido.save()
 
-                        # ACA Cambiamos el estado del pedido y envio de MAIL
+                        # Cambiamos el estado de la solicitud de pedido REALIZADO en True
+                        solicitud = PedidosSolicitud.objects.get(id=pedidoSolicitud)
+                        solicitud.realizado = True
+                        solicitud.save()
+                        # ACA se realiza el envio de MAIL
+
+                        # Devolvemos en Data la ID de la Solicitud de Pedido para poder generar la Boleta
+                        data = {'id': solicitud.id}
+                        data['redirect'] = self.url_redirect
 
                     except Exception as e:
                         print(str(e))
@@ -779,12 +793,20 @@ class PedidosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
             if action == 'delete':
                 with transaction.atomic():
                     # Obtenemos la solicitud de pedido que se esta editando
-                    pedido = self.get_object()
-                    # obtenemos el Usuario actual
-                    pedido.usuario = request.user
-                    # Eliminamos la Solicitud de Pedido
-                    pedido.estado = False
-                    pedido.save()
+                    solicitud = self.get_object()
+                    # Filtramos los pedidos que tengan el Pedido de Solicitud
+                    pedidos = Pedidos.objects.filter(pedidoSolicitud_id=solicitud)
+                    # en cada pedido actualizamos el usuario y estado del Pedido
+                    for ped in pedidos:
+                        # obtenemos el usuario que realiza la cancelacion
+                        ped.usuario = request.user
+                        # Cambiamos el estado del Pedido a False
+                        ped.estado = False
+                        ped.save()
+                    # Cambiamos el estado de la solicitud de pedido REALIZADO en False
+                    solicitud = PedidosSolicitud.objects.get(pk=solicitud.id)
+                    solicitud.realizado = False
+                    solicitud.save()
                     data['redirect'] = self.url_redirect
                     data['check'] = 'ok'
             else:
@@ -801,3 +823,51 @@ class PedidosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Upd
         context['list_url'] = self.success_url
         context['action'] = 'delete'
         return context
+
+
+class PedidoRealizadoPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
+    permission_required = 'pedidos.view_pedidossolicitud'
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Armamos el ARRAY de Diccionario con los datos de como quedo conformado el Detalle del Pedido
+            detalle = []
+            # Obtenemos todos los productos relacionados a la solicitud del Pedido
+            for i in DetallePedido.objects.filter(
+                    pedido__pedidoSolicitud=self.kwargs['pk']):
+                proveedor = i.pedido.proveedor.toJSON()
+                item = i.toJSON()
+                item['pedidoSolicitud'] = i.pedido.pedidoSolicitud.toJSON()
+                item['costoProducto'] = i.costo
+                item['proveedor'] = proveedor
+                item['pedidoDetalle'] = i.pedido.id
+                detalle.append(item)
+
+            # Traemos la empresa para obtener los valores
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
+            # Utilizamos el template para generar el PDF
+            template = get_template('pedidosSolicitud/pdfRealizado.html')
+            context = {
+                'pedido': PedidosSolicitud.objects.get(id=self.kwargs['pk']),
+                'detalle': detalle,
+                'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
+            }
+
+            # Generamos el render del contexto
+            html = template.render(context)
+
+            # Asignamos la ruta del CSS de BOOTSTRAP
+            css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+
+            # Creamos el PDF
+            pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+
+            # Retornamos el PDF
+            return HttpResponse(pdf, content_type='application/pdf')
+        except Exception as e:
+            print(str(e))
+            pass
+        return HttpResponseRedirect(reverse_lazy('pedidos:pedidos_solicitudes_list'))

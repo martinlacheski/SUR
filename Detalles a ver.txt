@@ -36,13 +36,7 @@ python manage.py loaddata database.json
 
 * PEDIDOS - TERMINAR
 
-* Resolver la forma de visualizar el detalle de la solicitud de los proveedores y poder modificar antes de aprobar el pedido
-
-    - Eliminar un producto del pedido   - OK
-
     - enviar correos electrónicos
-
-* Si no hay visto en el detalle EYE no mostrar las propuestas
 
 --------------------------------------------------------------------------------------------------------------------
 

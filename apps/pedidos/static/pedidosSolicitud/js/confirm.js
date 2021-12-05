@@ -354,21 +354,21 @@ $(function () {
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            // if (!data.hasOwnProperty('error')) {
-                            //     confirm_action('Notificación', '¿Desea imprimir la nota de Pedido?', function () {
-                            //         window.open('/pedidos/solicitudes/pdf/' + data.id + '/', '_blank');
-                            //         location.replace(data.redirect);
-                            //     }, function () {
-                            //         location.replace(data.redirect);
-                            //     });
-                            //     //location.replace(data.redirect);
-                            // } else {
-                            //     error_action('Error', data.error, function () {
-                            //         //pass
-                            //     }, function () {
-                            //         //pass
-                            //     });
-                            // }
+                            if (!data.hasOwnProperty('error')) {
+                                confirm_action('Notificación', '¿Desea imprimir la nota de Pedido?', function () {
+                                    window.open('/pedidos/realizados/pdf/' + data.id + '/', '_blank');
+                                    location.replace(data.redirect);
+                                }, function () {
+                                    location.replace(data.redirect);
+                                });
+                                //location.replace(data.redirect);
+                            } else {
+                                error_action('Error', data.error, function () {
+                                    //pass
+                                }, function () {
+                                    //pass
+                                });
+                            }
                         }
                     });
                 }
