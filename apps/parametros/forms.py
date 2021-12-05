@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, EmailInput, PasswordInput
+from django.forms import ModelForm, TextInput, Select, EmailInput, PasswordInput, forms
 
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, Marcas, Modelos, \
     Prioridades, Estados, TiposPercepciones, MediosPago, Empresa, EstadoParametros
@@ -518,3 +518,7 @@ class EmpresaForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+
+class UploadBackupForm(forms.Form):
+    file = forms.FileField()

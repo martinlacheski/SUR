@@ -1,56 +1,276 @@
-{% extends 'body.html' %}
-{% load widget_tweaks %}
+{% extends 'base.html' %}
 {% load static %}
-{% block head %}
-    {% block head_form %}
-        <!-- Select2 -->
-        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2/css/select2.min.css' %}" rel="stylesheet"/>
-        <link href="{% static 'lib/adminlte-3.1.0/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}"
-              rel="stylesheet"/>
-        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/select2.min.js' %}"></script>
-        <script src="{% static 'lib/adminlte-3.1.0/plugins/select2/js/i18n/es.js' %}"></script>
-
-        <!-- archivo JS -->
-        <script src="{% static 'empresa/js/backup.js' %}"></script>
-    {% endblock %}
-{% endblock %}
-{% block content %}
-    <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
-        <div class="card card-default">
-            <div class="card-header">
-                <h3 class="card-title">
-                    <i class="fas fa-database"></i>
-                    {{ title }}
-                </h3>
-            </div>
-            <div class="card-body">
-                {% csrf_token %}
-                <input type="hidden" name="action" value="{{ action }}">
-                <div class="row">
-                    <div class="form-group col-3">
-                        <button type="button"
-                                class="btn btn-primary btn-flat btnGenerar">
-                            <i class="fas fa-file-download"></i> Realizar Copia de Seguridad
-                        </button>
+{% load widget_tweaks %}
+{% block body %}
+    <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Header -->
+        {% include 'header.html' %}
+        <!-- Sidebar -->
+        {% include 'sidebar.html' %}
+        <!-- Content -->
+        <div class="content-wrapper">
+            <!-- Content-Header -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 text-dark"> Bienvenido <small>{{ request.user.username }}</small></h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right font-weight-bold">
+                                <li class="breadcrumb-item"><a href="{% url 'home:home' %}">Inicio</a></li>
+                                <li class="breadcrumb-item"><a href="{{ list_url }}">{{ entity }}</a></li>
+                            </ol>
+                        </div>
                     </div>
-                    <div class="form-group col-9">
-                        <input id="uploadFile" class="upfile-button uploadFile" type="file">
-                        <button type="button"
-                                class="btn btn-success btn-flat upfile-button btnReestablecer">
-                            <i class="fas fa-file-upload"></i> Reestablecer Copia de Seguridad
-                        </button>
-                    </div>
-
                 </div>
             </div>
+            <!-- /.content-header -->
 
-            <div class="card-footer">
-                {#Mensaje de error#}
-                <ul id="errorList" name="errorList" class="alert-danger"></ul>
-                <a href="{{ home_url }}" class="btn btn-danger btn-flat">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </a>
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <!-- Block Content -->
+                    {% block content %}
+
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="callout callout-success" style="background-color:#dffae1;">
+                                    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form id="ajaxForm" method="post" action="." enctype="multipart/form-data">
+                            <div class="card card-default">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-database"></i>
+                                        {{ title }}
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="{{ action }}">
+                                    <div class="row">
+                                        <div class="form-group col-3">
+                                            <button type="button"
+                                                    class="btn btn-primary btn-flat btnGenerar">
+                                                <i class="fas fa-file-download"></i> Realizar Copia de Seguridad
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="form-group col-9">
+                                            <!-- <input id="uploadFile" class="upfile-button uploadFile" type="file"> -->
+                                            <button type="button"
+                                                    class="btn btn-success btn-flat upfile-button btnReestablecer">
+                                                <i class="fas fa-file-upload"></i> Reestablecer Copia de Seguridad
+                                            </button>
+                                            {{ form.file }}
+                                            <p hidden style="color:red;" id="front_errors"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <a href="{{ home_url }}" class="btn btn-danger btn-flat">
+                                    <i class="fas fa-arrow-left"></i> Volver
+                                </a>
+                            </div>
+                        </div>
+                        </form>
+
+                    {% endblock %}
             </div>
         </div>
-    </form>
+    </div>
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+
+    {% include 'footer.html' %}
+    <!-- /.control-sidebar -->
+    {% block javascript %}
+
+    {% endblock %}
+
+    <!-- modal de detalle -->
+    <div class="modal fade" id="modal-lg-notif" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Detalle de Notificación</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="bg-light color-palette pt-4 pb-4 pl-4 ml-5 mr-5 pr-4">
+                            <p id="pDescripcionNotif"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <button type="button" id="" class="btn btn-info btn-flat btn-block"
+                                    data-dismiss="modal">
+                                <i class="fas fa-check"></i> ¡OK!
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'lib/adminlte-3.1.0/plugins/toastr/toastr.min.js' %}"></script>
+    <script src="{% static 'empresa/js/backup.js' %}"></script>
+
+    <script>
+        /*   Marca que un evento ha sido cumplido lo que implica que
+             el mismo no será notificado nuevamente.       */
+        $('#btnCumplido').on('click', function () {
+
+            $.ajax({
+                url: '/agenda/list/',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'evento_cumplido',
+                    'pk': this.getAttribute("evento_id"),
+                    'user': "{{ request.user.id }}",
+                },
+            });
+
+            // Escondemos modal
+            $('#modal-lg-eventos-notif').modal('hide');
+            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-light');
+
+
+        });
+    </script>
+
+    <script>
+
+        function detalleNotif(elemento) {
+            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-light');
+            elemento.setAttribute("class", "elementoNotificacion dropdown-item"); // sacamos su color (rojo o azul)
+            $.ajax({
+                url: '/notificaciones/updateList/', // Es mejor hardcodear esto que pasarle A TOOODOS los templates un contextdata
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'detalle_notif',
+                    'pk': elemento.getAttribute("notif_ref"),
+                    'user': "{{ request.user.id }}",
+                },
+                success: function (data) {
+
+                    /* Insertamos descripción en modal */
+                    var modalDescripcion = document.getElementById("pDescripcionNotif");
+                    modalDescripcion.innerHTML = "";
+                    modalDescripcion.innerHTML = data[0]['descripcion'];
+
+                    /* Mostramos modal */
+                    $('#modal-lg-notif').modal('show');
+
+                    /* actualizamos notificaciones */
+                    updateNotificaciones();
+                }
+            });
+        }
+
+        function agregarNotif(titulo, estado, id_notif) {
+            var listaNotif = document.getElementById("listaNotif");
+            if (estado === 'pendiente') {
+                var notifElement = '<div class="dropdown-divider"></div>' + '<a onclick="detalleNotif(this)" ' +
+                    'notif_ref=' + '"' + id_notif + '"' +
+                    'class="elementoNotificacion bg-info color-palette dropdown-item">' +
+                    '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
+                    '<div class="dropdown-divider"></div>';
+            }
+            if (estado === 'vista') {
+                var notifElement = '<div class="dropdown-divider"></div>' + '<a onclick="detalleNotif(this)" ' +
+                    'notif_ref=' + '"' + id_notif + '"' +
+                    'class="elementoNotificacion dropdown-item">' +
+                    '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
+                    '<div class="dropdown-divider"></div>';
+            }
+            if (estado == 'urgente') {
+                var notifElement = '<div class="dropdown-divider"></div>' + '<a onclick="detalleNotif(this)" ' +
+                    'notif_ref=' + '"' + id_notif + '"' +
+                    'class="elementoNotificacion bg-danger color-palette dropdown-item">' +
+                    '<i class="fas fa-bell mr-2"></i>' + titulo + '</a>' +
+                    '<div class="dropdown-divider"></div>';
+                $('#navPrincipal').attr('class', 'main-header navbar navbar-expand bg-danger color-palette navbar-light');
+            }
+            listaNotif.insertAdjacentHTML('afterbegin', notifElement);
+        }
+
+        // Usado para debug. Se va luego
+        $(document).ready(function () {
+            updateNotificaciones();
+        });
+
+        function updateNotificaciones() {
+            var listaNotif = document.getElementById("listaNotif")
+            var iconNotif = document.getElementById("iconNotifID");
+            var cantNotif = 0;
+
+            $.ajax({
+                url: '/notificaciones/updateList/', // Es mejor hardcodear esto que pasarle A TOOODOS los templates un contextdata
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'update_notifs',
+                },
+                success: function (data) {
+                    listaNotif.innerHTML = '';
+                    for (const n in data) {
+                        agregarNotif(data[n].titulo, data[n].estado, data[n].id);
+                        if (data[n].estado === 'pendiente' || data[n].estado === 'urgente') {
+                            cantNotif += 1
+                        }
+                    }
+                    if (cantNotif === 0) {
+                        iconNotif.innerHTML = "";
+                    } else {
+                        iconNotif.innerHTML = cantNotif;
+                    }
+                    cantNotif = 0;
+                }
+            });
+        }
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/notificaciones/'
+        );
+        console.log(chatSocket);
+
+        // recibe mensajes
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            toastr.info('¡Tiene nuevas notificaciónes!');
+            updateNotificaciones();
+            console.log(data);
+        };
+
+        // Me interesa pero para mantener el socket siempre abierto.
+        chatSocket.onclose = function (e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+    </script>
+    </body>
 {% endblock %}
+
+
