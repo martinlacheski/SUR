@@ -112,7 +112,7 @@
                     </div>
                 </div>
             </div>
-        <hr id="filters1">
+            <hr id="filters1">
             <div class="row" id="filters3">
                 <div class="col-2">
                     <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
@@ -171,15 +171,22 @@
         </div>
         <div class="card-footer">
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
-                <a href="{{ create_url }}" class="btn btn-primary btn-flat">
-                    <i class="fas fa-plus"></i> Nuevo registro
-                </a>
+                {% if perms.trabajos.add_trabajos %}
+                    <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                        <i class="fas fa-plus"></i> Nuevo registro
+                    </a>
+
+                {% else %}
+                    <input type="hidden" name="soloModificar" value="SI">
+                {% endif %}
                 <a href="{{ list_url }}" class="btn btn-success btn-flat">
                     <i class="fas fa-sync"></i> Actualizar
                 </a>
-                <button type="submit" class="btn btn-info btn-flat btnReporte">
-                    <i class="fas fa-file-pdf"></i> Generar Reporte
-                </button>
+                {% if perms.trabajos.add_trabajos %}
+                    <button type="submit" class="btn btn-info btn-flat btnReporte">
+                        <i class="fas fa-file-pdf"></i> Generar Reporte
+                    </button>
+                {% endif %}
             </form>
         </div>
     </div>

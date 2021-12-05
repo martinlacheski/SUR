@@ -131,4 +131,8 @@ $(function () {
     $('input[name="filterRangoFechas"]').on('cancel.daterangepicker', function (ev, picker) {
         location.reload();
     });
+    //Reseteamos la pagina para limpiar el filtrodesde el boton
+    $('.btnCleanFiltros').on('click', function () {
+        location.reload();
+    });
 });

@@ -225,7 +225,7 @@ class ServiciosForm(ModelForm):
             ),
             'codigo': TextInput(
                 attrs={
-                    'placeholder': 'Ingrese un código',
+                    'placeholder': 'Ingrese código servicio',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
                 }

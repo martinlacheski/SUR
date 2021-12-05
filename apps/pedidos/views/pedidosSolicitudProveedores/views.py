@@ -94,7 +94,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                         for i in DetallePedidoSolicitud.objects.filter(
                                 pedido=request.POST['pk']):
                             item = i.producto.toJSON()
-                            item['marcaOfertada'] = i.marcaOfertada
+                            item['marcaOfertada'] = ""
                             item['cantidad'] = i.cantidad
                             item['precio'] = i.producto.costo
                             data.append(item)

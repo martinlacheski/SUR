@@ -136,18 +136,6 @@
                     </li>
                 {% endif %}
 
-                <!-- Presupuestos Plantilla -->
-                {% if perms.presupuestos.view_plantillapresupuestos %}
-                    <li class="nav-item has-treeview">
-                        <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
-                            <i class="nav-icon fas fa-tasks"></i>
-                            <p>
-                                Plantilla Presupuestos
-                            </p>
-                        </a>
-                    </li>
-                {% endif %}
-
                 <!-- Trabajos -->
                 {% if perms.trabajos.view_trabajos %}
                     <li class="nav-item has-treeview">
@@ -222,7 +210,7 @@
                     </li>
                 {% endif %}
 
-                <!-- Pedidos -->
+                <!-- Estadisticas -->
                 {% if request.user.is_superuser %}
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
@@ -281,7 +269,7 @@
                 {% endif %}
 
                 <!-- Parametros -->
-                {% if request.user.is_superuser %}
+                {% if perms.parametros.view_condicionesiva %}
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
                             <i class="nav-icon fas fa-cogs"></i>
@@ -290,204 +278,231 @@
                                 <i class="right fas fa-angle-left"></i>
                             </p>
                         </a>
-
                         <ul class="nav nav-treeview">
-                            <li class="nav-item has-treeview">
-                                <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
-                                    <i class="fas fa-briefcase nav-icon"></i>
-                                    <p>
-                                        Datos Empresa
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item has-treeview">
-                                <a href="" class="nav-link">
-                                    <i class="far fa-calendar nav-icon"></i>
-                                    <p>
-                                        Agenda
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'agenda:tiposEventoList' %}" class="nav-link">
-                                            <i class="far fa-calendar-alt nav-icon"></i>
-                                            <p>Tipos de Eventos</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'agenda:notifEventosList' %}" class="nav-link">
-                                            <i class="fas fa-bell nav-icon"></i>
-                                            <p>Gestion de Notif.</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            {% if request.user.is_superuser %}
+                                <li class="nav-item has-treeview">
+                                    <a href="{% url 'parametros:empresa_list' %}" class="nav-link">
+                                        <i class="fas fa-briefcase nav-icon"></i>
+                                        <p>
+                                            Datos Empresa
+                                        </p>
+                                    </a>
+                                </li>
+                            {% endif %}
 
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-globe-americas nav-icon"></i>
-                                    <p>
-                                        Geográfico
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'geografico:paises_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Paises</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'geografico:provincias_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Provincias</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'geografico:localidades_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Localidades</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            {% if request.user.is_superuser %}
+                                <li class="nav-item has-treeview">
+                                    <a href="" class="nav-link">
+                                        <i class="far fa-calendar nav-icon"></i>
+                                        <p>
+                                            Agenda
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{% url 'agenda:tiposEventoList' %}" class="nav-link">
+                                                <i class="far fa-calendar-alt nav-icon"></i>
+                                                <p>Tipos de Eventos</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'agenda:notifEventosList' %}" class="nav-link">
+                                                <i class="fas fa-bell nav-icon"></i>
+                                                <p>Gestion de Notif.</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
 
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-money-check-alt nav-icon"></i>
-                                    <p>
-                                        Impositivo
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:tiposIVA_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Tipos de IVA</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:condicionesIVA_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Condición frente al IVA</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:tiposPercepciones_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Tipos de Percepciones</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:tiposComprobantes_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Tipos de Comprobantes</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:condicionesPago_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Condiciones de Pago</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:mediosPago_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Medios de Pago</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            {% if perms.geografico.view_paises %}
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-globe-americas nav-icon"></i>
+                                        <p>
+                                            Geográfico
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
 
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-tasks"></i>
-                                    <p>
-                                        Presupuestos
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Plantilla</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:marcas_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Marcas</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:modelos_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Modelos</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                                    </a>
 
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="fas fa-dolly nav-icon"></i>
-                                    <p>
-                                        Productos
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'erp:categorias_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Categorías</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'erp:subcategorias_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Subcategorías</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{% url 'geografico:paises_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Paises</p>
+                                            </a>
+                                        </li>
+                                        {% if perms.geografico.view_provincias %}
+                                            <li class="nav-item">
+                                                <a href="{% url 'geografico:provincias_list' %}" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Provincias</p>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                        {% if perms.geografico.view_localidades %}
+                                            <li class="nav-item">
+                                                <a href="{% url 'geografico:localidades_list' %}" class="nav-link">
+                                                    <i class="far fa-dot-circle nav-icon"></i>
+                                                    <p>Localidades</p>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                </li>
+                            {% endif %}
 
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon far fa-list-alt"></i>
-                                    <p>
-                                        Trabajos
-                                        <i class="right fas fa-angle-left"></i>
-                                    </p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:estados_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Estados</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:estadosParametros_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Estados - Parámetros</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="{% url 'parametros:prioridades_list' %}" class="nav-link">
-                                            <i class="far fa-dot-circle nav-icon"></i>
-                                            <p>Prioridades</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
+                            {% if request.user.is_superuser %}
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-money-check-alt nav-icon"></i>
+                                        <p>
+                                            Impositivo
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:tiposIVA_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Tipos de IVA</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:condicionesIVA_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Condición frente al IVA</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:tiposPercepciones_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Tipos de Percepciones</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:tiposComprobantes_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Tipos de Comprobantes</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:condicionesPago_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Condiciones de Pago</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:mediosPago_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Medios de Pago</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                            {% if perms.presupuestos.view_plantillapresupuestos %}
+                                <li class="nav-item has-treeview">
+                                    <a href="{% url 'presupuestos:presupuestosPlantilla_list' %}" class="nav-link">
+                                        <i class="nav-icon fas fa-tasks"></i>
+                                        <p>
+                                            Plantilla Presupuestos
+                                        </p>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+                            {% if perms.parametros.view_marcas %}
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-tasks"></i>
+                                        <p>
+                                            Presupuestos
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:marcas_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Marcas</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:modelos_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Modelos</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                            {% if perms.erp.view_categorias %}
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="fas fa-dolly nav-icon"></i>
+                                        <p>
+                                            Productos
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{% url 'erp:categorias_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Categorías</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'erp:subcategorias_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Subcategorías</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
+                            {% if request.user.is_superuser %}
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon far fa-list-alt"></i>
+                                        <p>
+                                            Trabajos
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:estados_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Estados</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:estadosParametros_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Estados - Parámetros</p>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a href="{% url 'parametros:prioridades_list' %}" class="nav-link">
+                                                <i class="far fa-dot-circle nav-icon"></i>
+                                                <p>Prioridades</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+
                         </ul>
                     </li>
-
+                {% endif %}
+                {% if request.user.is_superuser %}
                     <!-- Sistema -->
                     <li class="nav-item has-treeview">
                         <!-- Sistema -->
@@ -593,7 +608,6 @@
                         </ul>
                     </li>
                 {% endif %}
-
 
             </ul>
         </nav>

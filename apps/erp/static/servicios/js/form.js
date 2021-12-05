@@ -96,7 +96,6 @@ $(function () {
 
     // VALIDACION DE LOS CAMPOS
     $("#descripcion").validate();
-    $("#codigo").validate();
     $("#costo").validate();
     $("#iva").validate();
     $("#precioVenta").validate();
@@ -141,18 +140,20 @@ function calcularPrecio() {
 }
 
 $(document).ready(function () {
-    //Inicializamos el Codigo del Servicio
-    $.ajax({
-        url: window.location.pathname,
-        type: 'POST',
-        data: {
-            'csrfmiddlewaretoken': csrftoken,
-            'action': 'generar_codigo',
-        },
-        dataType: 'json',
-        success: function (data) {
-            console.log(data.codigo);
-            $('input[name="codigo"]').val(data.codigo);
-        }
-    });
+    var accion = $('input[name="action"]').val();
+    if (accion === 'add') {
+        //Inicializamos el Codigo del Servicio
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="codigo"]').val(data.codigo);
+            }
+        });
+    }
 });

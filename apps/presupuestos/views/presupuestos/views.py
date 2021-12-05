@@ -55,6 +55,8 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('presupuestos/report.html')
                 # Obtenemos el detalle del Reporte
@@ -123,7 +125,7 @@ class PresupuestosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, 
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'cliente': cliente,
                         'modelo': modelo,
@@ -957,6 +959,8 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('presupuestos/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
@@ -978,7 +982,7 @@ class PresupuestosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, V
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

@@ -1,5 +1,52 @@
-Para cargar los registros de Auditoria
-python manage.py populate_history --auto
+--------------------------------------------------------------------------------------------------------------------
+
+* Revisar el SIDEBAR POR EL TEMA DE PERMISOS
+
+* Para terminar con el tema de permisos crear un input hidden y preguntar si se tiene permisos para modificar o eliminar
+con eso se puede ocultar los campos desde el JS
+
+<input type="hidden" name="agregar" value="SI">
+<input type="hidden" name="modificar" value="SI">
+<input type="hidden" name="eliminar" value="SI">
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Agregar INSUMOS y realizar compras y ventas para visualizar en las estadisticas
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Terminar AYUDA en:
+    - Ventas
+    - Presupuestos
+    - Trabajos
+    - Planificaciones
+    - Pedidos Solicitados
+    - Pedidos Realizados
+    - Auditorias
+        - Productos
+        - Servicios
+        - Ventas
+        - Trabajos
+    - Usuarios
+    - Grupos de Usuarios - Create
+    - Usuarios a Notificar - Create
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
+
+--------------------------------------------------------------------------------------------------------------------
+
+* VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
+
+--------------------------------------------------------------------------------------------------------------------
+
+* PEDIDOS
+
+    - enviar correos electrónicos AL CONFIRMAR SOLICITUD DE PEDIDO Y AL CONFIRMAR PEDIDO
+
+--------------------------------------------------------------------------------------------------------------------
 
 EMOJIS PARA EL AYUDA
 fas fa-eye	                &#xf06e;
@@ -12,33 +59,16 @@ fas fa-times 	            &#f00d;         &#10060;
 
 --------------------------------------------------------------------------------------------------------------------
 
-MODULO BACKUP con el comando:
+COMANDO Para cargar los registros de Auditoria
+python manage.py populate_history --auto
+
+--------------------------------------------------------------------------------------------------------------------
+
+COMANDO BACKUP
+
 #Con este comando evitamos tener que reinicializar la BD
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > database.json
 
 #Reestablecemos el BACKUP con LOADDATA
 python manage.py loaddata database.json
-
---------------------------------------------------------------------------------------------------------------------
-
-* VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
-
---------------------------------------------------------------------------------------------------------------------
-
-* VER PERFIL DE RECTIFICADOR, que visualice solo los trabajos asignados al usuario. Filtrar en el ListView por request.user()
-
---------------------------------------------------------------------------------------------------------------------
-
-* Agregar Boton Limpiar Filtros en las estadisticas
-
---------------------------------------------------------------------------------------------------------------------
-
-
-* PEDIDOS - TERMINAR
-
-    - enviar correos electrónicos
-
---------------------------------------------------------------------------------------------------------------------
-
-* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
 

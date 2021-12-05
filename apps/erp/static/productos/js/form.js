@@ -346,18 +346,21 @@ function calcularUtilidad() {
 }
 
 $(document).ready(function () {
-    //Inicializamos el Codigo del Producto
-    $.ajax({
-        url: window.location.pathname,
-        type: 'POST',
-        data: {
-            'csrfmiddlewaretoken': csrftoken,
-            'action': 'generar_codigo',
-        },
-        dataType: 'json',
-        success: function (data) {
-            $('input[name="codigo"]').val(data.codigo);
-        }
-    });
+    var accion = $('input[name="action"]').val();
+    if (accion === 'add') {
+        //Inicializamos el Codigo del Producto
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'generar_codigo',
+            },
+            dataType: 'json',
+            success: function (data) {
+                $('input[name="codigo"]').val(data.codigo);
+            }
+        });
+    }
 });
 

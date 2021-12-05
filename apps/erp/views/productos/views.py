@@ -54,6 +54,8 @@ class ProductosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Lis
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('productos/report.html')
                 # Obtenemos el detalle del Reporte
@@ -102,7 +104,7 @@ class ProductosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Lis
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'categoria': categoria,
                         'subcategoria': subcategoria,
@@ -217,6 +219,8 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('productos/reportAuditoria.html')
                 # Obtenemos el detalle del Reporte
@@ -261,7 +265,7 @@ class ProductosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'producto': producto,
                         'accion': accion,

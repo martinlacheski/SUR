@@ -48,29 +48,55 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
-                for i in Trabajos.objects.all():
-                    # Obtenemos el estado de avance por cada trabajo
-                    totalEsfuerzo = 0
-                    esfuerzoTrabRealizados = 0
-                    detalle = DetalleServiciosTrabajo.objects.filter(trabajo_id=i.id)
-                    # Calculamos el total del esfuerzo del trabajo y lo dividimos por el total de esfuerzo de servicios ya realizados
-                    for d in detalle:
-                        totalEsfuerzo += d.servicio.esfuerzo
-                        if d.estado:
-                            esfuerzoTrabRealizados += d.servicio.esfuerzo
-                    if totalEsfuerzo != 0:
-                        porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
-                    else:
-                        porcentaje = 0
-                    # Redondeamos para tener solo 2 decimales
-                    porcentaje = round(round(porcentaje, 2) * 100, 2)
-                    item = i.toJSON()
-                    if i.usuarioAsignado:
-                        item['asignado'] = i.usuarioAsignado.username
-                    else:
-                        item['asignado'] = 'EXPRESS'
-                    item['porcentaje'] = str(porcentaje)
-                    data.append(item)
+                usuario = Usuarios.objects.get(username=request.user)
+                if usuario.is_superuser == False and usuario.realizaTrabajos == True:
+                    for i in Trabajos.objects.filter(usuarioAsignado=usuario):
+                        # Obtenemos el estado de avance por cada trabajo
+                        totalEsfuerzo = 0
+                        esfuerzoTrabRealizados = 0
+                        detalle = DetalleServiciosTrabajo.objects.filter(trabajo_id=i.id)
+                        # Calculamos el total del esfuerzo del trabajo y lo dividimos por el total de esfuerzo de servicios ya realizados
+                        for d in detalle:
+                            totalEsfuerzo += d.servicio.esfuerzo
+                            if d.estado:
+                                esfuerzoTrabRealizados += d.servicio.esfuerzo
+                        if totalEsfuerzo != 0:
+                            porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
+                        else:
+                            porcentaje = 0
+                        # Redondeamos para tener solo 2 decimales
+                        porcentaje = round(round(porcentaje, 2) * 100, 2)
+                        item = i.toJSON()
+                        if i.usuarioAsignado:
+                            item['asignado'] = i.usuarioAsignado.username
+                        else:
+                            item['asignado'] = 'EXPRESS'
+                        item['porcentaje'] = str(porcentaje)
+                        data.append(item)
+                else:
+                    for i in Trabajos.objects.all():
+                        # Obtenemos el estado de avance por cada trabajo
+                        totalEsfuerzo = 0
+                        esfuerzoTrabRealizados = 0
+                        detalle = DetalleServiciosTrabajo.objects.filter(trabajo_id=i.id)
+                        # Calculamos el total del esfuerzo del trabajo y lo dividimos por el total de esfuerzo de servicios ya realizados
+                        for d in detalle:
+                            totalEsfuerzo += d.servicio.esfuerzo
+                            if d.estado:
+                                esfuerzoTrabRealizados += d.servicio.esfuerzo
+                        if totalEsfuerzo != 0:
+                            porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
+                        else:
+                            porcentaje = 0
+                        # Redondeamos para tener solo 2 decimales
+                        porcentaje = round(round(porcentaje, 2) * 100, 2)
+                        item = i.toJSON()
+                        if i.usuarioAsignado:
+                            item['asignado'] = i.usuarioAsignado.username
+                        else:
+                            item['asignado'] = 'EXPRESS'
+                        item['porcentaje'] = str(porcentaje)
+                        data.append(item)
             elif action == 'get_parametros_estados':
                 data = []
                 parametros = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
@@ -86,6 +112,8 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('trabajos/report.html')
                 # Obtenemos el detalle del Reporte
@@ -191,7 +219,7 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'cliente': cliente,
                         'modelo': modelo,
@@ -345,6 +373,8 @@ class TrabajosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('trabajos/reportAuditoria.html')
                 # Obtenemos el detalle del Reporte
@@ -396,7 +426,7 @@ class TrabajosAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin,
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'trabajo': trabajo,
                         'accion': accion,
@@ -1847,6 +1877,8 @@ class TrabajosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View)
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('trabajos/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
@@ -1868,7 +1900,7 @@ class TrabajosPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View)
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)

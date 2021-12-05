@@ -62,6 +62,8 @@ function searchParametros() {
 };
 
 $(function () {
+    //Captamos si el usuario puede solo modificar los trabajos
+    var soloModificar = $('input[name="soloModificar"]').val();
     //Buscamos los parametros de estado
     searchParametros();
     //Eventos del Listado
@@ -176,31 +178,36 @@ $(function () {
                 class: 'text-center',
                 orderable: false,
                 render: function (data, type, row) {
-                    if (!row.fechaSalida && row.estadoTrabajo.id !== estadoFinalizado) {
-                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                        buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
-                        buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
-                        buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
-                        buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
-                    } else if (row.estadoTrabajo.id == estadoFinalizado) {
-                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                        buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
-                    } else if (row.estadoTrabajo.id == estadoCancelado) {
-                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                    } else if (row.estadoTrabajo.id == estadoEntregado) {
-                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                    if (soloModificar === 'SI') {
+                        var buttons = '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
                     } else {
-                        var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
-                        buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
-                        buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
-                        buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
-                        buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
-                        buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                        if (!row.fechaSalida && row.estadoTrabajo.id !== estadoFinalizado) {
+                            var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                            buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                            buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                            buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
+                            buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
+                            buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                        } else if (row.estadoTrabajo.id == estadoFinalizado) {
+                            var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                            buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                            buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
+                        } else if (row.estadoTrabajo.id == estadoCancelado) {
+                            var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                            buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        } else if (row.estadoTrabajo.id == estadoEntregado) {
+                            var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                            buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                        } else {
+                            var buttons = '<a rel="detalleTrabajo" class="btn btn-info btn-xs btn-flat"><i class="fas fa-eye"></i></a> ';
+                            buttons += '<a href="/trabajos/pdf/' + row.id + '/" target="_blank" class="btn btn-info btn-xs btn-flat"><i class="fas fa-file-pdf"></i></a> ';
+                            buttons += '<a href="/trabajos/update/' + row.id + '/" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a> ';
+                            buttons += '<a href="/trabajos/confirm/' + row.id + '/" class="btn btn-success btn-xs btn-flat"><i class="fas fa-check"></i></a> ';
+                            buttons += '<a href="/trabajos/deliver/' + row.id + '/" class="btn btn-primary btn-xs btn-flat"><i class="fas fa-people-carry"></i></a> ';
+                            buttons += '<a href="/trabajos/delete/' + row.id + '/" id="' + row.id + '" onclick="btnEliminar(this.id, this.href)" class="btn btn-danger btn-xs btn-flat" data-toggle="modal" data-target="#deleteModal"><i class="fas fa-times"></i>';
+                        }
                     }
+
                     return buttons;
                 }
             },

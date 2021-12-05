@@ -44,7 +44,7 @@ class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMix
                 data = []
                 for i in DetallePedidoSolicitudProveedor.objects.filter(
                         pedidoSolicitudProveedor__pedidoSolicitud=request.POST['id']).exclude(
-                    pedidoSolicitudProveedor__visto__isnull=True):
+                    pedidoSolicitudProveedor__respuesta__isnull=True):
                     proveedor = i.pedidoSolicitudProveedor.proveedor.toJSON()
                     detalle = i.toJSON()
                     data.append({'detalle': detalle,

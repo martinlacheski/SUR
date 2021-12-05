@@ -53,6 +53,8 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('ventas/report.html')
                 # Obtenemos el detalle del Reporte
@@ -117,7 +119,7 @@ class VentasListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListVi
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'cliente': cliente,
                         'inicio': inicio,
@@ -248,6 +250,8 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+                # Armamos el Logo de la Empresa
+                logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
                 # Utilizamos el template para generar el PDF
                 template = get_template('ventas/reportAuditoria.html')
                 # Obtenemos el detalle del Reporte
@@ -299,7 +303,7 @@ class VentasAuditListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, L
                 try:
                     context = {
                         'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                                    'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                                    'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
                         'fecha': datetime.datetime.now(),
                         'venta': venta,
                         'accion': accion,
@@ -815,6 +819,8 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
             # Utilizamos el template para generar el PDF
             template = get_template('ventas/pdf.html')
             # Obtenemos el subtotal de Productos y Servicios para visualizar en el template
@@ -837,7 +843,7 @@ class VentasPdfView(LoginRequiredMixin, ValidatePermissionRequiredMixin, View):
                 'subtotalProductos': productos,
                 'subtotalServicios': servicios,
                 'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
-                            'localidad': empresa.localidad.get_full_name(), 'imagen': empresa.imagen},
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
             }
             # Generamos el render del contexto
             html = template.render(context)
