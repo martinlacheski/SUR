@@ -16,7 +16,7 @@ from apps.erp.models import Productos, Categorias, Subcategorias, Proveedores
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.parametros.models import Empresa, TiposIVA
 from apps.pedidos.createSolicitudes import crearSolicitudes
-from apps.pedidos.forms import PedidosSolicitudForm, PedidosForm
+from apps.pedidos.forms import PedidosSolicitudForm
 from apps.pedidos.models import PedidosSolicitud, DetallePedidoSolicitud, DetallePedido, \
     DetallePedidoSolicitudProveedor, Pedidos
 from config import settings
@@ -465,7 +465,6 @@ class PedidosSolicitudConfirmView(LoginRequiredMixin, ValidatePermissionRequired
                     # Devolvemos en Data la ID de la Solicitud de Pedido para poder generar la Boleta
                     data = {'id': pedido.id}
                     data['redirect'] = self.url_redirect
-                    print('hasta aca llegas')
                     crearSolicitudes(pedido, dominio)  # Arma link y prepara solicitud para proveedor
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
@@ -578,6 +577,7 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                         pedido__pedidoSolicitud=pedido.id):
                     proveedor = i.pedido.proveedor.toJSON()
                     item = i.toJSON()
+                    item['pedidoSolicitud'] = i.pedido.pedidoSolicitud.toJSON()
                     item['costoProducto'] = i.costo
                     item['proveedor'] = proveedor
                     item['pedidoDetalle'] = i.pedido.id
@@ -617,7 +617,10 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 try:
                     data = []
                     proveedor = Proveedores.objects.get(id=request.POST['pk'])
-                    data.append(proveedor.toJSON())
+                    detallePedido = Pedidos.objects.get(pedidoSolicitud_id=pedido, proveedor=request.POST['pk'])
+                    data.append({'proveedor': proveedor.toJSON(), 'detallePedido': detallePedido.toJSON()})
+                    # data.append(detallePedido)
+
                 except Exception as e:
                     data['error'] = str(e)
 

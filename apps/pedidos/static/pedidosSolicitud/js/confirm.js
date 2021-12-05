@@ -132,6 +132,7 @@ $(document).ready(function () {
             },
             dataType: 'json',
             success: function (data) {
+                pedido.items.pedidoSolicitud = data[0].pedidoSolicitud.id
                 //asignamos el detalle a la estructura
                 pedido.items.productos = data;
                 //actualizamos el listado de productos
@@ -197,7 +198,8 @@ $(function () {
                 data: {
                     'csrfmiddlewaretoken': csrftoken,
                     'action': 'get_detalle_proveedor',
-                    'pk': prod.proveedor.id
+                    'pk': prod.proveedor.id,
+                    'pedidoSolicitud': pedido.items.pedidoSolicitud
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -264,9 +266,11 @@ $(function () {
             },
             dataType: 'json',
             success: function (data) {
-                renglonActualizar.proveedor = data[0];
+                console.log(data[0].detallePedido);
+                renglonActualizar.proveedor = data[0].proveedor;
                 renglonActualizar.marcaOfertada = marcaOfertada;
                 renglonActualizar.costo = costoProducto;
+                renglonActualizar.pedidoDetalle = data[0].detallePedido.id;
                 pedido.listProductos();
             }
         });
@@ -320,6 +324,7 @@ $(function () {
     // Submit PEDIDO
     $('#pedidoForm').on('submit', function (e) {
         var accion = $('input[name="action"]').val();
+        console.log(accion);
         e.preventDefault();
         if (pedido.items.productos.length === 0) {
             error_action('Error', 'Debe al menos tener un producto en su detalle', function () {
