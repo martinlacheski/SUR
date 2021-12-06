@@ -43,13 +43,13 @@ def notificarCliente(trabajo):
 
         # Callback data
         data_hoy = {
-            'hoy': str(timezone.now().date),
+            'hoy': str(datetime.date.today()),
             'cliente': str(cliente.id),
             'trabajo': str(trabajo.id),
 
         }
         sig_habil = {
-            'sig_dia_habil': str(dia_habil_siguiente(timezone.now().date())),
+            'sig_dia_habil': str(dia_habil_siguiente(datetime.date.today())),
             'cliente': str(cliente.id),
             'trabajo': str(trabajo.id),
 
@@ -57,6 +57,9 @@ def notificarCliente(trabajo):
         se_comunica = {
             'se_secomunica': 'Se comunicará luego.'
         }
+
+
+
         keyboard = [
             [InlineKeyboardButton("Hoy", callback_data=str(data_hoy))],
             [InlineKeyboardButton("Siguiente día hábil", callback_data=str(sig_habil))],

@@ -229,7 +229,7 @@ def generarReporte(eleccion):
             cantCompras +=1
             detCompraProductos = DetalleProductosCompra.objects.filter(compra=c)
             for detP in detCompraProductos:
-                total += detP.subtotal
+                total += detP.subtotal + ((detP.producto.iva.iva / 100) * detP.subtotal)
         reporteDet['totalDia'] = total
         reporteDet['totalProductos'] = total
         reporteDet['cantCompras'] = cantCompras
