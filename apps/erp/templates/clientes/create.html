@@ -102,7 +102,8 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-6"
-                         data-intro="OPCIONAL - Ingresar el CBU - CVU del Cliente. Está compuesto por 22 números. Por ej: 1234567890123456789012">
+                         data-intro="OPCIONAL - Ingresar el CBU - CVU del Cliente.
+                         Está compuesto por 22 números. Por ej: 1234567890123456789012">
                         <label>CBU - CVU:</label>
                         <br>
                         <div class="col-12" class="form-control" id="cbu" name="cbu"
@@ -167,11 +168,11 @@
             <ul id="errorList" name="errorList" class="alert-danger"></ul>
             {#Botones#}
             <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
-                    data-intro="Hacer click para guardar el registro">
+                    data-intro="Hacer click para guardar el registro de {{ entity }}">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat"
-               data-intro="Hacer click para cancelar y regresar al listado de clientes">
+               data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>

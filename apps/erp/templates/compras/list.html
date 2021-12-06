@@ -101,7 +101,7 @@
                             <th scope="col" style="width: 10%;">Perc.</th>
                             <th scope="col" style="width: 10%;">Total</th>
                             <th scope="col" style="width: 12%;"
-                                data-intro="Opciones de Listado. Ver detalle compra. Generar PDF compra. Cancelar Compra.">
+                                data-intro="Opciones de Listado. Ver detalle compra. Generar PDF compra. cancelar Compra.">
                                 Opciones
                             </th>
                         </tr>
@@ -118,14 +118,15 @@
         <div class="card-footer">
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat"
-                   data-intro="Crear un nuevo registro">
+                   data-intro="Hacer click para guardar el registro de {{ entity }}">
                     <i class="fas fa-plus"></i> Nuevo registro
                 </a>
-                <a href="{{ list_url }}" class="btn btn-success btn-flat" data-intro="Actualizar el listado">
+                <a href="{{ list_url }}" class="btn btn-success btn-flat"
+                   data-intro="Actualizar el listado  de {{ entity }}">
                     <i class="fas fa-sync"></i> Actualizar
                 </a>
                 <button type="submit" class="btn btn-info btn-flat btnReporte"
-                        data-intro="Generar reporte de Compras">
+                        data-intro="Generar reporte  de {{ entity }}">
                     <i class="fas fa-file-pdf"></i> Generar Reporte
                 </button>
             </form>

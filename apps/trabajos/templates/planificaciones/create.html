@@ -43,6 +43,9 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:white"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -52,7 +55,7 @@
                     <div class="form-group col-9">
 
                     </div>
-                    <div class="form-group col-3">
+                    <div class="form-group col-3" data-intro="Seleccionar el rango de fechas para la planificación">
                         <label>Seleccione Rango de Fechas:</label>
                         <div class="input-group">
                             <input type="text" class="form-control" name="rangoFechas"
@@ -65,14 +68,19 @@
                 <div class="row">
                     <div class="col-7">
                         <p><b>Trabajos Pendientes de Finalizar:</b></p>
-                        <table class="table table table-bordered" id="data">
+                        <table data-intro="En esta tabla se visualizan los trabajos pendientes de finalizarse.
+                         Se puede ordenar las columnas que posean las &#8645;" class="table table table-bordered"
+                               id="data">
                             <thead>
                             <tr>
                                 <th scope="col" style="width: 13%;">Ingresó</th>
                                 <th scope="col" style="width: 10%;">Estado</th>
                                 <th scope="col" style="width: 25%;">Modelo</th>
                                 <th scope="col" style="width: 47%;">Cliente</th>
-                                <th scope="col" style="width: 5%;">Agregar</th>
+                                <th scope="col" style="width: 5%;"
+                                    data-intro="Hacer click en el trabajo que se quiera agregar a la planificación">
+                                    Agregar
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -84,7 +92,8 @@
                     </div>
                     <div class="col-5">
                         <p><b>Planificación:</b></p>
-                        <table class="table table table-bordered ui-state-default ui-sortable-handle"
+                        <table data-intro="En esta tabla se visualizan los trabajos a planificarse"
+                               class="table table table-bordered ui-state-default ui-sortable-handle"
                                id="dataPlanificacion">
                             <thead>
                             <tr>
@@ -92,7 +101,10 @@
                                 <th scope="col" style="width: 5%;">ID</th>
                                 <th scope="col" style="width: 23%;">Modelo</th>
                                 <th scope="col" style="width: 42%;">Cliente</th>
-                                <th scope="col" style="width: 25%;">Opciones</th>
+                                <th scope="col" style="width: 25%;"
+                                    data-intro="Opciones del listado: Cambiar el orden con las &#8645; o eliminar del listado">
+                                    Opciones
+                                </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -103,10 +115,12 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button type="submit" id="btnGuardar" class="btn btn-primary btn-flat">
+                <button type="submit" id="btnGuardar" class="btn btn-primary btn-flat"
+                        data-intro="Crear un nuevo registro de {{ entity }}">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                   data-intro="Actualizar el listado  de {{ entity }}">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

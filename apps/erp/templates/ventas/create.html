@@ -48,6 +48,9 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -58,28 +61,32 @@
                         <div class="card card-secondary">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-4">
+                                    <div class="form-group col-4" data-intro="Seleccionar del listado el cliente">
                                         <label>(*) Cliente:</label>
                                         <div class="input-group">
                                             {{ form.cliente }}
-                                            <div class="input-group-append">
+                                            <div class="input-group-append"
+                                                 data-intro="Si el cliente no existe hacer click para crearlo">
                                                 <button class="btn btn-success btn-flat btnAddCliente" type="button">
                                                     <i class="fas fa-user-plus"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-3">
+                                    <div class="form-group col-3"
+                                         data-intro="Seleccionar del listado la condición de pago">
                                         <label>(*) Condición:</label>
                                         <br>
                                         {{ form.condicionVenta }}
                                     </div>
-                                    <div class="form-group col-3">
+                                    <div class="form-group col-3"
+                                         data-intro="Seleccionar del listado el medio de pago">
                                         <label>(*) Medio de pago:</label>
                                         <br>
                                         {{ form.medioPago }}
                                     </div>
-                                    <div class="form-group col-2">
+                                    <div class="form-group col-2"
+                                         data-intro="Seleccionar la fecha de venta">
                                         <label>(*) Fecha:</label>
                                         <div class="col-12 date" id="fecha" data-target-input="nearest">
                                             {{ form.fecha|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -97,8 +104,10 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <label>Buscador de productos:</label>
-                                                    <div class="input-group">
+                                                    <label data-intro="Seleccione un Cliente para poder ingresar productos">Buscador
+                                                        de productos:</label>
+                                                    <div class="input-group"
+                                                         data-intro="Se puede buscar por descripción, código, código del proveedor o código de barras del producto">
                                                         <input type="text" class="form-control" name="searchProductos"
                                                                placeholder="Ingrese una descripción de producto"
                                                                autocomplete="off">
@@ -109,27 +118,37 @@
                                                 </div>
                                                 <hr>
                                                 <button type="button"
-                                                        class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
-                                                        class="fas fa-search"></i> Buscar todos
+                                                        class="btn btn-primary btn-xs btn-flat btnSearchProductos"
+                                                        data-intro="Hacer click para visualizar todos los productos">
+                                                    <i class="fas fa-search"></i> Buscar todos
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-success btn-xs btn-flat btnAddProducto"><i
-                                                        class="fas fa-plus"></i> Agregar Producto
+                                                        class="btn btn-success btn-xs btn-flat btnAddProducto"
+                                                        data-intro="Si no existe el producto, hacer click para crearlo">
+                                                    <i class="fas fa-plus"></i> Agregar Producto
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos"
+                                                        data-intro="Eliminar todos los productos del detalle">
                                                     <i class="fas fa-trash"></i> Eliminar todos
                                                 </button>
                                                 <hr>
                                                 <table class="table table-bordered" id="tablaProductos">
                                                     <thead>
                                                     <tr>
-                                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                                        <th scope="col" style="width: 10%;"
+                                                            data-intro="Eliminar el renglón">Eliminar
+                                                        </th>
                                                         <th scope="col" style="width: 48%;">Producto</th>
                                                         <th scope="col" style="width: 10%;">Importe</th>
-                                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                                        <th scope="col" style="width: 12%;"
+                                                            data-intro="Ingrese la cantidad">Cantidad
+                                                        </th>
                                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                                        <th scope="col" style="width: 10%;"
+                                                            data-intro="Actualizar el precio del Producto">
+                                                            Actualizar
+                                                        </th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -149,40 +168,52 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="form-group">
-                                                    <label>Buscador de servicios:</label>
-                                                    <div class="input-group">
+                                                    <label data-intro="Seleccione un Cliente para poder ingresar servicios">Buscador
+                                                        de servicios:</label>
+                                                    <div class="input-group"
+                                                         data-intro="Se puede buscar por descripción o código del servicio">
                                                         <input type="text" class="form-control" name="searchServicios"
                                                                placeholder="Ingrese una descripción de servicio"
                                                                autocomplete="off">
                                                         <span class="input-group-append">
-                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchServicios"><i
-                                                class="fas fa-times"></i></button>
-                                      </span>
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-flat btnClearSearchServicios">
+                                                            <i class="fas fa-times"></i></button>
+                                                        </span>
                                                     </div>
                                                 </div>
                                                 <hr>
                                                 <button type="button"
-                                                        class="btn btn-primary btn-xs btn-flat btnSearchServicios"><i
-                                                        class="fas fa-search"></i> Buscar todos
+                                                        class="btn btn-primary btn-xs btn-flat btnSearchServicios"
+                                                        data-intro="Hacer click para visualizar todos los servicios">
+                                                    <i class="fas fa-search"></i> Buscar todos
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-success btn-xs btn-flat btnAddServicio"><i
-                                                        class="fas fa-plus"></i> Agregar Servicio
+                                                        class="btn btn-success btn-xs btn-flat btnAddServicio"
+                                                        data-intro="Si no existe el servicio, hacer click para crearlo">
+                                                    <i class="fas fa-plus"></i> Agregar Servicio
                                                 </button>
                                                 <button type="button"
-                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
+                                                        class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios"
+                                                        data-intro="Eliminar todos los servicios del detalle">
                                                     <i class="fas fa-trash"></i> Eliminar todos
                                                 </button>
                                                 <hr>
                                                 <table class="table table-bordered" id="tablaServicios">
                                                     <thead>
                                                     <tr>
-                                                        <th scope="col" style="width: 10%;">Eliminar</th>
+                                                        <th scope="col" style="width: 10%;"
+                                                            data-intro="Eliminar el renglón">Eliminar
+                                                        </th>
                                                         <th scope="col" style="width: 48%;">Servicio</th>
                                                         <th scope="col" style="width: 10%;">Importe</th>
-                                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                                        <th scope="col" style="width: 12%;"
+                                                            data-intro="Ingrese la cantidad">Cantidad
+                                                        </th>
                                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                                        <th scope="col" style="width: 10%;">Actualizar</th>
+                                                        <th scope="col" style="width: 10%;"
+                                                            data-intro="Actualizar el precio del Servicio">
+                                                            Actualizar
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -251,10 +282,12 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary btn-flat">
+                                    <button type="submit" class="btn btn-primary btn-flat"
+                                            data-intro="Hacer click para guardar el registro de {{ entity }}">
                                         <i class="fas fa-save"></i> Guardar registro
                                     </button>
-                                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                                    <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                                       data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                                         <i class="fas fa-times"></i> Cancelar
                                     </a>
                                 </div>

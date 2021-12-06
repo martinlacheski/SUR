@@ -17,6 +17,9 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -24,7 +27,8 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 {% block fields %}
                     {% for field in form.visible_fields %}
-                        <div class="form-group">
+                        <div class="form-group"
+                             data-intro="{{ field.label }}: Seleccionar del listado o completar según corresponda">
                             <label for="email">{{ field.label }}:</label>
                             {{ field| add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
@@ -35,10 +39,12 @@
                 {#Mensaje de error#}
                 <ul id="errorList" class="alert-danger"></ul>
                 {#Botones#}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit"
+                        data-intro="Hacer click para guardar el registro de {{ entity }}">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                   data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
 
@@ -69,6 +75,18 @@
                 errorList.appendChild(li);
             }
         }
+
+        //Al hacer click en el AYUDA
+        $('.verAyuda').on('click', function () {
+            introJs().setOptions({
+                showProgress: true,
+                showBullets: false,
+                nextLabel: 'Siguiente',
+                prevLabel: 'Atrás',
+                doneLabel: 'Finalizar',
+            }).start()
+        });
+
         //Llamamos a la funcion de Token
         getToken(name);
         //Hacemos el envio del Formulario mediante AJAX

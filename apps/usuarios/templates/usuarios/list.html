@@ -24,10 +24,14 @@
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
                 {{ title }}
+                <a href="#" class="btn btn-flat">
+                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                </a>
             </h3>
         </div>
         <div class="card-body">
-            <table class="table" id="data">
+            <table class="table" id="data" data-intro="Se visualiza el {{ title }}.
+            Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                 <thead>
                 {% block columns %}
                     <tr>
@@ -38,7 +42,10 @@
                         <th scope="col" style="width: 8%;">Teléfono</th>
                         <th scope="col" style="width: 8%;">Estado</th>
                         <th scope="col" style="width: 5%;">Realiza Trabajos</th>
-                        <th scope="col" style="width: 15%;">Opciones</th>
+                        <th scope="col" style="width: 15%;"
+                            data-intro="Opciones del listado: Modificar Usuario. Dar de baja Usuario">
+                            Opciones
+                        </th>
                     </tr>
                 {% endblock %}
                 </thead>
@@ -50,11 +57,13 @@
             </table>
         </div>
         <div class="card-footer">
-            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+            <a href="{{ create_url }}" class="btn btn-primary btn-flat"
+               data-intro="Crear un nuevo registro de {{ entity }}">
                 <i class="fas fa-plus"></i> Nuevo registro
             </a>
-            <a href="{{ list_url }}" class="btn btn-success btn-flat">
-                <i class="fas fa-sync"></i> Actualizar
+            <a href="{{ list_url }}" class="btn btn-success btn-flat"
+               data-intro="Actualizar el listado  de {{ entity }}">
+            <i class="fas fa-sync"></i> Actualizar
             </a>
         </div>
     </div>

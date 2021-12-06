@@ -96,7 +96,7 @@
                                     Notificación </p>
                                 {% if action == 'add' %}
                                     <div class="col-12"
-                                         data-intro="Hacer click para guardar el registro">
+                                         data-intro="Hacer click para guardar registro de Evento">
                                         <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
                                             <i class="fas fa-save"></i> Guardar registro
                                         </button>
@@ -464,6 +464,7 @@
     <script>
         //Al hacer click en el AYUDA
         $('.verAyuda').on('click', function () {
+            $('#fechaFinalizacionField').prop('hidden', false);
             introJs().setOptions({
                 showProgress: true,
                 showBullets: false,

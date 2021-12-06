@@ -41,18 +41,23 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3"
+                         data-intro="ingresar el Nombre de Usuario (username) con el que el usuario
+                         va a iniciar sesión y se visualizará en el sistema">
                         <label>Nombre de usuario:</label>
                         <br>
                         {{ form.username|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Ingresar la contraseña">
                         <label>Contraseña:</label>
                         <br>
                         {{ form.password|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -61,17 +66,18 @@
 
 
                 <div class="row">
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Ingresar los nombres del usuario">
                         <label>Nombre:</label>
                         <br>
                         {{ form.first_name|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Ingresar el apellido del usuario">
                         <label>Apellido:</label>
                         <br>
                         {{ form.last_name|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3"
+                         data-intro="Ingresar un CUIL o CUIT válido, sin guiones ni puntos. Solo números">
                         <label>Cuil:</label>
                         <br>
                         <div class="col-12" class="form-control" id="cuil" onkeypress="return isNumberKey(event)">
@@ -82,7 +88,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3"
+                         data-intro="Ingresar un correo electrónico válido. Por ej: ejemplo@correo.com">
                         <label>Dirección de email:</label>
                         <br>
                         <div class="input-group" type="email" class="form-control" id="email">
@@ -91,12 +98,12 @@
                                   style="color: red;">Dirección de correo electrónico no válido </span>
                         </div>
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="OPCIONAL - Ingresar el legajo del Usuario">
                         <label>Legajo:</label>
                         <br>
                         {{ form.legajo|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Seleccionar la fecha de ingreso del Usuario">
                         <label>Fecha de Ingreso:</label>
                         <br>
                         <div class="col-12" id="fechaIngreso" data-target-input="nearest">
@@ -106,17 +113,19 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Seleccionar del listado la localidad del Usuario">
                         <label>Localidad:</label>
                         <br>
                         {{ form.localidad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Ingresar la dirección del Usuario.
+                    Por ej: Calle Sin Nombre Nº1234">
                         <label>Dirección:</label>
                         <br>
                         {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
-                    <div class="col-4 mb-4">
+                    <div class="col-4 mb-3" data-intro="Ingresar un número de teléfono de contacto.
+                    Ingresar solo números. Por ej: 3764123456">
                         <label>Teléfono:</label>
                         <div class="col-12" class="form-control" id="telefono" name="telefono"
                              onkeypress="return isNumberKey(event)"
@@ -127,7 +136,8 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-5 mb-3">
+                    <div class="col-5 mb-3" data-intro="OPCIONAL - Seleccionar el grupo al que pertenece
+                    el Usuario para asignarle los permisos correspondientes">
                         <label>Grupos:</label>
                         <br>
                         {{ form.groups|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -135,21 +145,23 @@
                     <div class="col-1 mb-3">
 
                     </div>
-                    <div class="col-2 mb-3">
+                    <div class="col-2 mb-3" data-intro="Tildar si el Usuario tendrá permisos de SUPERUSUARIO">
                         <label class="mb-4"></label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                             {{ form.is_superuser }}
                             <label class="custom-control-label" for="id_is_superuser">¿Es Superusuario?</label>
                         </div>
                     </div>
-                    <div class="col-2 mb-3">
+                    <div class="col-2 mb-3" data-intro="Tildar si el Usuario estará activo en el sistema.
+                    Si esta desactivado, no podrá iniciar sesión">
                         <label class="mb-4"></label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                             {{ form.is_active }}
                             <label class="custom-control-label" for="id_is_active">¿Está Activo?</label>
                         </div>
                     </div>
-                    <div class="col-2 mb-3">
+                    <div class="col-2 mb-3" data-intro="Tildar si el Usuario podrá realizar trabajos,
+                    esto es necesario para poder para asignarle los mismos">
                         <label class="mb-4"></label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                             {{ form.realizaTrabajos }}
@@ -158,7 +170,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-6 mb-3">
+                    <div class="col-6 mb-3" data-intro="OPCIONAL - cargar una imagen del usuario desde la PC">
                         <label>Imagen:</label>
                         <div id="imagen" name="imagen">
                             {{ form.imagen|attr:'width: 100%' }}
@@ -170,10 +182,12 @@
                 {#Mensaje de error#}
                 <ul id="errorList" class="alert-danger"></ul>
                 {#Botones#}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
+                    data-intro="Hacer click para guardar el registro de {{ entity }}">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+               data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>

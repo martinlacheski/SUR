@@ -49,7 +49,7 @@
                     {% endif %}
                     {{ title }}
                     <a href="#" class="btn btn-flat">
-                        <i class="far fa-question-circle verAyuda" style="color:white"></i>
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
                     </a>
                 </h3>
             </div>
@@ -62,12 +62,12 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="form-group col-7"
-                                         data-intro="Seleccionar del listado el Proveedor">
+                                         data-intro="Seleccionar del listado el proveedor">
                                         <label>(*) Proveedor:</label>
                                         <div class="input-group">
                                             {{ form.proveedor }}
                                             <div class="input-group-append"
-                                                 data-intro="Si el Proveedor no existe hacer click para crearlo">
+                                                 data-intro="Si el proveedor no existe hacer click para crearlo">
                                                 <button class="btn btn-success btn-flat btnAddProveedor" type="button">
                                                     <i class="fas fa-user-plus"></i>
                                                 </button>
@@ -153,7 +153,9 @@
                                                         </th>
                                                         <th scope="col" style="width: 48%;">Producto</th>
                                                         <th scope="col" style="width: 10%;">Costo</th>
-                                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                                        <th scope="col" style="width: 12%;"
+                                                            data-intro="Ingrese la cantidad">Cantidad
+                                                        </th>
                                                         <th scope="col" style="width: 10%;">Subtotal</th>
                                                         <th scope="col" style="width: 10%;"
                                                             data-intro="Actualizar el precio de costo del Producto">
@@ -228,11 +230,11 @@
                                 </div>
                                 <div class="card-footer">
                                     <button type="submit" class="btn btn-primary btn-flat"
-                                            data-intro="Hacer click para guardar el registro">
+                                            data-intro="Hacer click para guardar el registro de {{ entity }}">
                                         <i class="fas fa-save"></i> Guardar registro
                                     </button>
                                     <a href="{{ list_url }}" class="btn btn-danger btn-flat"
-                                       data-intro="Hacer click para cancelar y regresar al listado de compras">
+                                       data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                                         <i class="fas fa-times"></i> Cancelar
                                     </a>
                                 </div>

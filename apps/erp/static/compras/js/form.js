@@ -179,7 +179,7 @@ function calcular_importes() {
         subtotal += dict.subtotal;
     });
     //Asignamos los valores a los campos
-    compra.items.subtotal = subtotal - ivaCalculado;
+    compra.items.subtotal = subtotal;
     compra.items.iva = ivaCalculado;
     compra.items.percepcion = percepcion;
     if (percepcionPorcentaje > 0) {

@@ -63,6 +63,17 @@ $(document).ready(function () {
     });
 });
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Descargamos el EXCEL de la estadistica
     $('.btnXLS').on('click', function () {
         var chart = $('#container').highcharts();

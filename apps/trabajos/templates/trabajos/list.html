@@ -40,12 +40,19 @@
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
                 {{ title }}
+                {% if perms.trabajos.add_trabajos %}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
+                {% endif %}
             </h3>
         </div>
         <div class="card-body">
-            <label>Filtros: <i class="fas fa-angle-down showFilters"></i> </label>
+        {% if perms.trabajos.add_trabajos %}
+            <label data-intro="Hacer click para visualizar los filtros">Filtros:
+                <i class="fas fa-angle-down showFilters"></i> </label>
             <div class="row" id="filters">
-                <div class="form-group col-3">
+                <div class="form-group col-3" data-intro="Seleccione del listado para filtrar por Clientes">
                     <label>Clientes:</label>
                     <div class="input-group">
                         <select class="form-select form-control select2 selectCliente" id="selectCliente"
@@ -54,7 +61,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-2" data-intro="Seleccione del listado para filtrar por Modelos">
                     <label>Modelos:</label>
                     <div class="input-group">
                         <select class="form-select form-control select2 selectModelo" id="selectModelo"
@@ -63,7 +70,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group col-3">
+                <div class="form-group col-3" data-intro="Seleccione el rango de fechas para filtrar">
                     <label>Fecha de Entrada:</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="filterRangoFechas"
@@ -71,7 +78,8 @@
                                autocomplete="off">
                     </div>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-2"
+                     data-intro="Seleccione del listado para filtrar por Usuario Asignado al Trabajo">
                     <label>Asignado a:</label>
                     <div class="input-group">
                         <select class="form-select form-control select2 selectUsuario" id="selectUsuario"
@@ -80,7 +88,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group col-1">
+                <div class="form-group col-1" data-intro="Hacer click para limpiar los Filtros seleccionados">
                     <label class="mb-4"></label>
                     <div class="card-row">
                         <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
@@ -91,21 +99,24 @@
             </div>
             <div class="row" id="filters2">
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para excluir los trabajos finalizados"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input excluirFinalizados"
                                id="excluirFinalizados">
                         <label class="custom-control-label" for="excluirFinalizados"> Excluir Finalizados</label>
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para excluir los trabajos entregados"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input excluirEntregados"
                                id="excluirEntregados">
                         <label class="custom-control-label" for="excluirEntregados"> Excluir Entregados</label>
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para excluir los trabajos cancelados"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input excluirCancelados"
                                id="excluirCancelados">
                         <label class="custom-control-label" for="excluirCancelados"> Excluir Cancelados</label>
@@ -115,38 +126,44 @@
             <hr id="filters1">
             <div class="row" id="filters3">
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para ver los trabajos en estado planificado"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input verPlanificados"
                                id="verPlanificados">
                         <label class="custom-control-label" for="verPlanificados"> Ver Planificados</label>
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para ver los trabajos en estado en proceso"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input verEnProceso"
                                id="verEnProceso">
                         <label class="custom-control-label" for="verEnProceso"> Ver en Proceso</label>
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para ver los trabajos en estado finalizado"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input verFinalizados"
                                id="verFinalizados">
                         <label class="custom-control-label" for="verFinalizados"> Ver Finalizados</label>
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                    <div data-intro="Tildar para ver los trabajos en estado pendiente"
+                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                         <input type="checkbox" class="custom-control-input verPendientes"
                                id="verPendientes">
                         <label class="custom-control-label" for="verPendientes"> Ver Pendientes</label>
                     </div>
                 </div>
             </div>
+        {% endif %}
             <div class="row">
                 <div class="col-12">
                     <br>
-                    <table class="table" id="data">
+                    <table class="table" id="data" data-intro="Se visualiza el {{ title }}.
+            Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                         <thead>
                         <tr>
                             <th scope="col" style="width: 4%;">ID</th>
@@ -157,7 +174,10 @@
                             <th scope="col" style="width: 11%;">Modelo</th>
                             <th scope="col" style="width: 20%;">Cliente</th>
                             <th scope="col" style="width: 12%;">Usuario Asignado</th>
-                            <th scope="col" style="width: 23%;">Opciones</th>
+                            <th scope="col" style="width: 23%;"
+                                data-intro="Opciones de Listado. Ver detalle Trabajo. Generar PDF Trabajo. Modificar Trabajo. Finalizar Trabajo. Entregar Trabajo. Cancelar Trabajo">
+                                Opciones
+                            </th>
                         </tr>
                         </thead>
                         <tbody>
@@ -172,18 +192,20 @@
         <div class="card-footer">
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
                 {% if perms.trabajos.add_trabajos %}
-                    <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                    <a href="{{ create_url }}" class="btn btn-primary btn-flat"
+                       data-intro="Crear un nuevo registro de {{ entity }}">
                         <i class="fas fa-plus"></i> Nuevo registro
                     </a>
-
                 {% else %}
                     <input type="hidden" name="soloModificar" value="SI">
                 {% endif %}
-                <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                <a href="{{ list_url }}" class="btn btn-success btn-flat"
+                   data-intro="Actualizar el listado de {{ entity }}">
                     <i class="fas fa-sync"></i> Actualizar
                 </a>
                 {% if perms.trabajos.add_trabajos %}
-                    <button type="submit" class="btn btn-info btn-flat btnReporte">
+                    <button type="submit" class="btn btn-info btn-flat btnReporte"
+                            data-intro="Generar reporte de {{ entity }}">
                         <i class="fas fa-file-pdf"></i> Generar Reporte
                     </button>
                 {% endif %}

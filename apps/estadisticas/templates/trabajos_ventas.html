@@ -22,11 +22,14 @@
             <h3 class="card-title">
                 <i class="fas fa-chart-line"></i>
                 {{ title }}
+                <a href="#" class="btn btn-flat">
+                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                </a>
             </h3>
         </div>
         <div class="card-body">
             <div class="row" id="filters">
-                <div class="form-group col-3">
+                <div class="form-group col-3" data-intro="Seleccione el rango de fechas para filtrar">
                     <label>Fechas:</label>
                     <div class="input-group">
                         <input type="text" class="form-control" name="filterRangoFechas"
@@ -38,13 +41,16 @@
                     <label class="mt-3"></label>
                     <div class="card-row">
                         <button type="button" class="btn btn-info btn-flat btnImprimir"
-                                onclick="window.print()">
+                                onclick="window.print()"
+                                data-intro="Hacer click para generar el Reporte de {{ entity }}">
                             <i class="fas fa-print"></i> Imprimir
                         </button>
-                        <button class="btn btn-success btn-flat btnXLS" type="button">
+                        <button class="btn btn-success btn-flat btnXLS" type="button"
+                                data-intro="Hacer click para descargar la hoja de cálculo del Reporte de {{ entity }}">
                             <i class="fas fa-file-excel"></i> Descargar
                         </button>
-                        <button class="btn btn-danger btn-flat btnCleanFiltros" type="button">
+                        <button class="btn btn-danger btn-flat btnCleanFiltros" type="button"
+                                data-intro="Hacer click para limpiar los Filtros seleccionados">
                             <i class="fas fa-times"></i> Limpiar filtros
                         </button>
                     </div>

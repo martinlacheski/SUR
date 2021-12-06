@@ -20,19 +20,23 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="Ingrese el nombre del Grupo de Usuarios">
                         <label>(*) Nombre:</label>
                         {{ form.name|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                     </div>
                     <div class="form-group col-6">
                     </div>
-                    <div class="col-12">
+                    <div class="col-12" data-intro="Ingrese y Seleccione todos los permisos sobre el sistema
+                    que poseerá el Grupo de Usuarios">
                         <label>(*) Permisos:</label>
                         <div class="input-group">
                             <select class="permisos-multiple" name="permisos" multiple="multiple">
@@ -46,10 +50,12 @@
                 {#Mensaje de error#}
                 <ul id="errorList" class="alert-danger"></ul>
                 {#Botones#}
-                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit">
+                <button type="submit" id="btnEdit" class="btn btn-primary btn-flat btnEdit"
+                        data-intro="Hacer click para guardar el registro de {{ entity }}">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                   data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
 
@@ -84,6 +90,17 @@
                 errorList.appendChild(li);
             }
         }
+
+        //Al hacer click en el AYUDA
+        $('.verAyuda').on('click', function () {
+            introJs().setOptions({
+                showProgress: true,
+                showBullets: false,
+                nextLabel: 'Siguiente',
+                prevLabel: 'Atrás',
+                doneLabel: 'Finalizar',
+            }).start()
+        });
 
         //Llamamos a la funcion de Token
         getToken(name);

@@ -17,6 +17,17 @@ var reporte = {
     },
 };
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        document.getElementById("filters").style.display = "";
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
     tablaServicios = $('#data').DataTable({
         responsive: true,
         autoWidth: false,

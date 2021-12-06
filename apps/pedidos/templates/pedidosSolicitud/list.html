@@ -31,10 +31,14 @@
             <h3 class="card-title">
                 <i class="fas fa-search"></i>
                 {{ title }}
+                <a href="#" class="btn btn-flat">
+                    <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                </a>
             </h3>
         </div>
         <div class="card-body">
-            <table class="table" id="data">
+            <table class="table" id="data" data-intro="Se visualiza el {{ title }}.
+            Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                 <thead>
                 <tr>
                     <th scope="col" style="width: 3%;">ID</th>
@@ -45,7 +49,12 @@
                     <th scope="col" style="width: 12%;">Subtotal</th>
                     <th scope="col" style="width: 12%;">IVA</th>
                     <th scope="col" style="width: 12%;">Total</th>
-                    <th scope="col" style="width: 17%;">Opciones</th>
+                    <th scope="col" style="width: 17%;"
+                        data-intro="Opciones del Listado: Ver detalle Solicitud. Modificar Solicitud.
+                        Confirmar Solicitud. Cancelar Solicitud. Confirmar Pedido. Cancelar Pedido.
+                        Generar PDF Solicitud.">
+                        Opciones
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -56,10 +65,12 @@
             </table>
         </div>
         <div class="card-footer">
-            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+            <a href="{{ create_url }}" class="btn btn-primary btn-flat"
+                       data-intro="Crear un nuevo registro de {{ entity }}">
                 <i class="fas fa-plus"></i> Nuevo registro
             </a>
-            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+            <a href="{{ list_url }}" class="btn btn-success btn-flat"
+                   data-intro="Actualizar el listado de {{ entity }}">
                 <i class="fas fa-sync"></i> Actualizar
             </a>
         </div>
@@ -169,6 +180,7 @@
                 });
             });
         }
+
         //Funcion para Cancelar PEDIDO mediante AJAX
         function btnEliminarPedido(id, href) {
             // Reactivación de botón y mensaje a default.

@@ -48,18 +48,22 @@
                         <i class="fas fa-edit"></i>
                     {% endif %}
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:white"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
                 {% csrf_token %}
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
-                    <div class="form-group col-6">
+                    <div class="form-group col-6" data-intro="Seleccionar del listado el cliente">
                         <label>(*) Cliente:</label>
                         <div class="input-group">
                             {% if action == 'add' or action == 'express' %}
                                 {{ form.cliente }}
-                                <div class="input-group-append">
+                                <div class="input-group-append"
+                                     data-intro="Si el cliente no existe hacer click para crearlo">
                                     <button class="btn btn-success btn-flat btnAddCliente" type="button">
                                         <i class="fas fa-user-plus"></i>
                                     </button>
@@ -71,7 +75,7 @@
                     </div>
                     <div class="form-group col-2">
                     </div>
-                    <div class="form-group col-2">
+                    <div class="form-group col-2" data-intro="Seleccionar la fecha de entrada del trabajo">
                         <label>(*) Fecha de Entrada:</label>
                         <div class="col-12" id="fechaEntrada" data-target-input="nearest">
                             {% if action == 'add' or action == 'express' %}
@@ -89,7 +93,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-3">
+                    <div class="form-group col-3" data-intro="Seleccionar del listado la marca">
                         <label>Marca:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectMarca" id="selectMarca"
@@ -106,7 +110,7 @@
                                     {% endif %}
                         </div>
                     </div>
-                    <div class="form-group col-3">
+                    <div class="form-group col-3" data-intro="Seleccionar del listado el modelo">
                         <label>(*) Modelo:</label>
                         <div class="input-group">
                             {% if action == 'add' or action == 'express' %}
@@ -116,7 +120,8 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="form-group col-6">
+                    <div class="form-group col-6"
+                         data-intro="Si existe y desea, puede seleccionar del listado una plantilla de trabajo para agilizar la carga del mismo">
                         <label>Plantilla:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectPlantilla" id="selectPlantilla"
@@ -133,7 +138,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-9">
+                    <div class="form-group col-9" data-intro="Puede ingresar observaciones al trabajo">
                         <div class="form-group">
                             <label>Observaciones:</label>
                             <br>
@@ -150,13 +155,17 @@
                 </div>
                 <div class="row">
                     <div class="col-4">
-                        <div class="form-group">
+                        <div class="form-group"
+                             data-intro="Seleccione del listado la prioridad del trabajo, según el plazo estipulado del trabajo">
                             <label>(*) Prioridad:</label>
                             <br>
                             {{ form.prioridad|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4"
+                         data-intro="El sistema de manera automática eligirá un usuario asignado,
+                         en base a cantidad de trabajos que posee el mismo. Si desea modificarlo,
+                         seleccione del listado el usuario a cual quiere asignar el trabajo">
                         <div class="form-group">
                             {% if action != 'express' %}
                                 <label>(*) Usuario Asignado:</label>
@@ -165,7 +174,8 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-4"
+                         data-intro="En caso que el trabajo lleve, puede ingresar la ficha del mismo en este lugar">
                         <div class="form-group">
                             {% if action != 'express' %}
                                 <label>Ficha de Trabajo:</label>
@@ -184,38 +194,52 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label>Buscador de productos:</label>
-                                    <div class="input-group">
+                                    <label data-intro="Seleccione un Cliente para poder ingresar productos">Buscador
+                                        de productos:</label>
+                                    <div class="input-group"
+                                         data-intro="Se puede buscar por descripción, código, código del proveedor o código de barras del producto">
                                         <input type="text" class="form-control" name="searchProductos"
                                                placeholder="Ingrese una descripción de producto" autocomplete="off">
                                         <span class="input-group-append">
-                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos"><i
-                                                class="fas fa-times"></i></button>
+                                        <button type="button" class="btn btn-danger btn-flat btnClearSearchProductos">
+                                            <i class="fas fa-times"></i></button>
                                       </span>
                                     </div>
                                 </div>
                                 <hr>
-                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchProductos"><i
-                                        class="fas fa-search"></i> Buscar todos
+                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchProductos"
+                                        data-intro="Hacer click para visualizar todos los productos">
+                                    <i class="fas fa-search"></i> Buscar todos
                                 </button>
-                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddProducto"><i
-                                        class="fas fa-plus"></i> Agregar Producto
+                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddProducto"
+                                        data-intro="Si no existe el producto, hacer click para crearlo">
+                                    <i class="fas fa-plus"></i> Agregar Producto
                                 </button>
-                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos">
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllProductos"
+                                        data-intro="Eliminar todos los productos del detalle">
                                     <i class="fas fa-trash"></i> Eliminar todos
                                 </button>
                                 <hr>
                                 <table class="table table-bordered" id="tablaProductos">
                                     <thead>
                                     <tr>
-                                        <th scope="col" style="width: 7%;">Eliminar</th>
+                                        <th scope="col" style="width: 7%;" data-intro="Eliminar el renglón">Eliminar
+                                        </th>
                                         <th scope="col" style="width: 40%;">Producto</th>
                                         <th scope="col" style="width: 10%;">Importe</th>
-                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                        <th scope="col" style="width: 12%;" data-intro="Ingrese la cantidad">Cantidad
+                                        </th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                        <th scope="col" style="width: 7%;">Actualizar</th>
-                                        <th scope="col" style="width: 7%;">Obs.</th>
-                                        <th scope="col" style="width: 7%;">Utilizado</th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Actualizar el precio del Producto">Actualizar
+                                        </th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Ingresar observaciones al Producto">Obs.
+                                        </th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Marcar si el producto ya se utilizó en el trabajo, para ir registrando el avance en el mismo">
+                                            Utilizado
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -233,8 +257,10 @@
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label>Buscador de servicios:</label>
-                                    <div class="input-group">
+                                    <label data-intro="Seleccione un Cliente para poder ingresar servicios">Buscador
+                                        de servicios:</label>
+                                    <div class="input-group"
+                                         data-intro="Se puede buscar por descripción o código del servicio">
                                         <input type="text" class="form-control" name="searchServicios"
                                                placeholder="Ingrese una descripción de servicio" autocomplete="off">
                                         <span class="input-group-append">
@@ -244,27 +270,40 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchServicios"><i
-                                        class="fas fa-search"></i> Buscar todos
+                                <button type="button" class="btn btn-primary btn-xs btn-flat btnSearchServicios"
+                                        data-intro="Hacer click para visualizar todos los servicios">
+                                    <i class="fas fa-search"></i> Buscar todos
                                 </button>
-                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddServicio"><i
-                                        class="fas fa-plus"></i> Agregar Servicio
+                                <button type="button" class="btn btn-success btn-xs btn-flat btnAddServicio"
+                                        data-intro="Si no existe el servicio, hacer click para crearlo">
+                                    <i class="fas fa-plus"></i> Agregar Servicio
                                 </button>
-                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios">
+                                <button type="button" class="btn btn-danger btn-xs btn-flat btnRemoveAllServicios"
+                                        data-intro="Eliminar todos los servicios del detalle">
                                     <i class="fas fa-trash"></i> Eliminar todos
                                 </button>
                                 <hr>
                                 <table class="table table-bordered" id="tablaServicios">
                                     <thead>
                                     <tr>
-                                        <th scope="col" style="width: 7%;">Eliminar</th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Eliminar el renglón">Eliminar
+                                        </th>
                                         <th scope="col" style="width: 40%;">Servicio</th>
                                         <th scope="col" style="width: 10%;">Importe</th>
-                                        <th scope="col" style="width: 12%;">Cantidad</th>
+                                        <th scope="col" style="width: 12%;" data-intro="Ingrese la cantidad">Cantidad
+                                        </th>
                                         <th scope="col" style="width: 10%;">Subtotal</th>
-                                        <th scope="col" style="width: 7%;">Actualizar</th>
-                                        <th scope="col" style="width: 7%;">Obs.</th>
-                                        <th scope="col" style="width: 7%;">Realizado</th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Actualizar el precio del Servicio">Actualizar
+                                        </th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Ingresar observaciones al Servicio">Obs.
+                                        </th>
+                                        <th scope="col" style="width: 7%;"
+                                            data-intro="Marcar si el servicio ya se realizó en el trabajo, para ir registrando el avance en el mismo">
+                                            Realizado
+                                        </th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -356,7 +395,7 @@
                 <div class="card-footer">
                     {% if action == 'deliver' %}
                         <div class="row">
-                            <div class="form-group col-3">
+                            <div class="form-group col-3" data-intro="Seleccionar del listado la condición de pago">
                                 <label>(*) Condición:</label>
                                 <div class="input-group">
                                     <select class="form-select form-control select2 selectCondicionPago"
@@ -369,7 +408,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group col-3">
+                            <div class="form-group col-3" data-intro="Seleccionar del listado el medio de pago">
                                 <label>(*) Medio de pago:</label>
                                 <div class="input-group">
                                     <select class="form-select form-control select2 selectMedioPago"
@@ -384,18 +423,26 @@
                             </div>
                         </div>
                     {% endif %}
-                    <button type="submit" class="btn btn-primary btn-flat">
-                        {% if action == 'add' or action == 'express' %}
-                            <i class="fas fa-save"></i> Guardar registro
-                        {% elif action == 'edit' %}
-                            <i class="fas fa-save"></i> Guardar registro
-                        {% elif action == 'confirm' %}
-                            <i class="fas fa-save"></i> Finalizar trabajo
-                        {% elif action == 'deliver' %}
-                            <i class="fas fa-save"></i> Entregar trabajo
-                        {% endif %}
+                    {% if action == 'add' or action == 'express' %}
+                        <button type="submit" class="btn btn-primary btn-flat"
+                                data-intro="Hacer click para guardar el registro de {{ entity }}">
+                        <i class="fas fa-save"></i> Guardar registro
+                    {% elif action == 'edit' %}
+                        <button type="submit" class="btn btn-primary btn-flat"
+                                data-intro="Hacer click para guardar el registro de {{ entity }}">
+                        <i class="fas fa-save"></i> Guardar registro
+                    {% elif action == 'confirm' %}
+                        <button type="submit" class="btn btn-primary btn-flat"
+                                data-intro="Hacer click para finalizar el trabajo">
+                        <i class="fas fa-save"></i> Finalizar trabajo
+                    {% elif action == 'deliver' %}
+                        <button type="submit" class="btn btn-primary btn-flat"
+                                data-intro="Hacer click para entregar el trabajo">
+                        <i class="fas fa-save"></i> Entregar trabajo
+                    {% endif %}
                     </button>
-                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                    <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                       data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                         <i class="fas fa-times"></i> Cancelar
                     </a>
                 </div>

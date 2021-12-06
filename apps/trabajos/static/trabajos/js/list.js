@@ -62,6 +62,21 @@ function searchParametros() {
 };
 
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        document.getElementById("filters").style.display = "";
+        document.getElementById("filters1").style.display = "";
+        document.getElementById("filters2").style.display = "";
+        document.getElementById("filters3").style.display = "";
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Captamos si el usuario puede solo modificar los trabajos
     var soloModificar = $('input[name="soloModificar"]').val();
     //Buscamos los parametros de estado

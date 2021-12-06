@@ -29,6 +29,17 @@ function searchParametros() {
 };
 
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     //Eventos del Listado
     var tablaPlanificacion = $('#data').DataTable({
         responsive: true,
