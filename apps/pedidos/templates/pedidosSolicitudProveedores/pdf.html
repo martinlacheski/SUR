@@ -5,7 +5,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Solicitud de Pedido</title>
+    <title>Cotización Solicitud de Pedido</title>
     <style>
 
         * {
@@ -56,7 +56,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h1 class="name-company text-center">Nota de Solicitud de Pedido</h1>
+            <h1 class="name-company text-center">Cotización Solicitud de Pedido</h1>
         </div>
     </div>
     <div class="row">
@@ -77,13 +77,8 @@
                 <b>Número:</b> {{ pedido.id }}<br>
                 <b>Fecha:</b> {{ pedido.fecha|date:'d-m-Y' }}<br>
                 <b>Fecha y Hora Límite:</b> {{ pedido.fechaLimite|date:'d-m-Y H:m' }}<br>
-                {% if pedido.estado %}
-                    <b>Estado:</b> Confirmado <br>
-                {% elif pedido.estado == None %}
-                    <b>Estado:</b> No Confirmado <br>
-                {% else  %}
-                    <b>Estado:</b> Cancelado <br>
-                {% endif %}
+                <b>Proveedor:</b> {{ cotizacion.proveedor.razonSocial }}<br>
+                <b>Fecha y Hora de envío cotización:</b> {{ cotizacion.respuesta|date:'d-m-Y H:m' }}<br>
             </p>
         </div>
     </div>
@@ -93,17 +88,23 @@
     <table class="table" style="width: 100%;">
         <thead>
         <tr style="border: 1px solid black;">
-            <th class="text-center" style="width: 10%;">Cantidad</th>
-            <th class="text-center" style="width: 70%;">Producto</th>
-            <th class="text-center" style="width: 10%;">Costo</th>
-            <th class="text-center" style="width: 10%;">Subtotal</th>
+            <th class="text-center" style="width: 7%;">Cantidad</th>
+            <th class="text-center" style="width: 40%;">Producto</th>
+            <th class="text-center" style="width: 23%;">Marca</th>
+            <th class="text-center" style="width: 15%;">Costo</th>
+            <th class="text-center" style="width: 15%;">Subtotal</th>
         </tr>
         </thead>
         <tbody>
-        {% for det in pedido.detallepedidosolicitud_set.all %}
+        {% for det in cotizacion.detallepedidosolicitudproveedor_set.all %}
             <tr>
                 <td class="text-center">{{ det.cantidad }}</td>
                 <td class="text-center">{{ det.producto.descripcion }}</td>
+                {% if det.marcaOfertada == None %}
+                    <td class="text-center"></td>
+                {% else %}
+                    <td class="text-center">{{ det.marcaOfertada }}</td>
+                {% endif %}
                 <td class="text-right">$ {{ det.costo|intcomma|localize }}</td>
                 <td class="text-right">$ {{ det.subtotal|intcomma|localize }}</td>
             </tr>

@@ -1,17 +1,26 @@
 import json
 import datetime
+import os
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
+from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView
+from weasyprint import HTML, CSS
+
 from apps.erp.models import Productos
+from apps.parametros.models import Empresa
 from apps.pedidos.forms import PedidoSolicitudProveedorForm
-from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, DetallePedidoSolicitud
+from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, DetallePedidoSolicitud, \
+    PedidosSolicitud
 from apps.mixins import ValidatePermissionRequiredMixin
 
 from django.urls import reverse
+
+from config import settings
 
 
 class PedidosSolicitudProveedoresListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView, ):
@@ -122,6 +131,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                             det.costo = float(i['costo'])
                             det.subtotal = float(i['subtotal'])
                             det.save()
+                        data = {'id': pedidoP.id}
                         data['redirect'] = reverse('pedidos:pedidos_solicitudes_correcto')
             except Exception as e:
                 data['error'] = str(e)
@@ -138,6 +148,40 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
         context['list_url'] = self.success_url
         context['action'] = 'add'
         return context
+
+
+class PedidosSolicitudProveedoresPdfView(View):
+
+    def get(self, request, *args, **kwargs):
+        try:
+            # Traemos la empresa para obtener los valores
+            empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+            # Armamos el Logo de la Empresa
+            logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
+            # Obtenemos la Solicitud del Proveedor para acceder al detalle
+            cotizacionProveedor = PedidoSolicitudProveedor.objects.get(id=self.kwargs['pk'])
+            print(cotizacionProveedor.detallepedidosolicitudproveedor_set)
+            # Obtenemos la Solicitud de Cotizacion a la cual pertenece el Pedido para obtener los datos de Cabecera
+            pedidoSolicitud = PedidosSolicitud.objects.get(id=cotizacionProveedor.pedidoSolicitud.id)
+            print(cotizacionProveedor.respuesta)
+            # Utilizamos el template para generar el PDF
+            template = get_template('pedidosSolicitudProveedores/pdf.html')
+            context = {
+                'pedido': pedidoSolicitud,
+                'cotizacion': cotizacionProveedor,
+                'empresa': {'nombre': empresa.razonSocial, 'cuit': empresa.cuit, 'direccion': empresa.direccion,
+                            'localidad': empresa.localidad.get_full_name(), 'imagen': logo},
+            }
+            # Generamos el render del contexto
+            html = template.render(context)
+            # Asignamos la ruta del CSS de BOOTSTRAP
+            css_url = os.path.join(settings.BASE_DIR, 'static/lib/bootstrap-4.6.0/css/bootstrap.min.css')
+            # Creamos el PDF
+            pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf(stylesheets=[CSS(css_url)])
+            return HttpResponse(pdf, content_type='application/pdf')
+        except:
+            pass
+        return HttpResponseRedirect(reverse_lazy('pedidos:pedidos_solicitudes_correcto'))
 
 
 class ExpiredSolicitudProveedorView(TemplateView):

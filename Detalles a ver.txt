@@ -5,17 +5,13 @@ con eso se puede ocultar los campos desde el JS
 <input type="hidden" name="agregar" value="SI">
 <input type="hidden" name="modificar" value="SI">
 <input type="hidden" name="eliminar" value="SI">
+
 --------------------------------------------------------------------------------------------------------------------
 * Agregar INSUMOS y realizar compras y ventas para visualizar en las estadisticas
 --------------------------------------------------------------------------------------------------------------------
-* En trabajos ver de agregar que se visualize Nombre de Prioridad de trabajo y el Plazo de la prioridad
---------------------------------------------------------------------------------------------------------------------
 * Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
-
 --------------------------------------------------------------------------------------------------------------------
-
 * VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
-
 --------------------------------------------------------------------------------------------------------------------
 
 EMOJIS PARA EL AYUDA

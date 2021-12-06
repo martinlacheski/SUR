@@ -371,7 +371,12 @@ $(function () {
                                 location.replace(data.redirect);
                             } else {
                                 if (!data.hasOwnProperty('error')) {
+                                    confirm_action('Notificación', '¿Desea imprimir la Solicitud de Pedido?', function () {
+                                    window.open('/pedidos/solicitudes/proveedores/pdf/' + data.id + '/', '_blank');
                                     location.replace(data.redirect);
+                                }, function () {
+                                    location.replace(data.redirect);
+                                });
                                 } else {
                                     error_action('Error', data.error, function () {
                                         //pass

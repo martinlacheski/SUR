@@ -21,6 +21,9 @@
                 <h3 class="card-title">
                     <i class="fas fa-edit"></i>
                     {{ title }}
+                    <a href="#" class="btn btn-flat">
+                        <i class="far fa-question-circle verAyuda" style="color:darkblue"></i>
+                    </a>
                 </h3>
             </div>
             <div class="card-body">
@@ -28,8 +31,8 @@
                 <input type="hidden" name="action" value="{{ action }}">
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-12">
-                            <label>Razón Social:</label>
+                        <div class="form-group col-12" data-intro="Ingrese la razón social de la empresa">
+                            <label>(*) Razón Social:</label>
                             <br>
                             {{ form.razonSocial|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
@@ -37,14 +40,16 @@
                 </div>
                 <div class="row">
                     <div class="input-group">
-                        <div class="form-group col-6">
-                            <label>Condición frente al IVA:</label>
+                        <div class="form-group col-6"
+                             data-intro="Seleccione del listado la condición frente al IVA de la empresa">
+                            <label>(*) Condición frente al IVA:</label>
 
                             {{ form.condicionIVA|add_class:'form-control'|attr:'required:true' }}
                         </div>
 
-                        <div class="form-group col-6">
-                            <label>Cuit:</label>
+                        <div class="form-group col-6" data-intro="Ingrese el CUIT de la Empresa con los GUIONES.
+                        Esto para que se visualice de manera correcta en los reportes.">
+                            <label>(*) Cuit:</label>
                             <div class="col-12" class="form-control" id="cuil" name="cuil">
                                 {{ form.cuit|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                             </div>
@@ -52,21 +57,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-6">
-                        <label>Localidad:</label>
+                    <div class="form-group col-6" data-intro="Seleccione del listado la localidad de la empresa">
+                        <label>(*) Localidad:</label>
                         <br>
                         {{ form.localidad|add_class:'form-control'|attr:'required:true' }}
                     </div>
-                    <div class="form-group col-6">
-                        <label>Dirección:</label>
+                    <div class="form-group col-6"
+                         data-intro="Ingresar la dirección del Proveedor. Por ej: Calle Sin Nombre Nº1234">
+                        <label>(*) Dirección:</label>
                         <div class="col-12" class="form-control" id="direccion" name="direccion">
                             {{ form.direccion|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-4">
-                        <label>Dirección de email:</label>
+                    <div class="form-group col-4"
+                         data-intro="Ingresar un correo electrónico válido. Por ej: ejemplo@correo.com">
+                        <label>(*) Dirección de email:</label>
                         <br>
                         <div class="input-group" type="email" class="form-control" id="email" name="email">
                             {{ form.email|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
@@ -74,61 +81,73 @@
                                   style="color: red;">Dirección de correo electrónico no válido </span>
                         </div>
                     </div>
-                    <div class="form-group col-4">
-                        <label>Contraseña:</label>
-                        {{ form.passwordEmail|add_class:'form-control' }}
-                    </div>
-                    <div class="form-group col-4">
-                        <label>Teléfono:</label>
+                    {#                    <div class="form-group col-4">#}
+                    {#                        <label>Contraseña:</label>#}
+                    {#                        {{ form.passwordEmail|add_class:'form-control'|attr:'hidden' }}#}
+                    {#                    </div>#}
+                    <div class="form-group col-4"
+                         data-intro="Ingresar un número de teléfono de contacto. Ingresar solo números. Por ej: 3764123456">
+                        <label>(*) Teléfono:</label>
                         <div class="col-12" id="telefono" name="telefono" onkeypress="return isNumberKey(event)">
                             {{ form.telefono|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
                         </div>
                     </div>
+
                 </div>
+                {#                <div class="row">#}
+                {#                    <div class="form-group col-4">#}
+                {#                        <label>Bot Telegram:</label>#}
+                {#                        <br>#}
+                {#                        {{ form.botTelegram|add_class:'form-control'|attr:'autocomplete:off' }}#}
+                {#                    </div>#}
+                {#                    <div class="form-group col-4">#}
+                {#                        <label>Token Telegram:</label>#}
+                {#                        {{ form.tokenTelegram|add_class:'form-control'|attr:'autocomplete:off' }}#}
+                {#                    </div>#}
+                {#                </div>#}
                 <div class="row">
-                    <div class="form-group col-4">
-                        <label>Bot Telegram:</label>
-                        <br>
-                        {{ form.botTelegram|add_class:'form-control'|attr:'autocomplete:off' }}
-                    </div>
-                    <div class="form-group col-4">
-                        <label>Token Telegram:</label>
-                        {{ form.tokenTelegram|add_class:'form-control'|attr:'autocomplete:off' }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar la URL o nombre de la página de Facebook de la empresa">
                         <label>Facebook:</label>
                         {{ form.facebook|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar la URL o nombre de la página de Instagram de la empresa">
                         <label>Instagram:</label>
                         {{ form.instagram|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-8">
+                    <div class="form-group col-8"
+                         data-intro="OPCIONAL - Ingresar la URL de la página de la empresa">
                         <label>Página Web:</label>
                         {{ form.paginaWeb|add_class:'form-control'|attr:'autocomplete:off' }}
 
                     </div>
-                    <div class="col-4 mb-4">
-                        <label>Imagen:</label>
+                    <div class="col-4 mb-4"
+                         data-intro="OPCIONAL - Hacer click para adjuntar un logo de la Empresa,
+                         el mismo se utilizará para los reportes">
+                        <label>Logo:</label>
                         <div id="imagen" name="imagen">
                             {{ form.imagen|attr:'width: 100%' }}
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar el CBU - CVU bancaria de la empresa.
+                         Está compuesto por 22 números. Por ej: 1234567890123456789012">
                         <label>CBU - CVU:</label>
                         {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar el Alias de la cuenta bancaria de la empresa.
+                         Está compuesto por tres palabras separadas por un '.' Por ej: CASA.PERRO.AUTO">
                         <label>Alias:</label>
                         {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
-                    <div class="form-group col-4">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar el número de cuenta bancaria de la empresa">
                         <label>Número de Cuenta:</label>
                         {{ form.nroCuenta|add_class:'form-control'|attr:'autocomplete:off' }}
                     </div>
@@ -139,10 +158,12 @@
                 {#Mensaje de error#}
                 <ul id="errorList" name="errorList" class="alert-danger"></ul>
                 {#Botones#}
-                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd">
+                <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
+                        data-intro="Hacer click para guardar el registro de {{ entity }}">
                     <i class="fas fa-save"></i> Guardar registro
                 </button>
-                <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                <a href="{{ list_url }}" class="btn btn-danger btn-flat"
+                   data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                     <i class="fas fa-times"></i> Cancelar
                 </a>
             </div>
