@@ -39,7 +39,7 @@ def notificar(evento):
             if evento.tipoEvento.recordarSistema and (not evento.vencido or not evento.resuelto):
                 n = notificacionesGenerales()
                 if evento.fechaNotificacion - timedelta(days=1) == datetime.date.today():
-                    print("hola")
+                    print("es un evento urgente!!!")
                     n.estado = 'urgente'
                     titulo = "Evento URGENTE - Tipo " + str(evento.tipoEvento)
                     descripcion = "¡RECUERDE!\n\n Evento de tipo " + str(evento.tipoEvento) + " programado para el día " + \
@@ -52,7 +52,6 @@ def notificar(evento):
                                   " programado para el día " + evento.fechaNotificacion.strftime('%d-%m-%Y') + \
                                   " con descripción: '" + str(evento.descripcion) + "'."
                 n.fechaNotificacion = datetime.datetime.today()
-
                 n.titulo = titulo
                 n.descripcion = descripcion
                 n.enviadoAUser = user.usuarioNotif

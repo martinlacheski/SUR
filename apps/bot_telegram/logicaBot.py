@@ -26,7 +26,7 @@ import ast
 def validarCUITCUIL(cuit):
     if (not cuit):
         return False
-    if (len(cuit) != 13):
+    if (len(cuit) != 11):
         return False
     rv = False
     resultado = 0

@@ -1,4 +1,5 @@
 from datetime import date, timedelta, datetime
+import datetime
 
 import apps.agenda.models
 from apps.agenda.logicaNotificacion import *
@@ -49,7 +50,7 @@ class DashboardAgenda(LoginRequiredMixin, ValidatePermissionRequiredMixin, Creat
             else:
                 evento.resuelto = True
                 evento.resueltoPor_id = Usuarios.objects.get(username=request.POST['usuario'])
-                evento.horaResolucion = datetime.today()
+                evento.horaResolucion = datetime.now()
                 evento.save()
                 data['check'] = 'ok'
                 data['redirect'] = self.success_url
@@ -149,9 +150,10 @@ def datos_evento_evID(ev_id):
     data['notifMediante'] = (['Sistema', evento.tipoEvento.recordarSistema],
                              ['Telegram', evento.tipoEvento.recordarTelegram])
     if evento.resuelto:
-        data['resueltoPor'] = str(evento.resueltoPor_id.username) + " el " +\
-                              str(evento.horaResolucion.date().strftime('%d-%m-%Y')) + " a las " +\
-                              str(evento.horaResolucion.time().strftime('%H:%m'))
+        data['resueltoPor'] = str(evento.resueltoPor_id.username) + " el " + \
+                              str(evento.horaResolucion.date().strftime('%d-%m-%Y'))
+                              #str(evento.horaResolucion.date().strftime('%d-%m-%Y')) + " a las " +\
+                              #str(evento.horaResolucion.time().strftime('%H:%m'))
     return data
 
 
