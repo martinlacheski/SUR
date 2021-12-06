@@ -1,0 +1,227 @@
+{
+  "model": "usuarios.usuarios",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$ktJRZUklFop2CSkZFklybr$bzNvZ1HI5/PSc3OCPMRbw9CUZ+LDhPq4zxC2SIKY5i0=",
+    "last_login": "2021-12-06T13:25:48.590Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "MARTIN ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-09-21T14:38:43.691Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20315728577",
+    "localidad": 1,
+    "direccion": "CALLE 58 Nº6689",
+    "telefono": null,
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$n7weKLVrewm973ECGIJY4P$uJqxU4CFdRPjq6IBCCH6GMbj2JxLQ8oVDQ3R42EpsWU=",
+    "last_login": "2021-11-08T12:42:42.364Z",
+    "is_superuser": true,
+    "username": "rogelio",
+    "first_name": "ROGELIO ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "rogelio@surexpress.com.ar",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-09-21T14:39:00.803Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20169862347",
+    "localidad": 1,
+    "direccion": "AV. TACUARI 7825",
+    "telefono": "3764256566",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$ySCniYLP8pC4RNkWqwyXP3$YIh0EqJxjP7ac5/S7BXpMUI9cTxZNn1hy/0XqmND1Xs=",
+    "last_login": "2021-10-13T15:51:37.884Z",
+    "is_superuser": false,
+    "username": "adriana",
+    "first_name": "ADRIANA YANINA",
+    "last_name": "LACHESKI",
+    "email": "adriana@surexpress.com.ar",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-10-07T12:47:21.346Z",
+    "legajo": "4",
+    "fechaIngreso": "2020-02-03",
+    "cuil": "27340183571",
+    "localidad": 1,
+    "direccion": "CALLE 137 A CASA 5330",
+    "telefono": "3764123598",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$EcgZl2b9oaH7mfGY89R0JW$D/wSABe90Lv56ul1b5DumHCSpTVxZw222DkRJ0V7aTM=",
+    "last_login": "2021-11-10T17:14:27.018Z",
+    "is_superuser": false,
+    "username": "gladys",
+    "first_name": "GLADYS ESTHER",
+    "last_name": "KLIKAILO",
+    "email": "gladys@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-10-20T15:12:30.685Z",
+    "legajo": "5",
+    "fechaIngreso": "2011-10-03",
+    "cuil": "27171706985",
+    "localidad": 7,
+    "direccion": "LOTE  FRACCIÓN B-2 BARRIO PINDAPOY",
+    "telefono": "3764642153",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$h4BAuVx4oUUr3vKytL328O$mMIOSJ0VM6T9cbSmxbKlQt/QbxNVcI6Q0luoZ7/JYvQ=",
+    "last_login": "2021-11-10T17:25:24.366Z",
+    "is_superuser": true,
+    "username": "leo",
+    "first_name": "HUGO LEONARDO",
+    "last_name": "QUIROGA",
+    "email": "lequiroga@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-11-10T14:37:16.550Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20436188693",
+    "localidad": 1,
+    "direccion": "GARUPA SN",
+    "telefono": null,
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$OFtrLfaRL5sDCVwsrKY51A$8C5ktQQnKeDr2oXMM0htfE3Db9By6wE0ZPvogJ6crto=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ceferino",
+    "first_name": "CEFERINO RAMON",
+    "last_name": "KURCZACK",
+    "email": "ceferino@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-06T13:29:06.518Z",
+    "legajo": "3",
+    "fechaIngreso": "2021-02-01",
+    "cuil": "23230358109",
+    "localidad": 1,
+    "direccion": "AV. COMANDANTE MIÑO 2745",
+    "telefono": "3764245321",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$WBk2K9iAQxsiReiiAORS05$d90BoEHzXk8SCQvqPEXbC8JNwrqaJJVomG8ve1yjjg8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pablo",
+    "first_name": "PABLO ALEJANDRO",
+    "last_name": "MIKICHUK",
+    "email": "pablo@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-06T13:36:53.427Z",
+    "legajo": "1",
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20305249514",
+    "localidad": 1,
+    "direccion": "CALLE LAS ORQUÍDEAS 10625",
+    "telefono": "3764856158",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 8,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$p653gTgh3mi3iKWgSjtVML$BMnxdeoob2wMJOZOGF6VD3BmlLU5mjZkpEv5MTHA/eU=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "juan",
+    "first_name": "JUAN MARINO",
+    "last_name": "GERMANSEN",
+    "email": "juan@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-06T13:38:41.705Z",
+    "legajo": "2",
+    "fechaIngreso": "2018-10-01",
+    "cuil": "20348634128",
+    "localidad": 1,
+    "direccion": "CALLE ACEVEDO 5465",
+    "telefono": "3764158073",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+}
+]

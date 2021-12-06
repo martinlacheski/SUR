@@ -603,6 +603,7 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                 try:
                     data = []
                     provs = []
+
                     # Filtramos el Producto por el proveedor seleccionado en la Solicitud de Pedido por confirmar
                     filtro = DetallePedidoSolicitudProveedor.objects.filter(
                         pedidoSolicitudProveedor__proveedor=request.POST['pk']).filter(

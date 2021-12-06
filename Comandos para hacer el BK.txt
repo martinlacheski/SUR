@@ -28,5 +28,7 @@ ALTER SEQUENCE public.django_content_type_id_seq RESTART WITH 1;
 #Con este comando evitamos tener que reinicializar la BD
 python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > database.json
 
+python manage.py dumpdata auth_group auth_group_permissions --indent 2 > database.json
+
 #Reestablecemos el BACKUP con LOADDATA
 python manage.py loaddata database.json

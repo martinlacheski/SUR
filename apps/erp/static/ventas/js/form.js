@@ -246,7 +246,6 @@ function calcular_importes() {
     var percepcion = percepcionPorcentaje;
     //Recorremos el Array de productos para ir actualizando los importes
     $.each(venta.items.productos, function (pos, dict) {
-        ccccc
         dict.pos = pos;
         dict.subtotal = dict.cantidad * parseFloat(dict.precioVenta);
         ivaCalculado += dict.subtotal * (dict.iva.iva / 100);
