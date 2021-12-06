@@ -116,7 +116,9 @@
                             {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
-                    <div class="form-group col-4" data-intro="OPCIONAL - Ingresar el Alias de la cuenta del Proveedor. Está compuesto por tres palabras separadas por un '.' Por ej: CASA.PERRO.AUTO">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar el Alias de la cuenta del Proveedor.
+                         Está compuesto por tres palabras separadas por un '.' Por ej: CASA.PERRO.AUTO">
                         <label>Alias:</label>
                         <div class="col-12" class="form-control" id="alias" name="alias">
                             {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
@@ -164,11 +166,11 @@
             <ul id="errorList" class="alert-danger"></ul>
             {#Botones#}
             <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
-                    data-intro="Hacer click para guardar el registro">
+                    data-intro="Hacer click para guardar el registro de {{ entity }}">
                 <i class="fas fa-save"></i> Guardar registro
             </button>
             <a href="{{ list_url }}" class="btn btn-danger btn-flat"
-               data-intro="Hacer click para cancelar y regresar al listado de proveedores">
+               data-intro="Hacer click para cancelar y regresar al listado de {{ entity }}">
                 <i class="fas fa-times"></i> Cancelar
             </a>
         </div>

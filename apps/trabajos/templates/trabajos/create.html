@@ -167,10 +167,14 @@
                          en base a cantidad de trabajos que posee el mismo. Si desea modificarlo,
                          seleccione del listado el usuario a cual quiere asignar el trabajo">
                         <div class="form-group">
-                            {% if action != 'express' %}
+                            {% if action != 'express' and action != 'confirm' and action != 'deliver' %}
                                 <label>(*) Usuario Asignado:</label>
                                 <br>
                                 {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                            {% elif action == 'confirm' or action == 'deliver' %}
+                                <label>(*) Usuario Asignado:</label>
+                                <br>
+                                {{ form.usuarioAsignado|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true'|attr:'disabled' }}
                             {% endif %}
                         </div>
                     </div>

@@ -1,4 +1,15 @@
 $(function () {
+    //Al hacer click en el AYUDA
+    $('.verAyuda').on('click', function () {
+        introJs().setOptions({
+            showProgress: true,
+            showBullets: false,
+            nextLabel: 'Siguiente',
+            prevLabel: 'Atrás',
+            doneLabel: 'Finalizar',
+        }).start()
+    });
+
     $("input[name='iva']").TouchSpin({
         min: 0,
         max: 1000000,

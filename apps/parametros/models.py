@@ -281,8 +281,14 @@ class Prioridades(models.Model):
     plazoPrioridad = models.PositiveIntegerField(default=0, verbose_name='Días de PLazo')
     history = HistoricalRecords()
 
+    # def __str__(self):
+    #     return self.nombre
+
     def __str__(self):
-        return self.nombre
+        return self.get_full_name()
+
+    def get_full_name(self):
+        return '{} - Plazo: {} días'.format(self.nombre, self.plazoPrioridad)
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -292,7 +298,7 @@ class Prioridades(models.Model):
         verbose_name = 'Prioridad de Trabajo'
         verbose_name_plural = 'Prioridades de Trabajos'
         db_table = 'parametros_prioridades_trabajos'
-        ordering = ['nombre']
+        ordering = ['plazoPrioridad']
 
     # Para convertir a MAYUSCULA
     def save(self, force_insert=False, force_update=False):
