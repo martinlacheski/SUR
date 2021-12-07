@@ -146,6 +146,11 @@ $(function () {
 
     //Aplicamos Filtro de Categorias
     $('.selectCategoria').on('change', function () {
+        //Reseteamos los filtros
+            $.fn.dataTable.ext.search = [];
+            $.fn.dataTable.ext.search.pop();
+            $('.selectSubcategoria').val(null).trigger('change');
+            $('.selectProducto').val(null).trigger('change');
         //Asignamos a una variabla la Categoria del Select
         var categoria = $(this).val();
         if (categoria !== null && categoria !== '' && categoria !== undefined) {
@@ -163,6 +168,7 @@ $(function () {
             );
             //Actualizamos la tabla
             tablaProductos.draw();
+            document.getElementById("excluirSinStock").checked = false;
             //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS y los productos de dicha CATEGORIA
             var select_subcategorias = $('select[name="selectSubcategoria"]');
             var select_productos = $('select[name="selectProducto"]');

@@ -292,6 +292,7 @@ class Prioridades(models.Model):
 
     def toJSON(self):
         item = model_to_dict(self)
+        item['full_name'] = self.get_full_name()
         return item
 
     class Meta:

@@ -447,6 +447,16 @@ $(function () {
     });
 //Aplicamos Filtro de Productos
     $('.selectCliente').on('change', function () {
+        //Reseteamos los filtros
+        $.fn.dataTable.ext.search = [];
+        $.fn.dataTable.ext.search.pop();
+        tablaTrabajos.draw();
+        $('.selectUsuario').val(null).trigger('change');
+        $('.selectAccion').val(null).trigger('change');
+        //Limpiamos limpio el Filtro de Rango de Fechas
+        $('input[name="filterRangoFechas"]').val('');
+        fechaInicio = '';
+        fechaFin = '';
         //Asignamos a una variabla el producto del Select
         var producto = $(this).val();
         if (producto !== null && producto !== '' && producto !== undefined) {

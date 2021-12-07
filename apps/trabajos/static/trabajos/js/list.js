@@ -496,7 +496,6 @@ $(function () {
         //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var cliente = $(this).val();
         if (cliente !== null && cliente !== '' && cliente !== undefined) {
@@ -514,14 +513,11 @@ $(function () {
             );
             //Actualizamos la tabla
             tablaTrabajo.draw();
+            document.getElementById("excluirCancelados").checked = false;
         }
     });
     //Aplicamos Filtro de Modelos
     $('.selectModelo').on('change', function () {
-        // //Reseteamos los filtros
-        // $.fn.dataTable.ext.search = [];
-        // $.fn.dataTable.ext.search.pop();
-        // tablaTrabajo.draw();
         //Asignamos a una variabla el cliente del Select
         var modelo = $(this).val();
         if (modelo !== null && modelo !== '' && modelo !== undefined) {

@@ -280,6 +280,12 @@ $(function () {
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
         tablaServicios.draw();
+        $('.selectUsuario').val(null).trigger('change');
+        $('.selectAccion').val(null).trigger('change');
+        //Limpiamos limpio el Filtro de Rango de Fechas
+        $('input[name="filterRangoFechas"]').val('');
+        fechaInicio = '';
+        fechaFin = '';
         //Asignamos a una variabla el servicio del Select
         var servicio = $(this).val();
         if (servicio !== null && servicio !== '' && servicio !== undefined) {
@@ -302,9 +308,9 @@ $(function () {
     //Aplicamos Filtro de Accion
     $('.selectAccion').on('change', function () {
         //Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaServicios.draw();
+        // $.fn.dataTable.ext.search = [];
+        // $.fn.dataTable.ext.search.pop();
+        // tablaServicios.draw();
         //Asignamos a una variabla el usuario del Select
         var accion = $(this).val();
         if (accion !== null && accion !== '' && accion !== undefined) {
@@ -327,9 +333,9 @@ $(function () {
     //Aplicamos Filtro de Usuarios
     $('.selectUsuario').on('change', function () {
         //Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaServicios.draw();
+        // $.fn.dataTable.ext.search = [];
+        // $.fn.dataTable.ext.search.pop();
+        // tablaServicios.draw();
         //Asignamos a una variabla el usuario del Select
         var usuario = $(this).val();
         if (usuario !== null && usuario !== '' && usuario !== undefined) {

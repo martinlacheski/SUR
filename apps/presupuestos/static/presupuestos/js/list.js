@@ -320,10 +320,9 @@ $(function () {
 
     //Aplicamos Filtro de Clientes
     $('.selectCliente').on('change', function () {
-        /*//Reseteamos los filtros
+        //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaPresupuesto.draw();*/
         //Asignamos a una variabla el cliente del Select
         var cliente = $(this).val();
         if (cliente !== null && cliente !== '' && cliente !== undefined) {
@@ -341,14 +340,11 @@ $(function () {
             );
             //Actualizamos la tabla
             tablaPresupuesto.draw();
+            document.getElementById("excluirCancelados").checked = false;
         }
     });
     //Aplicamos Filtro de Modelos
     $('.selectModelo').on('change', function () {
-        /*//Reseteamos los filtros
-        $.fn.dataTable.ext.search = [];
-        $.fn.dataTable.ext.search.pop();
-        tablaPresupuesto.draw();*/
         //Asignamos a una variabla el cliente del Select
         var modelo = $(this).val();
         if (modelo !== null && modelo !== '' && modelo !== undefined) {
