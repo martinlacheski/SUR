@@ -49,9 +49,13 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
             action = request.POST['action']
             if action == 'searchdata':
                 data = []
+                estados = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 usuario = Usuarios.objects.get(username=request.user)
                 if usuario.is_superuser == False and usuario.realizaTrabajos == True:
-                    for i in Trabajos.objects.filter(usuarioAsignado=usuario):
+                    for i in Trabajos.objects.filter(usuarioAsignado=usuario).exclude(
+                            estadoTrabajo=estados.estadoCancelado.id).exclude(
+                        estadoTrabajo=estados.estadoFinalizado.id).exclude(
+                        estadoTrabajo=estados.estadoEntregado.id):
                         # Obtenemos el estado de avance por cada trabajo
                         totalEsfuerzo = 0
                         esfuerzoTrabRealizados = 0
