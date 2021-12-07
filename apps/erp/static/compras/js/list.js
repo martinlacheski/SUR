@@ -238,7 +238,11 @@ $(function () {
         //Reseteamos los filtros
         $.fn.dataTable.ext.search = [];
         $.fn.dataTable.ext.search.pop();
-        tablaCompra.draw();
+        // tablaCompra.draw();
+        //Limpiamos limpio el Filtro de Rango de Fechas
+        $('input[name="filterRangoFechas"]').val('');
+        fechaInicio = '';
+        fechaFin = '';
         //Asignamos a una variabla el proveedor del Select
         var proveedor = $(this).val();
         if (proveedor !== null && proveedor !== '' && proveedor !== undefined) {
@@ -256,6 +260,7 @@ $(function () {
             );
             //Actualizamos la tabla
             tablaCompra.draw();
+            $('#excluirCanceladas').prop('checked', false);
         }
     });
     //Filtrar Estado Canceladas

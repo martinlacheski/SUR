@@ -347,6 +347,7 @@ $(function () {
             );
             //Actualizamos la tabla
             tablaVenta.draw();
+            document.getElementById("excluirCanceladas").checked = false;
         }
     });
     //Filtrar Trabajos Asociados
