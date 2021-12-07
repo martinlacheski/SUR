@@ -22,14 +22,10 @@ fas fa-trash-alt	        &#xf2ed;
 fas fa-check 	            &#f00c;
 fas fa-people-carry 	    &#f4ce;
 fas fa-times 	            &#f00d;         &#10060;
-
 --------------------------------------------------------------------------------------------------------------------
-
 COMANDO Para cargar los registros de Auditoria
 python manage.py populate_history --auto
-
 --------------------------------------------------------------------------------------------------------------------
-
 COMANDO BACKUP
 
 #Con este comando evitamos tener que reinicializar la BD
@@ -37,4 +33,10 @@ python manage.py dumpdata --exclude auth.permission --exclude contenttypes --ind
 
 #Reestablecemos el BACKUP con LOADDATA
 python manage.py loaddata database.json
+--------------------------------------------------------------------------------------------------------------------
+* Error redireccionar al pedido una vez expirado - en el formulario
+* Agregar SPAN para controlar que el proveedor y comprobante no este repetido
+* Bot, permisos al momento de registrar respuestas de parte de usuarios rectificadores
+* Preparar caso de uso para reasignacion de usuarios (Explicar bien)
+* Agregar botones para ejecutar procesos automaticos de Reasignacion de Usuarios y Proceso de Pedidos
 
