@@ -905,7 +905,7 @@ $(function () {
         fechaFin = '';
         $('#excluirFinalizados').prop('checked', false);
         $('#excluirEntregados').prop('checked', false);
-        $('#excluirCancelados').prop('checked', true);
+        $('#excluirCancelados').prop('checked', false);
         $('#verPendientes').prop('checked', false);
         $('#verPlanificados').prop('checked', false);
         $('#verEnProceso').prop('checked', false);
