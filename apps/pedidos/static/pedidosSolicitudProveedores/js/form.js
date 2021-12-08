@@ -60,7 +60,6 @@ var pedido = {
                     class: 'text-center',
                     orderable: false,
                     render: function (data, type, row) {
-                        console.log(row.marcaOfertada);
                         if (row.marcaOfertada) {
                             return '<input type="Text" name="marcaOfertada" class="form-control form-control-sm input-sm text-center" autocomplete="off" value="' + row.marcaOfertada + '">';
 

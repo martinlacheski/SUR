@@ -1,3 +1,4 @@
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.db import models
 from django.forms import model_to_dict
 from simple_history.models import HistoricalRecords
@@ -407,7 +408,7 @@ class Compras(models.Model):
         return item
 
     class Meta:
-        unique_together = ['proveedor', 'nroComprobante']
+        unique_together = ['proveedor', 'tipoComprobante', 'nroComprobante']
         verbose_name = 'Compra'
         verbose_name_plural = 'Compras'
         db_table = 'erp_compras'
