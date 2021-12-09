@@ -27,6 +27,7 @@ class Clientes(models.Model):
                                        verbose_name='Límite de Cuenta Corriente')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
     chatIdCliente = models.IntegerField(null=True, blank=True, default=None)
+    estado = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -75,6 +76,7 @@ class Proveedores(models.Model):
     tipoPercepcion = models.ForeignKey(TiposPercepciones, models.DO_NOTHING, verbose_name='Tipo de Percepción')
     condicionPago = models.ForeignKey(CondicionesPago, models.DO_NOTHING, verbose_name='Condición de Pago')
     plazoCtaCte = models.PositiveIntegerField(default=0, verbose_name='Plazo de Vencimiento', null=True, blank=True)
+    estado = models.BooleanField(default=True)
     history = HistoricalRecords()
 
     def __str__(self):

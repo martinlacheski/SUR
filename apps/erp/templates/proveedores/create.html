@@ -158,6 +158,16 @@
                             {{ form.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
+                    <div class="col-1">
+
+                    </div>
+                    <div class="col-3 mb-3" data-intro="Destildar para dar de baja el proveedor">
+                        <label class="mb-4"></label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            {{ form.estado }}
+                            <label class="custom-control-label" for="id_estado">¿Proveedor activo?</label>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

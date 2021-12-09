@@ -111,57 +111,68 @@
                             {{ form.cbu|add_class:'form-control'|attr:'autocomplete:off' }}
                         </div>
                     </div>
-                    <div class="form-group col-4" data-intro="OPCIONAL - Ingresar el Alias de la cuenta del Cliente. Está compuesto por tres palabras separadas por un '.' Por ej: CASA.PERRO.AUTO">
+                    <div class="form-group col-4"
+                         data-intro="OPCIONAL - Ingresar el Alias de la cuenta del Cliente. Está compuesto por tres palabras separadas por un '.' Por ej: CASA.PERRO.AUTO">
                         <label>Alias:</label>
                         <div class="col-12" class="form-control" id="alias" name="alias">
-                    {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
+                            {{ form.alias|add_class:'form-control'|attr:'autocomplete:off' }}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="input-group">
-                <div class="form-group col-6"
-                     data-intro="Seleccionar del listado la condición de pago que tendrá el Cliente">
-                    <label>(*) Condición de Pago:</label>
+                <div class="row">
                     <div class="input-group">
-                        {{ form.condicionPago|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                        <div class="form-group col-6"
+                             data-intro="Seleccionar del listado la condición de pago que tendrá el Cliente">
+                            <label>(*) Condición de Pago:</label>
+                            <div class="input-group">
+                                {{ form.condicionPago|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                            </div>
+                        </div>
+                        <div class="col-6 mb-6"
+                             data-intro="Seleccionar del listado el tipo de percepción que tendrá el Cliente">
+                            <label>(*) Tipo de Percepción:</label>
+                            <div class="input-group">
+                                {{ form.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-6 mb-6" data-intro="Seleccionar del listado el tipo de percepción que tendrá el Cliente">
-                    <label>(*) Tipo de Percepción:</label>
+                <div class="row">
                     <div class="input-group">
-                        {{ form.tipoPercepcion|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
+                        <div class="form-group col-3 mb-3"
+                             data-intro="OPCIONAL - Tildar si el Cliente tendrá cuenta corriente">
+                            <label class="mb-4"></label>
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                <input type="checkbox" class="custom-control-input" id="ctaCte" name="ctaCte">
+                                <label class="custom-control-label" for="ctaCte">¿Cuenta Corriente?</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-3 mb-3"
+                             data-intro="Ingresar el límite de la cuenta corriente del Cliente">
+                            <label>Límite:</label>
+                            <br>
+                            <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
+                                {{ form.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                        <div class="form-group col-3 mb-3"
+                             data-intro="Ingresar el plazo de pago de la cuenta corriente del Cliente">
+                            <label>Plazo:</label>
+                            <br>
+                            <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
+                                {{ form.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3" data-intro="Destildar para dar de baja el cliente">
+                            <label class="mb-4"></label>
+                            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                {{ form.estado }}
+                                <label class="custom-control-label" for="id_estado">¿Cliente activo?</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="input-group">
-                <div class="form-group col-3 mb-3"
-                     data-intro="OPCIONAL - Tildar si el Cliente tendrá cuenta corriente">
-                    <label class="mb-4"></label>
-                    <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input" id="ctaCte" name="ctaCte">
-                        <label class="custom-control-label" for="ctaCte">¿Cuenta Corriente?</label>
-                    </div>
-                </div>
-                <div class="form-group col-4" data-intro="Ingresar el límite de la cuenta corriente del Cliente">
-                    <label>Límite:</label>
-                    <br>
-                    <div class="col-12" class="form-control" id="limiteCtaCte" name="limiteCtaCte">
-                        {{ form.limiteCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
-                    </div>
-                </div>
-                <div class="form-group col-4" data-intro="Ingresar el plazo de pago de la cuenta corriente del Cliente">
-                    <label>Plazo:</label>
-                    <br>
-                    <div class="col-12 date" class="form-control" id="fecha_ctacte" name="fecha_ctacte">
-                        {{ form.plazoCtaCte|add_class:'form-control'|attr:'autocomplete:off' }}
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
         </div>
         <div class="card-footer">
             {#Mensaje de error#}

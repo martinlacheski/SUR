@@ -330,6 +330,12 @@ class ClientesForm(ModelForm):
             'plazoCtaCte': TextInput(attrs={
                 'class': 'form-control',
             }),
+            'estado': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
         }
 
     def save(self, commit=True):
@@ -415,6 +421,12 @@ class ProveedoresForm(ModelForm):
             'plazoCtaCte': TextInput(attrs={
                 'class': 'form-control',
             }),
+            'estado': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
         }
 
     def save(self, commit=True):
