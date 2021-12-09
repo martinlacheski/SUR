@@ -904,7 +904,7 @@ $(function () {
             confirm_action('Confirmación', '¿Estas seguro de realizar la siguiente acción?', function () {
                     //realizamos el pedido mediante Ajax
                     pedido.items.fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
-                    pedido.items.fechaLimite = moment(moment($('input[name="fechaLimite"]').val(), 'DD-MM-YYYY HH:mm')).format('YYYY-MM-DD HH:mm');
+                    pedido.items.fechaLimite = moment(moment($('input[name="fechaLimite"]').val(), 'DD-MM-YYYY HH:mm')).format('YYYY-MM-DD HH:mm:ss');
                     var parameters = new FormData();
                     //Pasamos la accion ADD
                     parameters.append('action', $('input[name="action"]').val());

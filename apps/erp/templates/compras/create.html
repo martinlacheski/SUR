@@ -99,7 +99,10 @@
                                          data-intro="Ingresar el número de comprobante de la compra">
                                         <label>(*) Número Comprobante:</label>
                                         <br>
-                                        {{ form.nroComprobante|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        {{ form.nroComprobante|add_class:'form-control nroComprobante'|attr:'autocomplete:off'|attr:'required:true' }}
+                                        <span hidden id="errorComprobante" style="color: red;">Ya existe un comprobante
+                                            registrado con el mismo Tipo y Número de comprobante para el
+                                            proveedor seleccionado</span>
                                     </div>
                                 </div>
 
@@ -229,7 +232,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary btn-flat"
+                                    <button type="submit" id="btnAdd" class="btn btn-primary btn-flat btnAdd"
                                             data-intro="Hacer click para guardar el registro de {{ entity }}">
                                         <i class="fas fa-save"></i> Guardar registro
                                     </button>

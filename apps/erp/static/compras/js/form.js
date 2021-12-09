@@ -315,6 +315,36 @@ $(function () {
         }
     });
 
+    //Validamos que no exista otro comprobante repetido del proveedor
+    $("input[name='nroComprobante']").on('focusout', function () {
+        var btn = document.getElementById('btnAdd');
+        var proveedor = $('select[name="proveedor"]').val();
+        var tipoComprobante = $('select[name="tipoComprobante"]').val();
+        var nroComprobante = $('input[name="nroComprobante"]').val();
+        $.ajax({
+            url: window.location.pathname,
+            type: 'POST',
+            data: {
+                'csrfmiddlewaretoken': csrftoken,
+                'action': 'search_nroComprobante',
+                'proveedor': proveedor,
+                'tipoComprobante': tipoComprobante,
+                'nroComprobante': nroComprobante,
+            },
+            dataType: 'json',
+            success: function (data) {
+                if (data.check === 'noOK') {
+                    $('#errorComprobante').removeAttr("hidden");
+                    btn.disabled = true;
+                    $("input[name='nroComprobante']").focus();
+                } else {
+                    $('#errorComprobante').attr("hidden", "");
+                    btn.disabled = false;
+                }
+            }
+        });
+    });
+
 //----------------------Buscamos si el Proveedor tiene Percepcion-----------------------------//
     $('select[name="proveedor"]').on('change', function () {
         var id = $('select[name="proveedor"]').val();

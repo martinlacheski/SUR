@@ -34,9 +34,17 @@ python manage.py dumpdata --exclude auth.permission --exclude contenttypes --ind
 #Reestablecemos el BACKUP con LOADDATA
 python manage.py loaddata database.json
 --------------------------------------------------------------------------------------------------------------------
-* Error redireccionar al pedido una vez expirado - en el formulario
-* Agregar SPAN para controlar que el proveedor y comprobante no este repetido
+* PROBAR - El tipico en casa ANDA! Error redireccionar al pedido una vez expirado - en el formulario - AHORA OK!
+* Agregar el hash para que puedan exportar el PDF
 * Bot, permisos al momento de registrar respuestas de parte de usuarios rectificadores
 * Preparar caso de uso para reasignacion de usuarios (Explicar bien)
 * Agregar botones para ejecutar procesos automaticos de Reasignacion de Usuarios y Proceso de Pedidos
+
+
+TEMA DE DATETIME
+
+print(datetime.datetime.now())
+print(datetime.datetime.today())
+print(timezone.localtime(timezone.now()))
+print(timezone.now())
 

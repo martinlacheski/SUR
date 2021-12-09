@@ -7,11 +7,11 @@ from django.db import transaction
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView
 from weasyprint import HTML, CSS
 
-from apps.erp.models import Productos
 from apps.parametros.models import Empresa
 from apps.pedidos.forms import PedidoSolicitudProveedorForm
 from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, DetallePedidoSolicitud, \

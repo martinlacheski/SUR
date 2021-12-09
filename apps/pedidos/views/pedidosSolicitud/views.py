@@ -1,3 +1,6 @@
+import datetime
+from time import strptime
+
 from django.contrib.sites.shortcuts import get_current_site
 import json
 import os
@@ -9,6 +12,7 @@ from django.db.models import Q
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
@@ -164,7 +168,8 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     # obtenemos el Usuario actual
                     pedido.usuario = request.user
                     pedido.fecha = formPedidoRequest['fecha']
-                    pedido.fechaLimite = formPedidoRequest['fechaLimite']
+                    fechaLimite = datetime.datetime.strptime(formPedidoRequest['fechaLimite'], '%Y-%m-%d %H:%M:%S')
+                    pedido.fechaLimite = fechaLimite
                     pedido.subtotal = float(formPedidoRequest['subtotal'])
                     pedido.iva = float(formPedidoRequest['iva'])
                     pedido.total = float(formPedidoRequest['total'])

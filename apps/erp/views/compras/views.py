@@ -2,7 +2,6 @@ import datetime
 import json
 import os
 
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.db.models import Q
@@ -232,6 +231,20 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
             elif action == 'search_precioProducto':
                 producto = Productos.objects.get(id=request.POST['pk'])
                 data = producto.costo
+            # Verificamos si no existe Un Tipo y Nro de Comprobante asociado a ese proveedor
+            elif action == 'search_nroComprobante':
+                try:
+                    proveedor = request.POST['proveedor']
+                    tipoComprobante = request.POST['tipoComprobante']
+                    nroComprobante = request.POST['nroComprobante']
+                    comprobante = Compras.objects.filter(proveedor_id=proveedor).filter(
+                        tipoComprobante_id=tipoComprobante).filter(nroComprobante=nroComprobante)
+                    if not comprobante:
+                        data['check'] = 'OK'
+                    else:
+                        data['check'] = 'noOK'
+                except Exception as e:
+                    data['error'] = str(e)
             elif action == 'add':
                 with transaction.atomic():
                     formCompraRequest = json.loads(request.POST['compra'])
