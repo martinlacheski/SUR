@@ -1,1 +1,29 @@
 {% extends 'form.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head %}
+    {% block head_form %}
+        <!-- archivo JS -->
+        <script src="{% static 'estados/js/form.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+{% block fields %}
+    <div class="row">
+        <div class="form-group col-9 mb-3">
+            <label class="ml-2">Nombre:</label>
+            <div class="col-12" class="form-control">
+                {{ form.nombre|add_class:'form-control'|attr:'autocomplete:off'|attr:'required:true' }}
+            </div>
+        </div>
+        <div class="form-group col-1">
+
+        </div>
+        <div class="form-group col-2 mb-3">
+            <label class="mb-4"></label>
+            <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                {{ form.pagoDiferido|add_class:'form-control' }}
+                <label class="custom-control-label" for="id_pagoDiferido">¿es diferido?</label>
+            </div>
+        </div>
+    </div>
+{% endblock %}

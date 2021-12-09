@@ -1,4 +1,4 @@
-from django.forms import ModelForm, TextInput, Select, EmailInput, PasswordInput, forms
+from django.forms import ModelForm, TextInput, Select, EmailInput, PasswordInput, forms, CheckboxInput
 
 from apps.parametros.models import TiposIVA, CondicionesIVA, CondicionesPago, TiposComprobantes, Marcas, Modelos, \
     Prioridades, Estados, TiposPercepciones, MediosPago, Empresa, EstadoParametros
@@ -117,6 +117,12 @@ class CondicionesPagoForm(ModelForm):
                     'placeholder': 'Ingrese un nombre',
                     # agregamos este estilo para que convierta lo que ingresamos a mayuscula
                     'style': 'text-transform: uppercase',
+                }
+            ),
+            'pagoDiferido': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
                 }
             ),
         }

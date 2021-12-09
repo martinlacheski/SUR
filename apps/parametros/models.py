@@ -79,6 +79,7 @@ class TiposPercepciones(models.Model):
 
 class CondicionesPago(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
+    pagoDiferido = models.BooleanField(default=False)
     history = HistoricalRecords()
 
     def __str__(self):
