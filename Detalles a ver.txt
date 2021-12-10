@@ -13,7 +13,6 @@ con eso se puede ocultar los campos desde el JS
 --------------------------------------------------------------------------------------------------------------------
 * VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
 --------------------------------------------------------------------------------------------------------------------
-
 EMOJIS PARA EL AYUDA
 fas fa-eye	                &#xf06e;
 far fa-file-pdf 	        &#f1c1;
