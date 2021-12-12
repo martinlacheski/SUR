@@ -69,7 +69,15 @@ $(function () {
     //Hacemos el envio del Formulario mediante AJAX
     $("#ajaxForm").submit(function (e) {
         e.preventDefault();
-        $.ajax({
+        var costo = $('input[name="costo"]').val();
+        if (costo === '0.00' || costo === null || costo === '' || costo === undefined) {
+            error_action('Error', 'El precio de costo debe ser mayor a CERO', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        } else {
+            $.ajax({
             url: window.location.href,
             type: 'POST',
             data: new FormData(this),
@@ -84,6 +92,9 @@ $(function () {
                 }
             }
         });
+        }
+
+
     });
 
     //Metodo para calcular el precio en base a los tres posibles cambios (COSTO UTILIDAD e IVA)

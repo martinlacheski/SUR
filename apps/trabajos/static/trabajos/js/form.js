@@ -503,8 +503,8 @@ $(function () {
 
     //Verificamos que la fecha no sea mayor a la actual
     $('input[name="fechaEntrada"]').on('blur', function () {
-        var fecha = $('input[name="fechaEntrada"]').val();
-        var now = moment().format('DD-MM-YYYY');
+        var fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+        var now = moment();
         if (fecha > now) {
             error_action('Error', 'La fecha de entrada no puede ser superior a la actual', function () {
                 //pass
@@ -1982,7 +1982,7 @@ $(function () {
             });
             //Chequeamos que Si es la accion de ENTREGAR el trabajo, todos los servicios y productos en el registro se hayan realizado
         } else if ((estadoProducto == false) && (accion == 'deliver')) {
-            error_action('Error', 'Posee productos  sin realizarse, no se puede entregar el trabajo', function () {
+            error_action('Error', 'Posee productos  sin utilizarse, no se puede entregar el trabajo', function () {
                 //pass
             }, function () {
                 //pass

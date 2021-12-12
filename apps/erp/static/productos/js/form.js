@@ -213,6 +213,7 @@ $(function () {
 
     //Submit Formulario Producto
     $('#ajaxForm').on('submit', function (e) {
+        e.preventDefault();
         // VALIDACION DE LOS CAMPOS
         $("#subcategoria").validate();
         $("#descripcion").validate();
@@ -222,9 +223,15 @@ $(function () {
         $("#costo").validate();
         $("#utilidad").validate();
         $("#iva").validate();
-        $("#precioVenta").validate();
-        e.preventDefault();
-        $.ajax({
+        var precioVenta = $('input[name="precioVenta"]').val();
+        if (precioVenta === '0.00' || precioVenta === null || precioVenta === '' || precioVenta === undefined) {
+            error_action('Error', 'El precio de venta debe ser mayor a CERO', function () {
+                //pass
+            }, function () {
+                //pass
+            });
+        } else {
+            $.ajax({
             url: window.location.href,
             type: 'POST',
             data: new FormData(this),
@@ -240,6 +247,8 @@ $(function () {
                 }
             }
         });
+        }
+
     });
 
     //Select Anidado (Seleccionamos CATEGORIA y cargamos las SUBCATEGORIAS de dicha CATEGORIA

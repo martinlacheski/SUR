@@ -129,6 +129,7 @@
             <b style="margin-left: 40px">{{ det.producto.descripcion }}: </b> {{ det.observaciones }}<br>
         {% endif %}
     {% endfor %}
+    <p></p>
     <p class="text-uppercase font-weight-bold text-right">
         <b>Subtotal Productos: $</b> {{ subtotalProductos|intcomma|localize }}<br>
     </p>
@@ -162,6 +163,7 @@
             <b style="margin-left: 40px">{{ det.servicio.descripcion }}: </b> {{ det.observaciones }}<br>
         {% endif %}
     {% endfor %}
+    <p></p>
     <p class="text-uppercase font-weight-bold text-right">
         <b>Subtotal Servicios: $</b> {{ subtotalServicios|intcomma|localize }}<br>
     </p>

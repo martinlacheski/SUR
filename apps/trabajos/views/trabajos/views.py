@@ -771,7 +771,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                      'cant_trab': len(trabajos_user),
                      'procentaje_avance': float(porcentaje_avance_trabajos),
                      })
-            print(trab_por_user)
 
             # Ordenamiento de lista por cant de trabajos.
             trab_por_user.sort(key=self.orden_cant_trab)
@@ -781,7 +780,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
 
             # Se chequea si existe solamente un user con menor cant de trabajos. Se elimina al resto.
             users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'cant_trab')
-            print(users_candidatos)
 
             if len(users_candidatos) == 1:
                 return {'id': users_candidatos[0]['usuario'].id,
@@ -793,7 +791,6 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 # Se corrobora si existe un solo user con mayor porcentaje de avance en trabajos.
                 candidato = users_candidatos[-1]
                 users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'procentaje_avance')
-                print(users_candidatos)
                 if len(users_candidatos) == 1:
                     return {'id': users_candidatos[0]['usuario'].id,
                             'text': users_candidatos[0]['usuario'].username}
@@ -1798,6 +1795,48 @@ class TrabajosDeliverView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
                     except Exception as e:
                         data['error'] = str(e)
                     trabajo.save()
+                    # Eliminamos todos los productos del Detalle
+                    trabajo.detalleproductostrabajo_set.all().delete()
+                    # Volvemos a cargar los productos al Detalle
+                    for i in formTrabajoRequest['productos']:
+                        det = DetalleProductosTrabajo()
+                        det.trabajo_id = trabajo.id
+                        det.producto_id = i['id']
+                        det.cantidad = int(i['cantidad'])
+                        det.precio = float(i['precioVenta'])
+                        det.subtotal = float(i['subtotal'])
+                        det.estado = i['estado']
+                        try:
+                            observacion = i['observaciones']
+                        except Exception as e:
+                            data['error'] = str(e)
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
+                        det.save()
+                    # Eliminamos todos los productos del Detalle
+                    trabajo.detalleserviciostrabajo_set.all().delete()
+                    # Volvemos a cargar los productos al Detalle
+                    for i in formTrabajoRequest['servicios']:
+                        det = DetalleServiciosTrabajo()
+                        det.trabajo_id = trabajo.id
+                        det.servicio_id = i['id']
+                        det.cantidad = int(i['cantidad'])
+                        det.precio = float(i['precioVenta'])
+                        det.subtotal = float(i['subtotal'])
+                        det.estado = i['estado']
+                        try:
+                            observacion = i['observaciones']
+                        except Exception as e:
+                            data['error'] = str(e)
+                        if observacion != "":
+                            det.observaciones = observacion
+                            det.usuario = request.user
+                            # det.fechaDetalle = timezone.localtime(timezone.now())
+                            det.fechaDetalle = datetime.datetime.now()
+                        det.save()
                     # Creamos una instancia de venta
                     venta = Ventas()
                     venta.fecha = date.today()

@@ -43,13 +43,22 @@
                         <label>Categoría:</label>
                         <div class="input-group">
                             <select class="form-select form-control select2 selectCategoria" id="selectCategoria"
+                                    {% if action == 'add' %}
                                     aria-label="selectCategorias">
-                                <option value="">---------</option>
-                                {% for c in categorias %}
-                                    <option value={{ c.id }}>{{ c.nombre }}</option>
-                                {% endfor %}
-                            </select>
-                            <div class="input-group-append" data-intro="Si la categoría no existe hacer click para crearla">
+                                            <option value="">---------</option>
+                                            {% for c in categorias %}
+                                                <option value={{ c.id }}>{{ c.nombre }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    {% else %}
+                                        disabled aria-label="selectCategorias">
+                                        <option value="">---------</option>
+                                        </select>
+                                    {% endif %}
+
+
+                            <div class="input-group-append"
+                                 data-intro="Si la categoría no existe hacer click para crearla">
                                 <button class="btn btn-success btn-flat btnAddCategoria" type="button">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -60,7 +69,8 @@
                         <label>(*) Subcategoría:</label>
                         <div class="input-group">
                             {{ form.subcategoria|add_class:'form-control'|attr:'required:true'|attr:'style:100%' }}
-                            <div class="input-group-append" data-intro="Si la subcategoría no existe hacer click para crearla">
+                            <div class="input-group-append"
+                                 data-intro="Si la subcategoría no existe hacer click para crearla">
                                 <button class="btn btn-success btn-flat btnAddSubcategoria" type="button">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -86,7 +96,7 @@
                     <div class="col-3 mb-3">
                         <label>Código:</label>
                         <br>
-                        {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly'}}
+                        {{ form.codigo|add_class:'form-control'|attr:'autocomplete:off'|attr:'readonly' }}
                     </div>
                     <div class="col-3 mb-3"
                          data-intro="OPCIONAL - Ingresar el código de proveedor del Producto">

@@ -303,8 +303,8 @@ $(function () {
 
     //Verificamos que la fecha no sea mayor a la actual
     $('input[name="fecha"]').on('blur', function () {
-        var fecha = $('input[name="fecha"]').val();
-        var now = moment().format('DD-MM-YYYY');
+        var fecha = moment(moment($('input[name="fecha"]').val(), 'DD-MM-YYYY')).format('YYYY-MM-DD');
+        var now = moment();
         if (fecha > now) {
             error_action('Error', 'La fecha de compra no puede ser superior a la actual', function () {
                 //pass

@@ -133,7 +133,7 @@ class TrabajosVentasView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Te
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de Trabajos y Ventas'
+        context['title'] = 'Estadística de Trabajos y Ventas'
         context['list_url'] = reverse_lazy('estadisticas:trabajos_ventas')
         context['entity'] = 'Estadística Trabajos y Ventas'
         return context
@@ -243,7 +243,7 @@ class ProductosServiciosView(LoginRequiredMixin, ValidatePermissionRequiredMixin
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de Productos y Servicios'
+        context['title'] = 'Estadística de Productos y Servicios'
         context['list_url'] = reverse_lazy('estadisticas:productos_servicios')
         context['entity'] = 'Estadística Productos y Servicios'
         return context
@@ -378,7 +378,7 @@ class ModelosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de Modelos más realizados'
+        context['title'] = 'Estadística de Modelos más realizados'
         context['list_url'] = reverse_lazy('estadisticas:modelos_mas_realizados')
         context['entity'] = 'Estadística Modelos más realizados'
         return context
@@ -434,7 +434,7 @@ class ProductosMasVendidosView(LoginRequiredMixin, ValidatePermissionRequiredMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de Productos más vendidos'
+        context['title'] = 'Estadística de Productos más vendidos'
         context['list_url'] = reverse_lazy('estadisticas:productos_mas_vendidos')
         context['entity'] = 'Estadística Productos más vendidos'
         return context
@@ -490,7 +490,7 @@ class ServiciosMasRealizadosView(LoginRequiredMixin, ValidatePermissionRequiredM
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de Servicios más realizados'
+        context['title'] = 'Estadística de Servicios más realizados'
         context['list_url'] = reverse_lazy('estadisticas:servicios_mas_realizados')
         context['entity'] = 'Estadística Servicios más realizados'
         return context
@@ -546,7 +546,7 @@ class InsumosMasUtilizadosView(LoginRequiredMixin, ValidatePermissionRequiredMix
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Estadistica de insumos más utilizados'
+        context['title'] = 'Estadística de insumos más utilizados'
         context['list_url'] = reverse_lazy('estadisticas:insumos_mas_utilizados')
         context['entity'] = 'Estadística Insumos más utilizados'
         return context
