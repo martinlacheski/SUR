@@ -66,13 +66,18 @@
         </div>
         <div class="card-footer">
             <a href="{{ create_url }}" class="btn btn-primary btn-flat"
-                       data-intro="Crear un nuevo registro de {{ entity }}">
-                <i class="fas fa-plus"></i> Nuevo registro
+               data-intro="Crear un nuevo registro de {{ entity }}">
+                <i class="fas fa-plus"></i> Nuevo
             </a>
             <a href="{{ list_url }}" class="btn btn-success btn-flat"
-                   data-intro="Actualizar el listado de {{ entity }}">
+               data-intro="Actualizar el listado de {{ entity }}">
                 <i class="fas fa-sync"></i> Actualizar
             </a>
+            <button type="button"
+                    class="btn btn-secondary btn-flat btnGenerar"
+                    data-intro="Procesar el pedido de las ofertas de los proveedores registradas según los criterios establecidos">
+                <i class="fas fa-code-branch"></i> Procesar Pedido
+            </button>
         </div>
     </div>
     <!-- Modal Cancelar Solicitud de Pedido -->

@@ -45,7 +45,7 @@ $(function () {
             dataSrc: ""
         },
         columns: [
-            {"data": "id"},
+            {"data": "nroComprobante"},
             {"data": "estadoCompra"},
             {"data": "fecha"},
             {"data": "proveedor.razonSocial"},
@@ -192,6 +192,15 @@ $(function () {
                         }
                     },
                 ],
+                drawCallback: function (settings) {
+                    //Cargamos la cabecera y totales del detalle
+                    $('input[name="compra"]').val(data.nroComprobante);
+                    $('input[name="proveedor"]').val(data.proveedor.razonSocial);
+                    $('input[name="fecha"]').val(moment(moment(data.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+                    $('input[name="subtotal"]').val(data.subtotal);
+                    $('input[name="iva"]').val(data.iva);
+                    $('input[name="total"]').val(data.total);
+                },
                 initComplete: function (settings, json) {
                 }
             });

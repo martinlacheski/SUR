@@ -17,7 +17,7 @@ $(function () {
     var tablaPresupuesto = $('#data').DataTable({
         responsive: true,
         autoWidth: false,
-        order: [[ 1, 'asc' ], [ 2, 'asc' ]],
+        order: [[1, 'asc'], [2, 'asc']],
         destroy: true,
         deferRender: true,
         ajax: {
@@ -77,6 +77,17 @@ $(function () {
             //Seleccionamos el Presupuesto BASE sobre la cual queremos traer el detalle
             var tr = tablaPresupuesto.cell($(this).closest('td, li')).index();
             var data = tablaPresupuesto.row(tr.row).data();
+
+            //Cargamos la cabecera y totales del detalle
+            if (data.estado) {
+                $('input[name="estado"]').val('ACTIVO');
+            } else {
+                $('input[name="estado"]').val('BAJA');
+            }
+
+            $('input[name="marca"]').val(data.modelo.marca.nombre);
+            $('input[name="modelo"]').val(data.modelo.nombre);
+            $('input[name="descripcion"]').val(data.descripcion);
 
             //Cargamos el detalle de productos
             $('#tablaProductos').DataTable({

@@ -1,11 +1,13 @@
 from django.forms import ModelForm, DateInput, Select, TextInput
 
+from apps.erp.models import Clientes
 from apps.trabajos.models import Trabajos, PlanificacionesSemanales
 
 
 class TrabajosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['cliente'].queryset = Clientes.objects.filter(estado=True)
 
     class Meta:
         model = Trabajos

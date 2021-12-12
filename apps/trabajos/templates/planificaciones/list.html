@@ -52,7 +52,7 @@
         <div class="card-footer">
             <a href="{{ create_url }}" class="btn btn-primary btn-flat"
                data-intro="Crear un nuevo registro de {{ entity }}">
-                <i class="fas fa-plus"></i> Nuevo registro
+                <i class="fas fa-plus"></i> Nuevo
             </a>
             <a href="{{ list_url }}" class="btn btn-success btn-flat"
                data-intro="Actualizar el listado  de {{ entity }}">
@@ -94,6 +94,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-3 mb-3">
+                            <label>ID:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="idPlanificacion" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-3 mb-3">
+                            <label>Inicio:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="inicio" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-3 mb-3">
+                            <label>Fin:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="fin" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-3 mb-3">
+                            <label>Cantidad:</label>
+                            <input type="text" class="form-control" name="cantTrabajos" readonly>
+                        </div>
+                    </div>
                     <div class="row" id="rowTrabajos">
                         <div class="col-lg-12">
                             <div class="card card-secondary">

@@ -88,10 +88,10 @@
             Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                         <thead>
                         <tr>
+                            <th scope="col" style="width: 35%;">Producto</th>
                             <th scope="col" style="width: 15%;">Categoría</th>
                             <th scope="col" style="width: 20%;">Subcategoría</th>
-                            <th scope="col" style="width: 35%;">Descripcion</th>
-                            <th scope="col" style="width: 10%;">Codigo</th>
+                            <th scope="col" style="width: 10%;">Código</th>
                             <th scope="col" style="width: 5%;">Imagen</th>
                             <th scope="col" style="width: 5%;">Stock</th>
                             <th scope="col" style="width: 5%;">Precio</th>
@@ -113,7 +113,7 @@
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat"
                    data-intro="Crear un nuevo registro de {{ entity }}">
-                    <i class="fas fa-plus"></i> Nuevo registro
+                    <i class="fas fa-plus"></i> Nuevo
                 </a>
                 <a href="{{ list_url }}" class="btn btn-success btn-flat" data-intro="Actualizar el listado de {{ entity }}">
                     <i class="fas fa-sync"></i> Actualizar

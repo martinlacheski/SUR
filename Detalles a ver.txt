@@ -34,7 +34,6 @@ python manage.py dumpdata --exclude auth.permission --exclude contenttypes --ind
 python manage.py loaddata database.json
 --------------------------------------------------------------------------------------------------------------------
 * PROBAR - El tipico en casa ANDA! Error redireccionar al pedido una vez expirado - en el formulario - AHORA OK!
-* Agregar el hash para que puedan exportar el PDF
 * Bot, permisos al momento de registrar respuestas de parte de usuarios rectificadores
 * Preparar caso de uso para reasignacion de usuarios (Explicar bien)
 * Agregar botones para ejecutar procesos automaticos de Reasignacion de Usuarios y Proceso de Pedidos

@@ -45,9 +45,9 @@ $(function () {
             dataSrc: ""
         },
         columns: [
+            {"data": "descripcion"},
             {"data": "subcategoria.categoria.nombre"},
             {"data": "subcategoria.nombre"},
-            {"data": "descripcion"},
             {"data": "codigo"},
             {"data": "imagen"},
             {"data": "stockReal"},
@@ -96,7 +96,7 @@ $(function () {
         ],
         initComplete: function (settings, json) {
             //Agregamos al Select2 las categorias que tenemos en el listado
-            this.api().columns(0).every(function () {
+            this.api().columns(1).every(function () {
                 var column = this;
                 var select = $('<select><option value=""></option></select>')
                     .appendTo($(column.footer()).empty())
@@ -158,7 +158,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos la Categoria por cada renglon
-                    var categoriaTabla = (data[0].toString());
+                    var categoriaTabla = (data[1].toString());
                     //Comparamos contra el renglon
                     if (categoria === categoriaTabla) {
                         return true;
@@ -231,7 +231,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos la Subcategoria por cada renglon
-                    var subcategoriaTabla = (data[1].toString());
+                    var subcategoriaTabla = (data[2].toString());
                     //Comparamos contra el renglon
                     if (subcategoria === subcategoriaTabla) {
                         return true;
@@ -280,7 +280,7 @@ $(function () {
             $.fn.dataTable.ext.search.push(
                 function (settings, data, dataIndex) {
                     // Asignamos el producto por cada renglon
-                    var productoTabla = (data[2].toString());
+                    var productoTabla = (data[0].toString());
                     //Comparamos contra el renglon
                     if (producto === productoTabla) {
                         return true;

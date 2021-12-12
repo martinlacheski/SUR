@@ -84,6 +84,7 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                     data['pedido'] = pedidoP.pedidoSolicitud.id
                     data['proveedor'] = pedidoP.proveedor.razonSocial
                     data['validoHasta'] = pedidoP.pedidoSolicitud.fechaLimite
+                    data['hash'] = pedidoP.hash
                     # Marcamos vista del pedido
                     pedidoP.visto = datetime.datetime.now()
                     pedidoP.save()
@@ -131,7 +132,9 @@ class PedidosSolicitudProveedoresCreateView(CreateView):  # Da totalmente igual 
                             det.costo = float(i['costo'])
                             det.subtotal = float(i['subtotal'])
                             det.save()
+                        # Pasamos el ID y el hash para generar el PDF
                         data = {'id': pedidoP.id}
+                        data['hash'] = pedidoP.hash
                         data['redirect'] = reverse('pedidos:pedidos_solicitudes_correcto')
             except Exception as e:
                 data['error'] = str(e)
@@ -156,14 +159,16 @@ class PedidosSolicitudProveedoresPdfView(View):
         try:
             # Traemos la empresa para obtener los valores
             empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)
+
             # Armamos el Logo de la Empresa
             logo = "file://" + str(settings.MEDIA_ROOT) + str(empresa.imagen)
+
             # Obtenemos la Solicitud del Proveedor para acceder al detalle
-            cotizacionProveedor = PedidoSolicitudProveedor.objects.get(id=self.kwargs['pk'])
-            print(cotizacionProveedor.detallepedidosolicitudproveedor_set)
+            cotizacionProveedor = PedidoSolicitudProveedor.objects.get(hash=self.kwargs['hash_code'])
+
             # Obtenemos la Solicitud de Cotizacion a la cual pertenece el Pedido para obtener los datos de Cabecera
             pedidoSolicitud = PedidosSolicitud.objects.get(id=cotizacionProveedor.pedidoSolicitud.id)
-            print(cotizacionProveedor.respuesta)
+
             # Utilizamos el template para generar el PDF
             template = get_template('pedidosSolicitudProveedores/pdf.html')
             context = {

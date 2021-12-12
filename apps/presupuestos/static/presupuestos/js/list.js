@@ -180,6 +180,15 @@ $(function () {
             var tr = tablaPresupuesto.cell($(this).closest('td, li')).index();
             var data = tablaPresupuesto.row(tr.row).data();
 
+            //Cargamos la cabecera y totales del detalle
+            $('input[name="idPresupuesto"]').val(data.id);
+            $('input[name="cliente"]').val(data.cliente.razonSocial);
+            $('input[name="modelo"]').val(data.modelo.nombre);
+            $('input[name="fecha"]').val(moment(moment(data.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('input[name="subtotal"]').val(data.subtotal);
+            $('input[name="iva"]').val(data.iva);
+            $('input[name="total"]').val(data.total);
+
             //Cargamos el detalle de productos
             $('#tablaProductos').DataTable({
                 responsive: true,
@@ -387,10 +396,10 @@ $(function () {
         } else {
             //Reseteamos los filtros
             checkNoConfirmados = false;
-            $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.pop();
+            // $.fn.dataTable.ext.search = [];
+            // $.fn.dataTable.ext.search.pop();
             tablaPresupuesto.draw();
-            document.getElementById("excluirCancelados").checked = false;
+            // document.getElementById("excluirCancelados").checked = false;
             $('.selectCliente').val(null).trigger('change');
             $('.selectModelo').val(null).trigger('change');
             $('input[name="filterRangoFechas"]').val('');
@@ -421,10 +430,10 @@ $(function () {
         } else {
             //Reseteamos los filtros
             checkCancelados = false;
-            $.fn.dataTable.ext.search = [];
-            $.fn.dataTable.ext.search.pop();
+            // $.fn.dataTable.ext.search = [];
+            // $.fn.dataTable.ext.search.pop();
             tablaPresupuesto.draw();
-            document.getElementById("excluirNoConfirmados").checked = false;
+            // document.getElementById("excluirNoConfirmados").checked = false;
             $('.selectCliente').val(null).trigger('change');
             $('.selectModelo').val(null).trigger('change');
             $('input[name="filterRangoFechas"]').val('');

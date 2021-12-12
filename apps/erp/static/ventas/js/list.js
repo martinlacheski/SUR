@@ -165,6 +165,14 @@ $(function () {
             //Seleccionamos la Venta sobre la cual queremos traer el detalle
             var tr = tablaVenta.cell($(this).closest('td, li')).index();
             var data = tablaVenta.row(tr.row).data();
+            //Cargamos la cabecera y totales del detalle
+            $('input[name="idVenta"]').val(data.id);
+            $('input[name="cliente"]').val(data.cliente.razonSocial);
+            $('input[name="fecha"]').val(moment(moment(data.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('input[name="subtotal"]').val(data.subtotal);
+            $('input[name="iva"]').val(data.iva);
+            $('input[name="total"]').val(data.total);
+
             //Buscamos el ID del Trabajo si es que tiene
             $.ajax({
                 url: window.location.pathname,
@@ -177,11 +185,9 @@ $(function () {
                 dataType: 'json',
                 success: function (data) {
                     var trabajo = data;
-                    var ver = document.getElementById("trabajoID");
                     if (trabajo.trabajoID !== null && trabajo.trabajoID !== '' && trabajo.trabajoID !== undefined) {
-                        ver.innerHTML = 'Detalle de Venta - ID Trabajo: ' + trabajo.trabajoID;
+                        $('input[name="idTrabajo"]').val(trabajo.trabajoID);
                     } else {
-                        ver.innerHTML = 'Detalle de Venta ';
                     }
                 }
             });
@@ -287,6 +293,11 @@ $(function () {
             });
             $('#modalDetalle').modal('show');
         });
+
+    //Reseteamos el campo de TRABAJO en el detalle
+    $('#modalDetalle').on('hidden.bs.modal', function () {
+        $('input[name="idTrabajo"]').val('');
+    });
 
 //------------------------------------FILTROS----------------------------------------//
     //Mostramos los Filtros
