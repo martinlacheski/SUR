@@ -1033,6 +1033,7 @@ class TrabajosExpressCreateView(LoginRequiredMixin, ValidatePermissionRequiredMi
                             # det.fechaDetalle = timezone.localtime(timezone.now())
                             det.fechaDetalle = datetime.datetime.now()
                         det.save()
+
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
@@ -1302,6 +1303,12 @@ class TrabajosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
                             # det.fechaDetalle = timezone.localtime(timezone.now())
                             det.fechaDetalle = datetime.datetime.now()
                         det.save()
+                    metodo_evento_asoc = ComprasCreateView()
+                    descripcion = "Vence el plazo del trabajo Nro° " + str(trabajo.id) + \
+                                  ", cliente " + trabajo.cliente.razonSocial + \
+                                  " modelo " + trabajo.modelo.nombre + " según prioridad establecida."
+                    fechaNotif = datetime.date.today() + datetime.timedelta(days=trabajo.prioridad.plazoPrioridad)
+                    metodo_evento_asoc.crear_evento_asoc(descripcion, fechaNotif)
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
