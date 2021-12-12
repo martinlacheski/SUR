@@ -108,6 +108,11 @@ $(function () {
             //Seleccionamos el Presupuesto sobre la cual queremos traer el detalle
             var tr = tablaPlanificacion.cell($(this).closest('td, li')).index();
             var data = tablaPlanificacion.row(tr.row).data();
+            //Cargamos la cabecera y totales del detalle
+            $('input[name="idPlanificacion"]').val(data.id);
+            $('input[name="inicio"]').val(moment(moment(data.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('input[name="fin"]').val(moment(moment(data.fecha), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('input[name="cantTrabajos"]').val(data.cantidad);
             //Cargamos el detalle de productos
             $('#tablaTrabajos').DataTable({
                 responsive: true,
