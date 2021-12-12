@@ -24,7 +24,8 @@ from apps.parametros.models import Modelos, Empresa, Marcas, TiposIVA, EstadoPar
 from apps.presupuestos.models import PlantillaPresupuestos, DetalleProductosPlantillaPresupuesto, \
     DetalleServiciosPlantillaPresupuesto, Presupuestos
 from apps.trabajos.forms import TrabajosForm
-from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo
+from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServiciosTrabajo, PlanificacionesSemanales, \
+    DetallePlanificacionesSemanales
 from apps.usuarios.models import Usuarios
 from config import settings
 from apps.bot_telegram.logicaBot import porcentajeTrabajo
@@ -52,32 +53,36 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 estados = EstadoParametros.objects.get(id=EstadoParametros.objects.all().last().id)
                 usuario = Usuarios.objects.get(username=request.user)
                 if usuario.is_superuser == False and usuario.realizaTrabajos == True:
+                    planificacion = PlanificacionesSemanales.objects.all().last().id
                     for i in Trabajos.objects.filter(usuarioAsignado=usuario).exclude(
                             estadoTrabajo=estados.estadoCancelado.id).exclude(
                         estadoTrabajo=estados.estadoFinalizado.id).exclude(
                         estadoTrabajo=estados.estadoEntregado.id):
-                        # Obtenemos el estado de avance por cada trabajo
-                        totalEsfuerzo = 0
-                        esfuerzoTrabRealizados = 0
-                        detalle = DetalleServiciosTrabajo.objects.filter(trabajo_id=i.id)
-                        # Calculamos el total del esfuerzo del trabajo y lo dividimos por el total de esfuerzo de servicios ya realizados
-                        for d in detalle:
-                            totalEsfuerzo += d.servicio.esfuerzo
-                            if d.estado:
-                                esfuerzoTrabRealizados += d.servicio.esfuerzo
-                        if totalEsfuerzo != 0:
-                            porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
-                        else:
-                            porcentaje = 0
-                        # Redondeamos para tener solo 2 decimales
-                        porcentaje = round(round(porcentaje, 2) * 100, 2)
-                        item = i.toJSON()
-                        if i.usuarioAsignado:
-                            item['asignado'] = i.usuarioAsignado.username
-                        else:
-                            item['asignado'] = 'EXPRESS'
-                        item['porcentaje'] = str(porcentaje)
-                        data.append(item)
+                        for p in DetallePlanificacionesSemanales.objects.filter(planificacion_id=planificacion):
+                            if i.id == p.trabajo_id:
+                                # Obtenemos el estado de avance por cada trabajo
+                                totalEsfuerzo = 0
+                                esfuerzoTrabRealizados = 0
+                                detalle = DetalleServiciosTrabajo.objects.filter(trabajo_id=i.id)
+                                # Calculamos el total del esfuerzo del trabajo y lo dividimos por el total de esfuerzo de servicios ya realizados
+                                for d in detalle:
+                                    totalEsfuerzo += d.servicio.esfuerzo
+                                    if d.estado:
+                                        esfuerzoTrabRealizados += d.servicio.esfuerzo
+                                if totalEsfuerzo != 0:
+                                    porcentaje = esfuerzoTrabRealizados / totalEsfuerzo
+                                else:
+                                    porcentaje = 0
+                                # Redondeamos para tener solo 2 decimales
+                                porcentaje = round(round(porcentaje, 2) * 100, 2)
+                                item = i.toJSON()
+                                if i.usuarioAsignado:
+                                    item['asignado'] = i.usuarioAsignado.username
+                                else:
+                                    item['asignado'] = 'EXPRESS'
+                                item['porcentaje'] = str(porcentaje)
+                                item['usuarioRectificador'] = 'si'
+                                data.append(item)
                 else:
                     for i in Trabajos.objects.all():
                         # Obtenemos el estado de avance por cada trabajo

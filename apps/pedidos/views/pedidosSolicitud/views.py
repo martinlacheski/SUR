@@ -54,8 +54,8 @@ class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMix
                     detalle = i.toJSON()
                     data.append({'detalle': detalle,
                                  'proveedor': proveedor})
+            # Procesamos pedidos analizados
             elif action == 'procesar_pedido':
-                print('llega el proceso')
                 # Creamos el comando a ejecutar el proceso automatizado de pedidos
                 comando = 'python manage.py proc_auto_pedidos'
                 # Ejecución de comandos
@@ -72,6 +72,7 @@ class PedidosSolicitudListView(LoginRequiredMixin, ValidatePermissionRequiredMix
         context['create_url'] = reverse_lazy('pedidos:pedidos_solicitudes_create')
         context['list_url'] = reverse_lazy('pedidos:pedidos_solicitudes_list')
         context['entity'] = 'Solicitudes de Pedidos'
+        context['check_analizados'] = PedidosSolicitud.objects.filter(estado=True).filter(analizado=None)
         return context
 
 

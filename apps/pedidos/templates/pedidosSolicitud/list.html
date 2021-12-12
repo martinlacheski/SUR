@@ -73,11 +73,20 @@
                data-intro="Actualizar el listado de {{ entity }}">
                 <i class="fas fa-sync"></i> Actualizar
             </a>
-            <button type="button"
+            {% if check_analizados %}
+                <button type="button"
                     class="btn btn-secondary btn-flat btnGenerar"
                     data-intro="Procesar el pedido de las ofertas de los proveedores registradas según los criterios establecidos">
                 <i class="fas fa-code-branch"></i> Procesar Pedido
             </button>
+            {% else %}
+                <button type="button"
+                    class="btn btn-secondary btn-flat btnGenerar" disabled
+                    data-intro="Procesar el pedido de las ofertas de los proveedores registradas según los criterios establecidos">
+                <i class="fas fa-code-branch"></i> Procesar Pedido
+            </button>
+            {% endif %}
+
         </div>
     </div>
     <!-- Modal Cancelar Solicitud de Pedido -->
