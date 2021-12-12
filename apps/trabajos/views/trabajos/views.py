@@ -769,22 +769,31 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                 trab_por_user.append(
                     {'usuario': u,
                      'cant_trab': len(trabajos_user),
-                     'procentaje_avance': porcentaje_avance_trabajos,
+                     'procentaje_avance': float(porcentaje_avance_trabajos),
                      })
-            # Ordenamiento de lista
+            print(trab_por_user)
+
+            # Ordenamiento de lista por cant de trabajos.
             trab_por_user.sort(key=self.orden_cant_trab)
+
             # Se corrobora si existe un solo user con menor cantidad de trabajos.
             candidato = trab_por_user[0]
+
+            # Se chequea si existe solamente un user con menor cant de trabajos. Se elimina al resto.
             users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'cant_trab')
+            print(users_candidatos)
+
             if len(users_candidatos) == 1:
                 return {'id': users_candidatos[0]['usuario'].id,
                         'text': users_candidatos[0]['usuario'].username}
             else:
-                # Ordenamiento de lista
-                trab_por_user.sort(key=self.orden_avance_trab)
+                # Ordenamiento de lista por porcentaje de avance.
+                users_candidatos.sort(key=self.orden_avance_trab)
+
                 # Se corrobora si existe un solo user con mayor porcentaje de avance en trabajos.
-                candidato = trab_por_user[0]
+                candidato = users_candidatos[-1]
                 users_candidatos = self.check_mas_de_uno(candidato, trab_por_user, 'procentaje_avance')
+                print(users_candidatos)
                 if len(users_candidatos) == 1:
                     return {'id': users_candidatos[0]['usuario'].id,
                             'text': users_candidatos[0]['usuario'].username}
