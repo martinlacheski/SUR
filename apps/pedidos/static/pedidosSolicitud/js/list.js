@@ -11,6 +11,24 @@ $(function () {
         }).start()
     });
 
+    $('.btnGenerar').on('click', function () {
+        confirm_action('Confirmación', '¿Estas seguro de procesar el pedido?', function () {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'procesar_pedido',
+                },
+                dataType: 'json',
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }, function () {
+        });
+    });
+
     var tablaPedido = $('#data').DataTable({
         responsive: true,
         autoWidth: false,

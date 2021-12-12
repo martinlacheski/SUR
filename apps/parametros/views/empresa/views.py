@@ -173,7 +173,6 @@ class BackupView(LoginRequiredMixin, ValidatePermissionRequiredMixin, FormView):
         try:
             action = request.POST['action']
             if action == 'create_backup':
-                print("imprime")
                 # Nombre de la database .json
                 database_name = 'backup_SUR_' + datetime.datetime.today().strftime('%d_%m_%Y_%HH_%MM') + '.json'
                 # Nombre de la database .zip

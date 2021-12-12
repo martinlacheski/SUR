@@ -5,7 +5,6 @@ $(function () {
 
 
     $('.btnGenerar').on('click', function () {
-        console.log("me ejecuto");
         $.ajax({
             url: window.location.pathname,
             type: 'POST',
@@ -19,6 +18,7 @@ $(function () {
             }
         });
     });
+
     $('.btnReestablecer').on('click', function () {
         document.getElementById('front_errors').setAttribute("hidden", "");
         let archivo = document.getElementById('id_file');

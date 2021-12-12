@@ -132,31 +132,6 @@
     <script src="{% static 'empresa/js/backup.js' %}"></script>
 
     <script>
-        /*   Marca que un evento ha sido cumplido lo que implica que
-             el mismo no será notificado nuevamente.       */
-        $('#btnCumplido').on('click', function () {
-
-            $.ajax({
-                url: '/agenda/list/',
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    'csrfmiddlewaretoken': csrftoken,
-                    'action': 'evento_cumplido',
-                    'pk': this.getAttribute("evento_id"),
-                    'user': "{{ request.user.id }}",
-                },
-            });
-
-            // Escondemos modal
-            $('#modal-lg-eventos-notif').modal('hide');
-            $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-light');
-
-
-        });
-    </script>
-
-    <script>
 
         function detalleNotif(elemento) {
             $('#navPrincipal').attr('class', 'main-header navbar navbar-expand navbar-light');
