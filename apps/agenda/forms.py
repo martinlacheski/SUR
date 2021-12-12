@@ -10,6 +10,7 @@ from django import forms
 class GestionEventosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['tipoEvento'].queryset = tiposEvento.objects.filter(estado=True)
 
     fechaNotificacion = forms.DateField(
         input_formats=['%d-%m-%Y'],
@@ -50,14 +51,6 @@ class GestionEventosForm(ModelForm):
                 }
 
             ),
-            # 'fechaNotificacion': DateInput(
-            #     attrs={
-            #         'class': 'form-control datetimepicker-input',
-            #         'data-target': '#fechaNotificacion',
-            #         'data-toggle': 'datetimepicker',
-            #         'autocomplete': 'off',
-            #     }
-            # ),
             'repeticion' : Select(
                 attrs={
                     'class' : 'form-select form-control select2',
@@ -89,7 +82,7 @@ class GestionTiposEventosForm(ModelForm):
 
     class Meta:
         model = tiposEvento
-        fields = ['nombre', 'horarioRecordatorio', 'recordarSistema', 'recordarTelegram']
+        fields = ['nombre', 'horarioRecordatorio', 'recordarSistema', 'recordarTelegram', 'deSistema']
 
         widgets = {
             'nombre': TextInput(
@@ -114,6 +107,12 @@ class GestionTiposEventosForm(ModelForm):
                 }
             ),
             'recordarTelegram': CheckboxInput(
+                attrs={
+                    'type': 'checkbox',
+                    'class': 'custom-control-input',
+                }
+            ),
+            'deSistema': CheckboxInput(
                 attrs={
                     'type': 'checkbox',
                     'class': 'custom-control-input',

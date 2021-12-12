@@ -17,6 +17,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Ventas, Categorias, Subcategorias, DetalleProductosVenta, \
     DetalleServiciosVenta
+from apps.erp.views.compras.views import ComprasCreateView
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.numlet import NumeroALetras
 from apps.parametros.forms import MarcasForm, ModelosForm
@@ -28,6 +29,7 @@ from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServi
 from apps.usuarios.models import Usuarios
 from config import settings
 from apps.bot_telegram.logicaBot import porcentajeTrabajo
+from apps.erp.views.compras import views # PAra reutilizar método de creación de eventos.
 
 from weasyprint import HTML, CSS
 
@@ -641,10 +643,13 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
             elif action == 'get_mas_desocupado':
                 data = []
                 user_selecto = self.user_menos_ocupado()
-                data.append(user_selecto)
-                usuarios = Usuarios.objects.filter(realizaTrabajos=True).exclude(pk=user_selecto['id'])
-                for u in usuarios:
-                    data.append({'id': u.id, 'text': u.username})
+                if user_selecto:
+                    data.append(user_selecto)
+                    usuarios = Usuarios.objects.filter(realizaTrabajos=True).exclude(pk=user_selecto['id'])
+                    for u in usuarios:
+                        data.append({'id': u.id, 'text': u.username})
+
+
 
             elif action == 'add':
                 with transaction.atomic():
@@ -708,6 +713,13 @@ class TrabajosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cr
                     # Devolvemos en Data la ID del nuevo Trabajo para poder generar la Boleta
                     data = {'id': trabajo.id}
                     data['redirect'] = self.url_redirect
+
+                    metodo_evento_asoc = ComprasCreateView()
+                    descripcion = "Vence el plazo del trabajo Nro° " + str(trabajo.id) +\
+                                  ", cliente " + trabajo.cliente.razonSocial +\
+                                  " modelo " + trabajo.modelo.nombre + " según prioridad establecida."
+                    fechaNotif = datetime.date.today() + datetime.timedelta(days=trabajo.prioridad.plazoPrioridad)
+                    metodo_evento_asoc.crear_evento_asoc(descripcion, fechaNotif)
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:

@@ -7,9 +7,10 @@ from apps.usuarios.models import Usuarios
 
 class tiposEvento(models.Model):
     nombre = models.CharField(max_length=100, verbose_name='Nombre', unique=True)
-    horarioRecordatorio = models.TimeField() # Avisar a esta hora
-    recordarSistema = models.BooleanField(default=True) # Si le va a aparecer alguna notificacion
-    recordarTelegram = models.BooleanField() # Si se le va a enviar un msj al telegram
+    horarioRecordatorio = models.TimeField()                                              # Avisar a esta hora
+    recordarSistema = models.BooleanField(default=True)                                   # Si le va a aparecer alguna notificacion
+    recordarTelegram = models.BooleanField()                                              # Si se le va a enviar un msj al telegram
+    deSistema = models.BooleanField(unique=True, null=True, blank=True)                   # Si se le va a enviar un msj al telegram
     estado = models.BooleanField(default=True)
     history = HistoricalRecords()
 

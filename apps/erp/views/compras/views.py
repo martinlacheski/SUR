@@ -11,11 +11,13 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
+from apps.agenda.models import eventosAgenda, tiposEvento
 from apps.erp.forms import ComprasForm, ProveedoresForm, ProductosForm
 from apps.erp.models import Compras, Productos, DetalleProductosCompra, Proveedores, Categorias, Subcategorias
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.numlet import NumeroALetras
 from apps.parametros.models import Empresa, TiposIVA
+from apps.agenda.jobs import scheduler_evento
 from config import settings
 
 from weasyprint import HTML, CSS
@@ -280,6 +282,16 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
                         det.producto.save()
                     data = {'id': compra.id}
                     data['redirect'] = self.url_redirect
+
+                    # Creación de evento asociado
+                    if compra.condicionPagoCompra.pagoDiferido:
+                        evento_desc = "Vence el plazo de pago de la compra al proveedor " + \
+                                                 compra.proveedor.razonSocial + ", con comprobante " + \
+                                                 compra.nroComprobante + " y TOTAL $" + str(compra.total)
+                        fechaNotif = datetime.date.today() + datetime.timedelta(days=compra.proveedor.plazoCtaCte)
+                        self.crear_evento_asoc(evento_desc, fechaNotif)
+
+
             else:
                 data['error'] = 'No ha ingresado a ninguna opción'
         except Exception as e:
@@ -298,6 +310,17 @@ class ComprasCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Cre
         context['productos'] = Productos.objects.all()
         return context
 
+    def crear_evento_asoc(self, descripcion, fechaNotif):
+        eventoAsoc = eventosAgenda()
+        eventoAsoc.tipoEvento = tiposEvento.objects.get(deSistema=True)  # Si salta error acá, culpa de Martín.
+        eventoAsoc.estado = True
+        eventoAsoc.descripcion = descripcion
+        eventoAsoc.fechaCreacion = datetime.date.today()
+        eventoAsoc.fechaNotificacion = fechaNotif
+        eventoAsoc.save()
+
+        # Creación de job en memoria para notificacion
+        scheduler_evento(eventoAsoc)
 
 class ComprasUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
     model = Compras

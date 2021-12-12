@@ -154,6 +154,10 @@ def datos_evento_evID(ev_id):
                               str(evento.horaResolucion.date().strftime('%d-%m-%Y'))
                               #str(evento.horaResolucion.date().strftime('%d-%m-%Y')) + " a las " +\
                               #str(evento.horaResolucion.time().strftime('%H:%m'))
+    if evento.estado:
+        data['estado'] = 'activo'
+    else:
+        data['estado'] = 'inactivo'
     return data
 
 
