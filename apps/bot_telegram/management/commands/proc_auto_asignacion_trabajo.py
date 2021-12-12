@@ -75,7 +75,6 @@ class Command(BaseCommand):
                     try:
                         # Si el usuario tiene chatId, armamos msj con botones y enviamos.
                         if t.usuarioAsignado.chatIdUsuario:
-                            print("alo")
                             bot.send_message(chat_id=t.usuarioAsignado.chatIdUsuario, text=mensaje(t))
                             faltan_repuestos = {'trabajo': str(t.id), 'respuesta': "Faltan repuestos"}
                             postergar = {'trabajo': str(t.id), 'respuesta': "Postergar"}
