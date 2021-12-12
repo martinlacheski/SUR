@@ -416,6 +416,7 @@ class ProductosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, U
         context = super().get_context_data(**kwargs)
         context['title'] = 'Editar Producto'
         context['entity'] = 'Productos'
+        context['categorias'] = Categorias.objects.all()
         context['list_url'] = reverse_lazy('erp:productos_list')
         context['action'] = 'edit'
         return context

@@ -1,4 +1,5 @@
 var renglon;
+var hash;
 var tablaProductos;
 //Definimos una estructura en JS para crear la Solicitud de Pedido
 var pedido = {
@@ -192,6 +193,7 @@ $(document).ready(function () {
                 $('input[name="pedidoSolicitud"]').val(data.pedido);
                 $('input[name="proveedor"]').val(data.proveedor);
                 $('input[name="validoHasta"]').val(moment(data.validoHasta, 'YYYY-MM-DD HH:mm').format('DD-MM-YYYY HH:mm'));
+                hash = data.hash;
             }
         });
         //Buscamos el Listado de los productos que deben reponerse por ajax
@@ -370,8 +372,10 @@ $(function () {
                                 location.replace(data.redirect);
                             } else {
                                 if (!data.hasOwnProperty('error')) {
+                                    console.log(data.hash);
                                     confirm_action('Notificación', '¿Desea imprimir la Solicitud de Pedido?', function () {
-                                    window.open('/pedidos/solicitudes/proveedores/pdf/' + data.id + '/', '_blank');
+                                    // window.open('/pedidos/solicitudes/proveedores/pdf/' + data.id + '/', '_blank');
+                                    window.open('/pedidos/solicitudes/proveedores/pdf/' + data.hash, '_blank');
                                     location.replace(data.redirect);
                                 }, function () {
                                     location.replace(data.redirect);

@@ -92,7 +92,7 @@
             Se puede filtrar los datos escribiendo en 'Buscar'. Se puede ordenar las columnas que posean las &#8645;">
                         <thead>
                         <tr>
-                            <th scope="col" style="width: 5%;">ID</th>
+                            <th scope="col" style="width: 5%;">Comprobante</th>
                             <th scope="col" style="width: 10%;">Estado</th>
                             <th scope="col" style="width: 10%;">Fecha</th>
                             <th scope="col" style="width: 23%;">Proveedor</th>
@@ -119,7 +119,7 @@
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat"
                    data-intro="Hacer click para guardar el registro de {{ entity }}">
-                    <i class="fas fa-plus"></i> Nuevo registro
+                    <i class="fas fa-plus"></i> Nuevo
                 </a>
                 <a href="{{ list_url }}" class="btn btn-success btn-flat"
                    data-intro="Actualizar el listado  de {{ entity }}">
@@ -166,6 +166,28 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-3 mb-3">
+                            <label>Comprobante:</label>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="compra" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-7 mb-3">
+                            <label>Proveedor:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="proveedor" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-2 mb-3">
+                            <label>Fecha:</label>
+                            <input type="text" class="form-control" name="fecha" readonly>
+                        </div>
+
+                    </div>
                     <div class="row" id="rowProductos">
                         <div class="col-lg-12">
                             <div class="card card-secondary">
@@ -185,6 +207,44 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4 mb-3">
+                            <label>Subtotal:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="subtotal" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>IVA:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="iva" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>Total:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="total" readonly>
+                            </div>
+
                         </div>
                     </div>
                 </div>

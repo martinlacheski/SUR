@@ -360,6 +360,7 @@ class ProveedoresForm(ModelForm):
         # Desactivamos los campos al inicializar el formulario
         self.fields['plazoCtaCte'].widget.attrs['disabled'] = True
 
+
     class Meta:
         model = Proveedores
         fields = '__all__'
@@ -447,6 +448,7 @@ class ProveedoresForm(ModelForm):
 class VentasForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['cliente'].queryset = Clientes.objects.filter(estado=True)
 
     class Meta:
         model = Ventas
@@ -498,6 +500,7 @@ class VentasForm(ModelForm):
 class ComprasForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['proveedor'].queryset = Proveedores.objects.filter(estado=True)
 
     class Meta:
         model = Compras

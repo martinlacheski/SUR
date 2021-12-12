@@ -789,27 +789,28 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
 
     def enviar_mail(self, pedido):
         detalle = DetallePedido.objects.filter(pedido=pedido)
-        empresa = Empresa.objects.all().last()
-        subject, from_email, to = 'Pedido de productos', settings.EMAIL_HOST_USER, pedido.proveedor.email
-        text_content = 'Mensaje de pedido.'
-        html_content = '<p>Hola, desde ' + empresa.razonSocial + ', les solicitamos los siguientes productos:' \
-                       '<br><br>' + '<table style="margin: 0px auto; border: 1px solid black;">' \
-                       ' <tr align=Center style="border: 1px solid black;"> <th>Producto</th> <th>Marca Ofertada</th>' \
-                       ' <th>Cantidad</th></tr>'
+        if detalle and pedido.proveedor.estado:
+            empresa = Empresa.objects.all().last()
+            subject, from_email, to = 'Pedido de productos', settings.EMAIL_HOST_USER, pedido.proveedor.email
+            text_content = 'Mensaje de pedido.'
+            html_content = '<p>Hola, desde ' + empresa.razonSocial + ', les solicitamos los siguientes productos:' \
+                           '<br><br>' + '<table style="margin: 0px auto; border: 1px solid black;">' \
+                           ' <tr align=Center style="border: 1px solid black;"> <th>Producto</th> <th>Marca Ofertada</th>' \
+                           ' <th>Cantidad</th></tr>'
 
-        for d in detalle:
-            marca_ofertada = d.marcaOfertada
-            if not marca_ofertada:
-                marca_ofertada = ''
-            html_content += '<tr align=Center style="border: 1px solid black;"> ' \
-                            '<td style="border: 1px solid black;">' + str(d.producto.descripcion) +\
-                            '</td>' + '<td style="border: 1px solid black;">' + marca_ofertada + '</td>' +\
-                            '<td style="border: 1px solid black;">' + str(d.cantidad) + '</td>' + '</tr>'
-        html_content += '</table> <br><br> Desde ya muchas gracias. Los saludamos atentamente'
-        msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-        pass
+            for d in detalle:
+                marca_ofertada = d.marcaOfertada
+                if not marca_ofertada:
+                    marca_ofertada = ''
+                html_content += '<tr align=Center style="border: 1px solid black;"> ' \
+                                '<td style="border: 1px solid black;">' + str(d.producto.descripcion) +\
+                                '</td>' + '<td style="border: 1px solid black;">' + marca_ofertada + '</td>' +\
+                                '<td style="border: 1px solid black;">' + str(d.cantidad) + '</td>' + '</tr>'
+            html_content += '</table> <br><br> Desde ya muchas gracias. Los saludamos atentamente'
+            msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
+            msg.attach_alternative(html_content, "text/html")
+            msg.send()
+            pass
 
 
 class PedidosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):

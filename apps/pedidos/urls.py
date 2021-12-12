@@ -23,7 +23,8 @@ urlpatterns = [
     path('pedidos/solicitudes/proveedores/<slug:hash_code>', PedidosSolicitudProveedoresCreateView.as_view(), name='pedidos_solicitudes_proveedores_create'),
     path('pedidos/solicitudes/enviado/', CorrectoSolicitudProveedorView.as_view(), name='pedidos_solicitudes_correcto'), # REDIRIGIR EL REENVIO CORRECTO
     path('pedidos/solicitudes/expired/', ExpiredSolicitudProveedorView.as_view(), name='pedidos_solicitudes_expired'), # REDIRIGIR EL REENVIO SI VENCIÓ
-    path('pedidos/solicitudes/proveedores/pdf/<int:pk>/', PedidosSolicitudProveedoresPdfView.as_view(), name='pedidos_solicitudes_proveedores_pdf'),
+    # path('pedidos/solicitudes/proveedores/pdf/<int:pk>/', PedidosSolicitudProveedoresPdfView.as_view(), name='pedidos_solicitudes_proveedores_pdf'),
+    path('pedidos/solicitudes/proveedores/pdf/<slug:hash_code>', PedidosSolicitudProveedoresPdfView.as_view(), name='pedidos_solicitudes_proveedores_pdf'),
     # Pedidos
     path('pedidos/list/', PedidosListView.as_view(), name='pedidos_list'),
     path('pedidos/pdf/<int:pk>/', PedidosPdfView.as_view(), name='pedidos_pdf'),

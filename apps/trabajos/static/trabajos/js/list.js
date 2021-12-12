@@ -319,6 +319,20 @@ $(function () {
             var tr = tablaTrabajo.cell($(this).closest('td, li')).index();
             var data = tablaTrabajo.row(tr.row).data();
 
+            //Cargamos la cabecera y totales del detalle
+            $('input[name="idTrabajo"]').val(data.id);
+            $('input[name="estado"]').val(data.estadoTrabajo.nombre)
+            $('input[name="porcentaje"]').val(data.porcentaje)
+            $('input[name="fechaEntrada"]').val(moment(moment(data.fechaEntrada), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('input[name="fechaSalida"]').val(moment(moment(data.fechaSalida), 'YYYY-MM-DD').format('DD-MM-YYYY'));
+            $('input[name="cliente"]').val(data.cliente.razonSocial);
+            $('input[name="marca"]').val(data.modelo.marca.nombre);
+            $('input[name="modelo"]').val(data.modelo.nombre);
+            $('input[name="usuario"]').val(data.usuarioAsignado.username);
+            $('input[name="subtotal"]').val(data.subtotal);
+            $('input[name="iva"]').val(data.iva);
+            $('input[name="total"]').val(data.total);
+
             //Cargamos el detalle de productos
             $('#tablaProductos').DataTable({
                 responsive: true,

@@ -101,14 +101,14 @@
                         <tr>
                             <th scope="col" style="width: 4%;">ID</th>
                             <th scope="col" style="width: 9%;">Estado</th>
-                            <th scope="col" style="width: 9%;">Fecha</th>
-                            <th scope="col" style="width: 5%;">TrabajoID</th>
-                            <th scope="col" style="width: 22%;">Cliente</th>
+                            <th scope="col" style="width: 11%;">Fecha</th>
+                            <th scope="col" style="width: 5%;">Trabajo</th>
+                            <th scope="col" style="width: 24%;">Cliente</th>
                             <th scope="col" style="width: 9%;">Subtotal</th>
                             <th scope="col" style="width: 9%;">IVA</th>
                             <th scope="col" style="width: 9%;">Perc.</th>
                             <th scope="col" style="width: 10%;">Total</th>
-                            <th scope="col" style="width: 14%;"
+                            <th scope="col" style="width: 10%;"
                                 data-intro="Opciones de Listado. Ver detalle venta. Generar PDF venta. Cancelar venta.">
                                 Opciones
                             </th>
@@ -127,7 +127,7 @@
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat"
                    data-intro="Crear un nuevo registro de {{ entity }}">
-                    <i class="fas fa-plus"></i> Nuevo registro
+                    <i class="fas fa-plus"></i> Nuevo
                 </a>
                 <a href="{{ list_url }}" class="btn btn-success btn-flat" data-intro="Actualizar el listado de {{ entity }}">
                     <i class="fas fa-sync"></i> Actualizar
@@ -166,13 +166,38 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i></b>
-                        <b id="trabajoID"></b></h5>
+                    <h5 class="modal-title" id="exampleModalLabel"><b><i class="fas fa-shopping-cart"></i> Detalle de
+                        Venta</b></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-2 mb-3">
+                            <label>ID:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="idVenta" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 mb-3">
+                            <label>Trabajo:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="idTrabajo" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-6 mb-3">
+                            <label>Cliente:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="cliente" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 mb-3">
+                            <label>Fecha:</label>
+                            <input type="text" class="form-control" name="fecha" readonly>
+                        </div>
+
+                    </div>
                     <div class="row" id="rowProductos">
                         <div class="col-lg-12">
                             <div class="card card-secondary">
@@ -213,6 +238,44 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4 mb-3">
+                            <label>Subtotal:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="subtotal" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>IVA:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="iva" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>Total:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="total" readonly>
+                            </div>
+
                         </div>
                     </div>
                 </div>

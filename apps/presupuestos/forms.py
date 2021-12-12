@@ -1,5 +1,6 @@
 from django.forms import ModelForm, Select, TextInput, DateInput
 
+from apps.erp.models import Clientes
 from apps.presupuestos.models import PlantillaPresupuestos, Presupuestos
 
 
@@ -32,6 +33,7 @@ class PresupuestosPlantillaForm(ModelForm):
 class PresupuestosForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['cliente'].queryset = Clientes.objects.filter(estado=True)
 
     class Meta:
         model = Presupuestos

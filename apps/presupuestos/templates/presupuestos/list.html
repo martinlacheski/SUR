@@ -131,7 +131,7 @@
             <form id="reporteForm" method="post" action="." enctype="multipart/form-data">
                 <a href="{{ create_url }}" class="btn btn-primary btn-flat"
                    data-intro="Crear un nuevo registro de {{ entity }}">
-                    <i class="fas fa-plus"></i> Nuevo registro
+                    <i class="fas fa-plus"></i> Nuevo
                 </a>
                 <a href="{{ list_url }}" class="btn btn-success btn-flat"
                    data-intro="Actualizar el listado de {{ entity }}">
@@ -144,7 +144,7 @@
             </form>
         </div>
     </div>
-    <!-- Modal Cancelar Presupuesto Base -->
+    <!-- Modal Cancelar Presupuesto -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="submitModal"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -165,7 +165,7 @@
             </div>
         </div>
     </div>
-    <!-- Modal Detalle Presupuesto Base -->
+    <!-- Modal Detalle Presupuesto -->
     <div class="modal fade" id="modalDetalle" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -178,6 +178,30 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-2 mb-3">
+                            <label>ID:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="idPresupuesto" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-5 mb-3">
+                            <label>Cliente:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="cliente" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-3 mb-3">
+                            <label>Modelo:</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="modelo" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-2 mb-3">
+                            <label>Fecha:</label>
+                            <input type="text" class="form-control" name="fecha" readonly>
+                        </div>
+                    </div>
                     <div class="row" id="rowProductos">
                         <div class="col-lg-12">
                             <div class="card card-secondary">
@@ -218,6 +242,44 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4 mb-3">
+                            <label>Subtotal:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="subtotal" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>IVA:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="iva" readonly>
+                            </div>
+
+                        </div>
+                        <div class="form-group col-4 mb-3">
+                            <label>Total:</label>
+
+                            <div class="input-group-append">
+                                <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-dollar-sign"></i></span>
+                                </div>
+                                <input type="text" class="form-control text-right" name="total" readonly>
+                            </div>
+
                         </div>
                     </div>
                 </div>
