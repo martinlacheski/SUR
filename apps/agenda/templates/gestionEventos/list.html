@@ -279,37 +279,41 @@
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 events: [
                     {% for evento in eventos %}
-                        {%  if evento.estado %}
-                            {
-                                id: "{{ evento.id }}",
-                                {% if evento.resuelto %}
-                                    title: "{{ evento.tipoEvento }} (resuelto)" ,
-                                {% else %}
-                                    title: "{{ evento.tipoEvento }}",
-                                {% endif %}
-                                {% if evento.repeticion %}
-                                    rrule: {
-                                        freq: "{{ evento.repeticion }}",
-                                        dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
-                                        until: "{{ evento.fechaFinalizacion|date:"Y-m-d" }}",
-                                    },
-                                {% else %}
-                                    start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
-                                {%  endif %}
+                        {
+                            id: "{{ evento.id }}",
+                            {% if evento.resuelto %}
+                                title: "{{ evento.tipoEvento }} (resuelto)" ,
+                            {% elif evento.estado %}
+                                title: "{{ evento.tipoEvento }}",
+                            {% else %}
+                                title: "{{ evento.tipoEvento }} (inactivo)",
+                            {% endif %}
+                            {% if evento.repeticion %}
+                                rrule: {
+                                    freq: "{{ evento.repeticion }}",
+                                    dtstart: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                                    until: "{{ evento.fechaFinalizacion|date:"Y-m-d" }}",
+                                },
+                            {% else %}
+                                start: "{{ evento.fechaNotificacion|date:"Y-m-d" }}",
+                            {%  endif %}
 
 
-                                // Color de eventos
-                                {% if evento.repeticion == '' %}
-                                    color: '#3d9970',
-                                {% elif evento.repeticion == 'daily' %}
-                                    color: '#001f3f',
-                                {% elif evento.repeticion == 'weekly' %}
-                                    color: '#007bff',
-                                {% elif evento.repeticion == 'monthly' %}
-                                    color: '#605ca8',
-                                {% endif %}
-                            },
-                        {%  endif %}
+                            // Color de eventos
+                        {% if evento.estado %}
+                            {% if evento.repeticion == '' %}
+                                color: '#3d9970',
+                            {% elif evento.repeticion == 'daily' %}
+                                color: '#001f3f',
+                            {% elif evento.repeticion == 'weekly' %}
+                                color: '#007bff',
+                            {% elif evento.repeticion == 'monthly' %}
+                                color: '#605ca8',
+                            {% endif %}
+                        {% else %}
+                            color: '#e83838',
+                        {% endif %}
+                        },
                     {% endfor %}
                 ],
                 // Opciones  básicas
@@ -322,7 +326,7 @@
                     right: 'prevYear,prev,next,nextYear'
                 },
 
-                // Ubicar contenido de un evento en formulario para su posterior mod o eliminacion.
+                // Ubicar contenido de un evento en modal para su posterior mod o eliminacion.
                 eventClick: function (info) {
                     info.el.style.borderColor = 'red';
                     $('#modal-lg-eventos').modal();
@@ -349,6 +353,11 @@
                     'pk': id_evento
                 },
                 success: function (data) {
+                    // Se setean todos los botones a estado default
+                    document.getElementById('btnMod').removeAttribute("disabled");
+                    document.getElementById('btnRes').removeAttribute("disabled");
+                    document.getElementById('btnDel').removeAttribute("disabled");
+
                     document.getElementById('modal_tipo_evento').innerHTML = data.tipoEvento;
                     document.getElementById('modal_descripción').innerHTML = data.descripcion;
                     document.getElementById('modal_user_asoc').innerHTML = data.usuariosAsoc.slice(0, -2); //slice para borrar ultima coma
@@ -397,6 +406,13 @@
                     } else {
                         document.getElementById('modal_resuelto_por').innerHTML = "Aún no fué resuelto";
                         document.getElementById('btnMod').setAttribute('class', 'btn btn-warning btn-flat btn-block')
+                    }
+
+                    // Se desactivan los botones si el evento está cancelado.
+                    if (data.estado === 'inactivo'){
+                        document.getElementById('btnMod').setAttribute("disabled", "");
+                        document.getElementById('btnRes').setAttribute("disabled", "");
+                        document.getElementById('btnDel').setAttribute("disabled", "");
                     }
                 }
             });

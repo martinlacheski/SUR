@@ -53,13 +53,13 @@ def crearSolicitudes(pedido, dominio):
 
         # Enviamos mail
         try:
-            print("envio")
-            print('Hola! Desde ' + str(empresa.razonSocial) +' hemos elaborado una lista de los productos' +
-                        ' que estamos necesitando. Por favor entrá al link e indicanos qué productos tenes' +
-                        ' dispononibles junto a su cotizacón de manera tal que podamos elaborar un pedido. \n\n ' +
-                        'LINK: ' + link)
-            print(prov.email)
-            print(settings.EMAIL_HOST_USER)
+            # print("envio")
+            # print('Hola! Desde ' + str(empresa.razonSocial) +' hemos elaborado una lista de los productos' +
+            #             ' que estamos necesitando. Por favor entrá al link e indicanos qué productos tenes' +
+            #             ' dispononibles junto a su cotizacón de manera tal que podamos elaborar un pedido. \n\n ' +
+            #             'LINK: ' + link)
+            # print(prov.email)
+            # print(settings.EMAIL_HOST_USER)
             send_mail(subject='Solicitud de pedidos SUR EXPRESS',
                 message=str('Hola! Desde ' + str(empresa.razonSocial) +' hemos elaborado una lista de los productos' +
                         ' que estamos necesitando. Por favor entrá al link e indicanos qué productos tenes' +

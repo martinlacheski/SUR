@@ -229,7 +229,10 @@ class Command(BaseCommand):
                                 d.cantidad_resp = p['cantidad']
                                 d_encontrado = True
                                 d_satisfecho = False
-
+                        # Posible solución a bug que deja como incompleto las respuestas que no estan incompletas
+                        # else:
+                        #     d_encontrado = True
+                        #     d_satisfecho = True
                     if d_encontrado and d_satisfecho:
                         pass
                     elif d_encontrado and not d_satisfecho:

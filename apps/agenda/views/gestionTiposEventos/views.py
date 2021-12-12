@@ -60,23 +60,28 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
     def post(self, request, *args, **kwargs):
         data = {}
         datos = {}
-        print(request.POST['nombre'])
         try:
+            # Se comprueba si el tipo de evento ya existía. En caso de existir, solamente cambia el estado
             try:
                 nombre = request.POST['nombre']
                 tipoEv = tiposEvento.objects.get(nombre=nombre.upper(), estado=0)
                 notifUsers = notificacionUsuarios.objects.filter(tipoEvento=tipoEv.id)
                 notifUsers.delete()
+
+                # Se actualiza la lista de usuarios asignados
                 for user in request.POST.getlist('usuarios'):
                     notifUsersObj = notificacionUsuarios()
                     notifUsersObj.tipoEvento = tipoEv
                     notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
                     notifUsersObj.save()
+
+                # Se guardan los cambios
                 tipoEv.estado = True
                 tipoEv.save()
                 data['redirect'] = self.url_redirect
                 return JsonResponse(data)
             except ObjectDoesNotExist:
+                # Bloque ejecutado si no existía el evento. Simplemente lo almacena.
                 form = self.get_form()
                 data = form.save()
                 data['redirect'] = self.url_redirect
@@ -85,7 +90,7 @@ class TiposEventosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                     notifUsersObj.tipoEvento = data['obj']
                     notifUsersObj.usuarioNotif = Usuarios.objects.get(pk=user)
                     notifUsersObj.save()
-                del data['obj']
+                del data['obj'] # Borra objeto temporal que trae de form
                 return JsonResponse(data)
         except Exception as e:
             datos['error'] = str(e)

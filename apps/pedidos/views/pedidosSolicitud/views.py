@@ -800,7 +800,8 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
             empresa = Empresa.objects.all().last()
             subject, from_email, to = 'Pedido de productos', settings.EMAIL_HOST_USER, pedido.proveedor.email
             text_content = 'Mensaje de pedido.'
-            html_content = '<p>Hola, desde ' + empresa.razonSocial + ', les solicitamos los siguientes productos:' \
+            html_content = '<p>Hola ' + pedido.proveedor.razonSocial + ', desde ' + empresa.razonSocial +\
+                           ', les solicitamos los siguientes productos:' \
                            '<br><br>' + '<table style="margin: 0px auto; border: 1px solid black;">' \
                            ' <tr align=Center style="border: 1px solid black;"> <th>Producto</th> <th>Marca Ofertada</th>' \
                            ' <th>Cantidad</th></tr>'
@@ -817,7 +818,6 @@ class PedidosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixin, Up
             msg = EmailMultiAlternatives(subject, text_content, from_email, [to])
             msg.attach_alternative(html_content, "text/html")
             msg.send()
-            pass
 
 
 class PedidosDeleteView(LoginRequiredMixin, ValidatePermissionRequiredMixin, UpdateView):
