@@ -121,6 +121,12 @@ class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, List
                 data = []
                 for i in DetalleServiciosTrabajo.objects.filter(trabajo_id=request.POST['id']):
                     data.append(i.toJSON())
+            # Procesamos pedidos analizados
+            elif action == 'controlar_trabajos':
+                    # Creamos el comando a ejecutar el proceso automatizado de pedidos
+                    comando = 'python manage.py hard_asig_trabajos'
+                    # Ejecución de comandos
+                    os.system(comando)
             elif action == 'create_reporte':
                 # Traemos la empresa para obtener los valores
                 empresa = Empresa.objects.get(pk=Empresa.objects.all().last().id)

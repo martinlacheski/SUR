@@ -11,6 +11,7 @@ $(function () {
         }).start()
     });
 
+    //Para ejecutar proceso automatizado
     $('.btnGenerar').on('click', function () {
         confirm_action('Confirmación', '¿Estas seguro de procesar el pedido?', function () {
             $.ajax({

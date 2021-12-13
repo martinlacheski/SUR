@@ -77,6 +77,25 @@ $(function () {
         }).start()
     });
 
+    //para ejecutar el proceso automatizado
+    $('.btnGenerar').on('click', function () {
+        confirm_action('Confirmación', '¿Estas seguro de controlar el estado de los trabajos?', function () {
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: {
+                    'csrfmiddlewaretoken': csrftoken,
+                    'action': 'controlar_trabajos',
+                },
+                dataType: 'json',
+                success: function (data) {
+                    location.reload();
+                }
+            });
+        }, function () {
+        });
+    });
+
     //Captamos si el usuario puede solo modificar los trabajos
     var soloModificar = $('input[name="soloModificar"]').val();
     //Buscamos los parametros de estado
