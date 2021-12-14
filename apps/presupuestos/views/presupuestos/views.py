@@ -14,6 +14,7 @@ from django.views.generic import CreateView, ListView, UpdateView
 
 from apps.erp.forms import ProductosForm, ServiciosForm, ClientesForm
 from apps.erp.models import Productos, Servicios, Clientes, Categorias, Subcategorias
+from apps.erp.views.compras.views import ComprasCreateView
 from apps.mixins import ValidatePermissionRequiredMixin
 from apps.numlet import NumeroALetras
 from apps.parametros.forms import MarcasForm, ModelosForm
@@ -847,6 +848,14 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                     except Exception as e:
                         pass
                     trabajo.save()
+                    # Se crea un evento de agenda por el trabajo confirmado
+                    metodo_evento_asoc = ComprasCreateView()
+                    descripcion = "Vence el plazo del trabajo Nro° " + str(trabajo.id) + \
+                                  ", cliente " + trabajo.cliente.razonSocial + \
+                                  " modelo " + trabajo.modelo.nombre + " según prioridad establecida."
+                    fechaNotif = datetime.date.today() + datetime.timedelta(days=trabajo.prioridad.plazoPrioridad)
+                    metodo_evento_asoc.crear_evento_asoc(descripcion, fechaNotif)
+
                     # Eliminamos todos los productos del Detalle
                     presupuesto.detalleproductospresupuesto_set.all().delete()
                     # Volvemos a cargar los productos al Detalle
