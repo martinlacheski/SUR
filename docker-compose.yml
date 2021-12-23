@@ -11,7 +11,7 @@ services:
       - POSTGRES_PASSWORD=postgres
   web:
     build: .
-    command: ash -c "python3 manage.py migrate && redis-server & python3 manage.py telegram_bot & python3 manage.py runserver 0.0.0.0:8000"
+    command: ash -c "redis-server & python3 manage.py runserver 0.0.0.0:8000"
     volumes:
       - sur_vol:/home/proyecto
     ports:

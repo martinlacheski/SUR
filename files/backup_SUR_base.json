@@ -1,0 +1,2187 @@
+[
+{
+  "model": "admin.logentry",
+  "pk": 1,
+  "fields": {
+    "action_time": "2021-12-23T12:07:38.308Z",
+    "user": 1,
+    "content_type": 3,
+    "object_id": "1",
+    "object_repr": "RECTIFICADORES",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 2,
+  "fields": {
+    "action_time": "2021-12-23T12:08:01.615Z",
+    "user": 1,
+    "content_type": 3,
+    "object_id": "1",
+    "object_repr": "RECTIFICADORES",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"Permissions\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 3,
+  "fields": {
+    "action_time": "2021-12-23T13:03:17.800Z",
+    "user": 1,
+    "content_type": 3,
+    "object_id": "2",
+    "object_repr": "ADMINISTRATIVOS",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "RECTIFICADORES",
+    "permissions": [
+      353,
+      354,
+      355,
+      356,
+      385,
+      386,
+      387,
+      388,
+      322,
+      324
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 2,
+  "fields": {
+    "name": "ADMINISTRATIVOS",
+    "permissions": [
+      325,
+      326,
+      327,
+      328,
+      329,
+      330,
+      331,
+      332,
+      353,
+      354,
+      355,
+      356,
+      349,
+      350,
+      351,
+      352,
+      369,
+      370,
+      371,
+      372,
+      373,
+      374,
+      375,
+      376,
+      377,
+      378,
+      379,
+      380,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      217,
+      218,
+      219,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233,
+      234,
+      235,
+      236,
+      137,
+      138,
+      139,
+      140,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      385,
+      386,
+      387,
+      388,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      113,
+      114,
+      115,
+      116,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      389,
+      390,
+      391,
+      392,
+      393,
+      394,
+      395,
+      396,
+      397,
+      398,
+      399,
+      400,
+      409,
+      410,
+      411,
+      412,
+      413,
+      414,
+      415,
+      416,
+      417,
+      418,
+      419,
+      420,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      252,
+      277,
+      278,
+      279,
+      280,
+      281,
+      282,
+      283,
+      284,
+      285,
+      286,
+      287,
+      288,
+      289,
+      290,
+      291,
+      292,
+      293,
+      294,
+      295,
+      296,
+      317,
+      318,
+      319,
+      320,
+      321,
+      322,
+      323,
+      324
+    ]
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "e0ak297mvnfmw99irdcgzb26lm5x1y3g",
+  "fields": {
+    "session_data": ".eJxVjEsOwjAMBe-SNYrq2KlTluw5Q5XELi2gROpnhbg7VOoCtm9m3sv0cVvHflt07icxZwPm9LulmB9adiD3WG7V5lrWeUp2V-xBF3utos_L4f4djHEZv3XuCFEjMgARp9BSUqI2MHcM4rxGBwSNuAw-h6EZkASxQfYusJIz7w-xVjZP:1n0NsX:yXKA-4mjrmc7POnzqRYheeeDTlTwoGpTNVPQAlv19ks",
+    "expire_date": "2022-01-06T13:11:29.255Z"
+  }
+},
+{
+  "model": "parametros.historicaltiposiva",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "21%",
+    "iva": "21.00",
+    "history_date": "2021-12-23T11:37:23.329Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicaltiposiva",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "10,5%",
+    "iva": "10.50",
+    "history_date": "2021-12-23T11:37:36.994Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.tiposiva",
+  "pk": 1,
+  "fields": {
+    "nombre": "21%",
+    "iva": "21.00"
+  }
+},
+{
+  "model": "parametros.tiposiva",
+  "pk": 2,
+  "fields": {
+    "nombre": "10,5%",
+    "iva": "10.50"
+  }
+},
+{
+  "model": "parametros.historicalcondicionesiva",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "CONSUMIDOR FINAL",
+    "history_date": "2021-12-23T11:37:53.061Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalcondicionesiva",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "EXENTO",
+    "history_date": "2021-12-23T11:37:59.193Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalcondicionesiva",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "MONOTRIBUTO",
+    "history_date": "2021-12-23T11:38:07.735Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalcondicionesiva",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "RESPONSABLE INSCRIPTO",
+    "history_date": "2021-12-23T11:38:16.501Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.condicionesiva",
+  "pk": 1,
+  "fields": {
+    "nombre": "CONSUMIDOR FINAL"
+  }
+},
+{
+  "model": "parametros.condicionesiva",
+  "pk": 2,
+  "fields": {
+    "nombre": "EXENTO"
+  }
+},
+{
+  "model": "parametros.condicionesiva",
+  "pk": 3,
+  "fields": {
+    "nombre": "MONOTRIBUTO"
+  }
+},
+{
+  "model": "parametros.condicionesiva",
+  "pk": 4,
+  "fields": {
+    "nombre": "RESPONSABLE INSCRIPTO"
+  }
+},
+{
+  "model": "parametros.historicaltipospercepciones",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "0.00%",
+    "percepcion": "0.00",
+    "history_date": "2021-12-23T11:38:28.518Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicaltipospercepciones",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "3,31% IIBB",
+    "percepcion": "3.31",
+    "history_date": "2021-12-23T11:38:40.544Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.tipospercepciones",
+  "pk": 1,
+  "fields": {
+    "nombre": "0.00%",
+    "percepcion": "0.00"
+  }
+},
+{
+  "model": "parametros.tipospercepciones",
+  "pk": 2,
+  "fields": {
+    "nombre": "3,31% IIBB",
+    "percepcion": "3.31"
+  }
+},
+{
+  "model": "parametros.historicalcondicionespago",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "CONTADO",
+    "pagoDiferido": false,
+    "history_date": "2021-12-23T11:39:16.012Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalcondicionespago",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "CUENTA CORRIENTE",
+    "pagoDiferido": true,
+    "history_date": "2021-12-23T11:39:30.747Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.condicionespago",
+  "pk": 1,
+  "fields": {
+    "nombre": "CONTADO",
+    "pagoDiferido": false
+  }
+},
+{
+  "model": "parametros.condicionespago",
+  "pk": 2,
+  "fields": {
+    "nombre": "CUENTA CORRIENTE",
+    "pagoDiferido": true
+  }
+},
+{
+  "model": "parametros.historicalmediospago",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "CHEQUE",
+    "history_date": "2021-12-23T11:39:45.044Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalmediospago",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "EFECTIVO",
+    "history_date": "2021-12-23T11:39:48.326Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalmediospago",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "MERCADOPAGO",
+    "history_date": "2021-12-23T11:39:53.016Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalmediospago",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "TARJETA DE CREDITO",
+    "history_date": "2021-12-23T11:39:58.484Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalmediospago",
+  "pk": 5,
+  "fields": {
+    "id": 5,
+    "nombre": "TARJETA DE DEBITO",
+    "history_date": "2021-12-23T11:40:03.264Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalmediospago",
+  "pk": 6,
+  "fields": {
+    "id": 6,
+    "nombre": "TRANSFERENCIA",
+    "history_date": "2021-12-23T11:40:11.666Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.mediospago",
+  "pk": 1,
+  "fields": {
+    "nombre": "CHEQUE"
+  }
+},
+{
+  "model": "parametros.mediospago",
+  "pk": 2,
+  "fields": {
+    "nombre": "EFECTIVO"
+  }
+},
+{
+  "model": "parametros.mediospago",
+  "pk": 3,
+  "fields": {
+    "nombre": "MERCADOPAGO"
+  }
+},
+{
+  "model": "parametros.mediospago",
+  "pk": 4,
+  "fields": {
+    "nombre": "TARJETA DE CREDITO"
+  }
+},
+{
+  "model": "parametros.mediospago",
+  "pk": 5,
+  "fields": {
+    "nombre": "TARJETA DE DEBITO"
+  }
+},
+{
+  "model": "parametros.mediospago",
+  "pk": 6,
+  "fields": {
+    "nombre": "TRANSFERENCIA"
+  }
+},
+{
+  "model": "parametros.historicaltiposcomprobantes",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "COMPROBANTE",
+    "history_date": "2021-12-23T11:38:54.150Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicaltiposcomprobantes",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "FACTURA",
+    "history_date": "2021-12-23T11:38:57.233Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicaltiposcomprobantes",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "REMITO",
+    "history_date": "2021-12-23T11:39:00.249Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicaltiposcomprobantes",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "PRESUPUESTO",
+    "history_date": "2021-12-23T11:39:04.897Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.tiposcomprobantes",
+  "pk": 1,
+  "fields": {
+    "nombre": "COMPROBANTE"
+  }
+},
+{
+  "model": "parametros.tiposcomprobantes",
+  "pk": 2,
+  "fields": {
+    "nombre": "FACTURA"
+  }
+},
+{
+  "model": "parametros.tiposcomprobantes",
+  "pk": 3,
+  "fields": {
+    "nombre": "REMITO"
+  }
+},
+{
+  "model": "parametros.tiposcomprobantes",
+  "pk": 4,
+  "fields": {
+    "nombre": "PRESUPUESTO"
+  }
+},
+{
+  "model": "parametros.historicalestados",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "PENDIENTE",
+    "orden": 1,
+    "history_date": "2021-12-23T11:41:27.422Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalestados",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "PLANIFICADO",
+    "orden": 2,
+    "history_date": "2021-12-23T11:41:34.772Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalestados",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "EN PROCESO",
+    "orden": 3,
+    "history_date": "2021-12-23T11:41:50.119Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalestados",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "FINALIZADO",
+    "orden": 4,
+    "history_date": "2021-12-23T11:41:58.658Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalestados",
+  "pk": 5,
+  "fields": {
+    "id": 5,
+    "nombre": "ENTREGADO",
+    "orden": 5,
+    "history_date": "2021-12-23T11:42:13.023Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalestados",
+  "pk": 6,
+  "fields": {
+    "id": 6,
+    "nombre": "CANCELADO",
+    "orden": 6,
+    "history_date": "2021-12-23T11:42:23.943Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.estados",
+  "pk": 1,
+  "fields": {
+    "nombre": "PENDIENTE",
+    "orden": 1
+  }
+},
+{
+  "model": "parametros.estados",
+  "pk": 2,
+  "fields": {
+    "nombre": "PLANIFICADO",
+    "orden": 2
+  }
+},
+{
+  "model": "parametros.estados",
+  "pk": 3,
+  "fields": {
+    "nombre": "EN PROCESO",
+    "orden": 3
+  }
+},
+{
+  "model": "parametros.estados",
+  "pk": 4,
+  "fields": {
+    "nombre": "FINALIZADO",
+    "orden": 4
+  }
+},
+{
+  "model": "parametros.estados",
+  "pk": 5,
+  "fields": {
+    "nombre": "ENTREGADO",
+    "orden": 5
+  }
+},
+{
+  "model": "parametros.estados",
+  "pk": 6,
+  "fields": {
+    "nombre": "CANCELADO",
+    "orden": 6
+  }
+},
+{
+  "model": "parametros.historicalestadoparametros",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "estadoInicial": 1,
+    "estadoPlanificado": 2,
+    "estadoEspecial": 3,
+    "estadoFinalizado": 4,
+    "estadoEntregado": 5,
+    "estadoCancelado": 6,
+    "history_date": "2021-12-23T11:42:55.232Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.estadoparametros",
+  "pk": 1,
+  "fields": {
+    "estadoInicial": 1,
+    "estadoPlanificado": 2,
+    "estadoEspecial": 3,
+    "estadoFinalizado": 4,
+    "estadoEntregado": 5,
+    "estadoCancelado": 6
+  }
+},
+{
+  "model": "parametros.historicalprioridades",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "URGENTE",
+    "plazoPrioridad": 1,
+    "history_date": "2021-12-23T11:45:21.322Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalprioridades",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "APURADO",
+    "plazoPrioridad": 2,
+    "history_date": "2021-12-23T11:45:33.075Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalprioridades",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "NORMAL",
+    "plazoPrioridad": 3,
+    "history_date": "2021-12-23T11:46:15.763Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalprioridades",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "SIN APURO",
+    "plazoPrioridad": 7,
+    "history_date": "2021-12-23T11:46:37.009Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.historicalprioridades",
+  "pk": 5,
+  "fields": {
+    "id": 5,
+    "nombre": "RELAJADO",
+    "plazoPrioridad": 15,
+    "history_date": "2021-12-23T11:47:36.884Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "parametros.prioridades",
+  "pk": 1,
+  "fields": {
+    "nombre": "URGENTE",
+    "plazoPrioridad": 1
+  }
+},
+{
+  "model": "parametros.prioridades",
+  "pk": 2,
+  "fields": {
+    "nombre": "APURADO",
+    "plazoPrioridad": 2
+  }
+},
+{
+  "model": "parametros.prioridades",
+  "pk": 3,
+  "fields": {
+    "nombre": "NORMAL",
+    "plazoPrioridad": 3
+  }
+},
+{
+  "model": "parametros.prioridades",
+  "pk": 4,
+  "fields": {
+    "nombre": "SIN APURO",
+    "plazoPrioridad": 7
+  }
+},
+{
+  "model": "parametros.prioridades",
+  "pk": 5,
+  "fields": {
+    "nombre": "RELAJADO",
+    "plazoPrioridad": 15
+  }
+},
+{
+  "model": "geografico.historicalpaises",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "ARGENTINA",
+    "history_date": "2021-12-23T11:30:07.108Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicalpaises",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "BRASIL",
+    "history_date": "2021-12-23T11:30:12.953Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicalpaises",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "PARAGUAY",
+    "history_date": "2021-12-23T11:30:20.304Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicalpaises",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "URUGUAY",
+    "history_date": "2021-12-23T11:30:26.463Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.paises",
+  "pk": 1,
+  "fields": {
+    "nombre": "ARGENTINA"
+  }
+},
+{
+  "model": "geografico.paises",
+  "pk": 2,
+  "fields": {
+    "nombre": "BRASIL"
+  }
+},
+{
+  "model": "geografico.paises",
+  "pk": 3,
+  "fields": {
+    "nombre": "PARAGUAY"
+  }
+},
+{
+  "model": "geografico.paises",
+  "pk": 4,
+  "fields": {
+    "nombre": "URUGUAY"
+  }
+},
+{
+  "model": "geografico.historicalprovincias",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "MISIONES",
+    "pais": 1,
+    "history_date": "2021-12-23T11:30:49.195Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicalprovincias",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "CORRIENTES",
+    "pais": 1,
+    "history_date": "2021-12-23T11:31:01.485Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicalprovincias",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "ENTRE RIOS",
+    "pais": 1,
+    "history_date": "2021-12-23T11:31:13.513Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicalprovincias",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "ITAPUA",
+    "pais": 3,
+    "history_date": "2021-12-23T11:31:25.349Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.provincias",
+  "pk": 1,
+  "fields": {
+    "pais": 1,
+    "nombre": "MISIONES"
+  }
+},
+{
+  "model": "geografico.provincias",
+  "pk": 2,
+  "fields": {
+    "pais": 1,
+    "nombre": "CORRIENTES"
+  }
+},
+{
+  "model": "geografico.provincias",
+  "pk": 3,
+  "fields": {
+    "pais": 1,
+    "nombre": "ENTRE RIOS"
+  }
+},
+{
+  "model": "geografico.provincias",
+  "pk": 4,
+  "fields": {
+    "pais": 3,
+    "nombre": "ITAPUA"
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "POSADAS",
+    "codigo_postal": "3300",
+    "pais": 1,
+    "provincia": 1,
+    "history_date": "2021-12-23T11:31:43.867Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 2,
+  "fields": {
+    "id": 2,
+    "nombre": "APOSTOLES",
+    "codigo_postal": "3350",
+    "pais": 1,
+    "provincia": 1,
+    "history_date": "2021-12-23T11:31:58.394Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 3,
+  "fields": {
+    "id": 3,
+    "nombre": "CANDELARIA",
+    "codigo_postal": "3308",
+    "pais": 1,
+    "provincia": 1,
+    "history_date": "2021-12-23T11:32:12.523Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 4,
+  "fields": {
+    "id": 4,
+    "nombre": "CERRO AZUL",
+    "codigo_postal": "3313",
+    "pais": 1,
+    "provincia": 1,
+    "history_date": "2021-12-23T11:32:28.012Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 5,
+  "fields": {
+    "id": 5,
+    "nombre": "GARUPA",
+    "codigo_postal": "3304",
+    "pais": 1,
+    "provincia": 1,
+    "history_date": "2021-12-23T11:32:47.599Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 6,
+  "fields": {
+    "id": 6,
+    "nombre": "ITUZAINGO",
+    "codigo_postal": "3306",
+    "pais": 1,
+    "provincia": 2,
+    "history_date": "2021-12-23T11:33:08.604Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 7,
+  "fields": {
+    "id": 7,
+    "nombre": "SAN JOSE",
+    "codigo_postal": "3306",
+    "pais": 1,
+    "provincia": 1,
+    "history_date": "2021-12-23T11:33:31.663Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 8,
+  "fields": {
+    "id": 6,
+    "nombre": "ITUZAINGO",
+    "codigo_postal": "3302",
+    "pais": 1,
+    "provincia": 2,
+    "history_date": "2021-12-23T11:34:32.809Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.historicallocalidades",
+  "pk": 9,
+  "fields": {
+    "id": 8,
+    "nombre": "VIRASORO",
+    "codigo_postal": "3342",
+    "pais": 1,
+    "provincia": 2,
+    "history_date": "2021-12-23T11:36:54.640Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 1,
+  "fields": {
+    "pais": 1,
+    "provincia": 1,
+    "nombre": "POSADAS",
+    "codigo_postal": "3300"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 2,
+  "fields": {
+    "pais": 1,
+    "provincia": 1,
+    "nombre": "APOSTOLES",
+    "codigo_postal": "3350"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 3,
+  "fields": {
+    "pais": 1,
+    "provincia": 1,
+    "nombre": "CANDELARIA",
+    "codigo_postal": "3308"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 4,
+  "fields": {
+    "pais": 1,
+    "provincia": 1,
+    "nombre": "CERRO AZUL",
+    "codigo_postal": "3313"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 5,
+  "fields": {
+    "pais": 1,
+    "provincia": 1,
+    "nombre": "GARUPA",
+    "codigo_postal": "3304"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 6,
+  "fields": {
+    "pais": 1,
+    "provincia": 2,
+    "nombre": "ITUZAINGO",
+    "codigo_postal": "3302"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 7,
+  "fields": {
+    "pais": 1,
+    "provincia": 1,
+    "nombre": "SAN JOSE",
+    "codigo_postal": "3306"
+  }
+},
+{
+  "model": "geografico.localidades",
+  "pk": 8,
+  "fields": {
+    "pais": 1,
+    "provincia": 2,
+    "nombre": "VIRASORO",
+    "codigo_postal": "3342"
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "",
+    "last_name": "",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": null,
+    "cuil": null,
+    "direccion": null,
+    "telefono": null,
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": null,
+    "history_date": "2021-12-23T11:26:10.094Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": null
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 2,
+  "fields": {
+    "id": 1,
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": "2021-12-23T11:26:37.746Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "",
+    "last_name": "",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": null,
+    "cuil": null,
+    "direccion": null,
+    "telefono": null,
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": null,
+    "history_date": "2021-12-23T11:26:37.753Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 3,
+  "fields": {
+    "id": 1,
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": "2021-12-23T11:26:37.746Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "MARTIN ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20315728577",
+    "direccion": "CALLE 58 N6689",
+    "telefono": "3764718021",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T11:51:34.544Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 4,
+  "fields": {
+    "id": 2,
+    "password": "pbkdf2_sha256$260000$mijek6roA3HSoI4wmOHTnU$obcDg8rnTWB24wbjumQTEbTZBSkaI8YoGujmY+my4HA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "adriana",
+    "first_name": "ADRIANA YANINA",
+    "last_name": "LACHESKI",
+    "email": "adriana@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:53:09.388Z",
+    "legajo": null,
+    "fechaIngreso": "2020-02-03",
+    "cuil": "27340183571",
+    "direccion": "CALLE 137 A CASA 5330",
+    "telefono": "3764123598",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T11:53:09.464Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 5,
+  "fields": {
+    "id": 3,
+    "password": "pbkdf2_sha256$260000$zZoEz1RKC1eqUa4kjtnk6t$6wzXIjQUOqY5sF/Hemu8YKLtwKK7/2GlTSerl00ssVE=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ceferino",
+    "first_name": "CEFERINO RAMON",
+    "last_name": "KURCZACK",
+    "email": "ceferino@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:56:47.949Z",
+    "legajo": null,
+    "fechaIngreso": "2021-02-01",
+    "cuil": "23230358109",
+    "direccion": "AV. COMANDANTE MIÑO 2745",
+    "telefono": "3764245321",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T11:56:48.031Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 6,
+  "fields": {
+    "id": 4,
+    "password": "pbkdf2_sha256$260000$YCg8jTVYFweHhxlHqP1ias$j8e2j88XeLZzVLx3ddz76trVMv8v/rysuV+saSb8AME=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "gladys",
+    "first_name": "GLADYS ESTHER",
+    "last_name": "KLIKAILO",
+    "email": "gladys@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:58:53.523Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "27171706985",
+    "direccion": "LOTE FRACCION B-2 BARRIO PINDAPOY",
+    "telefono": "3764642153",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 7,
+    "history_date": "2021-12-23T11:58:53.600Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 7,
+  "fields": {
+    "id": 5,
+    "password": "pbkdf2_sha256$260000$btgYfmmV95CjPDmGmV7uwl$HqJzReQFZ9TPPZDQ9lczxa3bhbdBK//PyBQsDlJClYk=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "rogelio",
+    "first_name": "ROGELIO ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "rogelio@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:00:05.748Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20169862347",
+    "direccion": "LOTE FRACCION B-2 BARRIO PINDAPOY",
+    "telefono": "3764256566",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 7,
+    "history_date": "2021-12-23T12:00:05.828Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 8,
+  "fields": {
+    "id": 6,
+    "password": "pbkdf2_sha256$260000$am36MvPAW59pzWFFOcgugG$8rdzsxyIIjmmljQ5nsJWSXZwDpL7E6q15Zrina/Txdw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "juan",
+    "first_name": "JUAN MARINO",
+    "last_name": "GERMANSEN",
+    "email": "juan@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:01:38.273Z",
+    "legajo": null,
+    "fechaIngreso": "2018-11-05",
+    "cuil": "20348634128",
+    "direccion": "CALLE ACEVEDO 5465",
+    "telefono": "3764158073",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:01:38.362Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 9,
+  "fields": {
+    "id": 7,
+    "password": "pbkdf2_sha256$260000$VHnpQk9KROsjVEr76T7OXn$CPAbFlBEpWOwyYguTnnB0dXkJru702Srcl9Y0SeCe+8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pablo",
+    "first_name": "PABLO ALEJANDRO",
+    "last_name": "MIKICHUK",
+    "email": "pablo@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:02:56.208Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20305249514",
+    "direccion": "CALLE LAS ORQUÍDEAS 10625",
+    "telefono": "3764856158",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:02:56.285Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 10,
+  "fields": {
+    "id": 7,
+    "password": "pbkdf2_sha256$260000$VHnpQk9KROsjVEr76T7OXn$CPAbFlBEpWOwyYguTnnB0dXkJru702Srcl9Y0SeCe+8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pablo",
+    "first_name": "PABLO ALEJANDRO",
+    "last_name": "MIKICHUK",
+    "email": "pablo@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:02:56.208Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20305249514",
+    "direccion": "CALLE LAS ORQUÍDEAS 10625",
+    "telefono": "3764856158",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:08:13.775Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 11,
+  "fields": {
+    "id": 6,
+    "password": "pbkdf2_sha256$260000$am36MvPAW59pzWFFOcgugG$8rdzsxyIIjmmljQ5nsJWSXZwDpL7E6q15Zrina/Txdw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "juan",
+    "first_name": "JUAN MARINO",
+    "last_name": "GERMANSEN",
+    "email": "juan@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:01:38.273Z",
+    "legajo": null,
+    "fechaIngreso": "2018-11-05",
+    "cuil": "20348634128",
+    "direccion": "CALLE ACEVEDO 5465",
+    "telefono": "3764158073",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:08:20.272Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 12,
+  "fields": {
+    "id": 3,
+    "password": "pbkdf2_sha256$260000$zZoEz1RKC1eqUa4kjtnk6t$6wzXIjQUOqY5sF/Hemu8YKLtwKK7/2GlTSerl00ssVE=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ceferino",
+    "first_name": "CEFERINO RAMON",
+    "last_name": "KURCZACK",
+    "email": "ceferino@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:56:47.949Z",
+    "legajo": null,
+    "fechaIngreso": "2021-02-01",
+    "cuil": "23230358109",
+    "direccion": "AV. COMANDANTE MIÑO 2745",
+    "telefono": "3764245321",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:08:26.767Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 13,
+  "fields": {
+    "id": 6,
+    "password": "pbkdf2_sha256$260000$am36MvPAW59pzWFFOcgugG$8rdzsxyIIjmmljQ5nsJWSXZwDpL7E6q15Zrina/Txdw=",
+    "last_login": "2021-12-23T12:09:00.705Z",
+    "is_superuser": false,
+    "username": "juan",
+    "first_name": "JUAN MARINO",
+    "last_name": "GERMANSEN",
+    "email": "juan@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:01:38.273Z",
+    "legajo": null,
+    "fechaIngreso": "2018-11-05",
+    "cuil": "20348634128",
+    "direccion": "CALLE ACEVEDO 5465",
+    "telefono": "3764158073",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:09:00.711Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 6
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 14,
+  "fields": {
+    "id": 1,
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": "2021-12-23T12:24:17.213Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "MARTIN ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20315728577",
+    "direccion": "CALLE 58 N6689",
+    "telefono": "3764718021",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T12:24:17.219Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 15,
+  "fields": {
+    "id": 2,
+    "password": "pbkdf2_sha256$260000$mijek6roA3HSoI4wmOHTnU$obcDg8rnTWB24wbjumQTEbTZBSkaI8YoGujmY+my4HA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "adriana",
+    "first_name": "ADRIANA YANINA",
+    "last_name": "LACHESKI",
+    "email": "adriana@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:53:09.388Z",
+    "legajo": null,
+    "fechaIngreso": "2020-02-03",
+    "cuil": "27340183571",
+    "direccion": "CALLE 137 A CASA 5330",
+    "telefono": "3764123598",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T13:03:29.984Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 16,
+  "fields": {
+    "id": 4,
+    "password": "pbkdf2_sha256$260000$YCg8jTVYFweHhxlHqP1ias$j8e2j88XeLZzVLx3ddz76trVMv8v/rysuV+saSb8AME=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "gladys",
+    "first_name": "GLADYS ESTHER",
+    "last_name": "KLIKAILO",
+    "email": "gladys@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:58:53.523Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "27171706985",
+    "direccion": "LOTE FRACCION B-2 BARRIO PINDAPOY",
+    "telefono": "3764642153",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 7,
+    "history_date": "2021-12-23T13:03:37.295Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 17,
+  "fields": {
+    "id": 5,
+    "password": "pbkdf2_sha256$260000$btgYfmmV95CjPDmGmV7uwl$HqJzReQFZ9TPPZDQ9lczxa3bhbdBK//PyBQsDlJClYk=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "rogelio",
+    "first_name": "ROGELIO ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "rogelio@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:00:05.748Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20169862347",
+    "direccion": "LOTE FRACCION B-2 BARRIO PINDAPOY",
+    "telefono": "3764256566",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 7,
+    "history_date": "2021-12-23T13:04:05.013Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 18,
+  "fields": {
+    "id": 2,
+    "password": "pbkdf2_sha256$260000$mijek6roA3HSoI4wmOHTnU$obcDg8rnTWB24wbjumQTEbTZBSkaI8YoGujmY+my4HA=",
+    "last_login": "2021-12-23T13:04:17.270Z",
+    "is_superuser": false,
+    "username": "adriana",
+    "first_name": "ADRIANA YANINA",
+    "last_name": "LACHESKI",
+    "email": "adriana@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:53:09.388Z",
+    "legajo": null,
+    "fechaIngreso": "2020-02-03",
+    "cuil": "27340183571",
+    "direccion": "CALLE 137 A CASA 5330",
+    "telefono": "3764123598",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T13:04:17.275Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 2
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 19,
+  "fields": {
+    "id": 1,
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": "2021-12-23T13:04:51.361Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "MARTIN ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20315728577",
+    "direccion": "CALLE 58 N6689",
+    "telefono": "3764718021",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T13:04:51.367Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 20,
+  "fields": {
+    "id": 2,
+    "password": "pbkdf2_sha256$260000$mijek6roA3HSoI4wmOHTnU$obcDg8rnTWB24wbjumQTEbTZBSkaI8YoGujmY+my4HA=",
+    "last_login": "2021-12-23T13:06:32.756Z",
+    "is_superuser": false,
+    "username": "adriana",
+    "first_name": "ADRIANA YANINA",
+    "last_name": "LACHESKI",
+    "email": "adriana@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:53:09.388Z",
+    "legajo": null,
+    "fechaIngreso": "2020-02-03",
+    "cuil": "27340183571",
+    "direccion": "CALLE 137 A CASA 5330",
+    "telefono": "3764123598",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T13:06:32.762Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 2
+  }
+},
+{
+  "model": "usuarios.historicalusuarios",
+  "pk": 21,
+  "fields": {
+    "id": 1,
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": "2021-12-23T13:11:29.241Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "MARTIN ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20315728577",
+    "direccion": "CALLE 58 N6689",
+    "telefono": "3764718021",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "localidad": 1,
+    "history_date": "2021-12-23T13:11:29.245Z",
+    "history_change_reason": null,
+    "history_type": "~",
+    "history_user": 1
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$3PRIUkpuoVZC5Vgho7jeIk$HX3w2Z9VGWBqE/wH9z5o2oxrHCwtLMZ4/Ghg///sxis=",
+    "last_login": "2021-12-23T13:11:29.241Z",
+    "is_superuser": true,
+    "username": "martin",
+    "first_name": "MARTIN ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "martinlacheski@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:26:10.000Z",
+    "legajo": null,
+    "fechaIngreso": "2021-08-05",
+    "cuil": "20315728577",
+    "localidad": 1,
+    "direccion": "CALLE 58 N6689",
+    "telefono": "3764718021",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$mijek6roA3HSoI4wmOHTnU$obcDg8rnTWB24wbjumQTEbTZBSkaI8YoGujmY+my4HA=",
+    "last_login": "2021-12-23T13:06:32.756Z",
+    "is_superuser": false,
+    "username": "adriana",
+    "first_name": "ADRIANA YANINA",
+    "last_name": "LACHESKI",
+    "email": "adriana@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:53:09.388Z",
+    "legajo": null,
+    "fechaIngreso": "2020-02-03",
+    "cuil": "27340183571",
+    "localidad": 1,
+    "direccion": "CALLE 137 A CASA 5330",
+    "telefono": "3764123598",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$zZoEz1RKC1eqUa4kjtnk6t$6wzXIjQUOqY5sF/Hemu8YKLtwKK7/2GlTSerl00ssVE=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "ceferino",
+    "first_name": "CEFERINO RAMON",
+    "last_name": "KURCZACK",
+    "email": "ceferino@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:56:47.949Z",
+    "legajo": null,
+    "fechaIngreso": "2021-02-01",
+    "cuil": "23230358109",
+    "localidad": 1,
+    "direccion": "AV. COMANDANTE MIÑO 2745",
+    "telefono": "3764245321",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$YCg8jTVYFweHhxlHqP1ias$j8e2j88XeLZzVLx3ddz76trVMv8v/rysuV+saSb8AME=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "gladys",
+    "first_name": "GLADYS ESTHER",
+    "last_name": "KLIKAILO",
+    "email": "gladys@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T11:58:53.523Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "27171706985",
+    "localidad": 7,
+    "direccion": "LOTE FRACCION B-2 BARRIO PINDAPOY",
+    "telefono": "3764642153",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$btgYfmmV95CjPDmGmV7uwl$HqJzReQFZ9TPPZDQ9lczxa3bhbdBK//PyBQsDlJClYk=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "rogelio",
+    "first_name": "ROGELIO ANIBAL",
+    "last_name": "LACHESKI",
+    "email": "rogelio@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:00:05.748Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20169862347",
+    "localidad": 7,
+    "direccion": "LOTE FRACCION B-2 BARRIO PINDAPOY",
+    "telefono": "3764256566",
+    "imagen": "",
+    "realizaTrabajos": false,
+    "chatIdUsuario": null,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$am36MvPAW59pzWFFOcgugG$8rdzsxyIIjmmljQ5nsJWSXZwDpL7E6q15Zrina/Txdw=",
+    "last_login": "2021-12-23T12:09:00.705Z",
+    "is_superuser": false,
+    "username": "juan",
+    "first_name": "JUAN MARINO",
+    "last_name": "GERMANSEN",
+    "email": "juan@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:01:38.273Z",
+    "legajo": null,
+    "fechaIngreso": "2018-11-05",
+    "cuil": "20348634128",
+    "localidad": 1,
+    "direccion": "CALLE ACEVEDO 5465",
+    "telefono": "3764158073",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "usuarios.usuarios",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$260000$VHnpQk9KROsjVEr76T7OXn$CPAbFlBEpWOwyYguTnnB0dXkJru702Srcl9Y0SeCe+8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "pablo",
+    "first_name": "PABLO ALEJANDRO",
+    "last_name": "MIKICHUK",
+    "email": "pablo@surexpress.com.ar",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2021-12-23T12:02:56.208Z",
+    "legajo": null,
+    "fechaIngreso": "2011-10-03",
+    "cuil": "20305249514",
+    "localidad": 1,
+    "direccion": "CALLE LAS ORQUÍDEAS 10625",
+    "telefono": "3764856158",
+    "imagen": "",
+    "realizaTrabajos": true,
+    "chatIdUsuario": null,
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "agenda.historicaltiposevento",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "nombre": "SISTEMA",
+    "horarioRecordatorio": "08:00:00",
+    "recordarSistema": true,
+    "recordarTelegram": false,
+    "deSistema": true,
+    "estado": true,
+    "history_date": "2021-12-23T11:29:12.396Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "agenda.tiposevento",
+  "pk": 1,
+  "fields": {
+    "nombre": "SISTEMA",
+    "horarioRecordatorio": "08:00:00",
+    "recordarSistema": true,
+    "recordarTelegram": false,
+    "deSistema": true,
+    "estado": true
+  }
+},
+{
+  "model": "agenda.historicaldiasavisoevento",
+  "pk": 1,
+  "fields": {
+    "id": 1,
+    "diasAntelacion": 2,
+    "lunes": true,
+    "martes": true,
+    "miercoles": true,
+    "jueves": true,
+    "viernes": true,
+    "sabado": false,
+    "domingo": false,
+    "history_date": "2021-12-23T11:29:37.451Z",
+    "history_change_reason": null,
+    "history_type": "+",
+    "history_user": 1
+  }
+},
+{
+  "model": "agenda.diasavisoevento",
+  "pk": 1,
+  "fields": {
+    "diasAntelacion": 2,
+    "lunes": true,
+    "martes": true,
+    "miercoles": true,
+    "jueves": true,
+    "viernes": true,
+    "sabado": false,
+    "domingo": false
+  }
+}
+]
