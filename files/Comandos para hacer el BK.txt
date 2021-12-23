@@ -1,0 +1,34 @@
+#Exportamos el DUMPDATA
+python manage.py dumpdata --indent 2 > database.json
+
+#En postgreSQL creamos la BASE DE DATOS
+
+#Hacer las migraciones correspondientes para crear las tablas necesarias en la BD
+python manage.py migrate
+
+#Eliminamos las tablas y las secuencias con:
+
+//SQLITE
+sqlite3 nombre_base
+
+delete from auth_permission;
+delete from sqlite_sequence where name='auth_permission';
+delete from django_content_type;
+delete from sqlite_sequence where name='django_content_type';
+
+//POSTGRESQL
+sudo -u postgres psql -d nombre_base
+use nombre_base;
+
+delete from public.auth_permission;
+ALTER SEQUENCE public.auth_permission_id_seq RESTART WITH 1;
+delete from public.django_content_type;
+ALTER SEQUENCE public.django_content_type_id_seq RESTART WITH 1;
+
+#Con este comando evitamos tener que reinicializar la BD
+python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > database.json
+
+python manage.py dumpdata auth_group auth_group_permissions --indent 2 > database.json
+
+#Reestablecemos el BACKUP con LOADDATA
+python manage.py loaddata database.json

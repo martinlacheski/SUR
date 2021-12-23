@@ -1,0 +1,48 @@
+--------------------------------------------------------------------------------------------------------------------
+* Para terminar con el tema de permisos crear un input hidden y preguntar si se tiene permisos para modificar o eliminar
+con eso se puede ocultar los campos desde el JS
+
+<input type="hidden" name="agregar" value="SI">
+<input type="hidden" name="modificar" value="SI">
+<input type="hidden" name="eliminar" value="SI">
+
+--------------------------------------------------------------------------------------------------------------------
+* Agregar INSUMOS y realizar compras y ventas para visualizar en las estadisticas
+--------------------------------------------------------------------------------------------------------------------
+* Leyenda LEGAL ver que se puede poner para salvaguardar SUJETO A LAS CONDICIONES MENCIONADAS ANTERIORMENTE
+--------------------------------------------------------------------------------------------------------------------
+* VER DE UTILIZAR UN COMPONENTE MEJOR PARA CREAR LOS GRUPOS DE USUARIOS
+--------------------------------------------------------------------------------------------------------------------
+EMOJIS PARA EL AYUDA
+fas fa-eye	                &#xf06e;
+far fa-file-pdf 	        &#f1c1;
+fas fa-edit	                &#xf044;        &#128221;
+fas fa-trash-alt	        &#xf2ed;
+fas fa-check 	            &#f00c;
+fas fa-people-carry 	    &#f4ce;
+fas fa-times 	            &#f00d;         &#10060;
+--------------------------------------------------------------------------------------------------------------------
+COMANDO Para cargar los registros de Auditoria
+python manage.py populate_history --auto
+--------------------------------------------------------------------------------------------------------------------
+COMANDO BACKUP
+
+#Con este comando evitamos tener que reinicializar la BD
+python manage.py dumpdata --exclude auth.permission --exclude contenttypes --indent 2 > database.json
+
+#Reestablecemos el BACKUP con LOADDATA
+python manage.py loaddata database.json
+--------------------------------------------------------------------------------------------------------------------
+* PROBAR - El tipico en casa ANDA! Error redireccionar al pedido una vez expirado - en el formulario - AHORA OK!
+* Bot, permisos al momento de registrar respuestas de parte de usuarios rectificadores
+* Preparar caso de uso para reasignacion de usuarios (Explicar bien)
+* Agregar botones para ejecutar procesos automaticos de Reasignacion de Usuarios y Proceso de Pedidos
+
+
+TEMA DE DATETIME
+
+print(datetime.datetime.now())
+print(datetime.datetime.today())
+print(timezone.localtime(timezone.now()))
+print(timezone.now())
+
