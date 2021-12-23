@@ -29,7 +29,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                 <!-- Agenda -->
-                {% if perms.notificaciones.view_notificaciones %}
+                {% if perms.notif_channel.view_notificacionesgenerales %}
                     <li class="nav-item has-treeview">
                         <a href="{% url 'notificaciones:listNotificacionesCompleta' %}" class="nav-link">
                             <i class="far fa-bell nav-icon"></i>

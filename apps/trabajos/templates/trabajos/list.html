@@ -48,117 +48,117 @@
             </h3>
         </div>
         <div class="card-body">
-        {% if perms.trabajos.add_trabajos %}
-            <label data-intro="Hacer click para visualizar los filtros">Filtros:
-                <i class="fas fa-angle-down showFilters"></i> </label>
-            <div class="row" id="filters">
-                <div class="form-group col-3" data-intro="Seleccione del listado para filtrar por Clientes">
-                    <label>Clientes:</label>
-                    <div class="input-group">
-                        <select class="form-select form-control select2 selectCliente" id="selectCliente"
-                                name="selectCliente" aria-label="selectCliente">
-                            <option value="">---------</option>
-                        </select>
+            {% if perms.trabajos.add_trabajos %}
+                <label data-intro="Hacer click para visualizar los filtros">Filtros:
+                    <i class="fas fa-angle-down showFilters"></i> </label>
+                <div class="row" id="filters">
+                    <div class="form-group col-3" data-intro="Seleccione del listado para filtrar por Clientes">
+                        <label>Clientes:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectCliente" id="selectCliente"
+                                    name="selectCliente" aria-label="selectCliente">
+                                <option value="">---------</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-2" data-intro="Seleccione del listado para filtrar por Modelos">
+                        <label>Modelos:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectModelo" id="selectModelo"
+                                    name="selectModelo" aria-label="selectModelo">
+                                <option value="">---------</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-3" data-intro="Seleccione el rango de fechas para filtrar">
+                        <label>Fecha de Entrada:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="filterRangoFechas"
+                                   placeholder="Seleccione Rango de Fechas" aria-label="filterRangoFechas"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="form-group col-2"
+                         data-intro="Seleccione del listado para filtrar por Usuario Asignado al Trabajo">
+                        <label>Asignado a:</label>
+                        <div class="input-group">
+                            <select class="form-select form-control select2 selectUsuario" id="selectUsuario"
+                                    name="selectUsuario" aria-label="selectUsuario">
+                                <option value="">---------</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-1" data-intro="Hacer click para limpiar los Filtros seleccionados">
+                        <label class="mb-4"></label>
+                        <div class="card-row">
+                            <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
+                                    class="fas fa-times"></i> Filtros
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-2" data-intro="Seleccione del listado para filtrar por Modelos">
-                    <label>Modelos:</label>
-                    <div class="input-group">
-                        <select class="form-select form-control select2 selectModelo" id="selectModelo"
-                                name="selectModelo" aria-label="selectModelo">
-                            <option value="">---------</option>
-                        </select>
+                <div class="row" id="filters2">
+                    <div class="col-2">
+                        <div data-intro="Tildar para excluir los trabajos finalizados"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input excluirFinalizados"
+                                   id="excluirFinalizados">
+                            <label class="custom-control-label" for="excluirFinalizados"> Excluir Finalizados</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div data-intro="Tildar para excluir los trabajos entregados"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input excluirEntregados"
+                                   id="excluirEntregados">
+                            <label class="custom-control-label" for="excluirEntregados"> Excluir Entregados</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div data-intro="Tildar para excluir los trabajos cancelados"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input excluirCancelados"
+                                   id="excluirCancelados">
+                            <label class="custom-control-label" for="excluirCancelados"> Excluir Cancelados</label>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-3" data-intro="Seleccione el rango de fechas para filtrar">
-                    <label>Fecha de Entrada:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="filterRangoFechas"
-                               placeholder="Seleccione Rango de Fechas" aria-label="filterRangoFechas"
-                               autocomplete="off">
+                <hr id="filters1">
+                <div class="row" id="filters3">
+                    <div class="col-2">
+                        <div data-intro="Tildar para ver los trabajos en estado planificado"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input verPlanificados"
+                                   id="verPlanificados">
+                            <label class="custom-control-label" for="verPlanificados"> Ver Planificados</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div data-intro="Tildar para ver los trabajos en estado en proceso"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input verEnProceso"
+                                   id="verEnProceso">
+                            <label class="custom-control-label" for="verEnProceso"> Ver en Proceso</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div data-intro="Tildar para ver los trabajos en estado finalizado"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input verFinalizados"
+                                   id="verFinalizados">
+                            <label class="custom-control-label" for="verFinalizados"> Ver Finalizados</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div data-intro="Tildar para ver los trabajos en estado pendiente"
+                             class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input verPendientes"
+                                   id="verPendientes">
+                            <label class="custom-control-label" for="verPendientes"> Ver Pendientes</label>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group col-2"
-                     data-intro="Seleccione del listado para filtrar por Usuario Asignado al Trabajo">
-                    <label>Asignado a:</label>
-                    <div class="input-group">
-                        <select class="form-select form-control select2 selectUsuario" id="selectUsuario"
-                                name="selectUsuario" aria-label="selectUsuario">
-                            <option value="">---------</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group col-1" data-intro="Hacer click para limpiar los Filtros seleccionados">
-                    <label class="mb-4"></label>
-                    <div class="card-row">
-                        <button type="button" class="btn btn-danger btn-flat btnResetFilters"><i
-                                class="fas fa-times"></i> Filtros
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="row" id="filters2">
-                <div class="col-2">
-                    <div data-intro="Tildar para excluir los trabajos finalizados"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input excluirFinalizados"
-                               id="excluirFinalizados">
-                        <label class="custom-control-label" for="excluirFinalizados"> Excluir Finalizados</label>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div data-intro="Tildar para excluir los trabajos entregados"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input excluirEntregados"
-                               id="excluirEntregados">
-                        <label class="custom-control-label" for="excluirEntregados"> Excluir Entregados</label>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div data-intro="Tildar para excluir los trabajos cancelados"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input excluirCancelados"
-                               id="excluirCancelados">
-                        <label class="custom-control-label" for="excluirCancelados"> Excluir Cancelados</label>
-                    </div>
-                </div>
-            </div>
-            <hr id="filters1">
-            <div class="row" id="filters3">
-                <div class="col-2">
-                    <div data-intro="Tildar para ver los trabajos en estado planificado"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input verPlanificados"
-                               id="verPlanificados">
-                        <label class="custom-control-label" for="verPlanificados"> Ver Planificados</label>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div data-intro="Tildar para ver los trabajos en estado en proceso"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input verEnProceso"
-                               id="verEnProceso">
-                        <label class="custom-control-label" for="verEnProceso"> Ver en Proceso</label>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div data-intro="Tildar para ver los trabajos en estado finalizado"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input verFinalizados"
-                               id="verFinalizados">
-                        <label class="custom-control-label" for="verFinalizados"> Ver Finalizados</label>
-                    </div>
-                </div>
-                <div class="col-2">
-                    <div data-intro="Tildar para ver los trabajos en estado pendiente"
-                         class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                        <input type="checkbox" class="custom-control-input verPendientes"
-                               id="verPendientes">
-                        <label class="custom-control-label" for="verPendientes"> Ver Pendientes</label>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
+            {% endif %}
             <div class="row">
                 <div class="col-12">
                     <br>
@@ -209,11 +209,6 @@
                         <i class="fas fa-file-pdf"></i> Generar Reporte
                     </button>
                 {% endif %}
-                <button type="button"
-                    class="btn btn-secondary btn-flat btnGenerar"
-                    data-intro="Procesar el pedido de las ofertas de los proveedores registradas según los criterios establecidos">
-                <i class="fas fa-code-branch"></i> Controlar Trabajos
-            </button>
             </form>
         </div>
     </div>

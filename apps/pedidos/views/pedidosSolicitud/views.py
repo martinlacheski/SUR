@@ -145,11 +145,14 @@ class PedidosSolicitudCreateView(LoginRequiredMixin, ValidatePermissionRequiredM
                     data.append({'id': i.id, 'text': i.nombre})
             # Generamos el Codigo para el nuevo producto
             elif action == 'generar_codigo_producto':
-                ultimo_prod = Productos.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_prod.id + 1)
-                if ultimo_prod.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
+                try:
+                    ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_prod.id + 1)
+                    if ultimo_prod.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
                 data['codigo'] = nuevo_cod
             # Generamos el Codigo para el nuevo producto
             elif action == 'create_producto':

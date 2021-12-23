@@ -1026,23 +1026,32 @@ $(function () {
 //------------------------------------Inicializar COMPONENTES----------------------------------------//
 $(document).ready(function () {
     //Ocultamos los Filtros
-    document.getElementById("filters").style.display = "none";
-    document.getElementById("filters1").style.display = "none";
-    document.getElementById("filters2").style.display = "none";
-    document.getElementById("filters3").style.display = "none";
+    try {
+        document.getElementById("filters").style.display = "none";
+        document.getElementById("filters1").style.display = "none";
+        document.getElementById("filters2").style.display = "none";
+        document.getElementById("filters3").style.display = "none";
+    } catch (error) {
+        // Si es USUARIO RECTIFICADOR NO EXISTEN LOS FILTROS
+    }
+
     //Inicializamos SELECT2
     $('.select2').select2({
         theme: "bootstrap4",
         language: 'es'
     });
-    //Excluir los generales
-    document.getElementById("excluirEntregados").checked = false;
-    document.getElementById("excluirCancelados").checked = true;
-    //Ver los Particulares
-    document.getElementById("verPendientes").checked = false;
-    document.getElementById("verPlanificados").checked = false;
-    document.getElementById("verEnProceso").checked = false;
-    document.getElementById("verFinalizados").checked = false;
+    try {
+        //Excluir los generales
+        document.getElementById("excluirEntregados").checked = false;
+        document.getElementById("excluirCancelados").checked = true;
+        //Ver los Particulares
+        document.getElementById("verPendientes").checked = false;
+        document.getElementById("verPlanificados").checked = false;
+        document.getElementById("verEnProceso").checked = false;
+        document.getElementById("verFinalizados").checked = false;
+    } catch (error) {
+        // Si es USUARIO RECTIFICADOR NO EXISTEN LOS FILTROS
+    }
     //Inicializamos el Filtro de Rango de Fechas
     $('input[name="filterRangoFechas"]').daterangepicker({
         // autoUpdateInput: false,

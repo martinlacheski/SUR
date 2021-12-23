@@ -196,11 +196,14 @@ class ServiciosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin, C
         try:
             action = request.POST['action']
             if action == 'generar_codigo':
-                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_serv.id + 1)
-                if ultimo_serv.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
+                try:
+                    ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_serv.id + 1)
+                    if ultimo_serv.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
                 data['codigo'] = nuevo_cod
             elif action == 'search_iva':
                 iva = TiposIVA.objects.get(id=request.POST['pk'])

@@ -297,26 +297,32 @@ class PresupuestosCreateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # Generamos el Codigo para el nuevo producto
-            elif action == 'generar_codigo_producto':
-                ultimo_prod = Productos.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_prod.id + 1)
-                if ultimo_prod.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
-                    data['codigo'] = nuevo_cod
             # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                try:
+                    ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_prod.id + 1)
+                    if ultimo_prod.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
+                data['codigo'] = nuevo_cod
             # Generamos el Codigo para el nuevo Servicio
             elif action == 'generar_codigo_servicio':
-                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_serv.id + 1)
-                if ultimo_serv.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
+                try:
+                    ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_serv.id + 1)
+                    if ultimo_serv.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
                 data['codigo'] = nuevo_cod
             # Guardamos el Servicio creado
             elif action == 'create_servicio':
@@ -516,26 +522,32 @@ class PresupuestosUpdateView(LoginRequiredMixin, ValidatePermissionRequiredMixin
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # Generamos el Codigo para el nuevo producto
-            elif action == 'generar_codigo_producto':
-                ultimo_prod = Productos.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_prod.id + 1)
-                if ultimo_prod.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
-                data['codigo'] = nuevo_cod
             # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                try:
+                    ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_prod.id + 1)
+                    if ultimo_prod.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
+                data['codigo'] = nuevo_cod
             # Generamos el Codigo para el nuevo Servicio
             elif action == 'generar_codigo_servicio':
-                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_serv.id + 1)
-                if ultimo_serv.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
+                try:
+                    ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_serv.id + 1)
+                    if ultimo_serv.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
                 data['codigo'] = nuevo_cod
             # Guardamos el Servicio creado
             elif action == 'create_servicio':
@@ -739,26 +751,32 @@ class PresupuestosConfirmView(LoginRequiredMixin, ValidatePermissionRequiredMixi
                 data = [{'id': '', 'text': '---------'}]
                 for i in Subcategorias.objects.filter(categoria_id=request.POST['pk']):
                     data.append({'id': i.id, 'text': i.nombre})
-            # Generamos el Codigo para el nuevo producto
-            elif action == 'generar_codigo_producto':
-                ultimo_prod = Productos.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_prod.id + 1)
-                if ultimo_prod.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
-                data['codigo'] = nuevo_cod
             # Guardamos el Producto creado
             elif action == 'create_producto':
                 with transaction.atomic():
                     formProducto = ProductosForm(request.POST)
                     data = formProducto.save()
+            # Generamos el Codigo para el nuevo producto
+            elif action == 'generar_codigo_producto':
+                try:
+                    ultimo_prod = Productos.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_prod.id + 1)
+                    if ultimo_prod.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
+                data['codigo'] = nuevo_cod
             # Generamos el Codigo para el nuevo Servicio
             elif action == 'generar_codigo_servicio':
-                ultimo_serv = Servicios.objects.all().order_by('-id')[0]
-                nuevo_cod = str(ultimo_serv.id + 1)
-                if ultimo_serv.id <= 99999:
-                    while len(nuevo_cod) <= 4:
-                        nuevo_cod = '0' + nuevo_cod
+                try:
+                    ultimo_serv = Servicios.objects.all().order_by('-id')[0]
+                    nuevo_cod = str(ultimo_serv.id + 1)
+                    if ultimo_serv.id <= 99999:
+                        while len(nuevo_cod) <= 4:
+                            nuevo_cod = '0' + nuevo_cod
+                except:
+                    nuevo_cod = '00001'
                 data['codigo'] = nuevo_cod
             # Guardamos el Servicio creado
             elif action == 'create_servicio':
