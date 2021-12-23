@@ -29,7 +29,7 @@ class respuestaTrabajoFinalizado(models.Model):
     trabajo = models.ForeignKey(Trabajos, models.DO_NOTHING, verbose_name='Trabajo asociado')
     fechaRespuesta = models.DateTimeField(blank=True, null=True)
     respuesta_puntual = models.DateField(blank=True, null=True)
-    respuesta_generica = models.CharField(max_length=20, verbose_name='Respuesta', null=True, blank=True)
+    respuesta_generica = models.CharField(max_length=100, verbose_name='Respuesta', null=True, blank=True)
     history = HistoricalRecords()
 
     class Meta:

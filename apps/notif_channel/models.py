@@ -10,7 +10,7 @@ class notificacionesGenerales(models.Model):
 	          ('vista', 'Vista'),
 	          ('urgente', 'Urgente'))
 	estado = models.CharField(max_length=9, choices=ESTADO, blank=True)
-	titulo = models.CharField(max_length=30)
+	titulo = models.CharField(max_length=60)
 	descripcion = models.CharField(max_length=254)
 	enviadoAUser = models.ForeignKey(Usuarios, models.DO_NOTHING, verbose_name='Usuario al que se le envió la notif', null=True)
 	fechaRevisionUser = models.DateTimeField(blank=True, null=True)

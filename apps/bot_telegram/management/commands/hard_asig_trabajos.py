@@ -21,8 +21,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         i = 0
         bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
-        trabajo = Trabajos.objects.get(pk=39)
-        trabajo.usuarioAsignado = Usuarios.objects.get(pk=1)
+        trabajo = Trabajos.objects.get(pk=82)
+        trabajo.usuarioAsignado = Usuarios.objects.get(pk=7)
         trabajo.save()
         # Se envia 3 veces el aviso
         while i < 3:
@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
         time.sleep(2)
         # re-asigna el trabajo
-        trabajo.usuarioAsignado = Usuarios.objects.get(pk=5)
+        trabajo.usuarioAsignado = Usuarios.objects.get(pk=2)
         trabajo.save()
 
         # Notifica a usuario que perdió el trabajo
