@@ -11,7 +11,7 @@ from asgiref.sync import async_to_sync
 from apps.agenda.models import notificacionUsuarios, diasAvisoEvento
 from apps.agenda.logicaNotificacion import restarDiasHabiles, diaDeNotificacion
 
-bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
+# bot = telegram.Bot(token='1974533179:AAFilVMl-Sw4On5h3OTwm4czRULAKMfBWGM')
 
 
 # Especifico de APScheduler

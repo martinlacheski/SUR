@@ -29,13 +29,13 @@ from apps.trabajos.models import Trabajos, DetalleProductosTrabajo, DetalleServi
     DetallePlanificacionesSemanales
 from apps.usuarios.models import Usuarios
 from config import settings
-from apps.bot_telegram.logicaBot import porcentajeTrabajo
+# from apps.bot_telegram.logicaBot import porcentajeTrabajo
 from apps.erp.views.compras import views  # PAra reutilizar método de creación de eventos.
 
 from weasyprint import HTML, CSS
 
 # Telegram notificacion
-from apps.bot_telegram.management.commands.telegram_bot import notificarCliente
+# from apps.bot_telegram.management.commands.telegram_bot import notificarCliente
 
 
 class TrabajosListView(LoginRequiredMixin, ValidatePermissionRequiredMixin, ListView):

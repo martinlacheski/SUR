@@ -11,7 +11,7 @@ from apps.erp.models import Proveedores
 from apps.pedidos.models import PedidoSolicitudProveedor, DetallePedidoSolicitudProveedor, PedidosSolicitud, DetallePedidoSolicitud
 from django.core.mail import send_mail
 from django.conf import settings
-from apps.bot_telegram.logicaBot import notificarSistema
+# from apps.bot_telegram.logicaBot import notificarSistema
 from django.urls import reverse
 from apps.parametros.models import Empresa
 
